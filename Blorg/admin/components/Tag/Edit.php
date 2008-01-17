@@ -56,6 +56,14 @@ class BlorgTagEdit extends AdminDBEdit
 		$this->tag->title =
 			$this->ui->getWidget('title')->value;
 
+		if ($this->id === null) {
+			$now = new SwatDate();
+			$now->toUTC();
+			$this->tag->createdate = $now;
+
+			$this->tag->instance = $this->app->instance->getInstance();
+		}
+
 		$this->tag->save();
 
 		$message = new SwatMessage(sprintf('“%s” has been saved.',
