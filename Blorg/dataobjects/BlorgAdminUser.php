@@ -35,17 +35,6 @@ class BlorgAdminUser extends AdminUser
 	public $bodytext;
 
 	// }}}
-	// {{{ protected function init()
-
-	protected function init()
-	{
-		$this->registerInternalProperty('instance',
-			SwatDBClassMap::get('SiteInstance'));
-
-		parent::init();
-	}
-
-	// }}}
 	// {{{ protected function loadPosts()
 
 	/**
