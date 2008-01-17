@@ -2,6 +2,7 @@
 
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'SwatDB/SwatDB.php';
+require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
 
 /**
  * Index page for Tags
@@ -55,9 +56,11 @@ class BlorgTagIndex extends AdminIndex
 
 	protected function getTableModel(SwatView $view)
 	{
-		$rs = SwatDB::query($this->app->db, 'select id, title from BlorgTag');
+		$sql = 'select id, title from BlorgTag order by title';
 
-		return $rs;
+		$tags = SwatDB::query($this->app->db, $sql, 'BlorgTagWrapper');
+
+		return $tags;
 	}
 
 	// }}}
