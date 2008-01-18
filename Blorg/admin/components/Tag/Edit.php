@@ -61,7 +61,7 @@ class BlorgTagEdit extends AdminDBEdit
 			$now->toUTC();
 			$this->tag->createdate = $now;
 
-			$this->tag->instance = $this->app->instance->getInstance();
+			$this->tag->instance = $this->app->instance->getId();
 		}
 
 		$this->tag->save();
