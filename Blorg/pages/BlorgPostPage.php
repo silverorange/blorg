@@ -1,8 +1,8 @@
 <?php
 
 require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/SitePage.php';
-require_once 'Site/exceptions/SitePageNotFoundException.php';
+require_once 'Site/pages/SitePage.php';
+require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 
 /**
@@ -59,10 +59,10 @@ class BlorgPostPage extends SitePage
 			throw new SiteNotFoundException('Post not found.');
 		}
 
-		$date = new SwatDate()
+		$date = new SwatDate();
 		$date->toUTC();
 		$date->setYear($year);
-		$date->setMonth($months_by_name[$month_name])
+		$date->setMonth($months_by_name[$month_name]);
 		$date->setDay(0);
 		$date->setHour(0);
 		$date->setMinute(0);
@@ -83,7 +83,7 @@ class BlorgPostPage extends SitePage
 	{
 		ob_start();
 		echo $this->post;
-		$this->layout->content = ob_get_clean();
+		$this->layout->data->content = ob_get_clean();
 	}
 
 	// }}}
