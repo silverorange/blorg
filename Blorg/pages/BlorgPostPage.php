@@ -75,6 +75,12 @@ class BlorgPostPage extends SitePage
 		if (!$this->post->loadByDateAndShortname($date, $shortname)) {
 			throw new SiteNotFoundException('Post not found.');
 		}
+
+		// make sure post is in current instance
+		if ($this->post->getInternalValue('instance') !==
+			$this->app->instance->getId()) {
+			throw new SiteNotFoundException('Post not found.');
+		}
 	}
 
 	// }}}
