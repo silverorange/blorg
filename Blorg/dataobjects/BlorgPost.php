@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Blorg/dataobjects/BlorgReplyWrapper.php';
 require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
@@ -106,6 +107,46 @@ class BlorgPost extends SwatDBDataObject
 	 * @var boolean
 	 */
 	public $enabled;
+
+	// }}}
+	// {{{ public function loadByDateAndShortname()
+
+	/**
+	 * Loads a post by a date and the post's shortname
+	 *
+	 * @param SwatDate $date the date the createdate of the post. Only the year
+	 *                        and month are used for comparison.
+	 * @param string $shortname the shortname of the post to load.
+	 *
+	 * @return boolean true if this post was loaded from the given createdate
+	 *                 and shortname and false if it was not.
+	 */
+	public function loadByDateAndShortname(SwatDate $date, $shortname)
+	{
+		$this->checkDB();
+
+		$loaded = false;
+		$row = null;
+		if ($this->table !== null) {
+			$sql = sprintf('select * from %s
+				where shortname = %s and
+				date_trunc(\'month\', createdate) = date_trunc(\'month\', %s)',
+				$this->table,
+				$this->app->db->quote($shortname, 'text'),
+				$this->app->db->quote($date->getDate(), 'date'));
+
+			$rs = SwatDB::query($this->db, $sql, null);
+			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+		}
+
+		if ($row !== null) {
+			$this->initFromRow($row);
+			$this->generatePropertyHashes();
+			$loaded = true;
+		}
+
+		return $loaded;
+	}
 
 	// }}}
 	// {{{ public static function getReplyStatusTitle()
