@@ -107,7 +107,7 @@ class BlorgPostEdit extends AdminDBEdit
 			'bodytext',
 			'extended_bodytext',
 			'reply_status',
-			'show',
+			'enabled',
 		));
 
 		$this->post->title             = $values['title'];
@@ -115,7 +115,7 @@ class BlorgPostEdit extends AdminDBEdit
 		$this->post->bodytext          = $values['bodytext'];
 		$this->post->extended_bodytext = $values['extended_bodytext'];
 		$this->post->reply_status      = $values['reply_status'];
-		$this->post->show              = $values['show'];
+		$this->post->enabled           = $values['enabled'];
 
 		$now = new SwatDate();
 		$now->toUTC();

@@ -41,8 +41,8 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Show on Site?</property>
-				<widget class="SwatCheckbox" id="show" />
+				<property name="title" translatable="yes">Enabled?</property>
+				<widget class="SwatCheckbox" id="enabled" />
 			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button" />
