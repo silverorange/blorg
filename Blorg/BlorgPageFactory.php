@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Site/SitePageFactory.php';
-require_once 'Site/exceptions/SitePageNotFoundException.php';
+require_once 'Site/exceptions/SiteNotFoundException.php';
 
 /**
  * Page factory for Blorg pages

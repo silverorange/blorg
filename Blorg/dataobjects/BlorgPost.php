@@ -130,10 +130,11 @@ class BlorgPost extends SwatDBDataObject
 		if ($this->table !== null) {
 			$sql = sprintf('select * from %s
 				where shortname = %s and
-				date_trunc(\'month\', createdate) = date_trunc(\'month\', %s)',
+					date_trunc(\'month\', createdate) =
+					date_trunc(\'month\', timestamp %s)',
 				$this->table,
-				$this->app->db->quote($shortname, 'text'),
-				$this->app->db->quote($date->getDate(), 'date'));
+				$this->db->quote($shortname, 'text'),
+				$this->db->quote($date->getDate(), 'date'));
 
 			$rs = SwatDB::query($this->db, $sql, null);
 			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
