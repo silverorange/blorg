@@ -59,8 +59,9 @@ class BlorgPostPage extends SitePage
 			throw new SiteNotFoundException('Post not found.');
 		}
 
+		// Date parsed from URL is in locale time.
 		$date = new SwatDate();
-		$date->toUTC();
+		$date->setTZ($this->app->default_time_zone);
 		$date->setYear($year);
 		$date->setMonth($months_by_name[$month_name]);
 		$date->setDay(0);
