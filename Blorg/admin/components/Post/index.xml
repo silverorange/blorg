@@ -39,6 +39,12 @@
 						<property name="format" type="constant">SwatDate::DF_DATE</property>
 					</object>
 				</object>
+				<object class="AdminTableViewOrderableColumn" id="enabled">
+					<property name="title" translatable="yes">Enabled</property>
+					<object class="SwatBooleanCellRenderer">
+						<property name="value" type="data">enabled</property>
+					</object>
+				</object>
 			</widget>
 			<widget class="SwatActions" id="index_actions">
 				<widget class="SwatActionItem" id="delete">

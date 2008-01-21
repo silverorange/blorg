@@ -147,7 +147,12 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function loadDBData()
 	{
-		$this->ui->setValues(get_object_vars($this->tag));
+		$this->ui->setValues(get_object_vars($this->post));
+
+		$tag_list = $this->ui->getWidget('tags');
+		$tag_list->values = SwatDB::queryColumn($this->app->db,
+			'BlorgPostTagBinding', 'tag', 'post',
+			$this->id);
 	}
 
 	// }}}
