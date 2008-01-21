@@ -1,6 +1,8 @@
 <?php
 
 require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Blorg/dataobjects/BlorgReplyWrapper.php';
+require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
 
 /**
  * A Blörg Post
