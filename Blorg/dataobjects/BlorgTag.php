@@ -7,6 +7,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  *
  * @package   Blörg
  * @copyright 2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgTag extends SwatDBDataObject
 {

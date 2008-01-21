@@ -10,6 +10,7 @@ require_once 'Admin/AdminListDependency.php';
  *
  * @package   Blörg
  * @copyright 2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgTagDelete extends AdminDBDelete
 {
@@ -26,7 +27,7 @@ class BlorgTagDelete extends AdminDBDelete
 
 		$num = SwatDB::exec($this->app->db, $sql);
 
-		$message = new SwatMessage(sprintf(ngettext(
+		$message = new SwatMessage(sprintf(Blorg::ngettext(
 			'One tag has been deleted.',
 			'%d tags have been deleted.', $num),
 			SwatString::numberFormat($num)),

@@ -5,10 +5,11 @@ require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'Blorg/dataobjects/BlorgTag.php';
 
 /**
- * Page for editing albums
+ * Page for editing tags
  *
  * @package   Blörg
  * @copyright 2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgTagEdit extends AdminDBEdit
 {
@@ -43,7 +44,7 @@ class BlorgTagEdit extends AdminDBEdit
 
 		if ($this->id !== null && !$this->tag->load($this->id))
 			throw new AdminNotFoundException(
-				sprintf('Tag with id ‘%s’ not found.', $this->id));
+				sprintf(Blorg::_('Tag with id ‘%s’ not found.'), $this->id));
 	}
 
 	// }}}
@@ -66,8 +67,8 @@ class BlorgTagEdit extends AdminDBEdit
 
 		$this->tag->save();
 
-		$message = new SwatMessage(sprintf('“%s” has been saved.',
-			$this->album->title));
+		$message = new SwatMessage(
+			sprintf(Blorg::_('“%s” has been saved.'), $this->tag->title));
 
 		$this->app->messages->add($message);
 	}
