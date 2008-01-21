@@ -7,6 +7,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  *
  * @package   Blörg
  * @copyright 2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPost extends SwatDBDataObject
 {
@@ -96,6 +97,53 @@ class BlorgPost extends SwatDBDataObject
 	 * @var integer
 	 */
 	public $reply_status;
+
+	// }}}
+	// {{{ public static function getReplyStatusTitle()
+
+	public static function getReplyStatusTitle($status)
+	{
+		switch ($status) {
+		case self::REPLY_STATUS_OPEN :
+			$title = Blorg::_('Open');
+			break;
+
+		case self::REPLY_STATUS_LOCKED :
+			$title = Blorg::_('Locked');
+			break;
+
+		case self::REPLY_STATUS_MODERATED :
+			$title = Blorg::_('Moderated');
+			break;
+
+		case self::REPLY_STATUS_CLOSED :
+			$title = Blorg::_('Closed');
+			break;
+
+		default:
+			$title = Blorg::_('Unknown Reply Status');
+			break;
+		}
+
+		return $title;
+	}
+
+	// }}}
+	// {{{ public static function getReplyStatuses()
+
+	public static function getReplyStatuses()
+	{
+		return array(
+			self::REPLY_STATUS_OPEN =>
+				self::getReplyStatusTitle(self::REPLY_STATUS_OPEN),
+			self::REPLY_STATUS_LOCKED =>
+				self::getReplyStatusTitle(self::REPLY_STATUS_LOCKED),
+			self::REPLY_STATUS_MODERATED =>
+				self::getReplyStatusTitle(self::REPLY_STATUS_MODERATED),
+			self::REPLY_STATUS_CLOSED =>
+				self::getReplyStatusTitle(self::REPLY_STATUS_CLOSED),
+		);
+	}
 
 	// }}}
 	// {{{ protected function init()

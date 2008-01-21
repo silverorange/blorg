@@ -9,6 +9,7 @@ require_once 'Blorg/dataobjects/BlorgReply.php';
  * @package   Blörg
  * @copyright 2008 silverorange
  * @see       BlorgReply
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgReplyWrapper extends SwatDBRecordsetWrapper
 {

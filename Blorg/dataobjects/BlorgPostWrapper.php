@@ -9,6 +9,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
  * @package   Blörg
  * @copyright 2008 silverorange
  * @see       BlorgPost
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPostWrapper extends SwatDBRecordsetWrapper
 {

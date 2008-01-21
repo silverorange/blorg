@@ -8,6 +8,7 @@ require_once 'Admin/dataobjects/AdminUser.php';
  * @package   Blörg
  * @copyright 2008 silverorange
  * @see       AdminUser
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgAdminUser extends AdminUser
 {
