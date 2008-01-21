@@ -72,13 +72,8 @@ class BlorgPostPage extends SitePage
 		$class_name = SwatDBClassMap::get('BlorgPost');
 		$this->post = new $class_name();
 		$this->post->setDatabase($this->app->db);
-		if (!$this->post->loadByDateAndShortname($date, $shortname)) {
-			throw new SiteNotFoundException('Post not found.');
-		}
-
-		// make sure post is in current instance
-		if ($this->post->getInternalValue('instance') !==
-			$this->app->instance->getId()) {
+		if (!$this->post->loadByDateAndShortname($date, $shortname,
+			$this->app->instance->getInstance())) {
 			throw new SiteNotFoundException('Post not found.');
 		}
 	}
