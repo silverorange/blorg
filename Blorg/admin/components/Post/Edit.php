@@ -79,8 +79,11 @@ class BlorgPostEdit extends AdminDBEdit
 		$shortname = $this->ui->getWidget('shortname')->value;
 
 		if ($this->id === null && $shortname === null) {
-			$shortname = $this->generateShortname(
-				$this->ui->getWidget('title')->value);
+			$title_value = strlen($this->ui->getWidget('title')->value) ?
+				$this->ui->getWidget('title')->value :
+				$this->ui->getWidget('bodytext')->value;
+
+			$shortname = $this->generateShortname($title_value);
 
 			$this->ui->getWidget('shortname')->value = $shortname;
 
@@ -98,21 +101,41 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		$this->post->title =
-			$this->ui->getWidget('title')->value;
+		$values = $this->ui->getValues(array(
+			'title',
+			'shortname',
+			'bodytext',
+			'extended_bodytext',
+			'reply_status',
+			'show',
+		));
+
+		$this->post->title             = $values['title'];
+		$this->post->shortname         = $values['shortname'];
+		$this->post->bodytext          = $values['bodytext'];
+		$this->post->extended_bodytext = $values['extended_bodytext'];
+		$this->post->reply_status      = $values['reply_status'];
+		$this->post->show              = $values['show'];
+
+		$now = new SwatDate();
+		$now->toUTC();
 
 		if ($this->id === null) {
-			$now = new SwatDate();
-			$now->toUTC();
 			$this->post->createdate = $now;
-
-			$this->post->instance = $this->app->instance->getId();
+			$this->post->instance   = $this->app->instance->getId();
+			$this->post->author     = $this->app->session->getUserID();
 		}
+		$this->post->modified_date = $now;
 
 		$this->post->save();
 
-		$message = new SwatMessage(
-			sprintf(Blorg::_('“%s” has been saved.'), $this->post->title));
+		$tag_list = $this->ui->getWidget('tags');
+		SwatDB::updateBinding($this->app->db, 'BlorgPostTagBinding',
+			'post', $this->post->id, 'tag', $tag_list->values,
+			'BlorgTag', 'id');
+
+		// don't bother displaying the title in the message as it may be null
+		$message = new SwatMessage(Blorg::_('Post has been saved.'));
 
 		$this->app->messages->add($message);
 	}
