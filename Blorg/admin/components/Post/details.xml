@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="details_frame">
+		<widget class="SwatToolbar" id="details_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title">Edit Post</property>
+				<property name="link">Post/Edit?id=%s</property>
+				<property name="stock_id">edit</property>
+			</widget>
+			<widget class="SwatToolLink">
+				<property name="title">Delete Post</property>
+				<property name="link">Post/Delete?id=%s</property>
+				<property name="stock_id">delete</property>
+			</widget>
+		</widget>
+		<widget class="SwatDetailsView" id="details_view">
+			<object class="SwatDetailsViewField">
+				<property name="title">Title</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">title</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title">Shortname</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">shortname</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="release_date">
+				<property name="title">Create Date</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">createdate</property>
+					<property name="format" type="constant">SwatDate::DF_DATE</property>
+				</object>
+			</object>
+		</widget>
+		<!-- {{{ Replies -->
+		<widget class="SwatFrame" id="replies_frame">
+			<property name="title" translatable="yes">Replies</property>
+			<widget class="SwatToolbar" id="replies_toolbar">
+				<widget class="SwatToolLink">
+					<property name="title" translatable="yes">New Reply</property>
+					<property name="link">Post/ReplyEdit?post=%s</property>
+					<property name="stock_id">create</property>
+				</widget>
+			</widget>
+			<widget class="SwatForm" id="replies_form">
+				<widget class="SwatTableView" id="replies_view">
+					<object class="SwatTableViewCheckboxColumn" id="checkbox">
+						<object class="SwatCheckboxCellRenderer" id="replies">
+							<property name="value" type="data">id</property>
+						</object>
+					</object>
+					<object class="AdminTableViewOrderableColumn" id="title">
+						<property name="title" translatable="yes">Title</property>
+						<object class="AdminTitleLinkCellRenderer">
+							<property name="text" type="data">title</property>
+							<property name="link">Post/ReplyEdit?id=%s</property>
+							<property name="link_value" type="data">id</property>
+							<property name="stock_id">edit</property>
+						</object>
+					</object>
+				</widget>
+				<widget class="SwatActions" id="reply_actions">
+					<widget class="SwatActionItem" id="delete">
+						<property name="title" translatable="yes">delete…</property>
+					</widget>
+				</widget>
+			</widget>
+		</widget>
+		<!-- }}} -->
+	</widget>
+</swatml>

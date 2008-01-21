@@ -8,7 +8,7 @@ create table BlorgPost (
 	modified_date timestamp,
 	reply_status integer not null default 0,
 	author integer not null references AdminUser(id),
-	show boolean not null default false,
+	enabled boolean not null default false,
 	-- media (binding with possible magical table),
 	instance integer references Instance(id),
 	primary key (id)
