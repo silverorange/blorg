@@ -98,6 +98,13 @@ class BlorgPost extends SwatDBDataObject
 	 */
 	public $reply_status;
 
+	/**
+	 * Whether or not the post is shown on the site.
+	 *
+	 * @var boolean
+	 */
+	public $show;
+
 	// }}}
 	// {{{ public static function getReplyStatusTitle()
 

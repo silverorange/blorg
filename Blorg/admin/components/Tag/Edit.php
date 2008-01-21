@@ -54,8 +54,7 @@ class BlorgTagEdit extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		$this->tag->title =
-			$this->ui->getWidget('title')->value;
+		$this->tag->title = $this->ui->getWidget('title')->value;
 
 		if ($this->id === null) {
 			$now = new SwatDate();
