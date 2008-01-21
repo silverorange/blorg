@@ -117,26 +117,36 @@ class BlorgPost extends SwatDBDataObject
 	 * @param SwatDate $date the date the createdate of the post. Only the year
 	 *                        and month are used for comparison.
 	 * @param string $shortname the shortname of the post to load.
+	 * @param SiteInstance $instance optional. The instance to load the post in.
+	 *                               If the site does not use instances, this
+	 *                               should be null.
 	 *
 	 * @return boolean true if this post was loaded from the given createdate
 	 *                 and shortname and false if it was not.
 	 */
-	public function loadByDateAndShortname(SwatDate $date, $shortname)
+	public function loadByDateAndShortname(SwatDate $date, $shortname,
+		SiteInstance $instance = null)
 	{
+
 		$this->checkDB();
 
 		$loaded = false;
 		$row = null;
 		if ($this->table !== null) {
+			$instance_id  = ($instance === null) ? null : $instance->id;
+
 			$sql = sprintf('select * from %s
 				where shortname = %s and
 					date_trunc(\'month\',
 						convertTZ(createdate, %s)) =
-					date_trunc(\'month\', timestamp %s)',
+					date_trunc(\'month\', timestamp %s) and
+					instance %s %s',
 				$this->table,
 				$this->db->quote($shortname, 'text'),
 				$this->db->quote($date->tz->getId(), 'text'),
-				$this->db->quote($date->getDate(), 'date'));
+				$this->db->quote($date->getDate(), 'date'),
+				SwatDB::equalityOperator($instance_id),
+				$this->db->quote($instance_id, 'integer'));
 
 			$rs = SwatDB::query($this->db, $sql, null);
 			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
