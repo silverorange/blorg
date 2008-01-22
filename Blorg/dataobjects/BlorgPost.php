@@ -95,6 +95,13 @@ class BlorgPost extends SwatDBDataObject
 	public $modified_date;
 
 	/**
+	 * Date of post - used for display and ordering by date.
+	 *
+	 * @var Date
+	 */
+	public $post_date;
+
+	/**
 	 * The status of replies on this post.
 	 *
 	 * @var integer
@@ -215,6 +222,7 @@ class BlorgPost extends SwatDBDataObject
 	{
 		$this->registerDateProperty('createdate');
 		$this->registerDateProperty('modified_date');
+		$this->registerDateProperty('post_date');
 
 		$this->registerInternalProperty('author',
 			SwatDBClassMap::get('AdminUser'));
