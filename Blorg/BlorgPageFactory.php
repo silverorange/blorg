@@ -20,22 +20,14 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  */
 class BlorgPageFactory extends SitePageFactory
 {
-	// {{{ public static function instance()
+	// {{{ public function __construct()
 
 	/**
-	 * Gets the singleton instance of this factory object
-	 *
-	 * @return BlorgPageFactory the singleton instance.
+	 * Creates a new Blorg page factory
 	 */
-	public static function instance()
+	public function __construct()
 	{
-		static $instance = null;
-
-		if ($instance === null) {
-			$instance = new self();
-		}
-
-		return $instance;
+		$this->class_map['Blorg'] = 'Blorg/pages';
 	}
 
 	// }}}
@@ -214,20 +206,6 @@ class BlorgPageFactory extends SitePageFactory
 			'^archive/(\d{4})/('.$months.')$'          => 'BlorgMonthArchivePage',
 			'^archive/(\d{4})/('.$months.')/([\w-]+)$' => 'BlorgPostPage',
 		);
-	}
-
-	// }}}
-	// {{{ protected function __construct()
-
-	/**
-	 * Creates a SitePageFactory object
-	 *
-	 * The constructor is protected as this class uses the singleton pattern.
-	 */
-	protected function __construct()
-	{
-		parent::__construct();
-		$this->class_map['Blorg'] = 'Blorg/pages';
 	}
 
 	// }}}
