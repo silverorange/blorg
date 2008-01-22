@@ -58,7 +58,7 @@ class BlorgPostIndex extends AdminIndex
 	protected function getTableModel(SwatView $view)
 	{
 		$sql = 'select id, title, shortname, createdate, enabled
-			from BlorgPost order by title';
+			from BlorgPost order by createdate desc, title';
 
 		$tags = SwatDB::query($this->app->db, $sql, 'BlorgPostWrapper');
 
