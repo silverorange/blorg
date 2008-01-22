@@ -124,8 +124,9 @@ class BlorgPostEdit extends AdminDBEdit
 			$this->post->createdate = $now;
 			$this->post->instance   = $this->app->instance->getId();
 			$this->post->author     = $this->app->session->getUserID();
+		} else {
+			$this->post->modified_date = $now;
 		}
-		$this->post->modified_date = $now;
 
 		$this->post->save();
 
