@@ -41,8 +41,14 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Enabled?</property>
+				<property name="title" translatable="yes">Show on Site?</property>
 				<widget class="SwatCheckbox" id="enabled" />
+			</widget>
+			<widget class="SwatFormField" id="post_date_field">
+				<property name="title" translatable="yes">Displayed Date</property>
+				<widget class="SwatDateEntry" id="post_date">
+					<property name="required" type="boolean">true</property>
+				</widget>
 			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button" />

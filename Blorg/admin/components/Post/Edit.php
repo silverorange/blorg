@@ -34,8 +34,16 @@ class BlorgPostEdit extends AdminDBEdit
 		$this->initPost();
 		$this->initReplyStatuses();
 
-		if ($this->id === null)
+		if ($this->id === null) {
 			$this->ui->getWidget('shortname_field')->visible = false;
+			$this->ui->getWidget('post_date_field')->visible = false;
+		} else {
+			$post_date = $this->ui->getWidget('post_date');
+			$post_date->display_time_zone = $this->app->default_time_zone;
+			$post_date->display_parts  = SwatDateEntry::YEAR |
+				SwatDateEntry::MONTH | SwatDateEntry::DAY |
+				SwatDateEntry::CALENDAR | SwatDateEntry::TIME;
+		}
 
 		$instance_id = $this->app->instance->getId();
 		$tag_where_clause = sprintf('instance %s %s',
@@ -108,6 +116,7 @@ class BlorgPostEdit extends AdminDBEdit
 			'extended_bodytext',
 			'reply_status',
 			'enabled',
+			'post_date',
 		));
 
 		$this->post->title             = $values['title'];
@@ -122,10 +131,17 @@ class BlorgPostEdit extends AdminDBEdit
 
 		if ($this->id === null) {
 			$this->post->createdate = $now;
+			$this->post->post_date  = $now;
 			$this->post->instance   = $this->app->instance->getId();
 			$this->post->author     = $this->app->session->getUserID();
 		} else {
 			$this->post->modified_date = $now;
+			$this->post->post_date     = $values['$post_date'];
+
+			if ($this->post->post_date !== null) {
+				$this->post->post_date->setTZ($this->app->default_time_zone);
+				$this->post->post_date->toUTC();
+			}
 		}
 
 		$this->post->save();
@@ -149,6 +165,12 @@ class BlorgPostEdit extends AdminDBEdit
 	protected function loadDBData()
 	{
 		$this->ui->setValues(get_object_vars($this->post));
+
+		if ($this->post->post_date !== null) {
+			$post_date = new SwatDate($this->post->post_date);
+			$post_date->convertTZ($this->app->default_time_zone);
+			$this->ui->getWidget('post_date')->date = $post_date;
+		}
 
 		$tag_list = $this->ui->getWidget('tags');
 		$tag_list->values = SwatDB::queryColumn($this->app->db,
