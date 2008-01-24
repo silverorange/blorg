@@ -35,7 +35,7 @@
 				<object class="AdminTableViewOrderableColumn" id="create_date">
 					<property name="title" translatable="yes">Post Date</property>
 					<object class="SwatDateCellRenderer">
-						<property name="date" type="data">createdate</property>
+						<property name="date" type="data">post_date</property>
 						<property name="format" type="constant">SwatDate::DF_DATE</property>
 					</object>
 				</object>

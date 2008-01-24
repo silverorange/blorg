@@ -128,6 +128,15 @@ class BlorgPostDetails extends AdminIndex
 		// todo: make next two lines work nicer with posts with no title
 		$details_frame->subtitle = $this->post->title;
 		$this->title = $this->post->title;
+
+		if ($this->post->bodytext !== null)
+			$this->post->bodytext = SwatString::condense(SwatString::toXHTML(
+				$this->post->bodytext));
+
+		if ($this->post->extended_bodytext !== null)
+			$this->post->extended_bodytext = SwatString::condense(
+				SwatString::toXHTML($this->post->extended_bodytext));
+
 	}
 
 	// }}}
