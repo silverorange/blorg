@@ -48,7 +48,7 @@ class BlorgPostDelete extends AdminDBDelete
 		$item_list = $this->getItemList('integer');
 
 		$dep = new AdminListDependency();
-		$dep->setTitle(Rawk::_('post'), Rawk::_('posts'));
+		$dep->setTitle(Blorg::_('post'), Blorg::_('posts'));
 		//TODO: make this work better with posts that have no title
 		$dep->entries = AdminListDependency::queryEntries($this->app->db,
 			'BlorgPost', 'integer:id', null, 'text:title', 'id',
