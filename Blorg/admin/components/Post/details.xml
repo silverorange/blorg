@@ -5,34 +5,72 @@
 	<widget class="SwatFrame" id="details_frame">
 		<widget class="SwatToolbar" id="details_toolbar">
 			<widget class="SwatToolLink">
-				<property name="title">Edit Post</property>
+				<property name="title" translatable="yes">Edit Post</property>
 				<property name="link">Post/Edit?id=%s</property>
 				<property name="stock_id">edit</property>
 			</widget>
 			<widget class="SwatToolLink">
-				<property name="title">Delete Post</property>
+				<property name="title" translatable="yes">Delete Post</property>
 				<property name="link">Post/Delete?id=%s</property>
 				<property name="stock_id">delete</property>
 			</widget>
 		</widget>
 		<widget class="SwatDetailsView" id="details_view">
 			<object class="SwatDetailsViewField">
-				<property name="title">Title</property>
+				<property name="title" translatable="yes">Shortname</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">shortname</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Title</property>
 				<object class="SwatNullTextCellRenderer">
 					<property name="text" type="data">title</property>
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
-				<property name="title">Shortname</property>
-				<object class="SwatNullTextCellRenderer">
-					<property name="text" type="data">shortname</property>
+				<property name="title" translatable="yes">Show on Site?</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="value" type="data">enabled</property>
 				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="release_date">
-				<property name="title">Create Date</property>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Reply Status</property>
+				<object class="BlorgReplyStatusCellRenderer">
+					<property name="status" type="data">reply_status</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="createdate">
+				<property name="title" translatable="yes">Created</property>
 				<object class="SwatDateCellRenderer">
 					<property name="date" type="data">createdate</property>
 					<property name="format" type="constant">SwatDate::DF_DATE</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="post_date">
+				<property name="title" translatable="yes">Displayed Date</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">createdate</property>
+					<property name="format" type="constant">SwatDate::DF_DATE</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="modified_date">
+				<property name="title" translatable="yes">Last Modified</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">modified_date</property>
+					<property name="format" type="constant">SwatDate::DF_DATE_TIME</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewVerticalField">
+				<property name="title" translatable="yes">Body Text</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">bodytext</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewVerticalField">
+				<property name="title" translatable="yes">Extended Body Text</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">extended_bodytext</property>
 				</object>
 			</object>
 		</widget>
