@@ -2,6 +2,8 @@
 
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'SwatDB/SwatDB.php';
+require_once 'Swat/SwatTableStore.php';
+require_once 'Swat/SwatDetailsStore.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
 /**
@@ -57,12 +59,19 @@ class BlorgPostIndex extends AdminIndex
 
 	protected function getTableModel(SwatView $view)
 	{
-		$sql = 'select id, title, shortname, post_date, enabled
+		$sql = 'select id, title, shortname, post_date, enabled, bodytext
 			from BlorgPost order by post_date desc, title';
 
-		$tags = SwatDB::query($this->app->db, $sql, 'BlorgPostWrapper');
+		$posts = SwatDB::query($this->app->db, $sql, 'BlorgPostWrapper');
 
-		return $tags;
+		$store = new SwatTableStore();
+		foreach ($posts as $post) {
+			$ds = new SwatDetailsStore($post);
+			$ds->title = $post->getTitle();
+			$store->add($ds);
+		}
+
+		return $store;
 	}
 
 	// }}}

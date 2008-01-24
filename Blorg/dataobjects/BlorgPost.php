@@ -216,6 +216,18 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getTitle()
+
+	public function getTitle()
+	{
+		if ($this->title === null)
+			return SwatString::ellipsizeRight(SwatString::condense(
+				SwatString::toXHTML($this->bodytext)), 50, Blorg::_(' …'));
+		else
+			return $this->title;
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()

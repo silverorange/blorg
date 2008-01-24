@@ -125,9 +125,8 @@ class BlorgPostDetails extends AdminIndex
 
 		$details_frame = $this->ui->getWidget('details_frame');
 		$details_frame->title = Blorg::_('Post');
-		// todo: make next two lines work nicer with posts with no title
-		$details_frame->subtitle = $this->post->title;
-		$this->title = $this->post->title;
+		$details_frame->subtitle = $this->post->getTitle();
+		$this->title = $this->post->getTitle();
 
 		if ($this->post->bodytext !== null)
 			$this->post->bodytext = SwatString::condense(SwatString::toXHTML(
