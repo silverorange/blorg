@@ -88,6 +88,10 @@ class BlorgYearArchivePage extends SitePage
 				$this->months[] = $month;
 			}
 		}
+
+		if (count($this->months) == 0) {
+			throw new SiteNotFoundException('Page not found');
+		}
 	}
 
 	// }}}
