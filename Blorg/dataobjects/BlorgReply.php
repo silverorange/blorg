@@ -56,6 +56,14 @@ class BlorgReply extends SwatDBDataObject
 	public $show;
 
 	/**
+	 * Whether or not the reply has been approved by an author. Defaults to true
+	 * except when replying to moderated posts.
+	 *
+	 * @var boolean
+	 */
+	public $approved;
+
+	/**
 	 * IP Address of the person replying.
 	 *
 	 * @var string
