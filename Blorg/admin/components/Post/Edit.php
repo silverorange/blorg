@@ -50,9 +50,14 @@ class BlorgPostEdit extends AdminDBEdit
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'));
 
-		$tag_list = $this->ui->getWidget('tags');
-		$tag_list->addOptionsByArray(SwatDB::getOptionArray($this->app->db,
-			'BlorgTag', 'title', 'id', 'title', $tag_where_clause));
+		$tag_options = SwatDB::getOptionArray($this->app->db, 'BlorgTag',
+			'title', 'id', 'title', $tag_where_clause);
+
+		if (count($tag_options)) {
+			$tag_list = $this->ui->getWidget('tags');
+			$tag_list->addOptionsByArray($tag_options);
+		} else
+			$this->ui->getWidget('tag_field')->visible = false;
 	}
 
 	// }}}

@@ -30,7 +30,7 @@
 					<property name="rows" type="integer">8</property>
 				</widget>
 			</widget>
-			<widget class="SwatGroupingFormField">
+			<widget class="SwatGroupingFormField" id="tag_field">
 				<property name="title" translatable="yes">Tags</property>
 				<widget class="SwatCheckboxList" id="tags" />
 			</widget>
