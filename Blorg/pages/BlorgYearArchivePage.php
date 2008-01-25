@@ -27,7 +27,7 @@ class BlorgYearArchivePage extends SitePage
 	// {{{ public function __construct()
 
 	/**
-	 * Creates a new post page
+	 * Creates a new year archive page
 	 *
 	 * @param SiteWebApplication $app the application.
 	 * @param SiteLayout $layout
@@ -83,7 +83,10 @@ class BlorgYearArchivePage extends SitePage
 		$rs = SwatDB::query($this->app->db, $sql, null);
 		while ($date = $rs->fetchOne()) {
 			$date = new SwatDate($date);
-			$this->months[] = $date->getMonth();
+			$month = $date->getMonth();
+			if (!in_array($month, $this->months)) {
+				$this->months[] = $month;
+			}
 		}
 	}
 

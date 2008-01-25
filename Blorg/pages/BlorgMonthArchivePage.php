@@ -25,7 +25,7 @@ class BlorgMonthArchivePage extends SitePage
 	// {{{ public function __construct()
 
 	/**
-	 * Creates a new post page
+	 * Creates a new month archive page
 	 *
 	 * @param SiteWebApplication $app the application.
 	 * @param SiteLayout $layout
