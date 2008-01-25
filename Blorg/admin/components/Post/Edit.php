@@ -84,6 +84,7 @@ class BlorgPostEdit extends AdminDBEdit
 	}
 
 	// }}}
+
 	// process phase
 	// {{{ protected function validate()
 
