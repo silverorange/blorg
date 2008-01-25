@@ -81,7 +81,7 @@ class BlorgPostPage extends SitePage
 		$date->setTZ($this->app->default_time_zone);
 		$date->setYear($year);
 		$date->setMonth($months_by_name[$month_name]);
-		$date->setDay(0);
+		$date->setDay(1);
 		$date->setHour(0);
 		$date->setMinute(0);
 		$date->setSecond(0);
