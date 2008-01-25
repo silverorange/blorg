@@ -3,25 +3,23 @@
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
+require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
 /**
- * Post page for Blörg
- *
- * Loads and displays a post and handles adding replies to a post.
+ * Displays an index of all posts in a given month
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostPage extends SitePage
+class BlorgMonthArchivePage extends SitePage
 {
 	// {{{ protected properties
 
 	/**
-	 * @var BlorgPost
+	 * @var BlorgPostWrapper
 	 */
-	protected $post;
+	protected $posts;
 
 	// }}}
 	// {{{ public function __construct()
@@ -36,10 +34,10 @@ class BlorgPostPage extends SitePage
 	 * @param string $shortname
 	 */
 	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$year, $month_name, $shortname)
+		$year, $month_name)
 	{
 		parent::__construct($app, $layout);
-		$this->initPost($year, $month_name, $shortname);
+		$this->initPosts($year, $month_name);
 	}
 
 	// }}}
@@ -48,14 +46,16 @@ class BlorgPostPage extends SitePage
 	public function build()
 	{
 		ob_start();
-		echo $this->post;
+		foreach ($this->posts as $post) {
+			echo $post;
+		}
 		$this->layout->data->content = ob_get_clean();
 	}
 
 	// }}}
 	// {{{ protected function initPosts()
 
-	protected function initPost($year, $month_name, $shortname)
+	protected function initPosts($year, $month_name)
 	{
 		$months_by_name = array(
 			'january'   => 1,
@@ -73,7 +73,7 @@ class BlorgPostPage extends SitePage
 		);
 
 		if (!array_key_exists($month_name, $months_by_name)) {
-			throw new SiteNotFoundException('Post not found.');
+			throw new SiteNotFoundException('Page not found.');
 		}
 
 		// Date parsed from URL is in locale time.
@@ -86,16 +86,24 @@ class BlorgPostPage extends SitePage
 		$date->setMinute(0);
 		$date->setSecond(0);
 
-		$class_name = SwatDBClassMap::get('BlorgPost');
-		$this->post = new $class_name();
-		$this->post->setDatabase($this->app->db);
-		if (!$this->post->loadByDateAndShortname($date, $shortname,
-			$this->app->instance->getInstance())) {
-			throw new SiteNotFoundException('Post not found.');
-		}
+		$instance_id = $this->app->instance->getId();
 
-		if (!$this->post->enabled) {
-			throw new SiteNotFoundException('Post not found.');
+		$sql = sprintf('select * from BlorgPost
+			where date_trunc(\'month\', convertTZ(createdate, %s)) =
+				date_trunc(\'month\', timestamp %s) and
+				instance %s %s
+				and enabled = true
+			order by post_date desc',
+			$this->app->db->quote($date->tz->getId(), 'text'),
+			$this->app->db->quote($date->getDate(), 'date'),
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'));
+
+		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
+		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
+
+		if (count($this->posts) == 0) {
+			throw new SiteNotFoundException('Page not found.');
 		}
 	}
 
