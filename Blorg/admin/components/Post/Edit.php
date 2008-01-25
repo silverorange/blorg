@@ -141,7 +141,7 @@ class BlorgPostEdit extends AdminDBEdit
 			$this->post->author     = $this->app->session->getUserID();
 		} else {
 			$this->post->modified_date = $now;
-			$this->post->post_date     = $values['$post_date'];
+			$this->post->post_date     = $values['post_date'];
 
 			if ($this->post->post_date !== null) {
 				$this->post->post_date->setTZ($this->app->default_time_zone);
