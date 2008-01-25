@@ -47,7 +47,7 @@ class BlorgYearArchivePage extends SitePage
 	{
 		ob_start();
 		foreach ($this->months as $month) {
-			echo $month;
+			echo $month, ', ';
 		}
 		$this->layout->data->content = ob_get_clean();
 	}
