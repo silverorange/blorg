@@ -104,12 +104,40 @@
 						<property name="title" translatable="yes">Date</property>
 						<object class="SwatDateCellRenderer">
 							<property name="date" type="data">createdate</property>
+							<property name="format" type="constant">SwatDate::DF_DATE_TIME</property>
+						</object>
+					</object>
+					<object class="AdminTableViewOrderableColumn" id="show">
+						<property name="title" translatable="yes">Show</property>
+						<object class="SwatBooleanCellRenderer">
+							<property name="value" type="data">show</property>
+						</object>
+					</object>
+					<object class="AdminTableViewOrderableColumn" id="approved">
+						<property name="visible" type="boolean">false</property>
+						<property name="title" translatable="yes">Approved</property>
+						<object class="SwatBooleanCellRenderer">
+							<property name="value" type="data">show</property>
 						</object>
 					</object>
 				</widget>
 				<widget class="SwatActions" id="reply_actions">
 					<widget class="SwatActionItem" id="delete">
 						<property name="title" translatable="yes">delete…</property>
+					</widget>
+					<widget class="SwatActionItemDivider" />
+					<widget class="SwatActionItem" id="show">
+						<property name="title" translatable="yes">show</property>
+					</widget>
+					<widget class="SwatActionItem" id="hide">
+						<property name="title" translatable="yes">hide</property>
+					</widget>
+					<widget class="SwatActionItemDivider" id="approve_divider" />
+					<widget class="SwatActionItem" id="approve">
+						<property name="title" translatable="yes">approve</property>
+					</widget>
+					<widget class="SwatActionItem" id="deny">
+						<property name="title" translatable="yes">deny</property>
 					</widget>
 				</widget>
 			</widget>

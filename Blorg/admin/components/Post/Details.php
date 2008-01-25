@@ -50,8 +50,7 @@ class BlorgPostDetails extends AdminIndex
 
 		if (!$this->post->load($id))
 			throw new AdminNotFoundException(sprintf(
-				Blorg::_('A post with an id of ‘%d’ does not exist.'),
-				$id));
+				Blorg::_('A post with an id of ‘%d’ does not exist.'), $id));
 	}
 
 	// }}}
@@ -95,9 +94,6 @@ class BlorgPostDetails extends AdminIndex
 		$this->buildReplies();
 
 		$toolbar = $this->ui->getWidget('details_toolbar');
-		$toolbar->setToolLinkValues($this->post->id);
-
-		$toolbar = $this->ui->getWidget('replies_toolbar');
 		$toolbar->setToolLinkValues($this->post->id);
 	}
 
@@ -147,6 +143,25 @@ class BlorgPostDetails extends AdminIndex
 	{
 		$toolbar = $this->ui->getWidget('replies_toolbar');
 		$toolbar->setToolLinkValues($this->post->id);
+
+		// hide all approved stuff unless the BlorgPost needs it
+		if ($this->post->reply_status === BlorgPost::REPLY_STATUS_MODERATED) {
+			$approved_column =
+				$this->ui->getWidget('replies_view')->getColumn('approved');
+
+			$approved_column->visible = true;
+
+			$this->ui->getWidget('approve_divider')->visible = false;
+			$this->ui->getWidget('approve')->visible         = false;
+			$this->ui->getWidget('deny')->visible            = false;
+		}
+
+		// set default time zone
+		$date_column =
+			$this->ui->getWidget('replies_view')->getColumn('createdate');
+
+		$date_renderer = $date_column->getRendererByPosition();
+		$date_renderer->display_time_zone = $this->app->default_time_zone;
 	}
 
 	// }}}
