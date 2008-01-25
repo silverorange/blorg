@@ -3,23 +3,25 @@
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
 /**
- * Displays an index of all posts in a given month
+ * Displays an index of all months with posts in a given year
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgMonthArchivePage extends SitePage
+class BlorgYearArchivePage extends SitePage
 {
 	// {{{ protected properties
 
 	/**
-	 * @var BlorgPostWrapper
+	 * Array of integers containing the months of the specified year that
+	 * contain posts
+	 *
+	 * @var array
 	 */
-	protected $posts;
+	protected $months = array();
 
 	// }}}
 	// {{{ public function __construct()
@@ -30,13 +32,12 @@ class BlorgMonthArchivePage extends SitePage
 	 * @param SiteWebApplication $app the application.
 	 * @param SiteLayout $layout
 	 * @param integer $year
-	 * @param string $month_name
 	 */
 	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$year, $month_name)
+		$year)
 	{
 		parent::__construct($app, $layout);
-		$this->initPosts($year, $month_name);
+		$this->initMonths($year);
 	}
 
 	// }}}
@@ -45,41 +46,22 @@ class BlorgMonthArchivePage extends SitePage
 	public function build()
 	{
 		ob_start();
-		foreach ($this->posts as $post) {
-			echo $post;
+		foreach ($this->months as $month) {
+			echo $month;
 		}
 		$this->layout->data->content = ob_get_clean();
 	}
 
 	// }}}
-	// {{{ protected function initPosts()
+	// {{{ protected function initMonths()
 
-	protected function initPosts($year, $month_name)
+	protected function initMonths($year)
 	{
-		$months_by_name = array(
-			'january'   => 1,
-			'february'  => 2,
-			'march'     => 3,
-			'april'     => 4,
-			'may'       => 5,
-			'june'      => 6,
-			'july'      => 7,
-			'august'    => 8,
-			'september' => 9,
-			'october'   => 10,
-			'november'  => 11,
-			'december'  => 12,
-		);
-
-		if (!array_key_exists($month_name, $months_by_name)) {
-			throw new SiteNotFoundException('Page not found.');
-		}
-
 		// Date parsed from URL is in locale time.
 		$date = new SwatDate();
 		$date->setTZ($this->app->default_time_zone);
 		$date->setYear($year);
-		$date->setMonth($months_by_name[$month_name]);
+		$date->setMonth(1);
 		$date->setDay(1);
 		$date->setHour(0);
 		$date->setMinute(0);
@@ -87,9 +69,9 @@ class BlorgMonthArchivePage extends SitePage
 
 		$instance_id = $this->app->instance->getId();
 
-		$sql = sprintf('select * from BlorgPost
-			where date_trunc(\'month\', convertTZ(createdate, %s)) =
-				date_trunc(\'month\', timestamp %s) and
+		$sql = sprintf('select post_date from BlorgPost
+			where date_trunc(\'year\', convertTZ(createdate, %s)) =
+				date_trunc(\'year\', timestamp %s) and
 				instance %s %s
 				and enabled = true
 			order by post_date desc',
@@ -98,11 +80,10 @@ class BlorgMonthArchivePage extends SitePage
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'));
 
-		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
-		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
-
-		if (count($this->posts) == 0) {
-			throw new SiteNotFoundException('Page not found.');
+		$rs = SwatDB::query($this->app->db, $sql, null);
+		while ($date = $rs->fetchOne()) {
+			$date = new SwatDate($date);
+			$this->months[] = $date->getMonth();
 		}
 	}
 
