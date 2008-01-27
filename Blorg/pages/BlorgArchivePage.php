@@ -53,14 +53,67 @@ class BlorgArchivePage extends SitePage
 	public function build()
 	{
 		ob_start();
-		foreach ($this->years as $year => $months) {
-			echo $year, '<br/>';
-			foreach ($months as $month) {
-				echo $month, ', ';
-			}
-			echo '<br/>';
-		}
+		$this->displayArchive();
 		$this->layout->data->content = ob_get_clean();
+	}
+
+	// }}}
+	// {{{ public function displayArchive()
+
+	public function displayArchive()
+	{
+		$month_names = array(
+			1  => 'january',
+			2  => 'february',
+			3  => 'march',
+			4  => 'april',
+			5  => 'may',
+			6  => 'june',
+			7  => 'july',
+			8  => 'august',
+			9  => 'september',
+			10 => 'october',
+			11 => 'november',
+			12 => 'december',
+		);
+
+		$base = 'news/'; // TODO
+
+		$year_ul_tag = new SwatHtmLTag('ul');
+		$year_ul_tag->class = 'blorg-archive-years';
+		$year_ul_tag->open();
+		foreach ($this->years as $year => $months) {
+			$year_li_tag = new SwatHtmlTag('li');
+			$year_li_tag->open();
+			$year_anchor_tag = new SwatHtmlTag('a');
+			$year_anchor_tag->href = sprintf('%sarchive/%s',
+				$base, $year);
+
+			$year_anchor_tag->setContent($year);
+			$year_anchor_tag->display();
+
+			$month_ul_tag = new SwatHtmlTag('ul');
+			$month_ul_tag->open();
+			foreach ($months as $month) {
+				$date = new SwatDate();
+				$date->setYear(2000);
+				$date->setMonth($month);
+				$date->setDay(1);
+
+				$month_li_tag = new SwatHtmlTag('li');
+				$month_li_tag->open();
+				$month_anchor_tag = new SwatHtmlTag('a');
+				$month_anchor_tag->href = sprintf('%sarchive/%s/%s',
+					$base, $year, $month_names[$month]);
+
+				$month_anchor_tag->setContent($date->getMonthName());
+				$month_anchor_tag->display();
+				$month_li_tag->close();
+			}
+			$month_ul_tag->close();
+			$year_li_tag->close();
+		}
+		$year_ul_tag->close();
 	}
 
 	// }}}
