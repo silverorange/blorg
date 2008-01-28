@@ -4,6 +4,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPostFullView.php';
+require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 
 /**
@@ -72,22 +73,10 @@ class BlorgPostPage extends SitePage
 		$link.= '/'.$year;
 		$this->layout->navbar->addEntry(new SwatNavBarEntry($year, $link));
 
-		$month_names = array(
-			1  => 'january',
-			2  => 'february',
-			3  => 'march',
-			4  => 'april',
-			5  => 'may',
-			6  => 'june',
-			7  => 'july',
-			8  => 'august',
-			9  => 'september',
-			10 => 'october',
-			11 => 'november',
-			12 => 'december',
-		);
 		$month_title = $this->post->post_date->getMonthName();
-		$month_name = $month_names[$this->post->post_date->getMonth()];
+		$month_name =
+			BlorgPageFactory::$month_names[$this->post->post_date->getMonth()];
+
 		$link.= '/'.$month_name;
 		$this->layout->navbar->addEntry(
 			new SwatNavBarEntry($month_title, $link));
@@ -111,22 +100,7 @@ class BlorgPostPage extends SitePage
 
 	protected function initPost($year, $month_name, $shortname)
 	{
-		$months_by_name = array(
-			'january'   => 1,
-			'february'  => 2,
-			'march'     => 3,
-			'april'     => 4,
-			'may'       => 5,
-			'june'      => 6,
-			'july'      => 7,
-			'august'    => 8,
-			'september' => 9,
-			'october'   => 10,
-			'november'  => 11,
-			'december'  => 12,
-		);
-
-		if (!array_key_exists($month_name, $months_by_name)) {
+		if (!array_key_exists($month_name, BlorgPageFactory::$months_by_name)) {
 			throw new SiteNotFoundException('Post not found.');
 		}
 
@@ -134,7 +108,7 @@ class BlorgPostPage extends SitePage
 		$date = new SwatDate();
 		$date->setTZ($this->app->default_time_zone);
 		$date->setYear($year);
-		$date->setMonth($months_by_name[$month_name]);
+		$date->setMonth(BlorgPageFactory::$months_by_name[$month_name]);
 		$date->setDay(1);
 		$date->setHour(0);
 		$date->setMinute(0);
