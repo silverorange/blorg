@@ -13,7 +13,7 @@ require_once 'Blorg/dataobjects/BlorgReply.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgBlorgPostReplyEdit extends AdminDBEdit
+class BlorgPostReplyEdit extends AdminDBEdit
 {
 	// {{{ protected properties
 
