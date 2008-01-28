@@ -34,7 +34,7 @@ class BlorgBlorgPostReplyEdit extends AdminDBEdit
 		$this->ui->loadFromXML(dirname(__FILE__).'/reply-edit.xml');
 		$this->initBlorgReply();
 
-		if ($this->id === null) {
+		if ($this->id === null || $this->reply->author !== null) {
 			$this->ui->getWidget('fullname_field')->visible = false;
 			$this->ui->getWidget('link_field')->visible     = false;
 			$this->ui->getWidget('email_field')->visible    = false;
@@ -113,9 +113,15 @@ class BlorgBlorgPostReplyEdit extends AdminDBEdit
 	{
 		parent::buildInternal();
 
-		if ($this->id === null)
+		if ($this->id === null || $this->reply->author !== null) {
 			$this->ui->getWidget('edit_form')->action = sprintf('%s?post=%d',
 				$this->source, $this->reply->post->id);
+
+			$this->ui->getWidget('author_field')->visible = true;
+			$this->ui->getWidget('author')->content =
+				$this->app->session->getName();
+		}
+
 	}
 
 	// }}}

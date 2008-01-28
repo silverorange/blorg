@@ -5,6 +5,11 @@
 	<widget class="SwatFrame" id="edit_frame">
 		<property name="title" translatable="yes">Reply</property>
 		<widget class="SwatForm" id="edit_form">
+			<widget class="SwatFormField" id="author_field">
+				<property name="title" translatable="yes">Author</property>
+				<property name="visible" type="boolean">false</property>
+				<widget class="SwatContentBlock" id="author" />
+			</widget>
 			<widget class="SwatFormField" id="fullname_field">
 				<property name="title" translatable="yes">Fullname</property>
 				<widget class="SwatEntry" id="fullname">
