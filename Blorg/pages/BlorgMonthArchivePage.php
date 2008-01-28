@@ -4,6 +4,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
+require_once 'Blorg/BlorgPostShortView.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
 /**
@@ -47,8 +48,8 @@ class BlorgMonthArchivePage extends SitePage
 	{
 		ob_start();
 		foreach ($this->posts as $post) {
-			echo $post;
-//			$post->displayFull();
+			$view = new BlorgPostShortView($this->app, $post);
+			$view->display();
 		}
 		$this->layout->data->content = ob_get_clean();
 	}
