@@ -6,6 +6,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgPostShortView.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
+require_once 'Blorg/Blorg.php';
 
 /**
  * Displays an index of all posts in a given month
@@ -54,6 +55,26 @@ class BlorgMonthArchivePage extends SitePathPage
 	}
 
 	// }}}
+	// {{{ public function init()
+
+	public function init()
+	{
+		$path = $this->getPath();
+		$path->appendEntry(
+			new SitePathEntry(null, null, 'archive', Blorg::_('Archive')));
+
+		$path->appendEntry(
+			new SitePathEntry(null, null, $this->year, $this->year));
+
+		$date = new SwatDate();
+		$date->setMonth($this->month);
+		$month_title = $date->getMonthName();
+		$month_name = BlorgPageFactory::$month_names[$this->month];
+		$path->appendEntry(
+			new SitePathEntry(null, null, $month_name, $month_title));
+	}
+
+	// }}}
 	// {{{ public function build()
 
 	public function build()
@@ -70,24 +91,18 @@ class BlorgMonthArchivePage extends SitePathPage
 
 	protected function buildNavBar()
 	{
-		$base = 'news/'; // TODO
+		$first = true;
+		$link = '';
+		foreach ($this->getPath() as $path_entry) {
+			if ($first) {
+				$link.= $path_entry->shortname;
+				$first = false;
+			} else {
+				$link.= '/'.$path_entry->shortname;
+			}
 
-		$link = $base;
-		$this->layout->navbar->createEntry('News', $link); // TODO
-
-		$link = $base.'archive';
-		$this->layout->navbar->createEntry('Archive', $link);
-
-		$link.= '/'.$this->year;
-		$this->layout->navbar->createEntry($this->year, $link);
-
-		$date = new SwatDate();
-		$date->setMonth($this->month);
-		$month_title = $date->getMonthName();
-		$month_name = BlorgPageFactory::$month_names[$this->month];
-
-		$link.= '/'.$month_name;
-		$this->layout->navbar->createEntry($month_title, $link);
+			$this->layout->navbar->createEntry($path_entry->title, $link);
+		}
 	}
 
 	// }}}
