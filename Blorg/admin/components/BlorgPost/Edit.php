@@ -210,7 +210,7 @@ class BlorgBlorgPostEdit extends AdminDBEdit
 		if ($this->post->post_date !== null) {
 			$post_date = new SwatDate($this->post->post_date);
 			$post_date->convertTZ($this->app->default_time_zone);
-			$this->ui->getWidget('post_date')->date = $post_date;
+			$this->ui->getWidget('post_date')->value = $post_date;
 		}
 
 		$tag_list = $this->ui->getWidget('tags');
