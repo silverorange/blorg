@@ -53,15 +53,31 @@ class BlorgArchivePage extends SitePage
 
 	public function build()
 	{
+		$this->buildNavBar();
+
 		ob_start();
 		$this->displayArchive();
 		$this->layout->data->content = ob_get_clean();
 	}
 
 	// }}}
-	// {{{ public function displayArchive()
+	// {{{ protected function buildNavBar()
 
-	public function displayArchive()
+	protected function buildNavBar()
+	{
+		$base = 'news/'; // TODO
+
+		$link = $base;
+		$this->layout->navbar->addEntry(new SwatNavBarEntry('News', $link));
+
+		$link = $base.'archive';
+		$this->layout->navbar->addEntry(new SwatNavBarEntry('Archive', $link));
+	}
+
+	// }}}
+	// {{{ protected function displayArchive()
+
+	protected function displayArchive()
 	{
 		$base = 'news/'; // TODO
 
