@@ -4,6 +4,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePathPage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
+require_once 'Blorg/Blorg.php';
 
 /**
  * Displays an index of all years and months with posts
@@ -49,6 +50,15 @@ class BlorgArchivePage extends SitePathPage
 	}
 
 	// }}}
+	// {{{ public function init()
+
+	public function init()
+	{
+		$this->getPath()->appendEntry(
+			new SitePathEntry(null, null, 'archive', Blorg::_('Archive')));
+	}
+
+	// }}}
 	// {{{ public function build()
 
 	public function build()
@@ -65,13 +75,18 @@ class BlorgArchivePage extends SitePathPage
 
 	protected function buildNavBar()
 	{
-		$base = 'news/'; // TODO
+		$first = true;
+		$link = '';
+		foreach ($this->getPath() as $path_entry) {
+			if ($first) {
+				$link.= $path_entry->shortname;
+				$first = false;
+			} else {
+				$link.= '/'.$path_entry->shortname;
+			}
 
-		$link = $base;
-		$this->layout->navbar->createEntry('News', $link); // TODO
-
-		$link = $base.'archive';
-		$this->layout->navbar->createEntry('Archive', $link);
+			$this->layout->navbar->createEntry($path_entry->title, $link);
+		}
 	}
 
 	// }}}

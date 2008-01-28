@@ -106,6 +106,11 @@ class BlorgPageFactory extends SitePageFactory
 			// front page
 			$page = $this->instantiatePage($app, 'BlorgFrontPage',
 				array($app, $layout));
+
+			// set root path on page
+			if ($page instanceof SitePathPage) {
+				$page->setPath($root_path);
+			}
 		} else {
 			foreach ($this->getPageMap() as $pattern => $class) {
 				$params = array();

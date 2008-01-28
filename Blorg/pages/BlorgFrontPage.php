@@ -59,10 +59,17 @@ class BlorgFrontPage extends SitePathPage
 
 	protected function buildNavBar()
 	{
-		$base = 'news/'; // TODO
+		$first = true;
+		foreach ($this->getPath() as $path_entry) {
+			if ($first) {
+				$link = $path_entry->shortname;
+				$first = false;
+			} else {
+				$link.= '/'.$path_entry->shortname;
+			}
 
-		$link = $base;
-		$this->layout->navbar->createEntry('News', $link); // TODO
+			$this->layout->navbar->createEntry($path_entry->title, $link);
+		}
 	}
 
 	// }}}
