@@ -24,7 +24,7 @@ class BlorgPostShortView extends BlorgPostView
 	{
 		echo '<div class="entry hentry">';
 
-		$this->displayHeader();
+		$this->displayHeader(true);
 		$this->displayBody();
 
 		echo '</div>';

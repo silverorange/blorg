@@ -1,7 +1,10 @@
 <?php
 
+require_once 'Swat/SwatDate.php';
+require_once 'Swat/SwatString.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/Blorg.php';
+require_once 'Blorg/BlorgPageFactory.php';
 
 /**
  * Base class for Blörg post views
@@ -36,15 +39,37 @@ abstract class BlorgPostView
 
 	/**
 	 * Displays the title and meta information for a weblog post
+	 *
+	 * @param boolean $link optional. Whether or not to link the post title to
+	 *                       the post itself. Defaults to false.
 	 */
-	protected function displayHeader()
+	protected function displayHeader($link = false)
 	{
 		if (strlen($this->post->title) > 0) {
 			$header_tag = new SwatHtmlTag('h3');
 			$header_tag->class = 'entry-title';
 			$header_tag->id = sprintf('post_%s', $this->post->shortname);
-			$header_tag->setContent($this->post->title);
-			$header_tag->display();
+
+			if ($link) {
+				$base = 'news/'; // TODO
+				$year = $this->post->post_date->getYear();
+				$month_name = BlorgPageFactory::$month_names[
+					$this->post->post_date->getMonth()];
+
+				$header_tag->open();
+
+				$anchor_tag = new SwatHtmlTag('a');
+				$anchor_tag->href = sprintf('%sarchive/%s/%s/%s',
+					$base, $year, $month_name, $this->post->shortname);
+
+				$anchor_tag->setContent($this->post->title);
+				$anchor_tag->display();
+
+				$header_tag->close();
+			} else {
+				$header_tag->setContent($this->post->title);
+				$header_tag->display();
+			}
 		}
 
 		$this->displaySubTitle();
