@@ -111,6 +111,41 @@ class BlorgPostEdit extends AdminDBEdit
 	}
 
 	// }}}
+	// {{{ protected function validateShortname()
+
+	protected function validateShortname($shortname)
+	{
+		if ($this->post->id === null) {
+			$post_date = new SwatDate();
+			$post_date->toUTC();
+		} else {
+			$post_date = $this->ui->getWidget('post_date')->value;
+		}
+
+		$post_date->setTZ($this->app->default_time_zone);
+		$instance_id = $this->app->instance->getId();
+
+		$sql = 'select shortname from BlorgPost
+			where shortname = %s and instance %s %s and id %s %s
+			and post_date is null and
+				date_trunc(\'month\', convertTZ(createdate, %s)) =
+				date_trunc(\'month\', timestamp %s)';
+
+		$sql = sprintf($sql,
+			$this->app->db->quote($shortname, 'text'),
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			SwatDB::equalityOperator($this->id, true),
+			$this->app->db->quote($this->id, 'integer'),
+			$this->app->db->quote($post_date->tz->getId(), 'text'),
+			$this->app->db->quote($post_date->getDate(), 'date'));
+
+		$query = SwatDB::query($this->app->db, $sql);
+
+		return (count($query) == 0);
+	}
+
+	// }}}
 	// {{{ protected function saveDBData()
 
 	protected function saveDBData()
