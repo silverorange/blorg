@@ -11,7 +11,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostEdit extends AdminDBEdit
+class BlorgBlorgPostEdit extends AdminDBEdit
 {
 	// {{{ protected properties
 
@@ -20,7 +20,7 @@ class BlorgPostEdit extends AdminDBEdit
 	 */
 	protected $post;
 
-	protected $ui_xml = 'Blorg/admin/components/Post/edit.xml';
+	protected $ui_xml = 'Blorg/admin/components/BlorgPost/edit.xml';
 
 	// }}}
 
