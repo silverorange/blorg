@@ -77,6 +77,7 @@ class BlorgPageFactory extends SitePageFactory
 	 * - /archive/<year>/<month>/<post-shortname>
 	 * - /author
 	 * - /author/<author-shortname>
+	 * - <nothing>
 	 *
 	 * @param SiteWebApplication $app the web application for which the page is
 	 *                                 being resolved.
@@ -91,23 +92,32 @@ class BlorgPageFactory extends SitePageFactory
 		if ($layout === null)
 			$layout = $this->resolveLayout($app, $source);
 
-		$article_path = $source;
-
 		$page = null;
+		if ($source == '') {
+			// front page
+			$page = $this->instantiatePage($app, 'BlorgFrontPage',
+				array($app, $layout));
+		} else {
+			foreach ($this->getPageMap() as $pattern => $class) {
+				$params = array();
+				// escape delimiters
+				$pattern = str_replace('@', '\@', $pattern);
+				$regexp = '@'.$pattern.'@u';
+				if (preg_match($regexp, $source, $params) === 1) {
 
-		foreach ($this->getPageMap() as $pattern => $class) {
-			$params = array();
-			$pattern = str_replace('@', '\@', $pattern); // escape delimiters
-			$regexp = '@'.$pattern.'@u';
-			if (preg_match($regexp, $source, $params) === 1) {
+					// discard full match string
+					array_shift($params);
 
-				array_shift($params); // discard full match string
-				array_unshift($params, $layout); // add layout as second param
-				array_unshift($params, $app); // add app as first param
+					// add layout as second param
+					array_unshift($params, $layout);
 
-				$page = $this->instantiatePage($app, $class, $params);
+					// add app as first param
+					array_unshift($params, $app);
 
-				break;
+					$page = $this->instantiatePage($app, $class, $params);
+
+					break;
+				}
 			}
 		}
 
