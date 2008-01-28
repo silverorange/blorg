@@ -92,6 +92,10 @@ abstract class BlorgPostView
 			$span_tag->class = 'vcard author';
 			$span_tag->open();
 
+			$year = $this->post->post_date->getYear();
+			$month_name = BlorgPageFactory::$month_names[
+				$this->post->post_date->getMonth()];
+
 			$anchor_tag = new SwatHtmlTag('a');
 			$author_tag->class = 'fn url';
 			$anchor_tag->href = sprintf('%sauthor/%s',
@@ -107,8 +111,8 @@ abstract class BlorgPostView
 		// display date information
 		ob_start();
 		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->href = sprintf('%sauthor/%s',
-			$base, $this->post->author->email); // TODO: use shortname
+		$anchor_tag->href = sprintf('%sarchive/%s/%s/%s',
+			$base, $year, $month_name, $this->post->shortname);
 
 		$abbr_tag   = new SwatHtmlTag('abbr');
 		$abbr_tag->class = 'published';
