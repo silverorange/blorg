@@ -1,6 +1,8 @@
 <?php
 
 require_once 'Site/SitePageFactory.php';
+require_once 'Site/SitePath.php';
+require_once 'Site/pages/SitePathPage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 
 /**
@@ -82,17 +84,24 @@ class BlorgPageFactory extends SitePageFactory
 	 * @param SiteWebApplication $app the web application for which the page is
 	 *                                 being resolved.
 	 * @param string $source the source string for which to get the page.
-	 * @param SiteLayout $layout optional, the layout to use.
+	 * @param SiteLayout $layout optional. The layout to use.
+	 * @param SitePath $root_path optional. The root path of the page to reolve.
 	 *
 	 * @return SitePage the page for the given source string.
 	 */
 	public function resolvePage(SiteWebApplication $app, $source,
-		$layout = null)
+		SitePath $root_path = null, $layout = null)
 	{
-		if ($layout === null)
+		if ($root_path === null) {
+			$root_path = new SitePath();
+		}
+
+		if ($layout === null) {
 			$layout = $this->resolveLayout($app, $source);
+		}
 
 		$page = null;
+
 		if ($source == '') {
 			// front page
 			$page = $this->instantiatePage($app, 'BlorgFrontPage',
@@ -115,6 +124,11 @@ class BlorgPageFactory extends SitePageFactory
 					array_unshift($params, $app);
 
 					$page = $this->instantiatePage($app, $class, $params);
+
+					// set root path on page
+					if ($page instanceof SitePathPage) {
+						$page->setPath($root_path);
+					}
 
 					break;
 				}
