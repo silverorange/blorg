@@ -46,7 +46,7 @@ class BlorgMonthArchivePage extends SitePage
 	{
 		ob_start();
 		foreach ($this->posts as $post) {
-			echo $post;
+			$post->displayFull();
 		}
 		$this->layout->data->content = ob_get_clean();
 	}
