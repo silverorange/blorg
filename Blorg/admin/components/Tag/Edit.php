@@ -11,7 +11,7 @@ require_once 'Blorg/dataobjects/BlorgTag.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgBlorgTagEdit extends AdminDBEdit
+class BlorgTagEdit extends AdminDBEdit
 {
 	// {{{ protected properties
 

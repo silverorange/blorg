@@ -11,7 +11,7 @@ require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgBlorgTagIndex extends AdminIndex
+class BlorgTagIndex extends AdminIndex
 {
 	// {{{ protected properties
 
