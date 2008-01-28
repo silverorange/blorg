@@ -21,7 +21,16 @@ class BlorgPostFullView extends BlorgPostView
 		echo '<div class="entry hentry">';
 
 		$this->displayHeader();
+		$this->displayBody();
 
+		echo '</div>';
+	}
+
+	// }}}
+	// {{{ protected function displayBody()
+
+	protected function displayBody()
+	{
 		$div_tag = new SwatHtmlTag('div');
 		$div_tag->class = 'entry-content';
 		$div_tag->setContent($this->post->bodytext, 'text/xml');
@@ -33,9 +42,9 @@ class BlorgPostFullView extends BlorgPostView
 			$div_tag->setContent($this->post->extended_bodytext, 'text/xml');
 			$div_tag->display();
 		}
-
-		echo '</div>';
 	}
 
 	// }}}
 }
+
+?>
