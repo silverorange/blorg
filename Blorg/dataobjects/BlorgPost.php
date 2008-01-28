@@ -4,6 +4,7 @@ require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Blorg/dataobjects/BlorgReplyWrapper.php';
 require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
+require_once 'Admin/dataobjects/AdminUser.php';
 
 /**
  * A Blörg Post
@@ -288,63 +289,6 @@ class BlorgPost extends SwatDBDataObject
 
 		return SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('BlorgTagWrapper'));
-	}
-
-	// }}}
-
-	// display methods
-	// {{{ public function displayHeader()
-
-	/**
-	 * Displays the title and meta information for a weblog post
-	 */
-	public function displayHeader()
-	{
-		$header_tag = new SwatHtmlTag('h3');
-		$header_tag->class = 'entry-title';
-		$header_tag->id = sprintf('post_%s', $this->shortname);
-
-		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->setContent($this->title);
-
-		$header_tag->open();
-		$anchor_tag->display();
-		$header_tag->close();
-
-		echo '<div class="entry-subtitle">';
-			/* TODO: output author info */
-			/* TODO: output date info */
-		echo '</div>';
-
-	}
-
-	// }}}
-	// {{{ public function displayFull()
-
-	/**
-	 * Displays a complete weblog post with title and header information
-	 */
-	public function displayFull()
-	{
-		$div_tag = new SwatHtmlTag('div');
-
-		echo '<div class="entry hentry">';
-
-		$this->displayHeader();
-
-		$div_tag->class = 'entry-content';
-		$div_tag->setContent($this->bodytext, 'text/xml');
-		$div_tag->display();
-
-		if (strlen($this->extended_bodytext) > 0) {
-			$div_tag->class = 'entry-content entry-content-extended';
-			$div_tag->setContent($this->extended_bodytext, 'text/xml');
-			$div_tag->display();
-		}
-
-		echo '</div>';
-
-		echo $this; /* TODO: remove this dataobject dump when not needed */
 	}
 
 	// }}}

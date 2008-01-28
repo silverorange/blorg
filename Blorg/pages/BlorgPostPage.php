@@ -3,6 +3,7 @@
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
+require_once 'Blorg/BlorgPostFullView.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 
 /**
@@ -48,12 +49,21 @@ class BlorgPostPage extends SitePage
 	public function build()
 	{
 		ob_start();
-		echo $this->post;
+		$this->displayPost();
 		$this->layout->data->content = ob_get_clean();
 	}
 
 	// }}}
-	// {{{ protected function initPosts()
+	// {{{ protected function displayPost()
+
+	protected function displayPost()
+	{
+		$view = new BlorgPostFullView($this->app, $this->post);
+		$view->display();
+	}
+
+	// }}}
+	// {{{ protected function initPost()
 
 	protected function initPost($year, $month_name, $shortname)
 	{
