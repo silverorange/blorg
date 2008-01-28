@@ -106,7 +106,11 @@ abstract class BlorgPostView
 
 		// display date information
 		ob_start();
-		$abbr_tag = new SwatHtmlTag('abbr');
+		$anchor_tag = new SwatHtmlTag('a');
+		$anchor_tag->href = sprintf('%sauthor/%s',
+			$base, $this->post->author->email); // TODO: use shortname
+
+		$abbr_tag   = new SwatHtmlTag('abbr');
 		$abbr_tag->class = 'published';
 		$abbr_tag->title =
 			$this->post->post_date->format('%Y-%m-%dT%H-%M-%S%o');
@@ -115,7 +119,9 @@ abstract class BlorgPostView
 		$abbr_tag->setContent(
 			$this->post->post_date->format(SwatDate::DF_DATE_LONG));
 
+		$anchor_tag->open();
 		$abbr_tag->display();
+		$anchor_tag->close();
 		$post_date = ob_get_clean();
 
 		echo '<div class="entry-subtitle">';
