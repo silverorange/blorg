@@ -1,7 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/pages/SitePage.php';
+require_once 'Site/pages/SitePathPage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 
@@ -12,7 +12,7 @@ require_once 'Blorg/BlorgPageFactory.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgArchivePage extends SitePage
+class BlorgArchivePage extends SitePathPage
 {
 	// {{{ protected properties
 
