@@ -73,14 +73,13 @@ class BlorgMonthArchivePage extends SitePage
 		$base = 'news/'; // TODO
 
 		$link = $base;
-		$this->layout->navbar->addEntry(new SwatNavBarEntry('News', $link));
+		$this->layout->navbar->createEntry('News', $link); // TODO
 
 		$link = $base.'archive';
-		$this->layout->navbar->addEntry(new SwatNavBarEntry('Archive', $link));
+		$this->layout->navbar->createEntry('Archive', $link);
 
 		$link.= '/'.$this->year;
-		$this->layout->navbar->addEntry(
-			new SwatNavBarEntry($this->year, $link));
+		$this->layout->navbar->createEntry($this->year, $link);
 
 		$date = new SwatDate();
 		$date->setMonth($this->month);
@@ -88,8 +87,7 @@ class BlorgMonthArchivePage extends SitePage
 		$month_name = BlorgPageFactory::$month_names[$this->month];
 
 		$link.= '/'.$month_name;
-		$this->layout->navbar->addEntry(
-			new SwatNavBarEntry($month_title, $link));
+		$this->layout->navbar->createEntry($month_title, $link);
 	}
 
 	// }}}

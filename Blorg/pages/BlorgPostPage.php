@@ -64,26 +64,24 @@ class BlorgPostPage extends SitePage
 		$base = 'news/'; // TODO
 
 		$link = $base;
-		$this->layout->navbar->addEntry(new SwatNavBarEntry('News', $link));
+		$this->layout->navbar->createEntry('News', $link); // TODO
 
 		$link = $base.'archive';
-		$this->layout->navbar->addEntry(new SwatNavBarEntry('Archive', $link));
+		$this->layout->navbar->createEntry('Archive', $link);
 
 		$year = $this->post->post_date->getYear();
 		$link.= '/'.$year;
-		$this->layout->navbar->addEntry(new SwatNavBarEntry($year, $link));
+		$this->layout->navbar->createEntry($year, $link);
 
 		$month_title = $this->post->post_date->getMonthName();
 		$month_name =
 			BlorgPageFactory::$month_names[$this->post->post_date->getMonth()];
 
 		$link.= '/'.$month_name;
-		$this->layout->navbar->addEntry(
-			new SwatNavBarEntry($month_title, $link));
+		$this->layout->navbar->createEntry($month_title, $link);
 
 		$link.= '/'.$this->post->shortname;
-		$this->layout->navbar->addEntry(
-			new SwatNavBarEntry($this->post->title, $link));
+		$this->layout->navbar->createEntry($this->post->title, $link);
 	}
 
 	// }}}
