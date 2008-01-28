@@ -11,11 +11,11 @@ require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgTagIndex extends AdminIndex
+class BlorgBlorgTagIndex extends AdminIndex
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/Tag/index.xml';
+	protected $ui_xml = 'Blorg/admin/components/BlorgTag/index.xml';
 
 	// }}}
 
@@ -41,7 +41,7 @@ class BlorgTagIndex extends AdminIndex
 
 		switch ($actions->selected->id) {
 		case 'delete':
-			$this->app->replacePage('Tag/Delete');
+			$this->app->replacePage('BlorgTag/Delete');
 			$this->app->getPage()->setItems($view->getSelection());
 			break;
 		}
