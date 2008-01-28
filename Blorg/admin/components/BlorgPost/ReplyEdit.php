@@ -13,7 +13,7 @@ require_once 'Blorg/dataobjects/BlorgReply.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostReplyEdit extends AdminDBEdit
+class BlorgBlorgPostReplyEdit extends AdminDBEdit
 {
 	// {{{ protected properties
 
@@ -133,7 +133,7 @@ class BlorgPostReplyEdit extends AdminDBEdit
 	{
 		$this->navbar->addEntry(new SwatNavBarEntry(
 			$this->reply->post->getTitle(),
-			sprintf('Post/Details?id=%s', $this->reply->post->id)));
+			sprintf('BlorgPost/Details?id=%s', $this->reply->post->id)));
 
 		if ($this->id === null)
 			$this->navbar->addEntry(new SwatNavBarEntry(Blorg::_('New Reply')));
