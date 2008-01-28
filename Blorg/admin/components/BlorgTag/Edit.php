@@ -11,7 +11,7 @@ require_once 'Blorg/dataobjects/BlorgTag.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgTagEdit extends AdminDBEdit
+class BlorgBlorgTagEdit extends AdminDBEdit
 {
 	// {{{ protected properties
 
@@ -20,7 +20,7 @@ class BlorgTagEdit extends AdminDBEdit
 	 */
 	protected $tag;
 
-	protected $ui_xml = 'Blorg/admin/components/Tag/edit.xml';
+	protected $ui_xml = 'Blorg/admin/components/BlorgTag/edit.xml';
 
 	// }}}
 
