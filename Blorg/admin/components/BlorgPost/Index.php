@@ -33,18 +33,48 @@ class BlorgBlorgPostIndex extends AdminIndex
 
 	// }}}
 
-	// process phase
+	// process “phase”
 	// {{{ protected function processActions()
 
 	public function processActions(SwatTableView $view, SwatActions $actions)
 	{
 		$num = count($view->getSelection());
 		$message = null;
+		foreach ($view->getSelection() as $item)
+			$item_list[] = $this->app->db->quote($item, 'integer');
 
 		switch ($actions->selected->id) {
 		case 'delete':
 			$this->app->replacePage('BlorgPost/Delete');
 			$this->app->getPage()->setItems($view->getSelection());
+			break;
+
+		case 'enable':
+			SwatDB::query($this->app->db, sprintf('
+				update BlorgPost set enabled = %s
+				where id in (%s)',
+				$this->app->db->quote(true, 'boolean'),
+				implode(',', $item_list)));
+
+			$message = new SwatMessage(sprintf(Blorg::ngettext(
+				'One post has been enabled.',
+				'%s posts have been enabled.', $num),
+				SwatString::numberFormat($num)));
+
+			break;
+
+		case 'disable':
+			SwatDB::query($this->app->db, sprintf('
+				update BlorgPost set enabled = %s
+				where id in (%s)',
+				$this->app->db->quote(false, 'boolean'),
+				implode(',', $item_list)));
+
+			$message = new SwatMessage(sprintf(Blorg::ngettext(
+				'One post has been disabled.',
+				'%s posts have been disabled.', $num),
+				SwatString::numberFormat($num)));
+
 			break;
 		}
 

@@ -50,6 +50,13 @@
 				<widget class="SwatActionItem" id="delete">
 					<property name="title" translatable="yes">delete…</property>
 				</widget>
+				<widget class="SwatActionItemDivider" />
+				<widget class="SwatActionItem" id="enable">
+					<property name="title" translatable="yes">enable</property>
+				</widget>
+				<widget class="SwatActionItem" id="disable">
+					<property name="title" translatable="yes">disable</property>
+				</widget>
 			</widget>
 		</widget>
 	</widget>
