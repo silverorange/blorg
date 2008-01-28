@@ -16,6 +16,11 @@ class BlorgYearArchivePage extends SitePage
 	// {{{ protected properties
 
 	/**
+	 * @var integer
+	 */
+	protected $year;
+
+	/**
 	 * Array of integers containing the months of the specified year that
 	 * contain posts
 	 *
@@ -38,6 +43,7 @@ class BlorgYearArchivePage extends SitePage
 	{
 		parent::__construct($app, $layout);
 		$this->initMonths($year);
+		$this->year = intval($year);
 	}
 
 	// }}}
@@ -45,11 +51,39 @@ class BlorgYearArchivePage extends SitePage
 
 	public function build()
 	{
+		$this->buildNavBar();
+
 		ob_start();
+		$this->displayMonths();
+		$this->layout->data->content = ob_get_clean();
+	}
+
+	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		$base = 'news/'; // TODO
+
+		$link = $base;
+		$this->layout->navbar->addEntry(new SwatNavBarEntry('News', $link));
+
+		$link = $base.'archive';
+		$this->layout->navbar->addEntry(new SwatNavBarEntry('Archive', $link));
+
+		$link.= '/'.$this->year;
+		$this->layout->navbar->addEntry(
+			new SwatNavBarEntry($this->year, $link));
+	}
+
+	// }}}
+	// {{{ protected function displayMonths()
+
+	protected function displayMonths()
+	{
 		foreach ($this->months as $month) {
 			echo $month, ', ';
 		}
-		$this->layout->data->content = ob_get_clean();
 	}
 
 	// }}}
