@@ -83,9 +83,7 @@ class BlorgMonthArchivePage extends SitePage
 			new SwatNavBarEntry($this->year, $link));
 
 		$date = new SwatDate();
-		$date->setYear($this->year);
 		$date->setMonth($this->month);
-		$date->setDay(1);
 		$month_title = $date->getMonthName();
 		$month_name = BlorgPageFactory::$month_names[$this->month];
 
