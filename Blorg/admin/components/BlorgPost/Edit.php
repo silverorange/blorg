@@ -127,8 +127,7 @@ class BlorgBlorgPostEdit extends AdminDBEdit
 
 		$sql = 'select shortname from BlorgPost
 			where shortname = %s and instance %s %s and id %s %s
-			and post_date is null and
-				date_trunc(\'month\', convertTZ(createdate, %s)) =
+			and date_trunc(\'month\', convertTZ(post_date, %s)) =
 				date_trunc(\'month\', timestamp %s)';
 
 		$sql = sprintf($sql,
