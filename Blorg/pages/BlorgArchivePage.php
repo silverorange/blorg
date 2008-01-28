@@ -68,10 +68,10 @@ class BlorgArchivePage extends SitePage
 		$base = 'news/'; // TODO
 
 		$link = $base;
-		$this->layout->navbar->addEntry(new SwatNavBarEntry('News', $link));
+		$this->layout->navbar->createEntry('News', $link); // TODO
 
 		$link = $base.'archive';
-		$this->layout->navbar->addEntry(new SwatNavBarEntry('Archive', $link));
+		$this->layout->navbar->createEntry('Archive', $link);
 	}
 
 	// }}}
