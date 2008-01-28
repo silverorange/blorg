@@ -19,6 +19,16 @@ class BlorgMonthArchivePage extends SitePage
 	// {{{ protected properties
 
 	/**
+	 * @var integer
+	 */
+	protected $year;
+
+	/**
+	 * @var integer
+	 */
+	protected $month;
+
+	/**
 	 * @var BlorgPostWrapper
 	 */
 	protected $posts;
@@ -39,6 +49,8 @@ class BlorgMonthArchivePage extends SitePage
 	{
 		parent::__construct($app, $layout);
 		$this->initPosts($year, $month_name);
+		$this->year = intval($year);
+		$this->month = BlorgPageFactory::$months_by_name[$month_name];
 	}
 
 	// }}}
@@ -46,12 +58,51 @@ class BlorgMonthArchivePage extends SitePage
 
 	public function build()
 	{
+		$this->buildNavBar();
+
 		ob_start();
+		$this->displayPosts();
+		$this->layout->data->content = ob_get_clean();
+	}
+
+	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		$base = 'news/'; // TODO
+
+		$link = $base;
+		$this->layout->navbar->addEntry(new SwatNavBarEntry('News', $link));
+
+		$link = $base.'archive';
+		$this->layout->navbar->addEntry(new SwatNavBarEntry('Archive', $link));
+
+		$link.= '/'.$this->year;
+		$this->layout->navbar->addEntry(
+			new SwatNavBarEntry($this->year, $link));
+
+		$date = new SwatDate();
+		$date->setYear($this->year);
+		$date->setMonth($this->month);
+		$date->setDay(1);
+		$month_title = $date->getMonthName();
+		$month_name = BlorgPageFactory::$month_names[$this->month];
+
+		$link.= '/'.$month_name;
+		$this->layout->navbar->addEntry(
+			new SwatNavBarEntry($month_title, $link));
+	}
+
+	// }}}
+	// {{{ protected function displayPosts()
+
+	protected function displayPosts()
+	{
 		foreach ($this->posts as $post) {
 			$view = new BlorgPostShortView($this->app, $post);
 			$view->display();
 		}
-		$this->layout->data->content = ob_get_clean();
 	}
 
 	// }}}
