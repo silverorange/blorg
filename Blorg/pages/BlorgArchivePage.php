@@ -98,9 +98,7 @@ class BlorgArchivePage extends SitePage
 			$month_ul_tag->open();
 			foreach ($months as $month) {
 				$date = new SwatDate();
-				$date->setYear(2000);
 				$date->setMonth($month);
-				$date->setDay(1);
 
 				$month_li_tag = new SwatHtmlTag('li');
 				$month_li_tag->open();

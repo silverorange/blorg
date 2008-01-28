@@ -81,9 +81,28 @@ class BlorgYearArchivePage extends SitePage
 
 	protected function displayMonths()
 	{
+		$base = 'news/'; // TODO
+
+		$ul_tag = new SwatHtmlTag('ul');
+		$ul_tag->class = 'months';
+		$ul_tag->open();
 		foreach ($this->months as $month) {
-			echo $month, ', ';
+			$li_tag = new SwatHtmlTag('li');
+			$li_tag->open();
+
+			$date = new SwatDate();
+			$date->setMonth($month);
+
+			$anchor_tag = new SwatHtmlTag('a');
+			$anchor_tag->href = sprintf('%sarchive/%s/%s',
+				$base, $this->year, BlorgPageFactory::$month_names[$month]);
+
+			$anchor_tag->setContent($date->getMonthName());
+			$anchor_tag->display();
+
+			$li_tag->close();
 		}
+		$ul_tag->close();
 	}
 
 	// }}}
