@@ -3,6 +3,7 @@
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
+require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
 /**
@@ -46,7 +47,8 @@ class BlorgMonthArchivePage extends SitePage
 	{
 		ob_start();
 		foreach ($this->posts as $post) {
-			$post->displayFull();
+			echo $post;
+//			$post->displayFull();
 		}
 		$this->layout->data->content = ob_get_clean();
 	}
@@ -56,22 +58,7 @@ class BlorgMonthArchivePage extends SitePage
 
 	protected function initPosts($year, $month_name)
 	{
-		$months_by_name = array(
-			'january'   => 1,
-			'february'  => 2,
-			'march'     => 3,
-			'april'     => 4,
-			'may'       => 5,
-			'june'      => 6,
-			'july'      => 7,
-			'august'    => 8,
-			'september' => 9,
-			'october'   => 10,
-			'november'  => 11,
-			'december'  => 12,
-		);
-
-		if (!array_key_exists($month_name, $months_by_name)) {
+		if (!array_key_exists($month_name, BlorgPageFactory::$months_by_name)) {
 			throw new SiteNotFoundException('Page not found.');
 		}
 
@@ -79,7 +66,7 @@ class BlorgMonthArchivePage extends SitePage
 		$date = new SwatDate();
 		$date->setTZ($this->app->default_time_zone);
 		$date->setYear($year);
-		$date->setMonth($months_by_name[$month_name]);
+		$date->setMonth(BlorgPageFactory::$months_by_name[$month_name]);
 		$date->setDay(1);
 		$date->setHour(0);
 		$date->setMinute(0);

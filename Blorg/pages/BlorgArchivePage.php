@@ -3,6 +3,7 @@
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
+require_once 'Blorg/BlorgPageFactory.php';
 
 /**
  * Displays an index of all years and months with posts
@@ -62,21 +63,6 @@ class BlorgArchivePage extends SitePage
 
 	public function displayArchive()
 	{
-		$month_names = array(
-			1  => 'january',
-			2  => 'february',
-			3  => 'march',
-			4  => 'april',
-			5  => 'may',
-			6  => 'june',
-			7  => 'july',
-			8  => 'august',
-			9  => 'september',
-			10 => 'october',
-			11 => 'november',
-			12 => 'december',
-		);
-
 		$base = 'news/'; // TODO
 
 		$year_ul_tag = new SwatHtmLTag('ul');
@@ -104,7 +90,7 @@ class BlorgArchivePage extends SitePage
 				$month_li_tag->open();
 				$month_anchor_tag = new SwatHtmlTag('a');
 				$month_anchor_tag->href = sprintf('%sarchive/%s/%s',
-					$base, $year, $month_names[$month]);
+					$base, $year, BlorgPageFactory::$month_names[$month]);
 
 				$month_anchor_tag->setContent($date->getMonthName());
 				$month_anchor_tag->display();

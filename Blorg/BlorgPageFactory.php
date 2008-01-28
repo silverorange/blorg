@@ -20,6 +20,39 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  */
 class BlorgPageFactory extends SitePageFactory
 {
+	// {{{ public static properties
+
+	public static $month_names = array(
+		1  => 'january',
+		2  => 'february',
+		3  => 'march',
+		4  => 'april',
+		5  => 'may',
+		6  => 'june',
+		7  => 'july',
+		8  => 'august',
+		9  => 'september',
+		10 => 'october',
+		11 => 'november',
+		12 => 'december',
+	);
+
+	public static $months_by_name = array(
+		'january'   => 1,
+		'february'  => 2,
+		'march'     => 3,
+		'april'     => 4,
+		'may'       => 5,
+		'june'      => 6,
+		'july'      => 7,
+		'august'    => 8,
+		'september' => 9,
+		'october'   => 10,
+		'november'  => 11,
+		'december'  => 12,
+	);
+
+	// }}}
 	// {{{ public function __construct()
 
 	/**
@@ -185,22 +218,7 @@ class BlorgPageFactory extends SitePageFactory
 	 */
 	protected function getPageMap()
 	{
-		$month_shortnames = array(
-			'january',
-			'february',
-			'march',
-			'april',
-			'may',
-			'june',
-			'july',
-			'august',
-			'september',
-			'october',
-			'november',
-			'december',
-		);
-
-		$months = implode('|', $month_shortnames);
+		$months = implode('|', self::$month_names);
 
 		return array(
 			'^author$'                                 => 'BlorgAuthorIndexPage',
