@@ -17,11 +17,11 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostDetails extends AdminIndex
+class BlorgBlorgPostDetails extends AdminIndex
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/Post/details.xml';
+	protected $ui_xml = 'Blorg/admin/components/BlorgPost/details.xml';
 	protected $post;
 
 	// }}}
@@ -75,7 +75,7 @@ class BlorgPostDetails extends AdminIndex
 	{
 		switch ($actions->selected->id) {
 		case 'delete':
-			$this->app->replacePage('Post/ReplyDelete');
+			$this->app->replacePage('BlorgPost/ReplyDelete');
 			$this->app->getPage()->setItems($view->getSelection());
 			$this->app->getPage()->setPost($this->post);
 			break;
