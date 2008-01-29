@@ -48,47 +48,25 @@ class BlorgYearArchivePage extends SitePathPage
 	}
 
 	// }}}
-	// {{{ public function build()
-
-	public function build()
-	{
-		$this->buildNavBar();
-
-		ob_start();
-		$this->displayMonths();
-		$this->layout->data->content = ob_get_clean();
-	}
-
-	// }}}
 	// {{{ public function init()
 
 	public function init()
 	{
-		$path = $this->getPath();
-		$path->appendEntry(
-			new SitePathEntry(null, null, 'archive', Blorg::_('Archive')));
+		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
 
-		$path->appendEntry(
-			new SitePathEntry(null, null, $this->year, $this->year));
+		$path = $this->getPath().'/archive';
+		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
+		$this->layout->navbar->createEntry($this->year, $path.'/'.$this->year);
 	}
 
 	// }}}
-	// {{{ protected function buildNavBar()
+	// {{{ public function build()
 
-	protected function buildNavBar()
+	public function build()
 	{
-		$first = true;
-		$link = '';
-		foreach ($this->getPath() as $path_entry) {
-			if ($first) {
-				$link.= $path_entry->shortname;
-				$first = false;
-			} else {
-				$link.= '/'.$path_entry->shortname;
-			}
-
-			$this->layout->navbar->createEntry($path_entry->title, $link);
-		}
+		ob_start();
+		$this->displayMonths();
+		$this->layout->data->content = ob_get_clean();
 	}
 
 	// }}}
