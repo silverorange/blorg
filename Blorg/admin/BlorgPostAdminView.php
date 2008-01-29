@@ -41,6 +41,29 @@ class BlorgPostAdminView extends BlorgPostLongView
 	}
 
 	// }}}
+	// {{{ protected function displayPermalink()
+
+	/**
+	 * Displays the date permalink for a weblog post
+	 *
+	 * Admin permalinks are not links.
+	 */
+	protected function displayPermalink()
+	{
+		// display machine-readable date in UTC
+		$abbr_tag   = new SwatHtmlTag('abbr');
+		$abbr_tag->class = 'published';
+		$abbr_tag->title =
+			$this->post->post_date->getDate(DATE_FORMAT_ISO_EXTENDED);
+
+		// display human-readable date in local time
+		$date = clone $this->post->post_date;
+		$date->convertTZ($this->app->default_time_zone);
+		$abbr_tag->setContent($date->format(SwatDate::DF_DATE_LONG));
+		$abbr_tag->display();
+	}
+
+	// }}}
 }
 
 ?>
