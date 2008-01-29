@@ -48,25 +48,34 @@ class BlorgYearArchivePage extends SitePathPage
 	}
 
 	// }}}
-	// {{{ public function init()
-
-	public function init()
-	{
-		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
-
-		$path = $this->getPath().'/archive';
-		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
-		$this->layout->navbar->createEntry($this->year, $path.'/'.$this->year);
-	}
-
-	// }}}
 	// {{{ public function build()
 
 	public function build()
 	{
+		$this->buildNavBar();
+
 		ob_start();
 		$this->displayMonths();
 		$this->layout->data->content = ob_get_clean();
+	}
+
+	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
+		$path = $this->getPath()->__toString();
+
+		if ($path == '') {
+			$path = 'archive';
+		} else {
+			$path.= '/archive';
+		}
+		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
+
+		$path.= '/'.$this->year;
+		$this->layout->navbar->createEntry($this->year, $path);
 	}
 
 	// }}}
@@ -74,7 +83,7 @@ class BlorgYearArchivePage extends SitePathPage
 
 	protected function displayMonths()
 	{
-		$base = (strlen($this->getPath())) ? $this->getPath().'/' : '';
+		$base = (strlen($this->getPath())) ? $this->getPath().'/' : ''; // TODO
 
 		$ul_tag = new SwatHtmlTag('ul');
 		$ul_tag->class = 'months';

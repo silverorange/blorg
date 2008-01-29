@@ -45,38 +45,45 @@ class BlorgPostPage extends SitePathPage
 	}
 
 	// }}}
-	// {{{ public function init()
+	// {{{ public function build()
 
-	public function init()
+	public function build()
+	{
+		$this->buildNavBar();
+
+		ob_start();
+		$this->displayPost();
+		$this->layout->data->content = ob_get_clean();
+	}
+
+	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
 	{
 		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
+		$path = $this->getPath()->__toString();
 
-		$path = $this->getPath().'/archive';
+		if ($path == '') {
+			$path = 'archive';
+		} else {
+			$path.= '/archive';
+		}
 		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
 
-		$year = $this->post->post_date->getYear();
-		$path.= '/'.$year;
-		$this->layout->navbar->createEntry($year, $path);
+		$date = clone $this->post->post_date;
+		$date->convertTZ($this->app->default_time_zone);
 
-		$month_title = $this->post->post_date->getMonthName();
-		$month_name = BlorgPageFactory::$month_names[
-			$this->post->post_date->getMonth()];
+		$path.= '/'.$date->getYear();
+		$this->layout->navbar->createEntry($date->getYear(), $path);
 
+		$month_title = $date->getMonthName();
+		$month_name = BlorgPageFactory::$month_names[$date->getMonth()];
 		$path.= '/'.$month_name;
 		$this->layout->navbar->createEntry($month_title, $path);
 
 		$path.= '/'.$this->post->shortname;
 		$this->layout->navbar->createEntry($this->post->title, $path);
-	}
-
-	// }}}
-	// {{{ public function build()
-
-	public function build()
-	{
-		ob_start();
-		$this->displayPost();
-		$this->layout->data->content = ob_get_clean();
 	}
 
 	// }}}
