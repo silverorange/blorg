@@ -6,6 +6,13 @@
 		<property name="title" translatable="yes">Post</property>
 		<widget class="SwatForm" id="edit_form">
 			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Bodytext</property>
+				<widget class="SwatTextarea" id="bodytext">
+					<property name="required" type="boolean">true</property>
+					<property name="rows" type="integer">8</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
 				<property name="title" translatable="yes">Title</property>
 				<widget class="SwatEntry" id="title">
 					<property name="maxlength" type="integer">255</property>
@@ -15,13 +22,6 @@
 				<property name="title" translatable="yes">Shortname</property>
 				<widget class="AdminUniqueEntry" id="shortname">
 					<property name="maxlength" type="integer">255</property>
-				</widget>
-			</widget>
-			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Bodytext</property>
-				<widget class="SwatTextarea" id="bodytext">
-					<property name="required" type="boolean">true</property>
-					<property name="rows" type="integer">8</property>
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
