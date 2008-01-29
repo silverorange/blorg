@@ -29,6 +29,19 @@ class BlorgPostFullView extends BlorgPostLongView
 	}
 
 	// }}}
+	// {{{ protected function displayExtendedBody()
+
+	protected function displayExtendedBody()
+	{
+		if (strlen($this->post->extended_bodytext) > 0) {
+			$div_tag = new SwatHtmlTag('div');
+			$div_tag->class = 'entry-content entry-content-extended';
+			$div_tag->setContent($this->post->extended_bodytext, 'text/xml');
+			$div_tag->display();
+		}
+	}
+
+	// }}}
 	// {{{ protected function displayReplies()
 
 	protected function displayReplies()
