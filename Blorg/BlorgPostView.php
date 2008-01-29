@@ -57,17 +57,10 @@ abstract class BlorgPostView
 			$header_tag->id = sprintf('post_%s', $this->post->shortname);
 
 			if ($link) {
-				$base = 'news/'; // TODO
-				$year = $this->post->post_date->getYear();
-				$month_name = BlorgPageFactory::$month_names[
-					$this->post->post_date->getMonth()];
-
 				$header_tag->open();
 
 				$anchor_tag = new SwatHtmlTag('a');
-				$anchor_tag->href = sprintf('%sarchive/%s/%s/%s',
-					$base, $year, $month_name, $this->post->shortname);
-
+				$anchor_tag->href = $this->getPostRelativeUri();
 				$anchor_tag->setContent($this->post->title);
 				$anchor_tag->display();
 
@@ -94,6 +87,7 @@ abstract class BlorgPostView
 		// display author information
 		//if ($this->post->author->) { // TODO: make sure author can be displayed
 			ob_start();
+
 			$span_tag = new SwatHtmlTag('span');
 			$span_tag->class = 'vcard author';
 			$span_tag->open();
@@ -104,21 +98,21 @@ abstract class BlorgPostView
 
 			$anchor_tag = new SwatHtmlTag('a');
 			$author_tag->class = 'fn url';
-			$anchor_tag->href = sprintf('%sauthor/%s',
-				$base, $this->post->author->email); // TODO: use shortname
-
+			$anchor_tag->href = $this->getAuthorRelativeUri();
 			$anchor_tag->setContent($this->post->author->name);
 			$anchor_tag->display();
 
 			$span_tag->close();
+
 			$author = ob_get_clean();
 		//}
 
 		// display date information
 		ob_start();
+
 		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->href = sprintf('%sarchive/%s/%s/%s',
-			$base, $year, $month_name, $this->post->shortname);
+		$anchor_tag->href = $this->getPostRelativeUri();
+		$anchor_tag->open();
 
 		$abbr_tag   = new SwatHtmlTag('abbr');
 		$abbr_tag->class = 'published';
@@ -129,9 +123,10 @@ abstract class BlorgPostView
 		$abbr_tag->setContent(
 			$this->post->post_date->format(SwatDate::DF_DATE_LONG));
 
-		$anchor_tag->open();
 		$abbr_tag->display();
+
 		$anchor_tag->close();
+
 		$post_date = ob_get_clean();
 
 		echo '<div class="entry-subtitle">';
@@ -140,6 +135,50 @@ abstract class BlorgPostView
 			$author, $post_date);
 
 		echo '</div>';
+	}
+
+	// }}}
+	// {{{ protected function getPostRelativeUri()
+
+	protected function getPostRelativeUri()
+	{
+		$page = $this->app->getPage();
+		if ($page instanceof SitePathPage) {
+			$root_path = $page->getPath()->__toString();
+			$root_path = (strlen($root_path)) ?
+				$root_path.'/archive' : 'archive';
+		} else {
+			$root_path = 'archive';
+		}
+
+		$year = $this->post->post_date->getYear();
+		$month_name = BlorgPageFactory::$month_names[
+			$this->post->post_date->getMonth()];
+
+		return sprintf('%s/%s/%s/%s',
+			$root_path,
+			$year,
+			$month_name,
+			$this->post->shortname);
+	}
+
+	// }}}
+	// {{{ protected function getAuthorRelativeUri()
+
+	protected function getAuthorRelativeUri()
+	{
+		$page = $this->app->getPage();
+		if ($page instanceof SitePathPage) {
+			$root_path = $page->getPath()->__toString();
+			$root_path = (strlen($root_path)) ?
+				$root_path.'/author' : 'author';
+		} else {
+			$root_path = 'author';
+		}
+
+		return sprintf('%s/%s',
+			$root_path,
+			$this->post->author->email); // TODO: use shortname
 	}
 
 	// }}}
