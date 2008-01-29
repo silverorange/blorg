@@ -98,7 +98,9 @@ abstract class BlorgPostView
 
 			$anchor_tag = new SwatHtmlTag('a');
 			$author_tag->class = 'fn url';
-			$anchor_tag->href = $this->getAuthorRelativeUri();
+			$anchor_tag->href =
+				$this->getAuthorRelativeUri($this->post->author);
+
 			$anchor_tag->setContent($this->post->author->name);
 			$anchor_tag->display();
 
@@ -135,7 +137,7 @@ abstract class BlorgPostView
 		$anchor_tag->open();
 
 		// display machine-readable date in UTC
-		$abbr_tag   = new SwatHtmlTag('abbr');
+		$abbr_tag = new SwatHtmlTag('abbr');
 		$abbr_tag->class = 'published';
 		$abbr_tag->title =
 			$this->post->post_date->getDate(DATE_FORMAT_ISO_EXTENDED);
@@ -177,7 +179,7 @@ abstract class BlorgPostView
 	// }}}
 	// {{{ protected function getAuthorRelativeUri()
 
-	protected function getAuthorRelativeUri()
+	protected function getAuthorRelativeUri(AdminUser $author)
 	{
 		$page = $this->app->getPage();
 		if ($page instanceof SitePathPage) {
@@ -190,7 +192,7 @@ abstract class BlorgPostView
 
 		return sprintf('%s/%s',
 			$root_path,
-			$this->post->author->email); // TODO: use shortname
+			$author->email); // TODO: use shortname
 	}
 
 	// }}}
