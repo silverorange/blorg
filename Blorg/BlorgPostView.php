@@ -32,7 +32,13 @@ abstract class BlorgPostView
 	// }}}
 	// {{{ abstract public function display()
 
-	abstract public function display();
+	/**
+	 * Displays this view for this view's post
+	 *
+	 * @param boolean $link optional. Whether or not to link the post title to
+	 *                       the post itself. Defaults to false.
+	 */
+	abstract public function display($link = false);
 
 	// }}}
 	// {{{ protected function displayHeader()
