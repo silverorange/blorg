@@ -1,9 +1,9 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
 <swatml>
-	<widget class="SwatMessageDisplay" id="message_display" />
-	<widget class="SwatFrame" id="edit_frame">
+	<widget class="SwatFrame" id="reply_edit_frame">
 		<property name="title" translatable="yes">Post a Reply</property>
+		<widget class="SwatMessageDisplay" id="message_display" />
 		<widget class="SwatForm" id="reply_edit_form">
 			<widget class="SwatFormField" id="fullname_field">
 				<property name="title" translatable="yes">Name</property>
