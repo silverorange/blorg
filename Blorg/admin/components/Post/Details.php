@@ -21,7 +21,7 @@ class BlorgPostDetails extends AdminIndex
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/BlorgPost/details.xml';
+	protected $ui_xml = 'Blorg/admin/components/Post/details.xml';
 	protected $post;
 
 	// }}}
@@ -75,7 +75,7 @@ class BlorgPostDetails extends AdminIndex
 	{
 		switch ($actions->selected->id) {
 		case 'delete':
-			$this->app->replacePage('BlorgPost/ReplyDelete');
+			$this->app->replacePage('Post/ReplyDelete');
 			$this->app->getPage()->setItems($view->getSelection());
 			$this->app->getPage()->setPost($this->post);
 			break;

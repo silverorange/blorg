@@ -6,12 +6,12 @@
 		<widget class="SwatToolbar" id="details_toolbar">
 			<widget class="SwatToolLink">
 				<property name="title" translatable="yes">Edit Post</property>
-				<property name="link">BlorgPost/Edit?id=%s</property>
+				<property name="link">Post/Edit?id=%s</property>
 				<property name="stock_id">edit</property>
 			</widget>
 			<widget class="SwatToolLink">
 				<property name="title" translatable="yes">Delete Post</property>
-				<property name="link">BlorgPost/Delete?id=%s</property>
+				<property name="link">Post/Delete?id=%s</property>
 				<property name="stock_id">delete</property>
 			</widget>
 		</widget>
@@ -80,7 +80,7 @@
 			<widget class="SwatToolbar" id="replies_toolbar">
 				<widget class="SwatToolLink">
 					<property name="title" translatable="yes">New Reply</property>
-					<property name="link">BlorgPost/ReplyEdit?post=%s</property>
+					<property name="link">Post/ReplyEdit?post=%s</property>
 					<property name="stock_id">create</property>
 				</widget>
 			</widget>
@@ -95,7 +95,7 @@
 						<property name="title" translatable="yes">Bodytext</property>
 						<object class="AdminTitleLinkCellRenderer">
 							<property name="text" type="data">bodytext</property>
-							<property name="link">BlorgPost/ReplyEdit?id=%s</property>
+							<property name="link">Post/ReplyEdit?id=%s</property>
 							<property name="link_value" type="data">id</property>
 							<property name="stock_id">edit</property>
 						</object>
