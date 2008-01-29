@@ -6,8 +6,9 @@ require_once 'Swat/SwatString.php';
 /**
  * Long display for a Blörg post
  *
- * Displays as a complete weblog post with title, header information and full
- * bodytext. Replies are not displayed.
+ * Displays as a complete weblog post with title, header information and
+ * bodytext. Extended bodytext is displayed as a 'Read more ...' link. Replies
+ * are not displayed.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -37,11 +38,25 @@ class BlorgPostLongView extends BlorgPostView
 		$div_tag->setContent($this->post->bodytext, 'text/xml');
 		$div_tag->display();
 
+		$this->displayExtendedBody();
+	}
+
+	// }}}
+	// {{{ protected function displayExtendedBody()
+
+	protected function displayExtendedBody()
+	{
 		if (strlen($this->post->extended_bodytext) > 0) {
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'entry-content entry-content-extended';
-			$div_tag->setContent($this->post->extended_bodytext, 'text/xml');
-			$div_tag->display();
+			$div_tag->open();
+
+			$anchor_tag = new SwatHtmlTag('a');
+			$anchor_tag->href = $this->getPostRelativeUri();
+			$anchor_tag->setContent(Blorg::_('Read more …'));
+			$anchor_tag->display();
+
+			$div_tag->close();
 		}
 	}
 
