@@ -248,6 +248,8 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
+
+	// loader methods
 	// {{{ protected function loadReplies()
 
 	/**
@@ -289,6 +291,23 @@ class BlorgPost extends SwatDBDataObject
 
 		return SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('BlorgTagWrapper'));
+	}
+
+	// }}}
+
+	// saver methods
+	// {{{ protected function saveReplies()
+
+	/**
+	 * Automatically saves replies on this post when this post is saved
+	 */
+	protected function saveReplies()
+	{
+		foreach ($this->replies as $reply)
+			$reply->post = $this;
+
+		$this->replies->setDatabase($this->db);
+		$this->replies->save();
 	}
 
 	// }}}
