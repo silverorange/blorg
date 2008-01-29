@@ -1,6 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBClassMap.php';
+require_once 'Swat/SwatUI.php';
 require_once 'Site/pages/SitePathPage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPostFullView.php';
@@ -25,6 +26,16 @@ class BlorgPostPage extends SitePathPage
 	 */
 	protected $post;
 
+	/**
+	 * @var SwatUI
+	 */
+	protected $reply_ui;
+
+	/**
+	 * @var string
+	 */
+	protected $reply_ui_xml = 'Blorg/pages/reply-edit.xml';
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -45,14 +56,90 @@ class BlorgPostPage extends SitePathPage
 	}
 
 	// }}}
+	// {{{ protected function initPost()
+
+	protected function initPost($year, $month_name, $shortname)
+	{
+		if (!array_key_exists($month_name, BlorgPageFactory::$months_by_name)) {
+			throw new SiteNotFoundException('Post not found.');
+		}
+
+		// Date parsed from URL is in locale time.
+		$date = new SwatDate();
+		$date->setTZ($this->app->default_time_zone);
+		$date->setYear($year);
+		$date->setMonth(BlorgPageFactory::$months_by_name[$month_name]);
+		$date->setDay(1);
+		$date->setHour(0);
+		$date->setMinute(0);
+		$date->setSecond(0);
+
+		$class_name = SwatDBClassMap::get('BlorgPost');
+		$this->post = new $class_name();
+		$this->post->setDatabase($this->app->db);
+		if (!$this->post->loadByDateAndShortname($date, $shortname,
+			$this->app->instance->getInstance())) {
+			throw new SiteNotFoundException('Post not found.');
+		}
+
+		if (!$this->post->enabled) {
+			throw new SiteNotFoundException('Post not found.');
+		}
+	}
+
+	// }}}
+
+	// init phase
+	// {{{ public function init()
+
+	public function init()
+	{
+		parent::init();
+		$this->initReplyUi();
+	}
+
+	// }}}
+	// {{{ protected function initReplyUi()
+
+	protected function initReplyUi()
+	{
+		$this->reply_ui = new SwatUI();
+		$this->reply_ui->loadFromXml($this->reply_ui_xml);
+	}
+
+	// }}}
+
+	// process phase
+	// {{{ public function process()
+
+	public function process()
+	{
+		parent::process();
+		$this->processReplyUi();
+	}
+
+	// }}}
+	// {{{ protected function processReplyUi()
+
+	protected function processReplyUi()
+	{
+		$form = $this->reply_ui->getWidget('reply_edit_form');
+		$form->process();
+	}
+
+	// }}}
+
+	// build phase
 	// {{{ public function build()
 
 	public function build()
 	{
 		$this->buildNavBar();
+		$this->buildReplyUi();
 
 		ob_start();
 		$this->displayPost();
+		$this->displayReplyUi();
 		$this->layout->data->content = ob_get_clean();
 	}
 
@@ -87,6 +174,15 @@ class BlorgPostPage extends SitePathPage
 	}
 
 	// }}}
+	// {{{ protected function buildReplyUi()
+
+	protected function buildReplyUi()
+	{
+		$form = $this->reply_ui->getWidget('reply_edit_form');
+		$form->action = $this->source;
+	}
+
+	// }}}
 	// {{{ protected function displayPost()
 
 	protected function displayPost()
@@ -96,35 +192,23 @@ class BlorgPostPage extends SitePathPage
 	}
 
 	// }}}
-	// {{{ protected function initPost()
+	// {{{ protected function displayReplyUi()
 
-	protected function initPost($year, $month_name, $shortname)
+	protected function displayReplyUi()
 	{
-		if (!array_key_exists($month_name, BlorgPageFactory::$months_by_name)) {
-			throw new SiteNotFoundException('Post not found.');
-		}
+		$this->reply_ui->display();
+	}
 
-		// Date parsed from URL is in locale time.
-		$date = new SwatDate();
-		$date->setTZ($this->app->default_time_zone);
-		$date->setYear($year);
-		$date->setMonth(BlorgPageFactory::$months_by_name[$month_name]);
-		$date->setDay(1);
-		$date->setHour(0);
-		$date->setMinute(0);
-		$date->setSecond(0);
+	// }}}
 
-		$class_name = SwatDBClassMap::get('BlorgPost');
-		$this->post = new $class_name();
-		$this->post->setDatabase($this->app->db);
-		if (!$this->post->loadByDateAndShortname($date, $shortname,
-			$this->app->instance->getInstance())) {
-			throw new SiteNotFoundException('Post not found.');
-		}
+	// finalize phase
+	// {{{ public function finalize()
 
-		if (!$this->post->enabled) {
-			throw new SiteNotFoundException('Post not found.');
-		}
+	public function finalize()
+	{
+		parent::finalize();
+		$this->layout->addHtmlHeadEntrySet(
+			$this->reply_ui->getRoot()->getHtmlHeadEntrySet());
 	}
 
 	// }}}
