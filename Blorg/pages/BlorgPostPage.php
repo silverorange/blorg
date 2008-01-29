@@ -7,6 +7,10 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPostFullView.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
+require_once 'Blorg/dataobjects/BlorgReply.php';
+
+// your post has been submitted and will be added to the site pending the
+// approval of the site moderators.
 
 /**
  * Post page for Blörg
@@ -125,6 +129,31 @@ class BlorgPostPage extends SitePathPage
 	{
 		$form = $this->reply_ui->getWidget('reply_edit_form');
 		$form->process();
+
+		if (($this->post->reply_status == BlorgPost::REPLY_STATUS_OPEN ||
+			$this->post->reply_status == BlorgPost::REPLY_STATUS_MODERATED) &&
+			$form->isProcessed() && !$form->hasMessage()) {
+
+			$now = new SwatDate();
+			$now->toUTC();
+
+			$class_name = SwatDBClassMap::get('BlorgReply');
+			$reply = new $class_name();
+			$reply->fullname = $this->reply_ui->getWidget('fullname')->value;
+			$reply->link = $this->reply_ui->getWidget('link')->value;
+			$reply->email = $this->reply_ui->getWidget('email')->value;
+			$reply->bodytext = $this->reply_ui->getWidget('bodytext')->value;
+			$reply->createdate = $now;
+
+			if ($this->post->reply_status == BlorgPost::REPLY_STATUS_OPEN) {
+				$reply->approved = true;
+			} else {
+				$reply->approved = false;
+			}
+
+			$this->post->replies->add($reply);
+			$this->post->save();
+		}
 	}
 
 	// }}}
@@ -179,7 +208,28 @@ class BlorgPostPage extends SitePathPage
 	protected function buildReplyUi()
 	{
 		$form = $this->reply_ui->getWidget('reply_edit_form');
-		$form->action = $this->source;
+
+		switch ($this->post->reply_status) {
+		case BlorgPost::REPLY_STATUS_OPEN:
+		case BlorgPost::REPLY_STATUS_MODERATED:
+			$form->action = $this->source.'#reply_edit_frame';
+			break;
+
+		case BlorgPost::REPLY_STATUS_LOCKED:
+			$form->visible = false;
+			$message = new SwatMessage(Blorg::_('Replies are Locked'));
+			$message->secondary_content =
+				Blorg::_('No new replies may be posted for this article.');
+
+			$this->reply_ui->getWidget('message_display')->add($message,
+				SwatMessageDisplay::DISMISS_OFF);
+
+			break;
+
+		case BlorgPost::REPLY_STATUS_CLOSED:
+			$this->reply_ui->getRoot()->visible = false;
+			break;
+		}
 	}
 
 	// }}}
