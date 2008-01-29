@@ -48,7 +48,7 @@ class BlorgPostFullView extends BlorgPostLongView
 	{
 		if ($this->post->reply_status != BlorgPost::REPLY_STATUS_CLOSED) {
 			foreach ($this->post->replies as $reply) {
-				if ($reply->approved) {
+				if ($reply->approved && $reply->show) {
 					$this->displayReply($reply);
 				}
 			}
