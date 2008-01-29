@@ -14,6 +14,7 @@
 			<widget class="SwatFormField" id="shortname_field">
 				<property name="title" translatable="yes">Shortname</property>
 				<widget class="AdminUniqueEntry" id="shortname">
+					<property name="required" type="boolean">true</property>
 					<property name="maxlength" type="integer">255</property>
 				</widget>
 			</widget>
