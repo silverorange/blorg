@@ -158,11 +158,10 @@ class BlorgPostDetails extends AdminIndex
 			$approved_column =
 				$this->ui->getWidget('replies_view')->getColumn('approved');
 
-			$approved_column->visible = true;
-
-			$this->ui->getWidget('approve_divider')->visible = false;
-			$this->ui->getWidget('approve')->visible         = false;
-			$this->ui->getWidget('deny')->visible            = false;
+			$approved_column->visible                        = true;
+			$this->ui->getWidget('approve_divider')->visible = true;
+			$this->ui->getWidget('approve')->visible         = true;
+			$this->ui->getWidget('deny')->visible            = true;
 		}
 
 		// set default time zone
