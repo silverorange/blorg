@@ -28,17 +28,10 @@ class BlorgFrontPage extends SitePathPage
 	protected $posts;
 
 	// }}}
-	// {{{ public function __construct()
+	// {{{ public function init()
 
-	/**
-	 * Creates a new month archive page
-	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout)
+	public function init()
 	{
-		parent::__construct($app, $layout);
 		$this->initPosts();
 	}
 
@@ -47,29 +40,11 @@ class BlorgFrontPage extends SitePathPage
 
 	public function build()
 	{
-		$this->buildNavBar();
+		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
 
 		ob_start();
 		$this->displayPosts();
 		$this->layout->data->content = ob_get_clean();
-	}
-
-	// }}}
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		$first = true;
-		foreach ($this->getPath() as $path_entry) {
-			if ($first) {
-				$link = $path_entry->shortname;
-				$first = false;
-			} else {
-				$link.= '/'.$path_entry->shortname;
-			}
-
-			$this->layout->navbar->createEntry($path_entry->title, $link);
-		}
 	}
 
 	// }}}

@@ -54,8 +54,9 @@ class BlorgArchivePage extends SitePathPage
 
 	public function init()
 	{
-		$this->getPath()->appendEntry(
-			new SitePathEntry(null, null, 'archive', Blorg::_('Archive')));
+		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
+		$this->layout->navbar->createEntry(Blorg::_('Archive'),
+			$this->getPath().'/archive');
 	}
 
 	// }}}
@@ -63,30 +64,9 @@ class BlorgArchivePage extends SitePathPage
 
 	public function build()
 	{
-		$this->buildNavBar();
-
 		ob_start();
 		$this->displayArchive();
 		$this->layout->data->content = ob_get_clean();
-	}
-
-	// }}}
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		$first = true;
-		$link = '';
-		foreach ($this->getPath() as $path_entry) {
-			if ($first) {
-				$link.= $path_entry->shortname;
-				$first = false;
-			} else {
-				$link.= '/'.$path_entry->shortname;
-			}
-
-			$this->layout->navbar->createEntry($path_entry->title, $link);
-		}
 	}
 
 	// }}}

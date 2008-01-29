@@ -45,58 +45,38 @@ class BlorgPostPage extends SitePathPage
 	}
 
 	// }}}
-	// {{{ public function build()
-
-	public function build()
-	{
-		$this->buildNavBar();
-
-		ob_start();
-		$this->displayPost();
-		$this->layout->data->content = ob_get_clean();
-	}
-
-	// }}}
 	// {{{ public function init()
 
 	public function init()
 	{
-		$path = $this->getPath();
+		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
 
-		$path->appendEntry(
-			new SitePathEntry(null, null, 'archive', Blorg::_('Archive')));
+		$path = $this->getPath().'/archive';
+		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
 
 		$year = $this->post->post_date->getYear();
-		$path->appendEntry(new SitePathEntry(null, null, $year, $year));
+		$path.= '/'.$year;
+		$this->layout->navbar->createEntry($year, $path);
 
 		$month_title = $this->post->post_date->getMonthName();
 		$month_name = BlorgPageFactory::$month_names[
 			$this->post->post_date->getMonth()];
 
-		$path->appendEntry(
-			new SitePathEntry(null, null, $month_name, $month_title));
+		$path.= '/'.$month_name;
+		$this->layout->navbar->createEntry($month_title, $path);
 
-		$path->appendEntry(new SitePathEntry($this->post->id, null,
-			$this->post->shortname, $this->post->title));
+		$path.= '/'.$this->post->shortname;
+		$this->layout->navbar->createEntry($this->post->title, $path);
 	}
 
 	// }}}
-	// {{{ protected function buildNavBar()
+	// {{{ public function build()
 
-	protected function buildNavBar()
+	public function build()
 	{
-		$first = true;
-		$link = '';
-		foreach ($this->getPath() as $path_entry) {
-			if ($first) {
-				$link.= $path_entry->shortname;
-				$first = false;
-			} else {
-				$link.= '/'.$path_entry->shortname;
-			}
-
-			$this->layout->navbar->createEntry($path_entry->title, $link);
-		}
+		ob_start();
+		$this->displayPost();
+		$this->layout->data->content = ob_get_clean();
 	}
 
 	// }}}
