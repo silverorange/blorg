@@ -4,6 +4,7 @@ require_once 'Swat/SwatString.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Admin/pages/AdminDBDelete.php';
 require_once 'Admin/AdminListDependency.php';
+require_once 'Admin/AdminDependencyEntry.php';
 
 /**
  * Delete confirmation page for Posts
@@ -22,8 +23,13 @@ class BlorgPostDelete extends AdminDBDelete
 		parent::processDBData();
 
 		$item_list = $this->getItemList('integer');
+		$instance_id = $this->app->instance->getId();
 
-		$sql = sprintf('delete from BlorgPost where id in (%s)', $item_list);
+		$sql = sprintf('delete from BlorgPost
+			where instance %s %s and id in (%s)',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$item_list);
 
 		$num = SwatDB::exec($this->app->db, $sql);
 
@@ -46,13 +52,34 @@ class BlorgPostDelete extends AdminDBDelete
 		parent::buildInternal();
 
 		$item_list = $this->getItemList('integer');
+		$instance_id = $this->app->instance->getId();
 
 		$dep = new AdminListDependency();
 		$dep->setTitle(Blorg::_('post'), Blorg::_('posts'));
-		//TODO: make this work better with posts that have no title
-		$dep->entries = AdminListDependency::queryEntries($this->app->db,
-			'BlorgPost', 'integer:id', null, 'text:title', 'id',
-			'id in ('.$item_list.')', AdminDependency::DELETE);
+
+		$sql = sprintf(
+			'select id, title, bodytext from BlorgPost
+			where instance %s %s and id in (%s)
+			order by post_date desc, title',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$item_list);
+
+		$posts = SwatDB::query($this->app->db, $sql, 'BlorgPostWrapper');
+		$entries = array();
+
+		foreach ($posts as $post) {
+			$entry = new AdminDependencyEntry();
+
+			$entry->id           = $post->id;
+			$entry->title        = $post->getTitle();
+			$entry->status_level = AdminDependency::DELETE;
+			$entry->parent       = null;
+
+			$entries[] = $entry;
+		}
+
+		$dep->entries = $entries;
 
 		$message = $this->ui->getWidget('confirmation_message');
 		$message->content = $dep->getMessage();

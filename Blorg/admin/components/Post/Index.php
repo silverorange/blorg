@@ -48,7 +48,7 @@ class BlorgPostIndex extends AdminIndex
 
 	public function processActions(SwatTableView $view, SwatActions $actions)
 	{
-		$instance_id  = $this->app->instance->getId();
+		$instance_id = $this->app->instance->getId();
 		$num = count($view->getSelection());
 		$message = null;
 		foreach ($view->getSelection() as $item)
@@ -104,7 +104,7 @@ class BlorgPostIndex extends AdminIndex
 
 	protected function getTableModel(SwatView $view)
 	{
-		$instance_id  = $this->app->instance->getId();
+		$instance_id = $this->app->instance->getId();
 
 		$sql = sprintf('select count(id) from BlorgPost where instance %s %s',
 			SwatDB::equalityOperator($instance_id),
