@@ -137,18 +137,48 @@ class BlorgPostPage extends SitePathPage
 			$now = new SwatDate();
 			$now->toUTC();
 
+			$fullname = $this->reply_ui->getWidget('fullname');
+			$link = $this->reply_ui->getWidget('link');
+			$email = $this->reply_ui->getWidget('email');
+			$bodytext = $this->reply_ui->getWidget('bodytext');
+
 			$class_name = SwatDBClassMap::get('BlorgReply');
 			$reply = new $class_name();
-			$reply->fullname = $this->reply_ui->getWidget('fullname')->value;
-			$reply->link = $this->reply_ui->getWidget('link')->value;
-			$reply->email = $this->reply_ui->getWidget('email')->value;
-			$reply->bodytext = $this->reply_ui->getWidget('bodytext')->value;
+			$reply->fullname = $fullname->value;
+			$reply->link = $link->value;
+			$reply->email = $email->value;
+			$reply->bodytext = $bodytext->value;
 			$reply->createdate = $now;
 
-			if ($this->post->reply_status == BlorgPost::REPLY_STATUS_OPEN) {
+			$fullname->value = null;
+			$link->value = null;
+			$email->value = null;
+			$bodytext->value = null;
+
+			switch ($this->post->reply_status) {
+			case BlorgPost::REPLY_STATUS_OPEN:
 				$reply->approved = true;
-			} else {
+				$message = new SwatMessage(
+					Blorg::_('Your reply has been added.'));
+
+				$this->reply_ui->getWidget('message_display')->add($message,
+					SwatMessageDisplay::DISMISS_OFF);
+
+				break;
+
+			case BlorgPost::REPLY_STATUS_MODERATED:
 				$reply->approved = false;
+				$message = new SwatMessage(
+					Blorg::_('Your reply has been submitted.'));
+
+				$message->secondary_content =
+					Blorg::_('Your reply will be added to the site upon '.
+						'being approved by the site moderators.');
+
+				$this->reply_ui->getWidget('message_display')->add($message,
+					SwatMessageDisplay::DISMISS_OFF);
+
+				break;
 			}
 
 			$this->post->replies->add($reply);
@@ -212,7 +242,7 @@ class BlorgPostPage extends SitePathPage
 		switch ($this->post->reply_status) {
 		case BlorgPost::REPLY_STATUS_OPEN:
 		case BlorgPost::REPLY_STATUS_MODERATED:
-			$form->action = $this->source.'#reply_edit_frame';
+			$form->action = $this->source.'#reply_edit_frame'; // TODO: fragment should point to new reply or reply preview
 			break;
 
 		case BlorgPost::REPLY_STATUS_LOCKED:
