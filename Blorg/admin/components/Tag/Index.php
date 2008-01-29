@@ -15,7 +15,7 @@ class BlorgTagIndex extends AdminIndex
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/BlorgTag/index.xml';
+	protected $ui_xml = 'Blorg/admin/components/Tag/index.xml';
 
 	// }}}
 
@@ -41,7 +41,7 @@ class BlorgTagIndex extends AdminIndex
 
 		switch ($actions->selected->id) {
 		case 'delete':
-			$this->app->replacePage('BlorgTag/Delete');
+			$this->app->replacePage('Tag/Delete');
 			$this->app->getPage()->setItems($view->getSelection());
 			break;
 		}
