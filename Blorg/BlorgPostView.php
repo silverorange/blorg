@@ -110,22 +110,7 @@ abstract class BlorgPostView
 		// display date information
 		ob_start();
 
-		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->href = $this->getPostRelativeUri();
-		$anchor_tag->open();
-
-		$abbr_tag   = new SwatHtmlTag('abbr');
-		$abbr_tag->class = 'published';
-		$abbr_tag->title =
-			$this->post->post_date->format('%Y-%m-%dT%H-%M-%S%o');
-
-		$this->post->post_date->convertTZ($this->app->default_time_zone);
-		$abbr_tag->setContent(
-			$this->post->post_date->format(SwatDate::DF_DATE_LONG));
-
-		$abbr_tag->display();
-
-		$anchor_tag->close();
+		$this->displayPermalink();
 
 		$post_date = ob_get_clean();
 
@@ -135,6 +120,33 @@ abstract class BlorgPostView
 			$author, $post_date);
 
 		echo '</div>';
+	}
+
+	// }}}
+	// {{{ protected function displayPermalink()
+
+	/**
+	 * Displays the date permalink for a weblog post
+	 */
+	protected function displayPermalink()
+	{
+		$anchor_tag = new SwatHtmlTag('a');
+		$anchor_tag->href = $this->getPostRelativeUri();
+		$anchor_tag->open();
+
+		// display machine-readable date in UTC
+		$abbr_tag   = new SwatHtmlTag('abbr');
+		$abbr_tag->class = 'published';
+		$abbr_tag->title =
+			$this->post->post_date->getDate(DATE_FORMAT_ISO_EXTENDED);
+
+		// display human-readable date in local time
+		$date = clone $this->post->post_date;
+		$date->convertTZ($this->app->default_time_zone);
+		$abbr_tag->setContent($date->format(SwatDate::DF_DATE_LONG));
+		$abbr_tag->display();
+
+		$anchor_tag->close();
 	}
 
 	// }}}
