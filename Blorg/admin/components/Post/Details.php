@@ -9,6 +9,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
+require_once 'Blorg/admin/BlorgPostAdminView.php';
 
 /**
  * Details page for Posts
@@ -125,6 +126,13 @@ class BlorgPostDetails extends AdminIndex
 
 	protected function buildPost()
 	{
+		$content_block = $this->ui->getWidget('post_preview');
+		ob_start();
+		$view = new BlorgPostAdminView($this->app, $this->post);
+		$view->display();
+		$content_block->content = ob_get_clean();
+		$content_block->content_type = 'text/xml';
+
 		$ds = new SwatDetailsStore($this->post);
 		$details_view = $this->ui->getWidget('details_view');
 		$details_view->data = $ds;
@@ -133,15 +141,6 @@ class BlorgPostDetails extends AdminIndex
 		$details_frame->title = Blorg::_('Post');
 		$details_frame->subtitle = $this->post->getTitle();
 		$this->title = $this->post->getTitle();
-
-		if ($this->post->bodytext !== null)
-			$this->post->bodytext = SwatString::condense(SwatString::toXHTML(
-				$this->post->bodytext));
-
-		if ($this->post->extended_bodytext !== null)
-			$this->post->extended_bodytext = SwatString::condense(
-				SwatString::toXHTML($this->post->extended_bodytext));
-
 	}
 
 	// }}}
