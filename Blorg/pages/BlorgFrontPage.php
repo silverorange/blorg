@@ -53,7 +53,7 @@ class BlorgFrontPage extends SitePathPage
 	protected function displayPosts()
 	{
 		foreach ($this->posts as $post) {
-			$view = new BlorgPostFullView($this->app, $post);
+			$view = new BlorgPostLongView($this->app, $post);
 			$view->display(true);
 		}
 	}
