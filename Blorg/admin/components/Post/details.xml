@@ -110,12 +110,16 @@
 					<widget class="SwatActionItem" id="hide">
 						<property name="title" translatable="yes">hide</property>
 					</widget>
-					<widget class="SwatActionItemDivider" id="approve_divider" />
+					<widget class="SwatActionItemDivider" id="approve_divider">
+						<property name="visible" type="boolean">false</property>
+					</widget>
 					<widget class="SwatActionItem" id="approve">
 						<property name="title" translatable="yes">approve</property>
+						<property name="visible" type="boolean">false</property>
 					</widget>
 					<widget class="SwatActionItem" id="deny">
 						<property name="title" translatable="yes">deny</property>
+						<property name="visible" type="boolean">false</property>
 					</widget>
 				</widget>
 			</widget>
