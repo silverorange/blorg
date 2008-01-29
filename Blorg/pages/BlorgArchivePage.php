@@ -74,7 +74,7 @@ class BlorgArchivePage extends SitePathPage
 
 	protected function displayArchive()
 	{
-		$base = $this->getPath().'/';
+		$base = (strlen($this->getPath())) ? $this->getPath().'/' : '';
 
 		$year_ul_tag = new SwatHtmLTag('ul');
 		$year_ul_tag->class = 'blorg-archive-years';

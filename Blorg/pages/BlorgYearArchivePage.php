@@ -74,7 +74,7 @@ class BlorgYearArchivePage extends SitePathPage
 
 	protected function displayMonths()
 	{
-		$base = $this->getPath().'/';
+		$base = (strlen($this->getPath())) ? $this->getPath().'/' : '';
 
 		$ul_tag = new SwatHtmlTag('ul');
 		$ul_tag->class = 'months';
