@@ -20,7 +20,7 @@ class BlorgTagEdit extends AdminDBEdit
 	 */
 	protected $tag;
 
-	protected $ui_xml = 'Blorg/admin/components/BlorgTag/edit.xml';
+	protected $ui_xml = 'Blorg/admin/components/Tag/edit.xml';
 
 	// }}}
 
