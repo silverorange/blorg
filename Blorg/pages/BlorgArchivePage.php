@@ -50,23 +50,31 @@ class BlorgArchivePage extends SitePathPage
 	}
 
 	// }}}
-	// {{{ public function init()
-
-	public function init()
-	{
-		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
-		$this->layout->navbar->createEntry(Blorg::_('Archive'),
-			$this->getPath().'/archive');
-	}
-
-	// }}}
 	// {{{ public function build()
 
 	public function build()
 	{
+		$this->buildNavBar();
+
 		ob_start();
 		$this->displayArchive();
 		$this->layout->data->content = ob_get_clean();
+	}
+
+	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
+		$path = $this->getPath()->__toString();
+
+		if ($path == '') {
+			$path = 'archive';
+		} else {
+			$path.= '/archive';
+		}
+		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
 	}
 
 	// }}}
@@ -74,7 +82,7 @@ class BlorgArchivePage extends SitePathPage
 
 	protected function displayArchive()
 	{
-		$base = (strlen($this->getPath())) ? $this->getPath().'/' : '';
+		$base = (strlen($this->getPath())) ? $this->getPath().'/' : ''; // TODO
 
 		$year_ul_tag = new SwatHtmLTag('ul');
 		$year_ul_tag->class = 'blorg-archive-years';
