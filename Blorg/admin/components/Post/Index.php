@@ -33,11 +33,22 @@ class BlorgPostIndex extends AdminIndex
 
 	// }}}
 
-	// process “phase”
+	// process phase
+	// {{{ protected function processInternal()
+
+	protected function processInternal()
+	{
+		parent::processInternal();
+
+		$this->ui->getWidget('pager')->process();
+	}
+
+	// }}}
 	// {{{ protected function processActions()
 
 	public function processActions(SwatTableView $view, SwatActions $actions)
 	{
+		$instance_id  = $this->app->instance->getId();
 		$num = count($view->getSelection());
 		$message = null;
 		foreach ($view->getSelection() as $item)
@@ -50,9 +61,11 @@ class BlorgPostIndex extends AdminIndex
 			break;
 
 		case 'enable':
-			SwatDB::query($this->app->db, sprintf('
-				update BlorgPost set enabled = %s
-				where id in (%s)',
+			SwatDB::query($this->app->db, sprintf(
+				'update BlorgPost set enabled = %s
+				where instance %s %s and id in (%s)',
+				SwatDB::equalityOperator($instance_id),
+				$this->app->db->quote($instance_id, 'integer'),
 				$this->app->db->quote(true, 'boolean'),
 				implode(',', $item_list)));
 
@@ -64,9 +77,11 @@ class BlorgPostIndex extends AdminIndex
 			break;
 
 		case 'disable':
-			SwatDB::query($this->app->db, sprintf('
-				update BlorgPost set enabled = %s
-				where id in (%s)',
+			SwatDB::query($this->app->db, sprintf(
+				'update BlorgPost set enabled = %s
+				where instance %s %s and id in (%s)',
+				SwatDB::equalityOperator($instance_id),
+				$this->app->db->quote($instance_id, 'integer'),
 				$this->app->db->quote(false, 'boolean'),
 				implode(',', $item_list)));
 
@@ -89,9 +104,25 @@ class BlorgPostIndex extends AdminIndex
 
 	protected function getTableModel(SwatView $view)
 	{
-		$sql = 'select id, title, shortname, post_date, enabled, bodytext
-			from BlorgPost order by post_date desc, title';
+		$instance_id  = $this->app->instance->getId();
 
+		$sql = sprintf('select count(id) from BlorgPost where instance %s %s',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'));
+
+		$pager = $this->ui->getWidget('pager');
+		$pager->total_records = SwatDB::queryOne($this->app->db, $sql);
+
+		$sql = sprintf(
+			'select id, title, shortname, post_date, enabled, bodytext
+			from BlorgPost 
+			where instance %s %s
+			order by %s',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->getOrderByClause($view, 'post_date desc, title'));
+
+		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 		$posts = SwatDB::query($this->app->db, $sql, 'BlorgPostWrapper');
 
 		$store = new SwatTableStore();

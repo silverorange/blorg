@@ -46,6 +46,9 @@
 					</object>
 				</object>
 			</widget>
+			<widget class="AdminPagination" id="pager">
+				<property name="link">Post</property>
+			</widget>
 			<widget class="SwatActions" id="index_actions">
 				<widget class="SwatActionItem" id="delete">
 					<property name="title" translatable="yes">delete…</property>

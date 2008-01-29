@@ -56,6 +56,16 @@ class BlorgPostDetails extends AdminIndex
 	// }}}
 
 	// process phase
+	// {{{ protected function processInternal()
+
+	protected function processInternal()
+	{
+		parent::processInternal();
+
+		$this->ui->getWidget('pager')->process();
+	}
+
+	// }}}
 	// {{{ protected function processActions()
 
 	protected function processActions(SwatTableView $view, SwatActions $actions)
@@ -104,7 +114,7 @@ class BlorgPostDetails extends AdminIndex
 	{
 		switch ($view->id) {
 			case 'replies_view':
-				return $this->post->replies;
+				return $this->getRepliesTableModel($view);
 		}
 	}
 
@@ -162,6 +172,41 @@ class BlorgPostDetails extends AdminIndex
 
 		$date_renderer = $date_column->getRendererByPosition();
 		$date_renderer->display_time_zone = $this->app->default_time_zone;
+	}
+
+	// }}}
+	// {{{ protected function getReviewsTableModel()
+
+	protected function getRepliesTableModel(SwatTableView $view)
+	{
+		$sql = sprintf('select count(id) from BlorgReply where post = %s',
+			$this->app->db->quote($this->post->id, 'integer'));
+
+		$pager = $this->ui->getWidget('pager');
+		$pager->total_records = SwatDB::queryOne($this->app->db, $sql);
+
+		$sql = sprintf('select id, fullname, author, bodytext, createdate, show,
+			approved from BlorgReply where post = %s order by %s',
+			$this->app->db->quote($this->post->id, 'integer'),
+			$this->getOrderByClause($view, 'createdate desc'));
+
+		$this->app->db->setLimit($pager->page_size, $pager->current_record);
+		$replies = SwatDB::query($this->app->db, $sql, 'BlorgReplyWrapper');
+
+		$store = new SwatTableStore();
+
+		foreach ($replies as $reply) {
+			$ds = new SwatDetailsStore($reply);
+			if ($reply->author !== null)
+				$ds->fullname = $reply->author->name;
+
+			$ds->bodytext = SwatString::condense(
+				SwatString::ellipsizeRight($reply->bodytext, 500));
+
+			$store->add($ds);
+		}
+
+		return $store;
 	}
 
 	// }}}
