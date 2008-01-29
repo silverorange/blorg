@@ -20,7 +20,7 @@ class BlorgPostEdit extends AdminDBEdit
 	 */
 	protected $post;
 
-	protected $ui_xml = 'Blorg/admin/components/BlorgPost/edit.xml';
+	protected $ui_xml = 'Blorg/admin/components/Post/edit.xml';
 
 	// }}}
 

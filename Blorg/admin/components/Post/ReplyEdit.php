@@ -139,7 +139,7 @@ class BlorgPostReplyEdit extends AdminDBEdit
 	{
 		$this->navbar->addEntry(new SwatNavBarEntry(
 			$this->reply->post->getTitle(),
-			sprintf('BlorgPost/Details?id=%s', $this->reply->post->id)));
+			sprintf('Post/Details?id=%s', $this->reply->post->id)));
 
 		if ($this->id === null)
 			$this->navbar->addEntry(new SwatNavBarEntry(Blorg::_('New Reply')));
