@@ -23,12 +23,6 @@
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Title</property>
-				<object class="SwatNullTextCellRenderer">
-					<property name="text" type="data">title</property>
-				</object>
-			</object>
-			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Show on Site?</property>
 				<object class="SwatBooleanCellRenderer">
 					<property name="value" type="data">enabled</property>
@@ -47,33 +41,8 @@
 					<property name="format" type="constant">SwatDate::DF_DATE</property>
 				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="post_date">
-				<property name="title" translatable="yes">Displayed Date</property>
-				<object class="SwatDateCellRenderer">
-					<property name="date" type="data">createdate</property>
-					<property name="format" type="constant">SwatDate::DF_DATE</property>
-				</object>
-			</object>
-			<object class="SwatDetailsViewField" id="modified_date">
-				<property name="title" translatable="yes">Last Modified</property>
-				<object class="SwatDateCellRenderer">
-					<property name="date" type="data">modified_date</property>
-					<property name="format" type="constant">SwatDate::DF_DATE_TIME</property>
-				</object>
-			</object>
-			<object class="SwatDetailsViewVerticalField">
-				<property name="title" translatable="yes">Body Text</property>
-				<object class="SwatNullTextCellRenderer">
-					<property name="text" type="data">bodytext</property>
-				</object>
-			</object>
-			<object class="SwatDetailsViewVerticalField">
-				<property name="title" translatable="yes">Extended Body Text</property>
-				<object class="SwatNullTextCellRenderer">
-					<property name="text" type="data">extended_bodytext</property>
-				</object>
-			</object>
 		</widget>
+		<widget class="SwatContentBlock" id="post_preview"/>
 		<!-- {{{ Replies -->
 		<widget class="SwatFrame" id="replies_frame">
 			<property name="title" translatable="yes">Replies</property>
