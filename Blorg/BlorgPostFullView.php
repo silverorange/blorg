@@ -1,18 +1,19 @@
 <?php
 
-require_once 'Blorg/BlorgPostView.php';
+require_once 'Blorg/BlorgPostLongView.php';
 require_once 'Swat/SwatString.php';
 
 /**
  * Full display for a Blörg post
  *
- * Displays as a complete weblog post with title and header information.
+ * Displays as a complete weblog post with title, header information, full
+ * bodytext and replies.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostFullView extends BlorgPostView
+class BlorgPostFullView extends BlorgPostLongView
 {
 	// {{{ public function display()
 
@@ -22,26 +23,27 @@ class BlorgPostFullView extends BlorgPostView
 
 		$this->displayHeader($link);
 		$this->displayBody();
+		$this->displayReplies();
 
 		echo '</div>';
 	}
 
 	// }}}
-	// {{{ protected function displayBody()
+	// {{{ protected function displayReplies()
 
-	protected function displayBody()
+	protected function displayReplies()
 	{
-		$div_tag = new SwatHtmlTag('div');
-		$div_tag->class = 'entry-content';
-		$div_tag->setContent($this->post->bodytext, 'text/xml');
-		$div_tag->display();
-
-		if (strlen($this->post->extended_bodytext) > 0) {
-			$div_tag = new SwatHtmlTag('div');
-			$div_tag->class = 'entry-content entry-content-extended';
-			$div_tag->setContent($this->post->extended_bodytext, 'text/xml');
-			$div_tag->display();
+		foreach ($this->post->replies as $reply) {
+			$this->displayReply($reply);
 		}
+	}
+
+	// }}}
+	// {{{ protected function displayReply()
+
+	protected function displayReply(BlorgReply $reply)
+	{
+		echo $reply;
 	}
 
 	// }}}

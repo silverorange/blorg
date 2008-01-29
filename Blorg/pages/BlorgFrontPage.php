@@ -54,7 +54,7 @@ class BlorgFrontPage extends SitePathPage
 	{
 		foreach ($this->posts as $post) {
 			$view = new BlorgPostFullView($this->app, $post);
-			$view->display();
+			$view->display(true);
 		}
 	}
 
