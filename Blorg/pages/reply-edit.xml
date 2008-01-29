@@ -13,13 +13,13 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField" id="link_field">
-				<property name="title" translatable="yes">Link</property>
+				<property name="title" translatable="yes">Web Address</property>
 				<widget class="SwatEntry" id="link">
 					<property name="maxlength" type="integer">255</property>
 				</widget>
 			</widget>
 			<widget class="SwatFormField" id="email_field">
-				<property name="title" translatable="yes">Email</property>
+				<property name="title" translatable="yes">Email Address</property>
 				<property name="note" translatable="yes">Email addresses are not displayed with your reply and will not be shared.</property>
 				<widget class="SwatEmailEntry" id="email">
 					<property name="maxlength" type="integer">255</property>
