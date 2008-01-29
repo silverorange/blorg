@@ -82,7 +82,8 @@ class BlorgArchivePage extends SitePathPage
 
 	protected function displayArchive()
 	{
-		$base = (strlen($this->getPath())) ? $this->getPath().'/' : ''; // TODO
+		$root_path = $this->getPath()->__toString();
+		$root_path = (strlen($root_path)) ? $root_path.'/archive' : 'archive';
 
 		$year_ul_tag = new SwatHtmLTag('ul');
 		$year_ul_tag->class = 'blorg-archive-years';
@@ -91,8 +92,9 @@ class BlorgArchivePage extends SitePathPage
 			$year_li_tag = new SwatHtmlTag('li');
 			$year_li_tag->open();
 			$year_anchor_tag = new SwatHtmlTag('a');
-			$year_anchor_tag->href = sprintf('%sarchive/%s',
-				$base, $year);
+			$year_anchor_tag->href = sprintf('%s/%s',
+				$root_path,
+				$year);
 
 			$year_anchor_tag->setContent($year);
 			$year_anchor_tag->display();
@@ -106,8 +108,10 @@ class BlorgArchivePage extends SitePathPage
 				$month_li_tag = new SwatHtmlTag('li');
 				$month_li_tag->open();
 				$month_anchor_tag = new SwatHtmlTag('a');
-				$month_anchor_tag->href = sprintf('%sarchive/%s/%s',
-					$base, $year, BlorgPageFactory::$month_names[$month]);
+				$month_anchor_tag->href = sprintf('%s/%s/%s',
+					$root_path,
+					$year,
+					BlorgPageFactory::$month_names[$month]);
 
 				$month_anchor_tag->setContent($date->getMonthName());
 				$month_anchor_tag->display();
