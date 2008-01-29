@@ -86,7 +86,7 @@
 						<property name="visible" type="boolean">false</property>
 						<property name="title" translatable="yes">Approved</property>
 						<object class="SwatBooleanCellRenderer">
-							<property name="value" type="data">show</property>
+							<property name="value" type="data">approved</property>
 						</object>
 					</object>
 					<object class="SwatTableViewSpanningColumn" id="bodytext">
