@@ -5,20 +5,41 @@ require_once 'Swat/SwatHtmlTag.php';
 require_once 'Swat/SwatYUI.php';
 
 /**
- * TODO: document me
+ * Slider widget to select between different reply statuses for Blörg posts
+ *
+ * This is a SwatOptionControl with each option being the reply status value
+ * and the title of the value. While the underlying code is quite flexible, the
+ * display uses a background image that requires the number of options to be
+ * four.
+ *
+ * @package   Blörg
+ * @copyright 2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgReplyStatusSlider extends SwatOptionControl
 {
+	// {{{ public proeprties
+
 	/**
 	 * Slider value
 	 *
-	 * The index value of the selected option. Defaults to the first option
-	 * being selected if set to null.
+	 * The value of the selected option. Defaults to the first option if set
+	 * to null.
 	 *
-	 * @var string
+	 * @var mixed
 	 */
 	public $value = null;
 
+	// }}}
+	// {{{ public function__construct()
+
+	/**
+	 * Creates a new reply status slider
+	 *
+	 * @param string $id a non-visible unique id for this widget.
+	 *
+	 * @see SwatWidget::__construct()
+	 */
 	public function __construct($id = null)
 	{
 		parent::__construct($id);
@@ -36,8 +57,16 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 			Blorg::PACKAGE_ID);
 	}
 
+	// }}}
+	// {{{ public function process()
+
+	/**
+	 * Processes this reply status slider
+	 */
 	public function process()
 	{
+		parent::process();
+
 		$form = $this->getForm();
 		$data = &$form->getFormData();
 
@@ -53,6 +82,12 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 		}
 	}
 
+	// }}}
+	// {{{ public function display()
+
+	/**
+	 * Displays this reply status slider
+	 */
 	public function display()
 	{
 		parent::display();
@@ -87,6 +122,9 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 	}
 
+	// }}}
+	// {{{ protected function getInlineJavaScript()
+
 	/**
 	 * Gets the inline JavaScript required by this control
 	 *
@@ -115,4 +153,8 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 			$this->id,
 			$options);
 	}
+
+	// }}}
 }
+
+?>
