@@ -141,7 +141,7 @@ class BlorgPostFullView extends BlorgPostLongView
 		// display human-readable date in local time
 		$date = clone $reply->createdate;
 		$date->convertTZ($this->app->default_time_zone);
-		$abbr_tag->setContent($date->format(SwatDate::DF_DATE_LONG));
+		$abbr_tag->setContent($date->format(SwatDate::DF_DATE));
 		$abbr_tag->display();
 
 		$anchor_tag->close();
