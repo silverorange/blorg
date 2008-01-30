@@ -40,9 +40,16 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 	{
 		$form = $this->getForm();
 		$data = &$form->getFormData();
-		print_r($data);
-		if (isset($data[$this->id.'_value'])) {
-			$this->value = (integer)$data[$this->id.'_value'];
+
+		$key = $this->id.'_value';
+		if (isset($data[$key])) {
+			if ($this->serialize_values) {
+				$salt = $form->getSalt();
+				$this->value = SwatString::signedUnserialize(
+					$data[$key], $salt);
+			} else {
+				$this->value = (string)$data[$key];
+			}
 		}
 	}
 
@@ -87,13 +94,25 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 	 */
 	protected function getInlineJavaScript()
 	{
+		$salt = $this->getForm()->getSalt();
 		$options = array();
 		foreach ($this->options as $option) {
-			$options[] = SwatString::quoteJavaScriptString($option->title);
-		}
+			if ($this->serialize_values) {
+				$value = SwatString::signedSerialize($option->value, $salt);
+			} else {
+				$value = (string)$option->value;
+			}
 
+			$options[] = sprintf('[%s, %s]',
+				SwatString::quoteJavaScriptString($value),
+				SwatString::quoteJavaScriptString($option->title));
+		}
 		$options = implode(', ', $options);
-		return sprintf("var %s_obj = new BlorgReplyStatusSlider('%s', [%s]);",
-			$this->id, $this->id, $options);
+
+		return sprintf(
+			"var %s_obj = new BlorgReplyStatusSlider('%s', [%s]);",
+			$this->id,
+			$this->id,
+			$options);
 	}
 }
