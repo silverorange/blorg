@@ -25,6 +25,10 @@
 					<property name="maxlength" type="integer">255</property>
 				</widget>
 			</widget>
+			<widget class="SwatFormField" id="rember_me_field">
+				<property name="title" translatable="yes">Remember Me</property>
+				<widget class="SwatCheckbox" id="remember_me" />
+			</widget>
 			<widget class="SwatFormField">
 				<widget class="SwatTextarea" id="bodytext">
 					<property name="required" type="boolean">true</property>
