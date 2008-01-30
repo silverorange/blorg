@@ -9,9 +9,6 @@ require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgReply.php';
 
-// your post has been submitted and will be added to the site pending the
-// approval of the site moderators.
-
 /**
  * Post page for Blörg
  *
