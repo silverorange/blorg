@@ -6,9 +6,9 @@ require_once 'Site/pages/SitePathPage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 
 /**
- * Page factory for Blorg pages
+ * Page factory for Blörg pages
  *
- * This factory is responsible for loading URLs of the forms:
+ * This factory is responsible for loading URIs of the forms:
  *
  * - /archive
  * - /archive/<year>
@@ -16,9 +16,11 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * - /archive/<year>/<month>/<post-shortname>
  * - /author
  * - /author/<author-shortname>
+ * - /
  *
- * @package   Blorg
+ * @package   Blörg
  * @copyright 2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPageFactory extends SitePageFactory
 {
