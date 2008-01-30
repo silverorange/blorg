@@ -89,7 +89,7 @@ class BlorgPostEdit extends AdminDBEdit
 			'Replies can be added by anyone and are immediately visible on '.
 			'this post.'));
 
-		// moderated 
+		// moderated
 		$option = new SwatOption(BlorgPost::REPLY_STATUS_MODERATED,
 			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_MODERATED));
 
@@ -97,7 +97,7 @@ class BlorgPostEdit extends AdminDBEdit
 		$status->addContextNote($option, Blorg::_(
 			'Replies can be added by anyone but must be approved by a site '.
 			'author before being visible on this post.'));
-	
+
 		// locked
 		$option = new SwatOption(BlorgPost::REPLY_STATUS_LOCKED,
 			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_LOCKED));
@@ -106,7 +106,7 @@ class BlorgPostEdit extends AdminDBEdit
 		$status->addContextNote($option, Blorg::_(
 			'Replies can only be added by an author. Existing replies are '.
 			'still visible on this post.'));
-	
+
 		// closed
 		$option = new SwatOption(BlorgPost::REPLY_STATUS_CLOSED,
 			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_CLOSED));
