@@ -18,23 +18,24 @@ class BlorgPost extends SwatDBDataObject
 	// {{{ class constants
 
 	/**
-	 * Replies are allowed, and automatically show on the site
+	 * New replies are allowed, and are automatically show on the site as long
+	 * as they are not detected as spam.
 	 */
 	const REPLY_STATUS_OPEN      = 0;
 
 	/**
-	 * No New Replies are allowed, but exisiting replies are shown
+	 * New replies are allowed, but must be approved by an admin user before
+	 * being shown.
 	 */
-	const REPLY_STATUS_LOCKED    = 1;
+	const REPLY_STATUS_MODERATED = 1;
 
 	/**
-	 * Replies are allowed, but must be approved by an admin user before being
-	 * shown
+	 * No new replies are allowed, but exisiting replies are shown.
 	 */
-	const REPLY_STATUS_MODERATED = 2;
+	const REPLY_STATUS_LOCKED    = 2;
 
 	/**
-	 * No Replies are allowed, and existing replies are no longer shown
+	 * No new replies are allowed, and existing replies are no longer shown.
 	 */
 	const REPLY_STATUS_CLOSED    = 3;
 
