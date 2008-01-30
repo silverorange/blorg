@@ -32,7 +32,7 @@ BlorgReplyStatusSlider.prototype.createLabels = function()
 
 	for (var i = 0; i < this.options.length; i++) {
 		var span = document.createElement('span');
-		span.appendChild(document.createTextNode(this.options[i]));
+		span.appendChild(document.createTextNode(this.options[i][1]));
 		span.style.position = 'absolute';
 		span.style.width = this.label_width + 'px';
 		span.style.textAlign = 'center';
@@ -46,5 +46,6 @@ BlorgReplyStatusSlider.prototype.createLabels = function()
 
 BlorgReplyStatusSlider.prototype.handleChange = function()
 {
-	this.input.value = Math.floor(this.slider.getValue() / this.increment);
+	var index = Math.floor(this.slider.getValue() / this.increment);
+	this.input.value = this.options[index][0];
 }
