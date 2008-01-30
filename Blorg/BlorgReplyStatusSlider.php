@@ -31,7 +31,7 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 	public $value = null;
 
 	// }}}
-	// {{{ public function__construct()
+	// {{{ public function __construct()
 
 	/**
 	 * Creates a new reply status slider
