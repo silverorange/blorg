@@ -78,9 +78,47 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function initReplyStatuses()
 	{
-		// TODO: default status to config default
 		$status = $this->ui->getWidget('reply_status');
-		$status->addOptionsByArray($this->post->getReplyStatuses());
+
+		// open
+		$option = new SwatOption(BlorgPost::REPLY_STATUS_OPEN,
+			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_OPEN));
+
+		$status->addOption($option);
+		$status->addContextNote($option, Blorg::_(
+			'Replies can be added by anyone and are immediately visible on '.
+			'this post.'));
+
+		// moderated 
+		$option = new SwatOption(BlorgPost::REPLY_STATUS_MODERATED,
+			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_MODERATED));
+
+		$status->addOption($option);
+		$status->addContextNote($option, Blorg::_(
+			'Replies can be added by anyone but must be approved by a site '.
+			'author before being visible on this post.'));
+	
+		// locked
+		$option = new SwatOption(BlorgPost::REPLY_STATUS_LOCKED,
+			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_LOCKED));
+
+		$status->addOption($option);
+		$status->addContextNote($option, Blorg::_(
+			'Replies can only be added by an author. Existing replies are '.
+			'still visible on this post.'));
+	
+		// closed
+		$option = new SwatOption(BlorgPost::REPLY_STATUS_CLOSED,
+			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_CLOSED));
+
+		$status->addOption($option);
+		$status->addContextNote($option, Blorg::_(
+			'Replies can only be added by an author. No replies are visible '.
+			'on this post.'));
+
+		if ($this->id === null) {
+			// TODO: default status to config default
+		}
 	}
 
 	// }}}
