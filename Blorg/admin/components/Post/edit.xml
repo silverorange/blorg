@@ -12,21 +12,21 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField" id="shortname_field">
-				<property name="title" translatable="yes">Shortname</property>
+				<property name="title" translatable="yes">Short Name</property>
 				<widget class="AdminUniqueEntry" id="shortname">
 					<property name="required" type="boolean">true</property>
 					<property name="maxlength" type="integer">255</property>
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Bodytext</property>
+				<property name="title" translatable="yes">Body Text</property>
 				<widget class="SwatTextarea" id="bodytext">
 					<property name="required" type="boolean">true</property>
 					<property name="rows" type="integer">8</property>
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Extended Bodytext</property>
+				<property name="title" translatable="yes">Extended Text</property>
 				<widget class="SwatTextarea" id="extended_bodytext">
 					<property name="rows" type="integer">8</property>
 				</widget>
@@ -40,7 +40,7 @@
 				<widget class="BlorgReplyStatusSlider" id="reply_status" />
 			</widget>
 			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Show on Site?</property>
+				<property name="title" translatable="yes">Show on Site</property>
 				<widget class="SwatCheckbox" id="enabled" />
 			</widget>
 			<widget class="SwatFormField" id="post_date_field">

@@ -17,15 +17,16 @@
 		</widget>
 		<widget class="SwatDetailsView" id="details_view">
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Shortname</property>
+				<property name="title" translatable="yes">Short Name</property>
 				<object class="SwatNullTextCellRenderer">
 					<property name="text" type="data">shortname</property>
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Show on Site?</property>
+				<property name="title" translatable="yes">Show on Site</property>
 				<object class="SwatBooleanCellRenderer">
 					<property name="value" type="data">enabled</property>
+					<property name="stock_id">yes-no</property>
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
@@ -77,7 +78,7 @@
 						</object>
 					</object>
 					<object class="AdminTableViewOrderableColumn" id="show">
-						<property name="title" translatable="yes">Show</property>
+						<property name="title" translatable="yes">Show On Site</property>
 						<object class="SwatBooleanCellRenderer">
 							<property name="value" type="data">show</property>
 						</object>
