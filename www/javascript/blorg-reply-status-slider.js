@@ -31,6 +31,10 @@ BlorgReplyStatusSlider.prototype.createLabels = function()
 	var container = document.getElementById(this.id);
 	var pos = YAHOO.util.Dom.getXY(container);
 
+	// 8 is pixel position of first tick mark in graphic + css offset
+	var x_offset = -Math.floor(this.increment / 2) + 8;
+	var y_offset = 30;
+
 	for (var i = 0; i < this.options.length; i++) {
 		var span = document.createElement('span');
 		span.appendChild(document.createTextNode(this.options[i][1]));
@@ -41,7 +45,7 @@ BlorgReplyStatusSlider.prototype.createLabels = function()
 		YAHOO.util.Dom.addClass(span, 'blorg-reply-status-slider-legend');
 		container.appendChild(span);
 		YAHOO.util.Dom.setXY(span,
-			[pos[0] + (this.increment * i) - 20, pos[1] + 30]);
+			[pos[0] + (this.increment * i) + x_offset, pos[1] + y_offset]);
 	}
 }
 
