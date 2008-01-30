@@ -23,12 +23,13 @@ BlorgReplyStatusSlider.prototype.init = function()
 	this.slider.setValue(value, true, false, true);
 
 	this.createLabels();
+	this.createContextNote();
 }
 
 BlorgReplyStatusSlider.prototype.createLabels = function()
 {
-	var body = document.getElementById(this.id);
-	var pos = YAHOO.util.Dom.getXY(body);
+	var container = document.getElementById(this.id);
+	var pos = YAHOO.util.Dom.getXY(container);
 
 	for (var i = 0; i < this.options.length; i++) {
 		var span = document.createElement('span');
@@ -38,14 +39,48 @@ BlorgReplyStatusSlider.prototype.createLabels = function()
 		span.style.textAlign = 'center';
 		span.style.overflow = 'hidden';
 		YAHOO.util.Dom.addClass(span, 'blorg-reply-status-slider-legend');
-		body.appendChild(span);
+		container.appendChild(span);
 		YAHOO.util.Dom.setXY(span,
 			[pos[0] + (this.increment * i) - 20, pos[1] + 30]);
 	}
 }
 
+BlorgReplyStatusSlider.prototype.createContextNote = function()
+{
+	this.context_note = document.createElement('div');
+	YAHOO.util.Dom.addClass(this.context_note, 'swat-note');
+	YAHOO.util.Dom.addClass(this.context_note,
+		'blorg-reply-status-slider-context-note');
+
+	var container = document.getElementById(this.id);
+	if (container.nextSibling) {
+		container.parentNode.insertBefore(this.context_note,
+			container.nextSibling);
+	} else {
+		container.parentNode.appendChild(this.context_note);
+	}
+
+	this.updateContextNote();
+}
+
 BlorgReplyStatusSlider.prototype.handleChange = function()
 {
-	var index = Math.floor(this.slider.getValue() / this.increment);
+	var index = this.getIndex();
 	this.input.value = this.options[index][0];
+	this.updateContextNote();
+}
+
+BlorgReplyStatusSlider.prototype.getIndex = function()
+{
+	return Math.floor(this.slider.getValue() / this.increment);
+}
+
+BlorgReplyStatusSlider.prototype.updateContextNote = function()
+{
+	var index = this.getIndex();
+	if (this.context_note.firstChild)
+		this.context_note.removeChild(this.context_note.firstChild);
+
+	this.context_note.appendChild(
+		document.createTextNode(this.options[index][2]));
 }

@@ -3,6 +3,7 @@
 require_once 'Swat/SwatOptionControl.php';
 require_once 'Swat/SwatHtmlTag.php';
 require_once 'Swat/SwatYUI.php';
+require_once 'Swat/exceptions/SwatObjectNotFoundException.php';
 
 /**
  * Slider widget to select between different reply statuses for Blörg posts
@@ -12,13 +13,16 @@ require_once 'Swat/SwatYUI.php';
  * display uses a background image that requires the number of options to be
  * four.
  *
+ * Context-help can be added for options using the
+ * {BlorgReplyStatusSlider::addContextNote()} method.
+ *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgReplyStatusSlider extends SwatOptionControl
 {
-	// {{{ public proeprties
+	// {{{ public properties
 
 	/**
 	 * Slider value
@@ -29,6 +33,13 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 	 * @var mixed
 	 */
 	public $value = null;
+
+	/**
+	 * Context notes of this slider control indexed by option object
+	 *
+	 * @var array
+	 */
+	public $context_notes_by_option = array();
 
 	// }}}
 	// {{{ public function __construct()
@@ -123,6 +134,31 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 	}
 
 	// }}}
+	// {{{ public function addContextNote()
+
+	/**
+	 * Adds a context note to an option in this slider
+	 *
+	 * A context note for the selected option will be displayed underneath the
+	 * slider control.
+	 *
+	 * @param SwatOption $option the option to which to add the note.
+	 * @param string $note the note to add.
+	 *
+	 * @throws SwatObjectNotFoundException if the specified option is not an
+	 *                                     option of this slider.
+	 */
+	public function addContextNote(SwatOption $option, $note)
+	{
+		if (!in_array($option, $this->options)) {
+			throw new SwatObjectNotFoundException(
+				'Specified option does not exist in this slider.');
+		}
+
+		$this->context_notes_by_option[spl_object_hash($option)] = $note;
+	}
+
+	// }}}
 	// {{{ protected function getInlineJavaScript()
 
 	/**
@@ -141,9 +177,17 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 				$value = (string)$option->value;
 			}
 
-			$options[] = sprintf('[%s, %s]',
+			$key = spl_object_hash($option);
+			if (array_key_exists($key, $this->context_notes_by_option)) {
+				$note = $this->context_notes_by_option[$key];
+			} else {
+				$note = '';
+			}
+
+			$options[] = sprintf('[%s, %s, %s]',
 				SwatString::quoteJavaScriptString($value),
-				SwatString::quoteJavaScriptString($option->title));
+				SwatString::quoteJavaScriptString($option->title),
+				SwatString::quoteJavaScriptString($note));
 		}
 		$options = implode(', ', $options);
 
