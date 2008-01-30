@@ -20,12 +20,11 @@ class BlorgPostFullView extends BlorgPostLongView
 	public function display($link = false)
 	{
 		echo '<div class="entry hentry">';
-
 		$this->displayHeader($link);
 		$this->displayBody();
-		$this->displayReplies();
-
 		echo '</div>';
+
+		$this->displayReplies();
 	}
 
 	// }}}
