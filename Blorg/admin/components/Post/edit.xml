@@ -37,9 +37,7 @@
 			</widget>
 			<widget class="SwatFormField">
 				<property name="title" translatable="yes">Reply Status</property>
-				<widget class="SwatFlydown" id="reply_status">
-					<property name="show_blank" type="boolean">false</property>
-				</widget>
+				<widget class="BlorgReplyStatusSlider" id="reply_status" />
 			</widget>
 			<widget class="SwatFormField">
 				<property name="title" translatable="yes">Show on Site?</property>
