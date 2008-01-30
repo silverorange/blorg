@@ -147,6 +147,13 @@ class BlorgPostPage extends SitePathPage
 			$reply->bodytext = $bodytext->value;
 			$reply->createdate = $now;
 
+			if ($this->reply_ui->getWidget('remember_me')->value) {
+				$this->saveReplyCookie($fullname->value, $link->value,
+					$email->value);
+			} else {
+				$this->deleteReplyCookie();
+			}
+
 			$fullname->value = null;
 			$link->value = null;
 			$email->value = null;
@@ -181,6 +188,28 @@ class BlorgPostPage extends SitePathPage
 			$this->post->replies->add($reply);
 			$this->post->save();
 		}
+	}
+
+	// }}}
+	// {{{ protected function saveReplyCookie()
+
+	protected function saveReplyCookie($fullname, $link, $email)
+	{
+		$value = array(
+			'fullname' => $fullname,
+			'link'     => $link,
+			'email'    => $email,
+		);
+
+		$this->app->cookie->setCookie('reply_credentials', $value);
+	}
+
+	// }}}
+	// {{{ protected function deleteReplyCookie()
+
+	protected function deleteReplyCookie()
+	{
+		$this->app->cookie->removeCookie('reply_credentials');
 	}
 
 	// }}}
@@ -235,11 +264,19 @@ class BlorgPostPage extends SitePathPage
 	protected function buildReplyUi()
 	{
 		$form = $this->reply_ui->getWidget('reply_edit_form');
+		$ui   = $this->reply_ui;
 
 		switch ($this->post->reply_status) {
 		case BlorgPost::REPLY_STATUS_OPEN:
 		case BlorgPost::REPLY_STATUS_MODERATED:
 			$form->action = $this->source.'#reply_edit_frame'; // TODO: fragment should point to new reply or reply preview
+			if (isset($this->app->cookie->reply_credentials)) {
+				$values = $this->app->cookie->reply_credentials;
+				$ui->getWidget('fullname')->value    = $values['fullname'];
+				$ui->getWidget('link')->value        = $values['link'];
+				$ui->getWidget('email')->value       = $values['email'];
+				$ui->getWidget('remember_me')->value = true;
+			}
 			break;
 
 		case BlorgPost::REPLY_STATUS_LOCKED:
@@ -248,13 +285,13 @@ class BlorgPostPage extends SitePathPage
 			$message->secondary_content =
 				Blorg::_('No new replies may be posted for this article.');
 
-			$this->reply_ui->getWidget('message_display')->add($message,
+			$ui->getWidget('message_display')->add($message,
 				SwatMessageDisplay::DISMISS_OFF);
 
 			break;
 
 		case BlorgPost::REPLY_STATUS_CLOSED:
-			$this->reply_ui->getRoot()->visible = false;
+			$ui->getRoot()->visible = false;
 			break;
 		}
 	}
