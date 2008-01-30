@@ -208,10 +208,10 @@ class BlorgPost extends SwatDBDataObject
 		return array(
 			self::REPLY_STATUS_OPEN =>
 				self::getReplyStatusTitle(self::REPLY_STATUS_OPEN),
-			self::REPLY_STATUS_LOCKED =>
-				self::getReplyStatusTitle(self::REPLY_STATUS_LOCKED),
 			self::REPLY_STATUS_MODERATED =>
 				self::getReplyStatusTitle(self::REPLY_STATUS_MODERATED),
+			self::REPLY_STATUS_LOCKED =>
+				self::getReplyStatusTitle(self::REPLY_STATUS_LOCKED),
 			self::REPLY_STATUS_CLOSED =>
 				self::getReplyStatusTitle(self::REPLY_STATUS_CLOSED),
 		);
