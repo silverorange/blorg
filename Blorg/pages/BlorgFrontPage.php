@@ -30,8 +30,9 @@ class BlorgFrontPage extends SitePage
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct()
+	public function __construct(SiteApplication $app, SiteLayout $layout = null)
 	{
+		parent::__construct($app, $layout);
 		$this->initPosts();
 	}
 
