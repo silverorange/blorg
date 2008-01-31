@@ -1,8 +1,7 @@
 <?php
 
 require_once 'Site/SitePageFactory.php';
-require_once 'Site/SitePath.php';
-require_once 'Site/pages/SitePathPage.php';
+require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 
 /**
@@ -87,18 +86,15 @@ class BlorgPageFactory extends SitePageFactory
 	 * @param SiteWebApplication $app the web application for which the page is
 	 *                                 being resolved.
 	 * @param string $source the source string for which to get the page.
-	 * @param SiteLayout $layout optional. The layout to use.
-	 * @param SitePath $root_path optional. The root path of the page to reolve.
+	 * @param SiteLayout $layout optional. The layout to use. If not specified,
+	 *                            the layout is resolved from the
+	 *                            <i>$source</i>.
 	 *
 	 * @return SitePage the page for the given source string.
 	 */
 	public function resolvePage(SiteWebApplication $app, $source,
-		SitePath $root_path = null, $layout = null)
+		$layout = null)
 	{
-		if ($root_path === null) {
-			$root_path = new SitePath();
-		}
-
 		if ($layout === null) {
 			$layout = $this->resolveLayout($app, $source);
 		}
@@ -109,11 +105,6 @@ class BlorgPageFactory extends SitePageFactory
 			// front page
 			$page = $this->instantiatePage($app, 'BlorgFrontPage',
 				array($app, $layout));
-
-			// set root path on page
-			if ($page instanceof SitePathPage) {
-				$page->setPath($root_path);
-			}
 		} else {
 			foreach ($this->getPageMap() as $pattern => $class) {
 				$params = array();
@@ -133,11 +124,6 @@ class BlorgPageFactory extends SitePageFactory
 
 					$page = $this->instantiatePage($app, $class, $params);
 
-					// set root path on page
-					if ($page instanceof SitePathPage) {
-						$page->setPath($root_path);
-					}
-
 					break;
 				}
 			}
@@ -155,7 +141,7 @@ class BlorgPageFactory extends SitePageFactory
 	// {{{ protected function instantiatePage()
 
 	/**
-	 * Instantiates a Blorg page
+	 * Instantiates a Blörg page
 	 *
 	 * @param SiteWebApplication $app the web application for which the page is
 	 *                                 being resolved.

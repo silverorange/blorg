@@ -156,21 +156,15 @@ abstract class BlorgPostView
 
 	protected function getPostRelativeUri()
 	{
-		$page = $this->app->getPage();
-		if ($page instanceof SitePathPage) {
-			$root_path = $page->getPath()->__toString();
-			$root_path = (strlen($root_path)) ?
-				$root_path.'/archive' : 'archive';
-		} else {
-			$root_path = 'archive';
-		}
+		$path = $this->app->config->blorg->path.'archive';
 
-		$year = $this->post->post_date->getYear();
-		$month_name = BlorgPageFactory::$month_names[
-			$this->post->post_date->getMonth()];
+		$date = clone $this->post->post_date;
+		$date->convertTZ($this->app->default_time_zone);
+		$year = $date->getYear();
+		$month_name = BlorgPageFactory::$month_names[$date->getMonth()];
 
 		return sprintf('%s/%s/%s/%s',
-			$root_path,
+			$path,
 			$year,
 			$month_name,
 			$this->post->shortname);
@@ -181,17 +175,9 @@ abstract class BlorgPostView
 
 	protected function getAuthorRelativeUri(AdminUser $author)
 	{
-		$page = $this->app->getPage();
-		if ($page instanceof SitePathPage) {
-			$root_path = $page->getPath()->__toString();
-			$root_path = (strlen($root_path)) ?
-				$root_path.'/author' : 'author';
-		} else {
-			$root_path = 'author';
-		}
-
+		$path = $this->app->config->blorg->path.'author';
 		return sprintf('%s/%s',
-			$root_path,
+			$path,
 			$author->email); // TODO: use shortname
 	}
 
