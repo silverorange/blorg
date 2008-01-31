@@ -2,6 +2,7 @@
 
 require_once 'XML/RPC2/Client.php';
 require_once 'Site/SiteApplication.php';
+require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 
 /**
@@ -60,10 +61,10 @@ class BlorgWeblogsDotComPinger
 	 *                           build from the application.
 	 */
 	public function __construct(SiteApplication $app, BlorgPost $post,
-		$base_href = null);
+		$base_href = null)
 	{
-		$this->app = strval($name);
-		$this->post = strval($post);
+		$this->app = $app;
+		$this->post = $post;
 
 		if ($base_href === null) {
 			$this->base_href = $app->getBaseHref().$app->config->blorg->path;
@@ -73,7 +74,7 @@ class BlorgWeblogsDotComPinger
 
 		$this->client = XML_RPC2_Client::create(
 			self::WEBLOGS_DOT_COM_SERVER,
-				array('prefix' => 'weblogUpdates', 'encoding' => 'utf-8'));
+				array('prefix' => 'weblogUpdates.', 'encoding' => 'utf-8'));
 	}
 
 	// }}}
