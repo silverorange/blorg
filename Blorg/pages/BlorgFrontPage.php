@@ -7,7 +7,7 @@ require_once 'Blorg/BlorgPostFullView.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
 /**
- * Displays all recent posts revers chronologically
+ * Displays all recent posts in reverse chronological order
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -17,7 +17,7 @@ class BlorgFrontPage extends SitePage
 {
 	// {{{ class constants
 
-	const MAX_POSTS = 20;
+	const MAX_POSTS = 10;
 
 	// }}}
 	// {{{ protected properties
@@ -28,9 +28,9 @@ class BlorgFrontPage extends SitePage
 	protected $posts;
 
 	// }}}
-	// {{{ public function init()
+	// {{{ public function __construct()
 
-	public function init()
+	public function __construct()
 	{
 		$this->initPosts();
 	}
