@@ -9,6 +9,8 @@ require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 /**
  * Displays all recent posts in reverse chronological order
  *
+ * The constant MAX_POSTS determines how many posts are displayed on the page.
+ *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
