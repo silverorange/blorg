@@ -36,6 +36,27 @@ class BlorgFrontPage extends SitePage
 	}
 
 	// }}}
+	// {{{ protected function initPosts()
+
+	protected function initPosts()
+	{
+		$instance_id = $this->app->instance->getId();
+
+		$sql = sprintf('select * from BlorgPost
+			where instance %s %s
+				and enabled = true
+			order by post_date desc limit %s',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->app->db->quote(self::MAX_POSTS, 'integer'));
+
+		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
+		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
+	}
+
+	// }}}
+
+	// build phase
 	// {{{ public function build()
 
 	public function build()
@@ -54,25 +75,6 @@ class BlorgFrontPage extends SitePage
 			$view = new BlorgPostLongView($this->app, $post);
 			$view->display(true);
 		}
-	}
-
-	// }}}
-	// {{{ protected function initPosts()
-
-	protected function initPosts()
-	{
-		$instance_id = $this->app->instance->getId();
-
-		$sql = sprintf('select * from BlorgPost
-			where instance %s %s
-				and enabled = true
-			order by post_date desc limit %s',
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(self::MAX_POSTS, 'integer'));
-
-		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
-		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
 	}
 
 	// }}}
