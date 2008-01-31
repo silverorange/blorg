@@ -42,6 +42,18 @@
 					<property name="format" type="constant">SwatDate::DF_DATE</property>
 				</object>
 			</object>
+			<object class="SwatDetailsViewField" id="modified_date">
+				<property name="title" translatable="yes">Last Modified</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">modified_date</property>
+					<property name="format" type="constant">SwatDate::DF_DATE</property>
+					<property name="visible" type="data">has_modified_date</property>
+				</object>
+				<object class="SwatNullTextCellRenderer">
+					<property name="null_text" translatable="yes">&lt;never&gt;</property>
+					<property name="visible" type="data">!has_modified_date</property>
+				</object>
+			</object>
 		</widget>
 		<widget class="SwatContentBlock" id="post_preview"/>
 		<!-- {{{ Replies -->
