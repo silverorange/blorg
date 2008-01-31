@@ -16,6 +16,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * - /archive/<year>/<month>/<post-shortname>
  * - /author
  * - /author/<author-shortname>
+ * - /feed/atom
  * - /
  *
  * @package   Blörg
@@ -244,6 +245,7 @@ class BlorgPageFactory extends SitePageFactory
 	 * - /archive/<year>/<month>/<post-shortname>
 	 * - /author
 	 * - /author/<author-shortname>
+	 * - /feed/atom
 	 *
 	 * @return array the page mappings of this factory.
 	 */
@@ -258,6 +260,7 @@ class BlorgPageFactory extends SitePageFactory
 			'^archive/(\d{4})$'                        => 'BlorgYearArchivePage',
 			'^archive/(\d{4})/('.$months.')$'          => 'BlorgMonthArchivePage',
 			'^archive/(\d{4})/('.$months.')/([\w-]+)$' => 'BlorgPostPage',
+			'^feed/atom'                               => 'BlorgAtomFeedPage',
 		);
 	}
 
