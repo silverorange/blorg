@@ -2,6 +2,7 @@
 
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
+require_once 'Blorg/BlorgWeblogsDotComPinger.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 
 /**
@@ -229,10 +230,30 @@ class BlorgPostEdit extends AdminDBEdit
 			'post', $this->post->id, 'tag', $tag_list->values,
 			'BlorgTag', 'id');
 
-		// don't bother displaying the title in the message as it may be null
-		$message = new SwatMessage(Blorg::_('Post has been saved.'));
+		$message = new SwatMessage(sprintf(Blorg::_('%s has been saved.'),
+			$this->post->getTitle()));
+
+		if ($this->post->enabled) {
+			$this->pingWebLogsDotCom();
+			$message->secondary_content = Blorg::_(
+				'Weblogs.com has been notified of updated content.');
+		}
 
 		$this->app->messages->add($message);
+	}
+
+	// }}}
+	// {{{ protected function pingWeblogsDotCom()
+
+	protected function pingWeblogsDotCom()
+	{
+		$base_href = $this->app->getFrontendBaseHref().
+			$this->app->config->blorg->path;
+
+		$pinger = new BlorgWeblogsDotComPinger($this->app, $this->post,
+			$base_href);
+
+		$pinger->ping();
 	}
 
 	// }}}
