@@ -230,7 +230,7 @@ class BlorgPostEdit extends AdminDBEdit
 			'post', $this->post->id, 'tag', $tag_list->values,
 			'BlorgTag', 'id');
 
-		$message = new SwatMessage(sprintf(Blorg::_('%s has been saved.'),
+		$message = new SwatMessage(sprintf(Blorg::_('“%s” has been saved.'),
 			$this->post->getTitle()));
 
 		if ($this->post->enabled) {
