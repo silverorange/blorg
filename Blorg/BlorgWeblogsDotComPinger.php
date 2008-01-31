@@ -10,7 +10,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
  * Usage:
  * <code>
  * <?php
- * $pinger = new BlorgWeblogsDotComPinger($app, $post);
+ * $pinger = new BlorgWeblogsDotComPinger($app, $post, $base_href);
  * $pinger->ping();
  * ?>
  * </code>
@@ -43,6 +43,11 @@ class BlorgWeblogsDotComPinger
 	 */
 	protected $post;
 
+	/**
+	 * @var string
+	 */
+	protected $base_href;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -51,11 +56,20 @@ class BlorgWeblogsDotComPinger
 	 *
 	 * @param SiteApplication $app
 	 * @param BlorgPost $post
+	 * @param string $base_href optional. If not specified, the base href is
+	 *                           build from the application.
 	 */
-	public function __construct(SiteApplication $app, BlorgPost $post);
+	public function __construct(SiteApplication $app, BlorgPost $post,
+		$base_href = null);
 	{
-		$this->name = strval($name);
-		$this->uri = strval($uri);
+		$this->app = strval($name);
+		$this->post = strval($post);
+
+		if ($base_href === null) {
+			$this->base_href = $app->getBaseHref().$app->config->blorg->path;
+		} else {
+			$this->base_href = strval($base_href);
+		}
 
 		$this->client = XML_RPC2_Client::create(
 			self::WEBLOGS_DOT_COM_SERVER,
@@ -82,14 +96,7 @@ class BlorgWeblogsDotComPinger
 
 	protected function getSiteUri()
 	{
-		$page = $this->app->getPage();
-		if ($page instanceof SitePathPage) {
-			$root_path = $page->getPath()->__toString();
-		} else {
-			$root_path = '';
-		}
-
-		return $this->app->getBaseHref().$root_path;
+		return $this->base_href;
 	}
 
 	// }}}
@@ -97,23 +104,13 @@ class BlorgWeblogsDotComPinger
 
 	protected function getPostUri()
 	{
-		$page = $this->app->getPage();
-		if ($page instanceof SitePathPage) {
-			$root_path = $page->getPath()->__toString();
-			$root_path = (strlen($root_path)) ?
-				$root_path.'/archive' : 'archive';
-		} else {
-			$root_path = 'archive';
-		}
-
 		$date = clone $this->post->post_date;
 		$date->convertTZ($this->app->default_time_zone);
 		$year = $date->getYear();
 		$month_name = BlorgPageFactory::$month_names[$date->getMonth()];
 
-		return sprintf('%s%s/%s/%s/%s',
-			$this->app->getBaseHref(),
-			$root_path,
+		return sprintf('%sarchive/%s/%s/%s',
+			$this->base_href,
 			$year,
 			$month_name,
 			$this->post->shortname);
@@ -124,7 +121,7 @@ class BlorgWeblogsDotComPinger
 
 	protected function getAtomUri()
 	{
-		return $this->getSitePath().'/atom'; // TODO
+		return $this->base_href.'feed/atom';
 	}
 
 	// }}}

@@ -7,8 +7,9 @@ require_once 'Admin/Admin.php';
 /**
  * Container for package wide static methods
  *
- * @package   Blorg
+ * @package   Blörg
  * @copyright 2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class Blorg
 {
@@ -73,7 +74,7 @@ class Blorg
 	// {{{ public static function getConfigDefinitions()
 
 	/**
-	 * Gets configuration definitions used by the Blorg package
+	 * Gets configuration definitions used by the Blörg package
 	 *
 	 * Applications should add these definitions to their config module before
 	 * loading the application configuration.
@@ -85,7 +86,10 @@ class Blorg
 	public static function getConfigDefinitions()
 	{
 		return array(
-			// TODO
+			// Optional path prefix for all Blörg content. If specified, this
+			// must have a trailing slash. This is used to integrate Blörg
+			// content into another site.
+			'blorg.path' => '',
 		);
 	}
 

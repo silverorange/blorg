@@ -64,14 +64,7 @@ class BlorgYearArchivePage extends SitePathPage
 
 	protected function buildNavBar()
 	{
-		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
-		$path = $this->getPath()->__toString();
-
-		if ($path == '') {
-			$path = 'archive';
-		} else {
-			$path.= '/archive';
-		}
+		$path = $this->app->config->blorg->path.'archive';
 		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
 
 		$path.= '/'.$this->year;
@@ -83,8 +76,7 @@ class BlorgYearArchivePage extends SitePathPage
 
 	protected function displayMonths()
 	{
-		$root_path = $this->getPath()->__toString();
-		$root_path = (strlen($root_path)) ? $root_path.'/archive' : 'archive';
+		$path = $this->app->config->path.'archive';
 
 		$ul_tag = new SwatHtmlTag('ul');
 		$ul_tag->class = 'months';
@@ -98,7 +90,7 @@ class BlorgYearArchivePage extends SitePathPage
 
 			$anchor_tag = new SwatHtmlTag('a');
 			$anchor_tag->href = sprintf('%s/%s/%s',
-				$root_path,
+				$path,
 				$this->year,
 				BlorgPageFactory::$month_names[$month]);
 

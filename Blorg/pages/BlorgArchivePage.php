@@ -1,7 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/pages/SitePathPage.php';
+require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/Blorg.php';
@@ -13,7 +13,7 @@ require_once 'Blorg/Blorg.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgArchivePage extends SitePathPage
+class BlorgArchivePage extends SitePage
 {
 	// {{{ protected properties
 
@@ -66,14 +66,7 @@ class BlorgArchivePage extends SitePathPage
 
 	protected function buildNavBar()
 	{
-		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
-		$path = $this->getPath()->__toString();
-
-		if ($path == '') {
-			$path = 'archive';
-		} else {
-			$path.= '/archive';
-		}
+		$path = $this->app->config->blorg->path.'archive';
 		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
 	}
 
@@ -82,8 +75,7 @@ class BlorgArchivePage extends SitePathPage
 
 	protected function displayArchive()
 	{
-		$root_path = $this->getPath()->__toString();
-		$root_path = (strlen($root_path)) ? $root_path.'/archive' : 'archive';
+		$path = $this->app->config->blorg->path.'archive';
 
 		$year_ul_tag = new SwatHtmLTag('ul');
 		$year_ul_tag->class = 'blorg-archive-years';
@@ -93,7 +85,7 @@ class BlorgArchivePage extends SitePathPage
 			$year_li_tag->open();
 			$year_anchor_tag = new SwatHtmlTag('a');
 			$year_anchor_tag->href = sprintf('%s/%s',
-				$root_path,
+				$path,
 				$year);
 
 			$year_anchor_tag->setContent($year);
@@ -109,7 +101,7 @@ class BlorgArchivePage extends SitePathPage
 				$month_li_tag->open();
 				$month_anchor_tag = new SwatHtmlTag('a');
 				$month_anchor_tag->href = sprintf('%s/%s/%s',
-					$root_path,
+					$path,
 					$year,
 					BlorgPageFactory::$month_names[$month]);
 

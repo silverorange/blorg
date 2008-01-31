@@ -1,7 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/pages/SitePathPage.php';
+require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgPostShortView.php';
@@ -15,7 +15,7 @@ require_once 'Blorg/Blorg.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgMonthArchivePage extends SitePathPage
+class BlorgMonthArchivePage extends SitePage
 {
 	// {{{ protected properties
 
@@ -71,14 +71,7 @@ class BlorgMonthArchivePage extends SitePathPage
 
 	protected function buildNavBar()
 	{
-		$this->getPath()->addEntriesToNavBar($this->layout->navbar);
-		$path = $this->getPath()->__toString();
-
-		if ($path == '') {
-			$path = 'archive';
-		} else {
-			$path.= '/archive';
-		}
+		$path = $this->app->config->blorg->path.'archive';
 		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
 
 		$path.= '/'.$this->year;
