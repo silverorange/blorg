@@ -97,8 +97,15 @@ abstract class BlorgPostView
 
 		echo '<div class="entry-subtitle">';
 
-		printf(Blorg::_('Posted by %s on %s - %s'),
-			$author, $post_date, $reply_count);
+		if ($this->post->reply_status == BlorgPost::REPLY_STATUS_CLOSED ||
+			(count($this->post->replies) == 0 &&
+			$this->post->reply_status == BlorgPost::REPLY_STATUS_LOCKED)) {
+			printf(Blorg::_('Posted by %s on %s'),
+				$author, $post_date);
+		} else {
+			printf(Blorg::_('Posted by %s on %s - %s'),
+				$author, $post_date, $reply_count);
+		}
 
 		echo '</div>';
 	}
@@ -162,17 +169,18 @@ abstract class BlorgPostView
 	{
 		$count = count($this->post->replies);
 
-		$span_tag = new SwatHtmlTag('span');
-		$span_tag->class = 'reply-count';
+		$anchor_tag = new SwatHtmlTag('a');
+		$anchor_tag->href = $this->getPostRelativeUri().'#replies';
+		$anchor_tag->class = 'reply-count';
 		if ($count == 0) {
-			$span_tag->setContent(Blorg::_('no replies'));
+			$anchor_tag->setContent(Blorg::_('no replies'));
 		} else {
 			$locale = SwatI18NLocale::get();
-			$span_tag->setContent(sprintf(
+			$anchor_tag->setContent(sprintf(
 				Blorg::ngettext('%s reply', '%s replies', $count),
 				$locale->formatNUmber($count)));
 		}
-		$span_tag->display();
+		$anchor_tag->display();
 	}
 
 	// }}}
