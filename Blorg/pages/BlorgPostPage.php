@@ -131,62 +131,72 @@ class BlorgPostPage extends SitePage
 			$this->post->reply_status == BlorgPost::REPLY_STATUS_MODERATED) &&
 			$form->isProcessed() && !$form->hasMessage()) {
 
-			$now = new SwatDate();
-			$now->toUTC();
+			$this->saveReply();
+		}
+	}
 
-			$fullname = $this->reply_ui->getWidget('fullname');
-			$link = $this->reply_ui->getWidget('link');
-			$email = $this->reply_ui->getWidget('email');
-			$bodytext = $this->reply_ui->getWidget('bodytext');
+	// }}}
+	// {{{ protected function saveReply()
 
-			$class_name = SwatDBClassMap::get('BlorgReply');
-			$reply = new $class_name();
-			$reply->fullname = $fullname->value;
-			$reply->link = $link->value;
-			$reply->email = $email->value;
-			$reply->bodytext = $bodytext->value;
-			$reply->createdate = $now;
+	protected function saveReply()
+	{
+		$now = new SwatDate();
+		$now->toUTC();
 
-			if ($this->reply_ui->getWidget('remember_me')->value) {
-				$this->saveReplyCookie($fullname->value, $link->value,
-					$email->value);
-			} else {
-				$this->deleteReplyCookie();
-			}
+		$fullname   = $this->reply_ui->getWidget('fullname');
+		$link       = $this->reply_ui->getWidget('link');
+		$email      = $this->reply_ui->getWidget('email');
+		$bodytext   = $this->reply_ui->getWidget('bodytext');
+		$ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
+		$user_agent = substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
 
-			$fullname->value = null;
-			$link->value = null;
-			$email->value = null;
-			$bodytext->value = null;
+		$class_name = SwatDBClassMap::get('BlorgReply');
+		$reply = new $class_name();
 
-			switch ($this->post->reply_status) {
-			case BlorgPost::REPLY_STATUS_OPEN:
-				$reply->approved = true;
-				$message = new SwatMessage(
-					Blorg::_('Your reply has been added.'));
+		$reply->fullname   = $fullname->value;
+		$reply->link       = $link->value;
+		$reply->email      = $email->value;
+		$reply->bodytext   = $bodytext->value;
+		$reply->createdate = $now;
+		$reply->ip_address = $ip_address;
+		$reply->user_agent = $user_agent;
 
-				$this->reply_ui->getWidget('message_display')->add($message,
-					SwatMessageDisplay::DISMISS_OFF);
+		if ($this->reply_ui->getWidget('remember_me')->value) {
+			$this->saveReplyCookie($fullname->value, $link->value,
+				$email->value);
+		} else {
+			$this->deleteReplyCookie();
+		}
 
-				break;
+		$this->post->replies->add($reply);
+		$this->post->save();
 
-			case BlorgPost::REPLY_STATUS_MODERATED:
-				$reply->approved = false;
-				$message = new SwatMessage(
-					Blorg::_('Your reply has been submitted.'));
+		$this->clearReplyUi();
 
-				$message->secondary_content =
-					Blorg::_('Your reply will be added to the site upon '.
-						'being approved by the site moderators.');
+		switch ($this->post->reply_status) {
+		case BlorgPost::REPLY_STATUS_OPEN:
+			$reply->approved = true;
+			$message = new SwatMessage(
+				Blorg::_('Your reply has been added.'));
 
-				$this->reply_ui->getWidget('message_display')->add($message,
-					SwatMessageDisplay::DISMISS_OFF);
+			$this->reply_ui->getWidget('message_display')->add($message,
+				SwatMessageDisplay::DISMISS_OFF);
 
-				break;
-			}
+			break;
 
-			$this->post->replies->add($reply);
-			$this->post->save();
+		case BlorgPost::REPLY_STATUS_MODERATED:
+			$reply->approved = false;
+			$message = new SwatMessage(
+				Blorg::_('Your reply has been submitted.'));
+
+			$message->secondary_content =
+				Blorg::_('Your reply will be added to the site upon '.
+					'being approved by the site moderators.');
+
+			$this->reply_ui->getWidget('message_display')->add($message,
+				SwatMessageDisplay::DISMISS_OFF);
+
+			break;
 		}
 	}
 
@@ -210,6 +220,17 @@ class BlorgPostPage extends SitePage
 	protected function deleteReplyCookie()
 	{
 		$this->app->cookie->removeCookie('reply_credentials');
+	}
+
+	// }}}
+	// {{{ protected function clearReplyUi()
+
+	protected function clearReplyUi()
+	{
+		$this->reply_ui->getWidget('fullname')->value = null;
+		$this->reply_ui->getWidget('link')->value     = null;
+		$this->reply_ui->getWidget('email')->value    = null;
+		$this->reply_ui->getWidget('bodytext')->value = null;
 	}
 
 	// }}}
