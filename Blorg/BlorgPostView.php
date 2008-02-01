@@ -82,8 +82,6 @@ abstract class BlorgPostView
 	 */
 	protected function displaySubTitle()
 	{
-		$base = 'news/'; // TODO
-
 		// display author information
 		ob_start();
 		$this->displayPostAuthor();
