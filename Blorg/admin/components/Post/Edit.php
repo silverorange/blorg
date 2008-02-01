@@ -278,6 +278,19 @@ class BlorgPostEdit extends AdminDBEdit
 	}
 
 	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+		$this->layout->addHtmlHeadEntry(new SwatStyleSheetHtmlHeadEntry(
+			'packages/blorg/admin/styles/blorg-post-edit-page.css',
+			Store::PACKAGE_ID));
+	}
+
+	// }}}
 }
 
 ?>
