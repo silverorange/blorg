@@ -220,6 +220,19 @@ class BlorgPostDetails extends AdminIndex
 	}
 
 	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+		$this->layout->addHtmlHeadEntry(new SwatStyleSheetHtmlHeadEntry(
+			'packages/blorg/admin/styles/blorg-post-details-page.css',
+			Store::PACKAGE_ID));
+	}
+
+	// }}}
 }
 
 ?>
