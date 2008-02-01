@@ -2,6 +2,7 @@
 
 require_once 'Swat/SwatDate.php';
 require_once 'Swat/SwatString.php';
+require_once 'SwatI18N/SwatI18NLocale.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/Blorg.php';
 require_once 'Blorg/BlorgPageFactory.php';
@@ -82,20 +83,22 @@ abstract class BlorgPostView
 	 */
 	protected function displaySubTitle()
 	{
-		// display author information
 		ob_start();
 		$this->displayPostAuthor();
 		$author = ob_get_clean();
 
-		// display date information
 		ob_start();
 		$this->displayPermalink();
 		$post_date = ob_get_clean();
 
+		ob_start();
+		$this->displayReplyCount();
+		$reply_count = ob_get_clean();
+
 		echo '<div class="entry-subtitle">';
 
-		printf(Blorg::_('Posted by %s on %s'),
-			$author, $post_date);
+		printf(Blorg::_('Posted by %s on %s - %s'),
+			$author, $post_date, $reply_count);
 
 		echo '</div>';
 	}
@@ -166,7 +169,7 @@ abstract class BlorgPostView
 		} else {
 			$locale = SwatI18NLocale::get();
 			$span_tag->setContent(sprintf(
-				Blorg::ngettext('%s reply', '%s replies'),
+				Blorg::ngettext('%s reply', '%s replies', $count),
 				$locale->formatNUmber($count)));
 		}
 		$span_tag->display();
