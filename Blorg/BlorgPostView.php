@@ -85,35 +85,13 @@ abstract class BlorgPostView
 		$base = 'news/'; // TODO
 
 		// display author information
-		//if ($this->post->author->) { // TODO: make sure author can be displayed
-			ob_start();
-
-			$span_tag = new SwatHtmlTag('span');
-			$span_tag->class = 'vcard author';
-			$span_tag->open();
-
-			$year = $this->post->post_date->getYear();
-			$month_name = BlorgPageFactory::$month_names[
-				$this->post->post_date->getMonth()];
-
-			$anchor_tag = new SwatHtmlTag('a');
-			$author_tag->class = 'fn url';
-			$anchor_tag->href =
-				$this->getAuthorRelativeUri($this->post->author);
-
-			$anchor_tag->setContent($this->post->author->name);
-			$anchor_tag->display();
-
-			$span_tag->close();
-
-			$author = ob_get_clean();
-		//}
+		ob_start();
+		$this->displayPostAuthor();
+		$author = ob_get_clean();
 
 		// display date information
 		ob_start();
-
 		$this->displayPermalink();
-
 		$post_date = ob_get_clean();
 
 		echo '<div class="entry-subtitle">';
@@ -149,6 +127,28 @@ abstract class BlorgPostView
 		$abbr_tag->display();
 
 		$anchor_tag->close();
+	}
+
+	// }}}
+	// {{{ protected function displayPostAuthor()
+
+	protected function displayPostAuthor()
+	{
+		//if ($this->post->author->) { // TODO: make sure author can be displayed
+			$span_tag = new SwatHtmlTag('span');
+			$span_tag->class = 'vcard author';
+			$span_tag->open();
+
+			$anchor_tag = new SwatHtmlTag('a');
+			$anchor_tag->class = 'fn url';
+			$anchor_tag->href =
+				$this->getAuthorRelativeUri($this->post->author);
+
+			$anchor_tag->setContent($this->post->author->name);
+			$anchor_tag->display();
+
+			$span_tag->close();
+		//}
 	}
 
 	// }}}

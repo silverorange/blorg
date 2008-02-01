@@ -64,6 +64,25 @@ class BlorgPostAdminView extends BlorgPostLongView
 	}
 
 	// }}}
+	// {{{ protected function displayPostAuthor()
+
+	protected function displayPostAuthor()
+	{
+		//if ($this->post->author->) { // TODO: make sure author can be displayed
+			$span_tag = new SwatHtmlTag('span');
+			$span_tag->class = 'vcard author';
+			$span_tag->open();
+
+			$name_span_tag = new SwatHtmlTag('a');
+			$name_span_tag->class = 'fn url';
+			$name_span_tag->setContent($this->post->author->name);
+			$name_span_tag->display();
+
+			$span_tag->close();
+		//}
+	}
+
+	// }}}
 }
 
 ?>
