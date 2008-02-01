@@ -101,6 +101,7 @@ class BlorgPostDetails extends AdminIndex
 	protected function buildInternal()
 	{
 		parent::buildInternal();
+		$this->buildNavBar();
 		$this->buildPost();
 		$this->buildReplies();
 
@@ -117,6 +118,14 @@ class BlorgPostDetails extends AdminIndex
 			case 'replies_view':
 				return $this->getRepliesTableModel($view);
 		}
+	}
+
+	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		$this->layout->navbar->createEntry($this->post->getTitle());
 	}
 
 	// }}}
