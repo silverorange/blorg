@@ -190,8 +190,8 @@ class BlorgPostPage extends SitePage
 				Blorg::_('Your reply has been submitted.'));
 
 			$message->secondary_content =
-				Blorg::_('Your reply will be added to the site upon '.
-					'being approved by the site moderators.');
+				Blorg::_('Your reply will be added to this post after being '.
+					'approved by the site moderators.');
 
 			$this->reply_ui->getWidget('message_display')->add($message,
 				SwatMessageDisplay::DISMISS_OFF);
