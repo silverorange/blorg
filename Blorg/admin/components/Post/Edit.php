@@ -278,6 +278,22 @@ class BlorgPostEdit extends AdminDBEdit
 	}
 
 	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		parent::buildNavBar();
+
+		if ($this->post->id !== null) {
+			$entry = $this->layout->navbar->popEntry();
+			$this->layout->navbar->createEntry($this->post->getTitle(),
+				sprintf('Post/Details?id=%s', $this->post->id));
+
+			$this->layout->navbar->addEntry($entry);
+		}
+	}
+
+	// }}}
 
 	// finalize phase
 	// {{{ public function finalize()
