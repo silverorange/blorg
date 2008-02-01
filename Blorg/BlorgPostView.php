@@ -152,6 +152,29 @@ abstract class BlorgPostView
 	}
 
 	// }}}
+	// {{{ protected function displayReplyCount()
+
+	/**
+	 * Displays the number of replies for a weblog post
+	 */
+	protected function displayReplyCount()
+	{
+		$count = count($this->post->replies);
+
+		$span_tag = new SwatHtmlTag('span');
+		$span_tag->class = 'reply-count';
+		if ($count == 0) {
+			$span_tag->setContent(Blorg::_('no replies'));
+		} else {
+			$locale = SwatI18NLocale::get();
+			$span_tag->setContent(sprintf(
+				Blorg::ngettext('%s reply', '%s replies'),
+				$locale->formatNUmber($count)));
+		}
+		$span_tag->display();
+	}
+
+	// }}}
 	// {{{ protected function getPostRelativeUri()
 
 	protected function getPostRelativeUri()
