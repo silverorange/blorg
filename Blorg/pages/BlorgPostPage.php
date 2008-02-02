@@ -161,10 +161,10 @@ class BlorgPostPage extends SitePage
 		$reply->createdate = $now;
 		$reply->ip_address = $ip_address;
 		$reply->user_agent = $user_agent;
+		$reply->show       = true;
 
 		if ($this->reply_ui->getWidget('remember_me')->value) {
-			$this->saveReplyCookie($fullname->value, $link->value,
-				$email->value);
+			$this->saveReplyCookie();
 		} else {
 			$this->deleteReplyCookie();
 		}
@@ -180,16 +180,12 @@ class BlorgPostPage extends SitePage
 				$comment->setAuthorEmail($reply->email);
 				$comment->setAuthorUri($reply->link);
 				$comment->setContent($reply->bodytext);
+				// $comment->setPermalink(); // TODO
 
 				$reply->spam = $akismet->isSpam($comment);
 			} catch (Exception $e) {
 			}
 		}
-
-		$this->post->replies->add($reply);
-		$this->post->save();
-
-		$this->clearReplyUi();
 
 		switch ($this->post->reply_status) {
 		case BlorgPost::REPLY_STATUS_OPEN:
@@ -216,13 +212,22 @@ class BlorgPostPage extends SitePage
 
 			break;
 		}
+
+		$this->clearReplyUi();
+
+		$this->post->replies->add($reply);
+		$this->post->save();
 	}
 
 	// }}}
 	// {{{ protected function saveReplyCookie()
 
-	protected function saveReplyCookie($fullname, $link, $email)
+	protected function saveReplyCookie()
 	{
+		$fullname = $this->reply_ui->getWidget('fullname')->value;
+		$link     = $this->reply_ui->getWidget('link')->value;
+		$email    = $this->reply_ui->getWidget('email')->value;
+
 		$value = array(
 			'fullname' => $fullname,
 			'link'     => $link,
