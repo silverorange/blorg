@@ -24,7 +24,14 @@ class BlorgPostFullView extends BlorgPostLongView
 		$this->displayBody();
 		echo '</div>';
 
+		$replies_div = new SwatHtmlTag('div');
+		$replies_div->id = 'replies'.$this->post->id;
+		$replies_div->class = 'entry-replies';
+		$replies_div->open();
+
 		$this->displayReplies();
+
+		$replies_div->close();
 	}
 
 	// }}}
@@ -47,7 +54,7 @@ class BlorgPostFullView extends BlorgPostLongView
 	{
 		if ($this->post->reply_status != BlorgPost::REPLY_STATUS_CLOSED) {
 			foreach ($this->post->replies as $reply) {
-				if ($reply->approved && $reply->show) {
+				if ($reply->approved && $reply->show && !$reply->spam) {
 					$this->displayReply($reply);
 				}
 			}
