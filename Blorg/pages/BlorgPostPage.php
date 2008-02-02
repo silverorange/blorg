@@ -8,6 +8,7 @@ require_once 'Blorg/BlorgPostFullView.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgReply.php';
+require_once 'Services/Akismet.php';
 
 /**
  * Post page for Blörg
@@ -166,6 +167,23 @@ class BlorgPostPage extends SitePage
 				$email->value);
 		} else {
 			$this->deleteReplyCookie();
+		}
+
+		if ($this->app->config->blorg->akismet_key !== null) {
+			$uri = $this->app->getBaseHref().$this->app->config->blorg->path;
+			try {
+				$akismet = new Services_Akismet($uri,
+					$this->app->config->blorg->akismet_key);
+
+				$comment = new Services_Akismet_Comment();
+				$comment->setAuthor($reply->fullname);
+				$comment->setAuthorEmail($reply->email);
+				$comment->setAuthorUri($reply->link);
+				$comment->setContent($reply->bodytext);
+
+				$reply->spam = $akismet->isSpam($comment);
+			} catch (Exception $e) {
+			}
 		}
 
 		$this->post->replies->add($reply);
