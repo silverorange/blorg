@@ -89,7 +89,10 @@ class Blorg
 			// Optional path prefix for all Blörg content. If specified, this
 			// must have a trailing slash. This is used to integrate Blörg
 			// content into another site.
-			'blorg.path' => '',
+			'blorg.path'        => '',
+
+			// Optional Wordpress API key for Akismet spam filtering.
+			'blorg.akismet_key' => null,
 		);
 	}
 
