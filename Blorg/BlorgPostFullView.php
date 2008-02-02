@@ -160,9 +160,7 @@ class BlorgPostFullView extends BlorgPostLongView
 	{
 		$div_tag = new SwatHtmlTag('div');
 		$div_tag->class = 'reply-content';
-		$div_tag->setContent(SwatString::toXHTML(
-			SwatString::minimizeEntities($reply->bodytext)), 'text/xml');
-
+		$div_tag->setContent($this->getReplyBodyText($reply), 'text/xml');
 		$div_tag->display();
 	}
 
@@ -172,6 +170,26 @@ class BlorgPostFullView extends BlorgPostLongView
 	protected function getReplyRelativeUri(BlorgReply $reply)
 	{
 		return $this->getPostRelativeUri().'#reply'.$reply->id;
+	}
+
+	// }}}
+	// {{{ protected function getReplyBodytext()
+
+	protected function getReplyBodytext(BlorgReply $reply)
+	{
+		$bodytext = $reply->bodytext;
+		$bodytext = str_replace('%', '%%', $bodytext);
+
+		$allowed_tags = '/(<a href="http[^"]+?">|<\/a>|<\/?strong>|<\/?em>)/ui';
+		$matches = array();
+		preg_match_all($allowed_tags, $bodytext, $matches);
+		$bodytext = preg_replace($allowed_tags, '%s', $bodytext);
+
+		$bodytext = SwatString::minimizeEntities($bodytext);
+		$bodytext = vsprintf($bodytext, $matches[0]);
+		$bodytext = SwatString::toXHTML($bodytext);
+
+		return $bodytext;
 	}
 
 	// }}}
