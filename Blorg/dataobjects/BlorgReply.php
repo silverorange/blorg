@@ -1,6 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Swat/SwatString.php';
 
 /**
  * A reply to a Blörg Post
@@ -90,6 +91,25 @@ class BlorgReply extends SwatDBDataObject
 	 * @var Date
 	 */
 	public $createdate;
+
+	// }}}
+	// {{{ public static function getBodytextXhtml()
+
+	public static function getBodytextXhtml($bodytext)
+	{
+		$bodytext = str_replace('%', '%%', $bodytext);
+
+		$allowed_tags = '/(<a href="http[^"]+?">|<\/a>|<\/?strong>|<\/?em>)/ui';
+		$matches = array();
+		preg_match_all($allowed_tags, $bodytext, $matches);
+		$bodytext = preg_replace($allowed_tags, '%s', $bodytext);
+
+		$bodytext = SwatString::minimizeEntities($bodytext);
+		$bodytext = vsprintf($bodytext, $matches[0]);
+		$bodytext = SwatString::toXHTML($bodytext);
+
+		return $bodytext;
+	}
 
 	// }}}
 	// {{{ protected function init()
