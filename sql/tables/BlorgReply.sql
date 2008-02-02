@@ -8,6 +8,7 @@ create table BlorgReply (
 	bodytext text not null,
 	show boolean not null default true,
 	approved boolean not null default true,
+	spam boolean not null default false,
 	ip_address varchar(15),
 	user_agent varchar(255),
 	createdate timestamp not null,
