@@ -265,6 +265,8 @@ class BlorgPostPage extends SitePage
 		$this->displayPost();
 		$this->displayReplyUi();
 		$this->layout->data->content = ob_get_clean();
+
+		$this->layout->data->html_title = $this->post->getTitle();
 	}
 
 	// }}}

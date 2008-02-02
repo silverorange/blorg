@@ -64,6 +64,12 @@ class BlorgMonthArchivePage extends SitePage
 		ob_start();
 		$this->displayPosts();
 		$this->layout->data->content = ob_get_clean();
+
+		$date = new SwatDate();
+		$date->setYear($this->year);
+		$date->setMonth($this->month);
+		$date->setTZ($this->app->default_time_zone);
+		$this->layout->data->title = $date->format(SwatDate::DF_MY);
 	}
 
 	// }}}

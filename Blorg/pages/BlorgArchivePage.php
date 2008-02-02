@@ -59,6 +59,8 @@ class BlorgArchivePage extends SitePage
 		ob_start();
 		$this->displayArchive();
 		$this->layout->data->content = ob_get_clean();
+
+		$this->layout->data->title = Blorg::_('Archive');
 	}
 
 	// }}}
