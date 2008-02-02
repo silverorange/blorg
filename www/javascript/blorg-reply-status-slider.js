@@ -3,7 +3,12 @@ function BlorgReplyStatusSlider(id, options)
 	this.id = id;
 	this.options = options;
 	this.width = 200;
-	this.increment = Math.floor(this.width / (this.options.length - 1));
+	if (this.options.length < 2) {
+		// prevent script execution errors when there are no or one option
+		this.increment = 1;
+	} else {
+		this.increment = Math.floor(this.width / (this.options.length - 1));
+	}
 	this.label_width = this.increment;
 
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
@@ -70,7 +75,9 @@ BlorgReplyStatusSlider.prototype.createContextNote = function()
 BlorgReplyStatusSlider.prototype.handleChange = function()
 {
 	var index = this.getIndex();
-	this.input.value = this.options[index][0];
+	if (this.options.length > 1) {
+		this.input.value = this.options[index][0];
+	}
 	this.updateContextNote();
 }
 
@@ -85,6 +92,8 @@ BlorgReplyStatusSlider.prototype.updateContextNote = function()
 	if (this.context_note.firstChild)
 		this.context_note.removeChild(this.context_note.firstChild);
 
-	this.context_note.appendChild(
-		document.createTextNode(this.options[index][2]));
+	if (this.options.length > 1) {
+		this.context_note.appendChild(
+			document.createTextNode(this.options[index][2]));
+	}
 }
