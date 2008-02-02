@@ -64,6 +64,13 @@ class BlorgReply extends SwatDBDataObject
 	public $approved;
 
 	/**
+	 * Whether or not this reply is spam
+	 *
+	 * @var boolean
+	 */
+	public $spam = false;
+
+	/**
 	 * IP Address of the person replying.
 	 *
 	 * @var string
