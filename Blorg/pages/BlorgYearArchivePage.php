@@ -57,6 +57,8 @@ class BlorgYearArchivePage extends SitePathPage
 		ob_start();
 		$this->displayMonths();
 		$this->layout->data->content = ob_get_clean();
+
+		$this->layout->data->title = $this->year;
 	}
 
 	// }}}
