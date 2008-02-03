@@ -169,23 +169,7 @@ class BlorgPostPage extends SitePage
 			$this->deleteReplyCookie();
 		}
 
-		if ($this->app->config->blorg->akismet_key !== null) {
-			$uri = $this->app->getBaseHref().$this->app->config->blorg->path;
-			try {
-				$akismet = new Services_Akismet($uri,
-					$this->app->config->blorg->akismet_key);
-
-				$comment = new Services_Akismet_Comment();
-				$comment->setAuthor($reply->fullname);
-				$comment->setAuthorEmail($reply->email);
-				$comment->setAuthorUri($reply->link);
-				$comment->setContent($reply->bodytext);
-				// $comment->setPermalink(); // TODO
-
-				$reply->spam = $akismet->isSpam($comment);
-			} catch (Exception $e) {
-			}
-		}
+		$reply->spam = $this->isReplySpam($reply);
 
 		switch ($this->post->reply_status) {
 		case BlorgPost::REPLY_STATUS_OPEN:
@@ -254,6 +238,43 @@ class BlorgPostPage extends SitePage
 		$this->reply_ui->getWidget('link')->value     = null;
 		$this->reply_ui->getWidget('email')->value    = null;
 		$this->reply_ui->getWidget('bodytext')->value = null;
+	}
+
+	// }}}
+	// {{{ protected function isReplySpam()
+
+	protected function isReplySpam(BlorgReply $reply)
+	{
+		$is_spam = false;
+
+		if ($this->app->config->blorg->akismet_key !== null) {
+			$uri = $this->app->getBaseHref().$this->app->config->blorg->path;
+
+			$date = clone $this->post->post_date;
+			$date->convertTZ($this->app->default_time_zone);
+			$permalink = sprintf('%sarchive/%s/%s/%s',
+				$uri,
+				$date->getYear(),
+				BlorgPageFactory::$month_names[$date->getMonth()],
+				$this->post->shortname);
+
+			try {
+				$akismet = new Services_Akismet($uri,
+					$this->app->config->blorg->akismet_key);
+
+				$comment = new Services_Akismet_Comment();
+				$comment->setAuthor($reply->fullname);
+				$comment->setAuthorEmail($reply->email);
+				$comment->setAuthorUri($reply->link);
+				$comment->setContent($reply->bodytext);
+				$comment->setPermalink($permalink);
+
+				$is_spam = $akismet->isSpam($comment);
+			} catch (Exception $e) {
+			}
+		}
+
+		return $is_spam
 	}
 
 	// }}}
