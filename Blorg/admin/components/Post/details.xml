@@ -50,7 +50,7 @@
 					<property name="visible" type="data">has_modified_date</property>
 				</object>
 				<object class="SwatNullTextCellRenderer">
-					<property name="null_text" translatable="yes">&lt;never&gt;</property>
+					<property name="text" translatable="yes">&lt;never&gt;</property>
 					<property name="visible" type="data">!has_modified_date</property>
 				</object>
 			</object>
