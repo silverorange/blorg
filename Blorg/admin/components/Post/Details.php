@@ -143,8 +143,7 @@ class BlorgPostDetails extends AdminIndex
 		$content_block->content_type = 'text/xml';
 
 		$ds = new SwatDetailsStore($this->post);
-		$ds->has_modified_date = (Date::compare(
-			$this->post->createdate, $this->post->modified_date) != 0);
+		$ds->has_modified_date = ($this->post->modified_date !== null);
 
 		$details_view = $this->ui->getWidget('details_view');
 		$details_view->data = $ds;
