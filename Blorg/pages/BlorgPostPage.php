@@ -274,7 +274,7 @@ class BlorgPostPage extends SitePage
 			}
 		}
 
-		return $is_spam
+		return $is_spam;
 	}
 
 	// }}}
