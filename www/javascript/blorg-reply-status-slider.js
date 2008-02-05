@@ -24,7 +24,20 @@ BlorgReplyStatusSlider.prototype.init = function()
 
 	this.slider.subscribe('change', this.handleChange, this, true);
 
-	var value = parseInt(this.input.value) * this.increment;
+	// get initial selected value index
+	var index = null;
+	for (var i = 0; i < this.options.length; i++) {
+		if (this.input.value == this.options[i][0]) {
+			index = i;
+			break;
+		}
+	}
+
+	// select initial selected value
+	if (index !== null) {
+		var value = index * this.increment;
+	}
+
 	this.slider.setValue(value, true, false, true);
 
 	this.createLabels();
