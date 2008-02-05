@@ -4,7 +4,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
-require_once 'Blorg/BlorgPostShortView.php';
+require_once 'Blorg/BlorgViewFactory.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 require_once 'Blorg/Blorg.php';
 
@@ -97,7 +97,7 @@ class BlorgMonthArchivePage extends SitePage
 	protected function displayPosts()
 	{
 		foreach ($this->posts as $post) {
-			$view = new BlorgPostShortView($this->app, $post);
+			$view = BlorgViewFactory::buildPostView('short', $this->app, $post);
 			$view->display(true);
 		}
 	}
