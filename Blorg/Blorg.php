@@ -116,9 +116,11 @@ SwatUI::mapClassPrefixToPath('Blorg', 'Blorg');
 SwatDBClassMap::addPath('Blorg/dataobjects');
 
 BlorgViewFactory::addPath('Blorg/views');
-BlorgViewFactory::registerPostView('full',  'BlorgPostFullView');
-BlorgViewFactory::registerPostView('short', 'BlorgPostShortView');
-BlorgViewFactory::registerPostView('long',  'BlorgPostLongView');
-BlorgViewFactory::registerPostView('admin', 'BlorgPostAdminView');
+BlorgViewFactory::registerPostView('full',     'BlorgPostFullView');
+BlorgViewFactory::registerPostView('short',    'BlorgPostShortView');
+BlorgViewFactory::registerPostView('long',     'BlorgPostLongView');
+BlorgViewFactory::registerPostView('admin',    'BlorgPostAdminView');
+BlorgViewFactory::registerReplyView('full',    'BlorgReplyView');
+BlorgViewFactory::registerReplyView('preview', 'BlorgReplyPreviewView');
 
 ?>
