@@ -247,13 +247,17 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function pingWeblogsDotCom()
 	{
-		$base_href = $this->app->getFrontendBaseHref().
-			$this->app->config->blorg->path;
+		try {
+			$base_href = $this->app->getFrontendBaseHref().
+				$this->app->config->blorg->path;
 
-		$pinger = new BlorgWeblogsDotComPinger($this->app, $this->post,
-			$base_href);
+			$pinger = new BlorgWeblogsDotComPinger($this->app, $this->post,
+				$base_href);
 
-		$pinger->ping();
+			$pinger->ping();
+		} catch () {
+			// ignore ping errors
+		}
 	}
 
 	// }}}
