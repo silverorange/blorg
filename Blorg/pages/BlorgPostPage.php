@@ -289,6 +289,7 @@ class BlorgPostPage extends SitePage
 
 		ob_start();
 		$this->displayPost();
+		$this->displayReplies();
 		$this->displayReplyUi();
 		$this->layout->data->content = ob_get_clean();
 
@@ -329,7 +330,7 @@ class BlorgPostPage extends SitePage
 		switch ($this->post->reply_status) {
 		case BlorgPost::REPLY_STATUS_OPEN:
 		case BlorgPost::REPLY_STATUS_MODERATED:
-			$form->action = $this->source.'#reply_edit_frame'; // TODO: fragment should point to new reply or reply preview
+			$form->action = $this->source.'#last_reply';
 			if (isset($this->app->cookie->reply_credentials)) {
 				$values = $this->app->cookie->reply_credentials;
 				$ui->getWidget('fullname')->value    = $values['fullname'];
@@ -365,6 +366,45 @@ class BlorgPostPage extends SitePage
 			$this->post);
 
 		$view->display();
+	}
+
+	// }}}
+	// {{{ protected function displayReplies()
+
+	protected function displayReplies()
+	{
+		if ($this->post->reply_status != BlorgPost::REPLY_STATUS_CLOSED) {
+
+			$div_tag = new SwatHtmlTag('div');
+			$div_tag->id = 'replies'.$this->post->id;
+			$div_tag->class = 'entry-replies';
+			$div_tag->open();
+
+			$replies = array();
+			foreach ($this->post->replies as $reply) {
+				if ($reply->approved && $reply->show && !$reply->spam) {
+					$replies[] = $reply;
+				}
+			}
+
+			$count = count($replies);
+			foreach ($replies as $i => $reply) {
+				$view = BlorgViewFactory::buildReplyView('full', $this->app,
+					$reply);
+
+				if ($i == $count - 1) {
+					$div_tag = new SwatHtmlTag('div');
+					$div_tag->id = 'last_reply';
+					$div_tag->open();
+					$view->display();
+					$div_tag->close();
+				} else {
+					$view->display();
+				}
+			}
+
+			$div_tag->close();
+		}
 	}
 
 	// }}}
