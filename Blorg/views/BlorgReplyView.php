@@ -24,7 +24,7 @@ class BlorgReplyView
 	}
 
 	// }}}
-	// {{{ protected function display()
+	// {{{ public function display()
 
 	public function display()
 	{
