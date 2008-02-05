@@ -125,7 +125,13 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 		$input_tag->id = $this->id.'_value';
 		$input_tag->name = $this->id.'_value';
 		$input_tag->type = 'hidden';
-		$input_tag->value = $this->value;
+		if ($this->serialize_values) {
+			$salt = $this->getForm()->getSalt();
+			$input_tag->value = SwatString::signedSerialize($this->value,
+				$salt);
+		} else {
+			$input_tag->value = (string)$this->value;
+		}
 		$input_tag->display();
 
 		$container_div->close();
