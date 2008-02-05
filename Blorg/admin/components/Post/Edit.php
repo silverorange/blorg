@@ -255,7 +255,7 @@ class BlorgPostEdit extends AdminDBEdit
 				$base_href);
 
 			$pinger->ping();
-		} catch () {
+		} catch (Exception $e) {
 			// ignore ping errors
 		}
 	}
