@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Blorg/BlorgPostView.php';
+require_once 'Blorg/views/BlorgPostView.php';
 require_once 'Swat/SwatString.php';
 
 /**

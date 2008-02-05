@@ -3,7 +3,7 @@
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Blorg/BlorgPostFullView.php';
+require_once 'Blorg/BlorgViewFactory.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
 /**
@@ -75,7 +75,7 @@ class BlorgFrontPage extends SitePage
 	protected function displayPosts()
 	{
 		foreach ($this->posts as $post) {
-			$view = new BlorgPostLongView($this->app, $post);
+			$view = BlorgViewFactory::buildPostView('full', $this->app, $post);
 			$view->display(true);
 		}
 	}

@@ -3,6 +3,7 @@
 require_once 'Swat/Swat.php';
 require_once 'Site/Site.php';
 require_once 'Admin/Admin.php';
+require_once 'Blorg/BlorgViewFactory.php';
 
 /**
  * Container for package wide static methods
@@ -113,5 +114,11 @@ Blorg::setupGettext();
 SwatUI::mapClassPrefixToPath('Blorg', 'Blorg');
 
 SwatDBClassMap::addPath('Blorg/dataobjects');
+
+BlorgViewFactory::addPath('Blorg/views');
+BlorgViewFactory::registerPostView('full',  'BlorgPostFullView');
+BlorgViewFactory::registerPostView('short', 'BlorgPostShortView');
+BlorgViewFactory::registerPostView('long',  'BlorgPostLongView');
+BlorgViewFactory::registerPostView('admin', 'BlorgPostAdminView');
 
 ?>
