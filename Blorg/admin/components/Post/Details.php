@@ -9,7 +9,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/admin/BlorgPostAdminView.php';
+require_once 'Blorg/BlorgViewFactory.php';
 
 /**
  * Details page for Posts
@@ -137,7 +137,9 @@ class BlorgPostDetails extends AdminIndex
 	{
 		$content_block = $this->ui->getWidget('post_preview');
 		ob_start();
-		$view = new BlorgPostAdminView($this->app, $this->post);
+		$view = BlorgViewFactory::buildPostView('admin', $this->app,
+			$this->post);
+
 		$view->display();
 		$content_block->content = ob_get_clean();
 		$content_block->content_type = 'text/xml';
