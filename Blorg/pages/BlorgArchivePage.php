@@ -1,6 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBClassMap.php';
+require_once 'SwatI18N/SwatI18NLocale.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
@@ -18,14 +19,21 @@ class BlorgArchivePage extends SitePage
 	// {{{ protected properties
 
 	/**
-	 * Array of containing the years and months that contain posts
+	 * Array of containing the years and months that contain posts as well
+	 * as yearly and monthly post counts
 	 *
 	 * The array is of the form:
 	 * <code>
 	 * <?php
 	 * array(
-	 *     2007 => array(9, 10, 11, 12),
-	 *     2008 => array(1, 2),
+	 *     2007 => array(
+	 *         'post_count' => 7,
+	 *         'months'     => array(12 => 1, 11 => 2, 10 => 1, 9 => 3),
+	 *     ),
+	 *     2008 => array(
+	 *         'post_count' => 3,
+	 *         'months'     => array(2 => 1, 1 => 2),
+	 *     ),
 	 * );
 	 * ?>
 	 * </code>
@@ -78,11 +86,12 @@ class BlorgArchivePage extends SitePage
 	protected function displayArchive()
 	{
 		$path = $this->app->config->blorg->path.'archive';
+		$locale = SwatI18NLocale::get();
 
 		$year_ul_tag = new SwatHtmLTag('ul');
 		$year_ul_tag->class = 'blorg-archive-years';
 		$year_ul_tag->open();
-		foreach ($this->years as $year => $months) {
+		foreach ($this->years as $year => $values) {
 			$year_li_tag = new SwatHtmlTag('li');
 			$year_li_tag->open();
 			$year_anchor_tag = new SwatHtmlTag('a');
@@ -93,9 +102,17 @@ class BlorgArchivePage extends SitePage
 			$year_anchor_tag->setContent($year);
 			$year_anchor_tag->display();
 
+			$post_count_span = new SwatHtmlTag('span');
+			$post_count_span->setContent(sprintf(
+				Blorg::ngettext(' (%s post)', ' (%s posts)',
+				$values['post_count']),
+				$locale->formatNumber($values['post_count'])));
+
+			$post_count_span->display();
+
 			$month_ul_tag = new SwatHtmlTag('ul');
 			$month_ul_tag->open();
-			foreach ($months as $month) {
+			foreach ($values['months'] as $month => $post_count) {
 				$date = new SwatDate();
 				$date->setMonth($month);
 
@@ -109,6 +126,14 @@ class BlorgArchivePage extends SitePage
 
 				$month_anchor_tag->setContent($date->getMonthName());
 				$month_anchor_tag->display();
+
+				$post_count_span = new SwatHtmlTag('span');
+				$post_count_span->setContent(sprintf(
+					Blorg::ngettext(' (%s post)', ' (%s posts)', $post_count),
+					$locale->formatNumber($post_count)));
+
+				$post_count_span->display();
+
 				$month_li_tag->close();
 			}
 			$month_ul_tag->close();
@@ -137,12 +162,18 @@ class BlorgArchivePage extends SitePage
 			$month = $date->getMonth();
 
 			if (!array_key_exists($year, $this->years)) {
-				$this->years[$year] = array();
+				$this->years[$year] = array(
+					'post_count' => 0,
+					'months'     => array(),
+				);
 			}
 
-			if (!in_array($month, $this->years[$year])) {
-				$this->years[$year][] = $month;
+			if (!array_key_exists($month, $this->years[$year]['months'])) {
+				$this->years[$year]['months'][$month] = 0;
 			}
+
+			$this->years[$year]['post_count']++;
+			$this->years[$year]['months'][$month]++;
 		}
 
 		if (count($this->years) == 0) {
