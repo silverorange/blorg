@@ -24,6 +24,8 @@ BlorgReplyStatusSlider.prototype.init = function()
 
 	this.slider.subscribe('change', this.handleChange, this, true);
 
+	this.createContextNote();
+
 	// get initial selected value index
 	var index = null;
 	for (var i = 0; i < this.options.length; i++) {
@@ -34,14 +36,14 @@ BlorgReplyStatusSlider.prototype.init = function()
 	}
 
 	// select initial selected value
+	var value = 0;
 	if (index !== null) {
-		var value = index * this.increment;
+		value = index * this.increment;
 	}
 
-	this.slider.setValue(value, true, false, true);
+	this.slider.setValue(value, true, false, false);
 
 	this.createLabels();
-	this.createContextNote();
 }
 
 BlorgReplyStatusSlider.prototype.createLabels = function()
@@ -82,7 +84,7 @@ BlorgReplyStatusSlider.prototype.createContextNote = function()
 		container.parentNode.appendChild(this.context_note);
 	}
 
-	this.updateContextNote();
+	//this.updateContextNote();
 }
 
 BlorgReplyStatusSlider.prototype.handleChange = function()
