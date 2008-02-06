@@ -430,7 +430,7 @@ class BlorgPostPage extends SitePage
 		if ($this->reply_ui->getWidget('reply_edit_form')->hasMessage() ||
 			($this->post->reply_status == BlorgPost::REPLY_STATUS_MODERATED &&
 			!$this->reply_ui->getWidget('preview_button')->hasBeenClicked()) ||
-			$this->post->reply_status == BlorgPost::REPLY_STATUS_LOCKED)) {
+			$this->post->reply_status == BlorgPost::REPLY_STATUS_LOCKED) {
 			$this->displaySubmitReply();
 		}
 
