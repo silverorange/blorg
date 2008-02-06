@@ -50,8 +50,9 @@ class BlorgFrontPage extends SitePage
 				and enabled = true
 			order by post_date desc limit %s',
 			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(self::MAX_POSTS, 'integer'));
+			$this->app->db->quote($instance_id, 'integer'));
+
+		$this->app->db->setLimit(self::MAX_POSTS);
 
 		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
 		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
