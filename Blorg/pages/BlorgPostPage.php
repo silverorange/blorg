@@ -324,13 +324,15 @@ class BlorgPostPage extends SitePage
 
 	protected function buildReplyUi()
 	{
-		$form = $this->reply_ui->getWidget('reply_edit_form');
-		$ui   = $this->reply_ui;
+		$ui              = $this->reply_ui;
+		$form            = $ui->getWidget('reply_edit_form');
+		$frame           = $ui->getWidget('reply_edit_frame');
+		$frame->subtitle = $this->post->getTitle();
 
 		switch ($this->post->reply_status) {
 		case BlorgPost::REPLY_STATUS_OPEN:
 		case BlorgPost::REPLY_STATUS_MODERATED:
-			$form->action = $this->source.'#last_reply';
+			$form->action = $this->source.'#submit_reply';
 			if (isset($this->app->cookie->reply_credentials)) {
 				$values = $this->app->cookie->reply_credentials;
 				$ui->getWidget('fullname')->value    = $values['fullname'];
@@ -362,10 +364,10 @@ class BlorgPostPage extends SitePage
 
 	protected function displayPost()
 	{
-		$view = BlorgViewFactory::buildPostView('full', $this->app,
-			$this->post);
-
-		$view->display();
+		$view = BlorgViewFactory::build('post', $this->app);
+		$view->showTitle(BlorgPostView::SHOW_ALL, false);
+		$view->showExtendedBodytext(BlorgPostView::SHOW_ALL);
+		$view->display($this->post);
 	}
 
 	// }}}
@@ -387,19 +389,28 @@ class BlorgPostPage extends SitePage
 				}
 			}
 
+			$view = BlorgViewFactory::build('reply', $this->app);
 			$count = count($replies);
 			foreach ($replies as $i => $reply) {
-				$view = BlorgViewFactory::buildReplyView('full', $this->app,
-					$reply);
-
 				if ($i == $count - 1) {
+					// Reply form submits to the top of the new reply if a new
+					// reply was just submitted and it is immediately visible.
+					// Otherwise the form submites to the reply preview or to
+					// the top of the form.
+					$form = $this->reply_ui->getWidget('reply_edit_form');
+					$post_button = $this->reply_ui->getWidget('post_button');
+					if (!$form->hasMessage() && $this->post->reply_status !=
+						BlorgPost::REPLY_STATUS_MODERATED &&
+						$post_button->hasBeenClicked()) {
+						$this->displaySubmitReply();
+					}
 					$div_tag = new SwatHtmlTag('div');
 					$div_tag->id = 'last_reply';
 					$div_tag->open();
-					$view->display();
+					$view->display($reply);
 					$div_tag->close();
 				} else {
-					$view->display();
+					$view->display($reply);
 				}
 			}
 
@@ -412,7 +423,33 @@ class BlorgPostPage extends SitePage
 
 	protected function displayReplyUi()
 	{
+		// Reply form submits to the top of the reply form if there are error
+		// messages or if the new post is not immediately visible and we are
+		// not previewing a reply. Otherwise the reply form submits to the
+		// new reply or the reply preview.
+		if ($this->reply_ui->getWidget('reply_edit_form')->hasMessage() ||
+			($this->post->reply_status == BlorgPost::REPLY_STATUS_MODERATED &&
+			!$this->reply_ui->getWidget('preview_button')->hasBeenClicked()) ||
+			$this->post->reply_status == BlorgPost::REPLY_STATUS_LOCKED)) {
+			$this->displaySubmitReply();
+		}
+
 		$this->reply_ui->display();
+	}
+
+	// }}}
+	// {{{ protected function displaySubmitReply()
+
+	protected function displaySubmitReply()
+	{
+		echo '<div id="submit_reply"></div>';
+	}
+
+	// }}}
+	// {{{ protected function displayReplyPreview()
+
+	protected function displayReplyPreview()
+	{
 	}
 
 	// }}}
