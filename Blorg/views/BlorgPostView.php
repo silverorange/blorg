@@ -41,12 +41,6 @@ class BlorgPostView
 	 */
 	const SHOW_ALL     = 3;
 
-	/**
-	 * Maximum length of bodytext before it is ellipsized in the summary
-	 * display mode.
-	 */
-	const SUMMARIZED_BODYTEXT_LENGTH = 300;
-
 	// }}}
 	// {{{ protected properties
 
@@ -58,6 +52,16 @@ class BlorgPostView
 	 * @see BlorgPostView::__construct()
 	 */
 	protected $app;
+
+	/**
+	 * Maximum length of bodytext before it is ellipsized in the summary
+	 * display mode
+	 *
+	 * @var integer
+	 *
+	 * @see setBodytextSummaryLength()
+	 */
+	protected $bodytext_summary_length = 300;
 
 	/**
 	 * Data structure containing the display mode and link mode for all post
@@ -353,6 +357,21 @@ class BlorgPostView
 	}
 
 	// }}}
+	// {{{ public function setBodytextSummaryLength()
+
+	/**
+	 * Sets the maximum length of bodytext before it is ellipsized in the
+	 * summary display mode
+	 *
+	 * @param integer $length the maximum length of bodytext before it is
+	 *                         ellipsized in the summary display mode.
+	 */
+	public function setBodytextSummaryLength($length)
+	{
+		$this->summary_bodytext_length = intval($length);
+	}
+
+	// }}}
 
 	// general display methods
 	// {{{ public function display()
@@ -600,7 +619,7 @@ class BlorgPostView
 
 		case self::SHOW_SUMMARY:
 			$bodytext = SwatString::ellipsizeRight(SwatString::condense(
-				$post->bodytext), self::SUMMARIZED_BODYTEXT_LENGTH);
+				$post->bodytext), $this->summarized_bodytext_length);
 
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'entry-content';
