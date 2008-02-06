@@ -11,30 +11,28 @@ class BlorgReplyView
 {
 	// {{{ protected properties
 
-	protected $reply;
 	protected $app;
 
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, BlorgReply $reply)
+	public function __construct(SiteApplication $app)
 	{
-		$this->reply = $reply;
 		$this->app = $app;
 	}
 
 	// }}}
 	// {{{ public function display()
 
-	public function display()
+	public function display(BlorgReply $reply)
 	{
 		$div_tag = new SwatHtmlTag('div');
-		$div_tag->id = 'reply'.$this->reply->id;
+		$div_tag->id = 'reply'.$reply->id;
 		$div_tag->class = 'reply';
 		$div_tag->open();
 
-		$this->displayHeader();
-		$this->displayBody();
+		$this->displayHeader($reply);
+		$this->displayBody($reply);
 
 		$div_tag->close();
 	}
@@ -42,15 +40,15 @@ class BlorgReplyView
 	// }}}
 	// {{{ protected function displayHeader()
 
-	protected function displayHeader()
+	protected function displayHeader(BlorgReply $reply)
 	{
 		$heading_tag = new SwatHtmlTag('h4');
 		$heading_tag->class = 'reply-title';
 		$heading_tag->open();
 
-		$this->displayAuthor();
+		$this->displayAuthor($reply);
 		echo ' ';
-		$this->displayPermalink();
+		$this->displayPermalink($reply);
 
 		$heading_tag->close();
 	}
@@ -58,20 +56,20 @@ class BlorgReplyView
 	// }}}
 	// {{{ protected function displayAuthor()
 
-	protected function displayAuthor()
+	protected function displayAuthor(BlorgReply $reply)
 	{
-		if ($this->reply->author === null) {
+		if ($reply->author === null) {
 			// anonymous author
-			if (strlen($this->reply->link) > 0) {
+			if (strlen($reply->link) > 0) {
 				$anchor_tag = new SwatHtmlTag('a');
-				$anchor_tag->href = $this->reply->link;
+				$anchor_tag->href = $reply->link;
 				$anchor_tag->class = 'reply-author';
-				$anchor_tag->setContent($this->reply->fullname);
+				$anchor_tag->setContent($reply->fullname);
 				$anchor_tag->display();
 			} else {
 				$span_tag = new SwatHtmlTag('span');
 				$span_tag->class = 'reply-author';
-				$span_tag->setContent($this->reply->fullname);
+				$span_tag->setContent($reply->fullname);
 				$span_tag->display();
 			}
 		} else {
@@ -80,9 +78,9 @@ class BlorgReplyView
 				$anchor_tag = new SwatHtmlTag('a');
 				$anchor_tag->class = 'reply-author system-reply-author';
 				$anchor_tag->href =
-					$this->getAuthorRelativeUri($this->reply->author);
+					$this->getAuthorRelativeUri($reply->author);
 
-				$anchor_tag->setContent($this->reply->author->name);
+				$anchor_tag->setContent($reply->author->name);
 				$anchor_tag->display();
 			//} else {
 			//	$span_tag = new SwatHtmlTag('span');
@@ -96,20 +94,20 @@ class BlorgReplyView
 	// }}}
 	// {{{ protected function displayPermalink()
 
-	protected function displayPermalink()
+	protected function displayPermalink(BlorgReply $reply)
 	{
 		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->href = $this->getReplyRelativeUri();
+		$anchor_tag->href = $this->getReplyRelativeUri($reply);
 		$anchor_tag->open();
 
 		// display machine-readable date in UTC
 		$abbr_tag = new SwatHtmlTag('abbr');
 		$abbr_tag->class = 'reply-published';
 		$abbr_tag->title =
-			$this->reply->createdate->getDate(DATE_FORMAT_ISO_EXTENDED);
+			$reply->createdate->getDate(DATE_FORMAT_ISO_EXTENDED);
 
 		// display human-readable date in local time
-		$date = clone $this->reply->createdate;
+		$date = clone $reply->createdate;
 		$date->convertTZ($this->app->default_time_zone);
 		$abbr_tag->setContent($date->format(SwatDate::DF_DATE));
 		$abbr_tag->display();
@@ -120,12 +118,12 @@ class BlorgReplyView
 	// }}}
 	// {{{ protected function displayBody()
 
-	protected function displayBody()
+	protected function displayBody(BlorgReply $reply)
 	{
 		$div_tag = new SwatHtmlTag('div');
 		$div_tag->class = 'reply-content';
 		$div_tag->setContent(
-			BlorgReply::getBodyTextXhtml($this->reply->bodytext), 'text/xml');
+			BlorgReply::getBodyTextXhtml($reply->bodytext), 'text/xml');
 
 		$div_tag->display();
 	}
@@ -133,10 +131,9 @@ class BlorgReplyView
 	// }}}
 	// {{{ protected function getReplyRelativeUri()
 
-	protected function getReplyRelativeUri()
+	protected function getReplyRelativeUri(BlorgReply $reply)
 	{
-		return $this->getPostRelativeUri($this->reply->post).
-			'#reply'.$this->reply->id;
+		return $this->getPostRelativeUri($reply->post).'#reply'.$reply->id;
 	}
 
 	// }}}

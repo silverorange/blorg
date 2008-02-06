@@ -4,9 +4,7 @@ require_once 'Swat/exceptions/SwatClassNotFoundException.php';
 
 class BlorgViewFactory extends SwatObject
 {
-	private static $post_view_class_names_by_type = array();
-
-	private static $reply_view_class_names_by_type = array();
+	private static $view_class_names_by_type = array();
 
 	/**
 	 * Paths to search for class-definition files
@@ -15,50 +13,26 @@ class BlorgViewFactory extends SwatObject
 	 */
 	private static $search_paths = array('.');
 
-	public static function buildPostView($type, SiteApplication $app,
-		BlorgPost $post)
+	public static function build($type, SiteApplication $app)
 	{
 		$type = strval($type);
-		if (!array_key_exists($type, self::$post_view_class_names_by_type)) {
+		if (!array_key_exists($type, self::$view_class_names_by_type)) {
 			throw new Exception(sprintf(
-				'No post views are registered with the type "%s".',
+				'No views are registered with the type "%s".',
 				$type));
 		}
 
-		$view_class_name = self::$post_view_class_names_by_type[$type];
+		$view_class_name = self::$view_class_names_by_type[$type];
 		self::loadViewClass($view_class_name);
 
-		$view = new $view_class_name($app, $post);
+		$view = new $view_class_name($app);
 		return $view;
 	}
 
-	public static function buildReplyView($type, SiteApplication $app,
-		BlorgReply $reply)
+	public static function registerView($type, $view_class_name)
 	{
 		$type = strval($type);
-		if (!array_key_exists($type, self::$reply_view_class_names_by_type)) {
-			throw new Exception(sprintf(
-				'No reply views are registered with the type "%s".',
-				$type));
-		}
-
-		$view_class_name = self::$reply_view_class_names_by_type[$type];
-		self::loadViewClass($view_class_name);
-
-		$view = new $view_class_name($app, $reply);
-		return $view;
-	}
-
-	public static function registerPostView($type, $view_class_name)
-	{
-		$type = strval($type);
-		self::$post_view_class_names_by_type[$type] = $view_class_name;
-	}
-
-	public static function registerReplyView($type, $view_class_name)
-	{
-		$type = strval($type);
-		self::$reply_view_class_names_by_type[$type] = $view_class_name;
+		self::$view_class_names_by_type[$type] = $view_class_name;
 	}
 
 	// {{{ public static function addPath()
