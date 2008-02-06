@@ -508,7 +508,30 @@ class BlorgPostView
 			break;
 		case self::SHOW_SUMMARY:
 			$title = $post->getTitle();
-			// TODO
+			if (strlen($title) > 0) {
+				$header_tag = new SwatHtmlTag('h4');
+				$header_tag->class = 'entry-title';
+				$header_tag->id = sprintf('post_%s', $post->shortname);
+
+				if ($show['link'] === false) {
+					$header_tag->setContent($title);
+					$header_tag->display();
+				} else {
+					$header_tag->open();
+
+					$anchor_tag = new SwatHtmlTag('a');
+					if (is_string($show['link'])) {
+						$anchor_tag->href = $show['link'];
+					} else {
+						$anchor_tag->href = $this->getPostRelativeUri($post);
+					}
+					$anchor_tag->setContent($title);
+					$anchor_tag->display();
+
+					$header_tag->close();
+				}
+			}
+
 			break;
 		}
 	}
