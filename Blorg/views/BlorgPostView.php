@@ -425,7 +425,7 @@ class BlorgPostView
 
 		ob_start();
 		$this->displayPermalink($post);
-		$post_date = ob_get_clean();
+		$permalink = ob_get_clean();
 
 		ob_start();
 		$this->displayReplyCount($post);
@@ -433,14 +433,30 @@ class BlorgPostView
 
 		echo '<div class="entry-subtitle">';
 
-		if ($post->reply_status == BlorgPost::REPLY_STATUS_CLOSED ||
-			(count($post->replies) == 0 &&
-			$post->reply_status == BlorgPost::REPLY_STATUS_LOCKED)) {
-			printf(Blorg::_('Posted by %s on %s'),
-				$author, $post_date);
+		// reply count is shown iff:
+		// - replies are locked and there is one or more reply
+		// - replies are open
+		// - replies are moderated
+		// - reply_count element is shown
+		$show_replies =
+			($post->reply_status != BlorgPost::REPLY_STATUS_CLOSED &&
+			(count($post->replies) > 0 ||
+			$post->reply_status != BlorgPost::REPLY_STATUS_LOCKED) &&
+			strlen($reply_count) > 0);
+
+		if (strlen($author) > 0) {
+			if ($show_replies) {
+				printf(Blorg::_('Posted by %s on %s - %s'),
+					$author, $permalink, $reply_count);
+			} else {
+				printf(Blorg::_('Posted by %s on %s'), $author, $permalink);
+			}
 		} else {
-			printf(Blorg::_('Posted by %s on %s - %s'),
-				$author, $post_date, $reply_count);
+			if ($show_replies) {
+				printf('%s - %s', $permalink, $reply_count);
+			} else {
+				echo $permalink;
+			}
 		}
 
 		echo '</div>';
@@ -502,21 +518,24 @@ class BlorgPostView
 
 	protected function displayAuthor(BlorgPost $post)
 	{
-		//if ($post->author->) { // TODO: make sure author can be displayed
-			$span_tag = new SwatHtmlTag('span');
-			$span_tag->class = 'vcard author';
-			$span_tag->open();
+		$show = $this->show['author'];
+		if ($show['mode'] > self::SHOW_NONE) {
+			//if ($post->author->) { // TODO: make sure author can be displayed
+				$span_tag = new SwatHtmlTag('span');
+				$span_tag->class = 'vcard author';
+				$span_tag->open();
 
-			$anchor_tag = new SwatHtmlTag('a');
-			$anchor_tag->class = 'fn url';
-			$anchor_tag->href =
-				$this->getAuthorRelativeUri($post->author);
+				$anchor_tag = new SwatHtmlTag('a');
+				$anchor_tag->class = 'fn url';
+				$anchor_tag->href =
+					$this->getAuthorRelativeUri($post->author);
 
-			$anchor_tag->setContent($post->author->name);
-			$anchor_tag->display();
+				$anchor_tag->setContent($post->author->name);
+				$anchor_tag->display();
 
-			$span_tag->close();
-		//}
+				$span_tag->close();
+			//}
+		}
 	}
 
 	// }}}
@@ -619,7 +638,7 @@ class BlorgPostView
 
 		case self::SHOW_SUMMARY:
 			$bodytext = SwatString::ellipsizeRight(SwatString::condense(
-				$post->bodytext), $this->summarized_bodytext_length);
+				$post->bodytext), $this->bodytext_summary_length);
 
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'entry-content';
