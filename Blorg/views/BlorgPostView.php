@@ -789,7 +789,7 @@ class BlorgPostView
 	 */
 	protected function getLink($link)
 	{
-		if (is_bool($link) && !is_string($link)) {
+		if (!is_bool($link) && !is_string($link)) {
 			$link = false;
 		}
 		return $link;
