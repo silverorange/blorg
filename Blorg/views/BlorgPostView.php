@@ -509,7 +509,7 @@ class BlorgPostView
 		case self::SHOW_SUMMARY:
 			$title = $post->getTitle();
 			if (strlen($title) > 0) {
-				$header_tag = new SwatHtmlTag('h4');
+				$header_tag = new SwatHtmlTag('h3');
 				$header_tag->class = 'entry-title';
 				$header_tag->id = sprintf('post_%s', $post->shortname);
 
