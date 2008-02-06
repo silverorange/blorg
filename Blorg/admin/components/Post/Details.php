@@ -137,10 +137,12 @@ class BlorgPostDetails extends AdminIndex
 	{
 		$content_block = $this->ui->getWidget('post_preview');
 		ob_start();
-		$view = BlorgViewFactory::buildPostView('admin', $this->app,
-			$this->post);
-
-		$view->display();
+		$view = BlorgViewFactory::build('post', $this->app);
+		$view->showTitle(BlorgPostView::SHOW_ALL, false);
+		$view->showPermalink(BlorgPostView::SHOW_ALL, false);
+		$view->showReplyCount(BlorgPostView::SHOW_ALL, false);
+		$view->showExtendedBodytext(BlorgPostView::SHOW_ALL);
+		$view->display($this->post);
 		$content_block->content = ob_get_clean();
 		$content_block->content_type = 'text/xml';
 
