@@ -63,7 +63,7 @@ class BlorgPostView
 	 * Data structure containing the display mode and link mode for all post
 	 * view elements
 	 *
-	 * The array keys are element names and the array values are two element
+	 * The array keys are element names and the array values are two-element
 	 * arrays containing a 'mode' element and a 'link' element for the display
 	 * mode and link mode respectively.
 	 *
