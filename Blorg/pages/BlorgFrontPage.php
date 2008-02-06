@@ -74,9 +74,9 @@ class BlorgFrontPage extends SitePage
 
 	protected function displayPosts()
 	{
+		$view = BlorgViewFactory::build('post', $this->app);
 		foreach ($this->posts as $post) {
-			$view = BlorgViewFactory::buildPostView('full', $this->app, $post);
-			$view->display(true);
+			$view->display($post);
 		}
 	}
 
