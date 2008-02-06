@@ -4,6 +4,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePathPage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/Blorg.php';
+require_once 'Blorg/BlorgViewFactory.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
 /**
@@ -82,6 +83,13 @@ class BlorgYearArchivePage extends SitePathPage
 	{
 		$path = $this->app->config->blorg->path.'archive';
 
+		$view = BlorgViewFactory::build('post', $this->app);
+
+		$view->showTitle(BlorgPostView::SHOW_SUMMARY);
+		$view->showBodytext(BlorgPostView::SHOW_NONE);
+		$view->showExtendedBodytext(BlorgPostView::SHOW_NONE);
+		$view->showTags(BlorgPostView::SHOW_NONE);
+
 		$ul_tag = new SwatHtmlTag('ul');
 		$ul_tag->class = 'months';
 		$ul_tag->open();
@@ -109,15 +117,7 @@ class BlorgYearArchivePage extends SitePathPage
 				$post_li_tag = new SwatHtmlTag('li');
 				$post_li_tag->open();
 
-				$post_anchor_tag = new SwatHtmlTag('a');
-				$post_anchor_tag->href = sprintf('%s/%s/%s',
-					$path,
-					$this->year,
-					BlorgPageFactory::$month_names[$month],
-					$post->shortname);
-
-				$post_anchor_tag->setContent($post->getTitle());
-				$post_anchor_tag->display();
+				$view->display($post);
 
 				$post_li_tag->close();
 			}
