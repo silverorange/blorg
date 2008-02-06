@@ -4,6 +4,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/pages/SitePathPage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/Blorg.php';
+require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
 /**
  * Displays an index of all months with posts in a given year
@@ -22,8 +23,9 @@ class BlorgYearArchivePage extends SitePathPage
 	protected $year;
 
 	/**
-	 * Array of integers containing the months of the specified year that
-	 * contain posts
+	 * Associative array with array keys containing the months of the specified
+	 * year that contain posts and values being an array of posts in the
+	 * month
 	 *
 	 * @var array
 	 */
@@ -83,7 +85,7 @@ class BlorgYearArchivePage extends SitePathPage
 		$ul_tag = new SwatHtmlTag('ul');
 		$ul_tag->class = 'months';
 		$ul_tag->open();
-		foreach ($this->months as $month) {
+		foreach ($this->months as $month => $posts) {
 			$li_tag = new SwatHtmlTag('li');
 			$li_tag->open();
 
@@ -98,6 +100,29 @@ class BlorgYearArchivePage extends SitePathPage
 
 			$anchor_tag->setContent($date->getMonthName());
 			$anchor_tag->display();
+
+			$post_ul_tag = new SwatHtmlTag('ul');
+			$post_ul_tag->class = 'entries';
+			$post_ul_tag->open();
+
+			foreach ($posts as $post) {
+				$post_li_tag = new SwatHtmlTag('li');
+				$post_li_tag->open();
+
+				$post_anchor_tag = new SwatHtmlTag('a');
+				$post_anchor_tag->href = sprintf('%s/%s/%s',
+					$path,
+					$this->year,
+					BlorgPageFactory::$month_names[$month],
+					$post->shortname);
+
+				$post_anchor_tag->setContent($post->getTitle());
+				$post_anchor_tag->display();
+
+				$post_li_tag->close();
+			}
+
+			$post_ul_tag->close();
 
 			$li_tag->close();
 		}
@@ -121,7 +146,7 @@ class BlorgYearArchivePage extends SitePathPage
 
 		$instance_id = $this->app->instance->getId();
 
-		$sql = sprintf('select post_date from BlorgPost
+		$sql = sprintf('select id, title, bodytext, post_date from BlorgPost
 			where date_trunc(\'year\', convertTZ(createdate, %s)) =
 				date_trunc(\'year\', timestamp %s) and
 				instance %s %s
@@ -132,13 +157,14 @@ class BlorgYearArchivePage extends SitePathPage
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'));
 
-		$rs = SwatDB::query($this->app->db, $sql, null);
-		while ($date = $rs->fetchOne()) {
-			$date = new SwatDate($date);
-			$month = $date->getMonth();
-			if (!in_array($month, $this->months)) {
-				$this->months[] = $month;
+		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
+		$posts = SwatDB::query($this->app->db, $sql, $wrapper);
+		foreach ($posts as $post) {
+			$month = $post->post_date->getMonth();
+			if (!array_key_exists($month, $this->months)) {
+				$this->months[$month] = array();
 			}
+			$this->months[$month][] = $post;
 		}
 
 		if (count($this->months) == 0) {
