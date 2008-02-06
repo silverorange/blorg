@@ -48,7 +48,7 @@ class BlorgFrontPage extends SitePage
 		$sql = sprintf('select * from BlorgPost
 			where instance %s %s
 				and enabled = true
-			order by post_date desc limit %s',
+			order by post_date desc',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'));
 
