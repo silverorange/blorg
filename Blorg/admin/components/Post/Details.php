@@ -149,6 +149,10 @@ class BlorgPostDetails extends AdminIndex
 		$ds = new SwatDetailsStore($this->post);
 		$ds->has_modified_date = ($this->post->modified_date !== null);
 
+		ob_start();
+		$this->displayTags();
+		$ds->tags_summary = ob_get_clean();
+
 		$details_view = $this->ui->getWidget('details_view');
 		$details_view->data = $ds;
 
@@ -192,15 +196,21 @@ class BlorgPostDetails extends AdminIndex
 
 	protected function getRepliesTableModel(SwatTableView $view)
 	{
-		$sql = sprintf('select count(id) from BlorgReply where post = %s',
-			$this->app->db->quote($this->post->id, 'integer'));
+		$sql = sprintf('select count(id) from BlorgReply
+			where post = %s and spam = %s',
+			$this->app->db->quote($this->post->id, 'integer'),
+			$this->app->db->quote(false, 'boolean'));
 
 		$pager = $this->ui->getWidget('pager');
 		$pager->total_records = SwatDB::queryOne($this->app->db, $sql);
 
-		$sql = sprintf('select id, fullname, author, bodytext, createdate, show,
-			approved from BlorgReply where post = %s order by %s',
+		$sql = sprintf(
+			'select id, fullname, author, bodytext, createdate, show, approved
+			from BlorgReply
+			where post = %s and spam = %s
+			order by %s',
 			$this->app->db->quote($this->post->id, 'integer'),
+			$this->app->db->quote(false, 'boolean'),
 			$this->getOrderByClause($view, 'createdate desc'));
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
@@ -210,6 +220,7 @@ class BlorgPostDetails extends AdminIndex
 
 		foreach ($replies as $reply) {
 			$ds = new SwatDetailsStore($reply);
+			//TODO: distinguish authors somehow
 			if ($reply->author !== null)
 				$ds->fullname = $reply->author->name;
 
@@ -220,6 +231,25 @@ class BlorgPostDetails extends AdminIndex
 		}
 
 		return $store;
+	}
+
+	// }}}
+	// {{{ private function displayTags()
+
+	private function displayTags()
+	{
+		echo '<ul>';
+
+		foreach ($this->post->tags as $tag) {
+			echo '<li>';
+			$anchor_tag = new SwatHtmlTag('a');
+			$anchor_tag->href = 'Tag/Details?id='.$tag->id;
+			$anchor_tag->setContent($tag->title);
+			$anchor_tag->display();
+			echo '</li>';
+		}
+
+		echo '<ul>';
 	}
 
 	// }}}

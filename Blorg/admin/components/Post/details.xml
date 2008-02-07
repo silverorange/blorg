@@ -23,6 +23,13 @@
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
+				<property name="title">Tags</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">tags_summary</property>
+					<property name="content_type">text/xml</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Show on Site</property>
 				<object class="SwatBooleanCellRenderer">
 					<property name="value" type="data">enabled</property>
@@ -73,7 +80,7 @@
 							<property name="value" type="data">id</property>
 						</object>
 					</object>
-					<object class="AdminTableViewOrderableColumn" id="bodytext">
+					<object class="AdminTableViewOrderableColumn" id="fullname">
 						<property name="title" translatable="yes">Posted By</property>
 						<object class="AdminTitleLinkCellRenderer">
 							<property name="text" type="data">fullname</property>
@@ -89,17 +96,12 @@
 							<property name="format" type="constant">SwatDate::DF_DATE_TIME</property>
 						</object>
 					</object>
-					<object class="AdminTableViewOrderableColumn" id="show">
-						<property name="title" translatable="yes">Show On Site</property>
-						<object class="SwatBooleanCellRenderer">
-							<property name="value" type="data">show</property>
-						</object>
-					</object>
-					<object class="AdminTableViewOrderableColumn" id="approved">
-						<property name="visible" type="boolean">false</property>
-						<property name="title" translatable="yes">Approved</property>
-						<object class="SwatBooleanCellRenderer">
-							<property name="value" type="data">approved</property>
+					<object class="SwatTableViewColumn" id="visibility">
+						<property name="title" translatable="yes">Visiblility</property>
+						<object class="BlorgReplyVisibilityCellRenderer">
+							<property name="show" type="data">show</property>
+							<property name="approved" type="data">approved</property>
+							<property name="spam" type="data">spam</property>
 						</object>
 					</object>
 					<object class="SwatTableViewSpanningColumn" id="bodytext">
