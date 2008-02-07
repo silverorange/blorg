@@ -101,31 +101,25 @@ class BlorgPageFactory extends SitePageFactory
 
 		$page = null;
 
-		if ($source == '') {
-			// front page
-			$page = $this->instantiatePage($app, 'BlorgFrontPage',
-				array($app, $layout));
-		} else {
-			foreach ($this->getPageMap() as $pattern => $class) {
-				$params = array();
-				// escape delimiters
-				$pattern = str_replace('@', '\@', $pattern);
-				$regexp = '@'.$pattern.'@u';
-				if (preg_match($regexp, $source, $params) === 1) {
+		foreach ($this->getPageMap() as $pattern => $class) {
+			$params = array();
+			// escape delimiters
+			$pattern = str_replace('@', '\@', $pattern);
+			$regexp = '@'.$pattern.'@u';
+			if (preg_match($regexp, $source, $params) === 1) {
 
-					// discard full match string
-					array_shift($params);
+				// discard full match string
+				array_shift($params);
 
-					// add layout as second param
-					array_unshift($params, $layout);
+				// add layout as second param
+				array_unshift($params, $layout);
 
-					// add app as first param
-					array_unshift($params, $app);
+				// add app as first param
+				array_unshift($params, $app);
 
-					$page = $this->instantiatePage($app, $class, $params);
+				$page = $this->instantiatePage($app, $class, $params);
 
-					break;
-				}
+				break;
 			}
 		}
 
@@ -240,6 +234,7 @@ class BlorgPageFactory extends SitePageFactory
 		$months = implode('|', self::$month_names);
 
 		return array(
+			'^(?:page(\d+)|)$'                         => 'BlorgFrontPage',
 			'^author$'                                 => 'BlorgAuthorIndexPage',
 			'^author/([\w-]+)$'                        => 'BlorgAuthorPage',
 			'^archive$'                                => 'BlorgArchivePage',
