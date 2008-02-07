@@ -70,7 +70,7 @@ class BlorgPostIndex extends AdminSearch
 
 		switch ($actions->selected->id) {
 		case 'delete':
-			$this->app->replacePage('Post/Delete');
+			$this->app->replacePage($this->getComponentName().'/Delete');
 			$this->app->getPage()->setItems($view->getSelection());
 			break;
 
