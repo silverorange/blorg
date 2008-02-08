@@ -2,7 +2,7 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.0.2';
+$version = '0.0.3';
 $notes = <<<EOT
 see ChangeLog
 EOT;
@@ -52,7 +52,7 @@ $package->setPearinstallerDep('1.4.0');
 $package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.3.2');
 $package->addPackageDepWithChannel('required', 'Site', 'pear.silverorange.com', '1.2.4');
 $package->addPackageDepWithChannel('required', 'Admin', 'pear.silverorange.com', '1.2.1');
-$package->addPackageDepWithChannel('required', 'XMP_RPC2', 'pear.silverorange.com', '1.0.1so1');
+$package->addPackageDepWithChannel('required', 'XML_RPC2', 'pear.silverorange.com', '1.0.1so1');
 $package->generateContents();
 
 if (isset($_GET['make']) || (isset($_SERVER['argv']) && @$_SERVER['argv'][1] == 'make')) {
