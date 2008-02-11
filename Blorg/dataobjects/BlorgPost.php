@@ -230,6 +230,31 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getVisibleReplies()
+
+	public function getVisibleReplies()
+	{
+		$sql = 'select BlorgReply.*
+			from BlorgReply
+			where BlorgReply.post = %s
+				and BlorgReply.approved = %s
+				and BlorgReply.show = %s
+				and BlorgReply.spam = %s
+			order by BlorgReply.createdate';
+
+		$sql = sprintf($sql,
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote(true, 'boolean'),
+			$this->db->quote(true, 'boolean'),
+			$this->db->quote(false, 'boolean'));
+
+		return SwatDB::query($this->db, $sql,
+			SwatDBClassMap::get('BlorgReplyWrapper'));
+
+		return $replies;
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()

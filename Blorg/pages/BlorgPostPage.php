@@ -382,12 +382,7 @@ class BlorgPostPage extends SitePage
 			$div_tag->class = 'entry-replies';
 			$div_tag->open();
 
-			$replies = array();
-			foreach ($this->post->replies as $reply) {
-				if ($reply->approved && $reply->show && !$reply->spam) {
-					$replies[] = $reply;
-				}
-			}
+			$replies = $this->post->getVisibleReplies();
 
 			$view = BlorgViewFactory::build('reply', $this->app);
 			$count = count($replies);
