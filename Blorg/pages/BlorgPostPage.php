@@ -267,7 +267,7 @@ class BlorgPostPage extends SitePage
 				$comment->setAuthorEmail($reply->email);
 				$comment->setAuthorUri($reply->link);
 				$comment->setContent($reply->bodytext);
-				$comment->setPermalink($permalink);
+				$comment->setPostPermalink($permalink);
 
 				$is_spam = $akismet->isSpam($comment);
 			} catch (Exception $e) {
