@@ -237,14 +237,13 @@ class BlorgPost extends SwatDBDataObject
 		$sql = 'select BlorgReply.*
 			from BlorgReply
 			where BlorgReply.post = %s
-				and BlorgReply.approved = %s
-				and BlorgReply.show = %s
+				and BlorgReply.status = %s
 				and BlorgReply.spam = %s
 			order by BlorgReply.createdate';
 
 		$sql = sprintf($sql,
 			$this->db->quote($this->id, 'integer'),
-			$this->db->quote(true, 'boolean'),
+			$this->db->quote(BlorgReply::STATUS_PUBLISHED, 'integer'),
 			$this->db->quote(true, 'boolean'),
 			$this->db->quote(false, 'boolean'));
 
@@ -277,7 +276,7 @@ class BlorgPost extends SwatDBDataObject
 	// {{{ protected function loadReplies()
 
 	/**
-	 * Loads replies for this post
+	 * Loads replies for this post, this never includes spam
 	 *
 	 * @return BlorgReplyWrapper
 	 */
@@ -285,10 +284,12 @@ class BlorgPost extends SwatDBDataObject
 	{
 		$sql = 'select BlorgReply.*
 			from BlorgReply
-			where BlorgReply.post = %s
+			where BlorgReply.post = %s and spam = %s
 			order by createdate';
 
-		$sql = sprintf($sql, $this->db->quote($this->id, 'integer'));
+		$sql = sprintf($sql,
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote(false, 'boolean'));
 
 		return SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('BlorgReplyWrapper'));

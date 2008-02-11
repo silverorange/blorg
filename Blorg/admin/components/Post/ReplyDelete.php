@@ -87,7 +87,8 @@ class BlorgPostReplyDelete extends AdminDBDelete
 		$this->navbar->addEntry(new SwatNavBarEntry($this->post->getTitle(),
 			sprintf('Post/Details?id=%s', $this->post->id)));
 
-		$this->navbar->addEntry(new SwatNavBarEntry(Blorg::_('Delete Replies')));
+		$this->navbar->addEntry(new SwatNavBarEntry(
+			Blorg::_('Delete Replies')));
 	}
 
 	// }}}

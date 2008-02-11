@@ -67,8 +67,7 @@
 				<object class="SwatTableViewColumn" id="visibility">
 					<property name="title" translatable="yes">Visiblility</property>
 					<object class="BlorgReplyVisibilityCellRenderer">
-						<property name="show" type="data">show</property>
-						<property name="approved" type="data">approved</property>
+						<property name="status" type="data">status</property>
 						<property name="spam" type="data">spam</property>
 					</object>
 				</object>
@@ -84,10 +83,10 @@
 			</widget>
 			<widget class="SwatActions" id="reply_actions">
 				<widget class="SwatActionItem" id="approve">
-					<property name="title" translatable="yes">approve</property>
+					<property name="title" translatable="yes">publish</property>
 				</widget>
 				<widget class="SwatActionItem" id="deny">
-					<property name="title" translatable="yes">deny</property>
+					<property name="title" translatable="yes">unpublish</property>
 				</widget>
 				<widget class="SwatActionItem" id="spam">
 					<property name="title" translatable="yes">mark as spam</property>

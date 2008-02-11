@@ -161,7 +161,6 @@ class BlorgPostPage extends SitePage
 		$reply->createdate = $now;
 		$reply->ip_address = $ip_address;
 		$reply->user_agent = $user_agent;
-		$reply->show       = true;
 
 		if ($this->reply_ui->getWidget('remember_me')->value) {
 			$this->saveReplyCookie();
@@ -173,7 +172,7 @@ class BlorgPostPage extends SitePage
 
 		switch ($this->post->reply_status) {
 		case BlorgPost::REPLY_STATUS_OPEN:
-			$reply->approved = true;
+			$reply->status = BlorgReply::STATUS_PUBLISHED;
 			$message = new SwatMessage(
 				Blorg::_('Your reply has been added.'));
 
@@ -183,7 +182,7 @@ class BlorgPostPage extends SitePage
 			break;
 
 		case BlorgPost::REPLY_STATUS_MODERATED:
-			$reply->approved = false;
+			$reply->status = BlorgReply::STATUS_PENDING;
 			$message = new SwatMessage(
 				Blorg::_('Your reply has been submitted.'));
 

@@ -54,10 +54,11 @@ class BlorgFrontPage extends SitePage
 
 		$sql = sprintf('select * from BlorgPost
 			where instance %s %s
-				and enabled = true
+				and enabled = %s
 			order by post_date desc',
 			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'));
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->db->quote(true, 'boolean'));
 
 		$offset = ($current_page - 1) * self::MAX_POSTS;
 		$this->app->db->setLimit(self::MAX_POSTS, $offset);
@@ -118,9 +119,10 @@ class BlorgFrontPage extends SitePage
 
 		$sql = sprintf('select count(id) from BlorgPost
 			where instance %s %s
-				and enabled = true',
+				and enabled = %s',
 			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'));
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->db->quote(true, 'boolean'));
 
 		$post_count = SwatDB::queryOne($this->app->db, $sql, 'integer');
 
