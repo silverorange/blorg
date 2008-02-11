@@ -34,7 +34,7 @@ class BlorgReplyVisibilityCellRenderer extends SwatCellRenderer
 			$color = 'Yellow';
 			$alt = 'Needs Approval';
 
-		} elseif ($this->show) {
+		} else {
 			$color = 'Green';
 			$alt = 'Shown on Site';
 		}
