@@ -613,7 +613,8 @@ class BlorgPostView
 		if ($show['mode'] > self::SHOW_NONE) {
 			$count = 0;
 			foreach ($post->replies as $reply) {
-				if ($reply->show && $reply->approved && !$reply->spam) {
+				if ($reply->status == BlorgReply::STATUS_PUBLISHED
+					&& !$reply->spam) {
 					$count++;
 				}
 			}

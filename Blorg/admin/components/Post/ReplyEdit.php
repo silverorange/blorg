@@ -38,7 +38,7 @@ class BlorgPostReplyEdit extends AdminDBEdit
 			$this->ui->getWidget('fullname_field')->visible = false;
 			$this->ui->getWidget('link_field')->visible     = false;
 			$this->ui->getWidget('email_field')->visible    = false;
-			$this->ui->getWidget('approved_field')->visible = false;
+			$this->ui->getWidget('status')->visible         = false;
 		}
 	}
 
@@ -79,16 +79,14 @@ class BlorgPostReplyEdit extends AdminDBEdit
 			'link',
 			'email',
 			'bodytext',
-			'show',
-			'approved',
+			'status',
 		));
 
 		$this->reply->fullname = $values['fullname'];
 		$this->reply->link     = $values['link'];
 		$this->reply->email    = $values['email'];
 		$this->reply->bodytext = $values['bodytext'];
-		$this->reply->show     = $values['show'];
-		$this->reply->approved = $values['approved'];
+		$this->reply->status   = $values['status'];
 
 		if ($this->reply->id === null) {
 			$now = new SwatDate();

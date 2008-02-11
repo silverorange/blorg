@@ -150,10 +150,11 @@ class BlorgArchivePage extends SitePage
 		$instance_id = $this->app->instance->getId();
 
 		$sql = sprintf('select post_date from BlorgPost
-				where instance %s %s and enabled = true
-			order by post_date desc',
+				where instance %s %s and enabled = %s
+				order by post_date desc',
 			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'));
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->db->quote(true, 'boolean'));
 
 		$rs = SwatDB::query($this->app->db, $sql, null);
 		while ($date = $rs->fetchOne()) {

@@ -19,10 +19,10 @@ class BlorgPostReplies extends AdminSearch
 {
 	// {{{ class constants
 
-	const SHOW_APPROVALS = 0;
-	const SHOW_ALL       = 1;
-	const SHOW_ALL_SPAM  = 2;
-	const SHOW_SPAM      = 3;
+	const SHOW_UNAPPROVED = 0;
+	const SHOW_ALL        = 1;
+	const SHOW_ALL_SPAM   = 2;
+	const SHOW_SPAM       = 3;
 
 	// }}}
 	// {{{ protected properties
@@ -43,15 +43,15 @@ class BlorgPostReplies extends AdminSearch
 		$this->ui->loadFromXML($this->ui_xml);
 
 		$visibility_options = array(
-			self::SHOW_APPROVALS => 'Replies Awaiting Approval',
-			self::SHOW_ALL       => 'All Replies',
-			self::SHOW_ALL_SPAM  => 'All Replies, including Spam',
-			self::SHOW_SPAM      => 'Spam Only',
+			self::SHOW_UNAPPROVED => 'Replies Awaiting Approval',
+			self::SHOW_ALL        => 'All Replies',
+			self::SHOW_ALL_SPAM   => 'All Replies, including Spam',
+			self::SHOW_SPAM       => 'Spam Only',
 		);
 
 		$visibility = $this->ui->getWidget('search_visibility');
 		$visibility->addOptionsByArray($visibility_options);
-		$visibility->value = self::SHOW_APPROVALS;
+		$visibility->value = self::SHOW_UNAPPROVED;
 	}
 
 	// }}}
@@ -85,48 +85,47 @@ class BlorgPostReplies extends AdminSearch
 
 		case 'approve':
 			SwatDB::query($this->app->db, sprintf(
-				'update BlorgReply set show = %s, approved = %s, spam = %s
+				'update BlorgReply set status = %s, spam = %s
 				where id in (%s)',
-				$this->app->db->quote(true, 'boolean'),
-				$this->app->db->quote(true, 'boolean'),
+				$this->app->db->quote(BlorgReply::STATUS_PUBLISHED, 'integer'),
 				$this->app->db->quote(false, 'boolean'),
 				implode(',', $item_list)));
 
 			$message = new SwatMessage(sprintf(Blorg::ngettext(
-				'One post has been approved.',
-				'%s posts have been approved.', $num),
+				'One reply has been published.',
+				'%s replies have been published.', $num),
 				SwatString::numberFormat($num)));
 
 			break;
 
 		case 'deny':
 			SwatDB::query($this->app->db, sprintf(
-				'update BlorgReply set show = %s, approved = %s, spam = %s
+				'update BlorgReply set status = %s, spam = %s
 				where id in (%s)',
-				$this->app->db->quote(false, 'boolean'),
-				$this->app->db->quote(false, 'boolean'),
+				$this->app->db->quote(BlorgReply::STATUS_UNPUBLISHED,
+					'integer'),
 				$this->app->db->quote(false, 'boolean'),
 				implode(',', $item_list)));
 ;
 			$message = new SwatMessage(sprintf(Blorg::ngettext(
-				'One post has been denied.',
-				'%s posts have been denied.', $num),
+				'One reply has been unpublished.',
+				'%s replies have been unpublished.', $num),
 				SwatString::numberFormat($num)));
 
 			break;
 
 		case 'spam':
 			SwatDB::query($this->app->db, sprintf(
-				'update BlorgReply set show = %s, approved = %s, spam = %s
+				'update BlorgReply set status = %s, spam = %s
 				where id in (%s)',
-				$this->app->db->quote(false, 'boolean'),
-				$this->app->db->quote(false, 'boolean'),
+				$this->app->db->quote(BlorgReply::STATUS_UNPUBLISHED,
+					'integer'),
 				$this->app->db->quote(true, 'boolean'),
 				implode(',', $item_list)));
 
 			$message = new SwatMessage(sprintf(Blorg::ngettext(
-				'One post has been marked as spam.',
-				'%s posts have been marked as spam.', $num),
+				'One reply has been marked as spam.',
+				'%s replies have been marked as spam.', $num),
 				SwatString::numberFormat($num)));
 
 			break;
@@ -166,8 +165,8 @@ class BlorgPostReplies extends AdminSearch
 		$pager->total_records = SwatDB::queryOne($this->app->db, $sql);
 
 		$sql = sprintf(
-			'select id, fullname, author, bodytext, createdate, show, approved,
-				post, spam
+			'select id, fullname, author, bodytext, createdate, status, post,
+				spam
 			from BlorgReply
 			where %s
 			order by %s',
@@ -253,11 +252,11 @@ class BlorgPostReplies extends AdminSearch
 
 			$visibility = $this->ui->getWidget('search_visibility')->value;
 			switch ($visibility) {
-				case self::SHOW_APPROVALS :
+				case self::SHOW_UNAPPROVED :
 					$where.= sprintf(
-						' and show = %s and approved = %s and spam = %s',
-						$this->app->db->quote(true, 'boolean'),
-						$this->app->db->quote(false, 'boolean'),
+						' and status = %s and spam = %s',
+						$this->app->db->quote(BlorgReply::STATUS_PENDING,
+							'integer'),
 						$this->app->db->quote(false, 'boolean'));
 
 					break;

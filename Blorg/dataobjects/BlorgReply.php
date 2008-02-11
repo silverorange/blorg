@@ -12,6 +12,13 @@ require_once 'Swat/SwatString.php';
  */
 class BlorgReply extends SwatDBDataObject
 {
+	// {{{ constants
+
+	const STATUS_PENDING     = 0;
+	const STATUS_PUBLISHED   = 1;
+	const STATUS_UNPUBLISHED = 2;
+
+	// }}}
 	// {{{ public properties
 
 	/**
@@ -50,19 +57,16 @@ class BlorgReply extends SwatDBDataObject
 	public $bodytext;
 
 	/**
-	 * Whether or not to show the reply.
+	 * Visibility status
 	 *
-	 * @var boolean
-	 */
-	public $show;
-
-	/**
-	 * Whether or not the reply has been approved by an author. Defaults to true
-	 * except when replying to moderated posts.
+	 * Set using class contstants:
+	 * STATUS_PENDING - waiting on moderation
+	 * STATUS_PUBLISHED - reply published on site
+	 * STATUS_UNPUBLISHED - not shown on the site
 	 *
-	 * @var boolean
+	 * @var integer
 	 */
-	public $approved;
+	public $status;
 
 	/**
 	 * Whether or not this reply is spam
@@ -91,6 +95,32 @@ class BlorgReply extends SwatDBDataObject
 	 * @var Date
 	 */
 	public $createdate;
+
+	// }}}
+	// {{{ public static function getStatusTitle()
+
+	public static function getStatusTitle($status)
+	{
+		switch ($status) {
+		case self::STATUS_PENDING :
+			$title = Blorg::_('Pending Approval');
+			break;
+
+		case self::STATUS_PUBLISHED :
+			$title = Blorg::_('Shown on Site');
+			break;
+
+		case self::STATUS_UNPUBLISHED :
+			$title = Blorg::_('Not Approved');
+			break;
+
+		default:
+			$title = Blorg::_('Unknown Status');
+			break;
+		}
+
+		return $title;
+	}
 
 	// }}}
 	// {{{ public static function getBodytextXhtml()

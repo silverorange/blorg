@@ -172,17 +172,6 @@ class BlorgPostDetails extends AdminIndex
 		$toolbar = $this->ui->getWidget('replies_toolbar');
 		$toolbar->setToolLinkValues($this->post->id);
 
-		// hide all approved stuff unless the BlorgPost needs it
-		if ($this->post->reply_status === BlorgPost::REPLY_STATUS_MODERATED) {
-			$approved_column =
-				$this->ui->getWidget('replies_view')->getColumn('approved');
-
-			$approved_column->visible                        = true;
-			$this->ui->getWidget('approve_divider')->visible = true;
-			$this->ui->getWidget('approve')->visible         = true;
-			$this->ui->getWidget('deny')->visible            = true;
-		}
-
 		// set default time zone
 		$date_column =
 			$this->ui->getWidget('replies_view')->getColumn('createdate');
@@ -205,7 +194,7 @@ class BlorgPostDetails extends AdminIndex
 		$pager->total_records = SwatDB::queryOne($this->app->db, $sql);
 
 		$sql = sprintf(
-			'select id, fullname, author, bodytext, createdate, show, approved
+			'select id, fullname, author, bodytext, createdate, status
 			from BlorgReply
 			where post = %s and spam = %s
 			order by %s',

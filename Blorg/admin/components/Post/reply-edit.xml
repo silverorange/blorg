@@ -36,14 +36,11 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Show on Site?</property>
-				<widget class="SwatCheckbox" id="show">
+				<!-- TODO: actually make this a proper status control -->
+				<property name="title" translatable="yes">Status</property>
+				<widget class="SwatCheckbox" id="status">
 					<property name="value" type="boolean">true</property>
 				</widget>
-			</widget>
-			<widget class="SwatFormField" id="approved_field">
-				<property name="title" translatable="yes">Approved?</property>
-				<widget class="SwatCheckbox" id="approved" />
 			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button" />
