@@ -250,8 +250,6 @@ class BlorgPost extends SwatDBDataObject
 
 		return SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('BlorgReplyWrapper'));
-
-		return $replies;
 	}
 
 	// }}}
