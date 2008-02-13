@@ -146,7 +146,8 @@ class BlorgYearArchivePage extends SitePathPage
 
 		$instance_id = $this->app->instance->getId();
 
-		$sql = sprintf('select id, title, bodytext, shortname, post_date
+		$sql = sprintf('select id, title, bodytext, shortname, post_date,
+				reply_status
 			from BlorgPost
 			where date_trunc(\'year\', convertTZ(createdate, %s)) =
 				date_trunc(\'year\', timestamp %s) and
