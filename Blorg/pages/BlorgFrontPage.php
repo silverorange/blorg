@@ -122,7 +122,7 @@ class BlorgFrontPage extends SitePage
 				and enabled = %s',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
-			$this->db->quote(true, 'boolean'));
+			$this->app->db->quote(true, 'boolean'));
 
 		$post_count = SwatDB::queryOne($this->app->db, $sql, 'integer');
 
