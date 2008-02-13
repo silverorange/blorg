@@ -154,7 +154,7 @@ class BlorgArchivePage extends SitePage
 				order by post_date desc',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
-			$this->db->quote(true, 'boolean'));
+			$this->app->db->quote(true, 'boolean'));
 
 		$rs = SwatDB::query($this->app->db, $sql, null);
 		while ($date = $rs->fetchOne()) {
