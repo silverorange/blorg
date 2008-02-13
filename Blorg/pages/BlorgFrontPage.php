@@ -58,7 +58,7 @@ class BlorgFrontPage extends SitePage
 			order by post_date desc',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
-			$this->db->quote(true, 'boolean'));
+			$this->app->db->quote(true, 'boolean'));
 
 		$offset = ($current_page - 1) * self::MAX_POSTS;
 		$this->app->db->setLimit(self::MAX_POSTS, $offset);
