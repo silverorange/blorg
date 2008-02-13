@@ -2,6 +2,7 @@
 
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Swat/SwatString.php';
+require_once 'Blorg/dataobjects/BlorgPost.php';
 
 /**
  * A reply to a Blörg Post
