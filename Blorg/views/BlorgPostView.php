@@ -438,22 +438,22 @@ class BlorgPostView
 		// - replies are locked and there is one or more visible reply OR
 		// - replies are open OR
 		// - replies are moderated
-		$visible_reply_count = count($post->getVisibleReplies());
-		$show_replies =
-			($post->reply_status != BlorgPost::REPLY_STATUS_CLOSED &&
-			($visible_reply_count > 0 ||
-			$post->reply_status != BlorgPost::REPLY_STATUS_LOCKED) &&
-			strlen($reply_count) > 0);
+		$show_reply_count =
+			(strlen($reply_count) > 0 &&
+				(($post->reply_status == BlorgPost::REPLY_STATUS_LOCKED &&
+					count($post->getVisibleReplies()) > 0) ||
+				$post->reply_status == BlorgPost::REPLY_STATUS_OPEN ||
+				$post->reply_status == BlorgPost::REPLY_STATUS_MODERATED));
 
 		if (strlen($author) > 0) {
-			if ($show_replies) {
+			if ($show_reply_count) {
 				printf(Blorg::_('Posted by %s on %s - %s'),
 					$author, $permalink, $reply_count);
 			} else {
 				printf(Blorg::_('Posted by %s on %s'), $author, $permalink);
 			}
 		} else {
-			if ($show_replies) {
+			if ($show_reply_count) {
 				printf('%s - %s', $permalink, $reply_count);
 			} else {
 				echo $permalink;
