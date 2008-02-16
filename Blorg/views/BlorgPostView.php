@@ -436,7 +436,7 @@ class BlorgPostView
 		/*
 		 * Reply count is shown if and only if reply_count element is shown AND
 		 * the following:
-		 * - replies are locked and there is one or more visible reply OR
+		 * - replies are locked AND there is one or more visible reply OR
 		 * - replies are open OR
 		 * - replies are moderated.
 		 */
