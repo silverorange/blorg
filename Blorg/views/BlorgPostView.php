@@ -434,13 +434,14 @@ class BlorgPostView
 		echo '<div class="entry-subtitle">';
 
 		// reply count is shown iff:
-		// - replies are locked and there is one or more reply
-		// - replies are open
+		// - reply_count element is shown AND the following:
+		// - replies are locked and there is one or more visible reply OR
+		// - replies are open OR
 		// - replies are moderated
-		// - reply_count element is shown
+		$visible_reply_count = count($post->getVisibleReplies());
 		$show_replies =
 			($post->reply_status != BlorgPost::REPLY_STATUS_CLOSED &&
-			(count($post->replies) > 0 ||
+			($visible_reply_count > 0 ||
 			$post->reply_status != BlorgPost::REPLY_STATUS_LOCKED) &&
 			strlen($reply_count) > 0);
 
@@ -611,13 +612,7 @@ class BlorgPostView
 	{
 		$show = $this->show['reply_count'];
 		if ($show['mode'] > self::SHOW_NONE) {
-			$count = 0;
-			foreach ($post->replies as $reply) {
-				if ($reply->status == BlorgReply::STATUS_PUBLISHED
-					&& !$reply->spam) {
-					$count++;
-				}
-			}
+			$count = count($post->getVisibleReplies());
 
 			if ($show['link'] === false) {
 				$reply_count_tag = new SwatHtmlTag('span');
