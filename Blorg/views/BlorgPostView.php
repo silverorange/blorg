@@ -433,11 +433,13 @@ class BlorgPostView
 
 		echo '<div class="entry-subtitle">';
 
-		// reply count is shown iff:
-		// - reply_count element is shown AND the following:
-		// - replies are locked and there is one or more visible reply OR
-		// - replies are open OR
-		// - replies are moderated
+		/*
+		 * Reply count is shown if and only if reply_count element is shown AND
+		 * the following:
+		 * - replies are locked and there is one or more visible reply OR
+		 * - replies are open OR
+		 * - replies are moderated.
+		 */
 		$show_reply_count =
 			(strlen($reply_count) > 0 &&
 				(($post->reply_status == BlorgPost::REPLY_STATUS_LOCKED &&
