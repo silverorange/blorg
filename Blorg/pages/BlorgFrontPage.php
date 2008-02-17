@@ -152,6 +152,9 @@ class BlorgFrontPage extends SitePage
 	public function finalize()
 	{
 		parent::finalize();
+		$this->layout->addHtmlHeadEntry(new SwatStyleSheetHtmlHeadEntry(
+			'packages/blorg/styles/blorg-front-page.css', Blorg::PACKAGE_ID));
+
 		$this->layout->addHtmlHeadEntrySet(
 			$this->pager->getHtmlHeadEntrySet());
 	}
