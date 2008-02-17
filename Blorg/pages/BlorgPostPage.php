@@ -29,6 +29,11 @@ class BlorgPostPage extends SitePage
 	protected $post;
 
 	/**
+	 * @var BlorgReply
+	 */
+	protected $reply;
+
+	/**
 	 * @var SwatUI
 	 */
 	protected $reply_ui;
@@ -132,14 +137,18 @@ class BlorgPostPage extends SitePage
 			$this->post->reply_status == BlorgPost::REPLY_STATUS_MODERATED) &&
 			$form->isProcessed() && !$form->hasMessage()) {
 
-			$this->saveReply();
+			$this->processReply();
+
+			if ($this->reply_ui->getWidget('post_button')->hasBeenClicked()) {
+				$this->saveReply();
+			}
 		}
 	}
 
 	// }}}
-	// {{{ protected function saveReply()
+	// {{{ protected function processReply()
 
-	protected function saveReply()
+	protected function processReply()
 	{
 		$now = new SwatDate();
 		$now->toUTC();
@@ -148,31 +157,48 @@ class BlorgPostPage extends SitePage
 		$link       = $this->reply_ui->getWidget('link');
 		$email      = $this->reply_ui->getWidget('email');
 		$bodytext   = $this->reply_ui->getWidget('bodytext');
+		// TODO: http clients may not include these headers
 		$ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
 		$user_agent = substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
 
 		$class_name = SwatDBClassMap::get('BlorgReply');
-		$reply = new $class_name();
+		$this->reply = new $class_name();
 
-		$reply->fullname   = $fullname->value;
-		$reply->link       = $link->value;
-		$reply->email      = $email->value;
-		$reply->bodytext   = $bodytext->value;
-		$reply->createdate = $now;
-		$reply->ip_address = $ip_address;
-		$reply->user_agent = $user_agent;
+		$this->reply->fullname   = $fullname->value;
+		$this->reply->link       = $link->value;
+		$this->reply->email      = $email->value;
+		$this->reply->bodytext   = $bodytext->value;
+		$this->reply->createdate = $now;
+		$this->reply->ip_address = $ip_address;
+		$this->reply->user_agent = $user_agent;
+		$this->reply->spam       = $this->isReplySpam($this->reply);
 
+		switch ($this->post->reply_status) {
+		case BlorgPost::REPLY_STATUS_OPEN:
+			$this->reply->status = BlorgReply::STATUS_PUBLISHED;
+			break;
+
+		case BlorgPost::REPLY_STATUS_MODERATED:
+			$this->reply->status = BlorgReply::STATUS_PENDING;
+			break;
+		}
+
+		$this->reply->post = $this->post;
+	}
+
+	// }}}
+	// {{{ protected function saveReply()
+
+	protected function saveReply()
+	{
 		if ($this->reply_ui->getWidget('remember_me')->value) {
 			$this->saveReplyCookie();
 		} else {
 			$this->deleteReplyCookie();
 		}
 
-		$reply->spam = $this->isReplySpam($reply);
-
 		switch ($this->post->reply_status) {
 		case BlorgPost::REPLY_STATUS_OPEN:
-			$reply->status = BlorgReply::STATUS_PUBLISHED;
 			$message = new SwatMessage(
 				Blorg::_('Your reply has been added.'));
 
@@ -182,7 +208,6 @@ class BlorgPostPage extends SitePage
 			break;
 
 		case BlorgPost::REPLY_STATUS_MODERATED:
-			$reply->status = BlorgReply::STATUS_PENDING;
 			$message = new SwatMessage(
 				Blorg::_('Your reply has been submitted.'));
 
@@ -197,8 +222,7 @@ class BlorgPostPage extends SitePage
 		}
 
 		$this->clearReplyUi();
-
-		$this->post->replies->add($reply);
+		$this->post->replies->add($this->reply);
 		$this->post->save();
 	}
 
@@ -356,6 +380,48 @@ class BlorgPostPage extends SitePage
 			$ui->getRoot()->visible = false;
 			break;
 		}
+
+		$this->buildReplyPreview();
+	}
+
+	// }}}
+	// {{{ protected function buildReplyPreview()
+
+	protected function buildReplyPreview()
+	{
+		if ($this->reply instanceof BlorgReply &&
+			$this->reply_ui->getWidget('preview_button')->hasBeenClicked()) {
+
+			$button_tag = new SwatHtmlTag('input');
+			$button_tag->type = 'submit';
+			$button_tag->name = 'post_button';
+			$button_tag->value = Blorg::_('Post Now');
+
+			$message = new SwatMessage(Blorg::_('Preview'));
+			$message->secondary_content = sprintf(Blorg::_('Your reply has '.
+				'not been published. When you are happy with your reply, '.
+				'click the Post button to submit your reply. REWRITE %s'),
+				$button_tag);
+
+			$message->content_type = 'text/xml';
+
+			$message_display =
+				$this->reply_ui->getWidget('preview_message_display');
+
+			$message_display->add($message, SwatMessageDisplay::DISMISS_OFF);
+
+			ob_start();
+
+			$view = BlorgViewFactory::build('reply', $this->app);
+			$view->display($this->reply);
+
+			$reply_preview = $this->reply_ui->getWidget('reply_preview');
+			$reply_preview->content = ob_get_clean();
+			$reply_preview->content_type = 'text/xml';
+
+			$container = $this->reply_ui->getWidget('reply_preview_container');
+			$container->visible = true;
+		}
 	}
 
 	// }}}
@@ -418,13 +484,12 @@ class BlorgPostPage extends SitePage
 	protected function displayReplyUi()
 	{
 		// Reply form submits to the top of the reply form if there are error
-		// messages or if the new post is not immediately visible and we are
-		// not previewing a reply. Otherwise the reply form submits to the
-		// new reply or the reply preview.
+		// messages or if the new post is not immediately visible. Otherwise
+		// the reply form submits to the new reply.
 		if ($this->reply_ui->getWidget('reply_edit_form')->hasMessage() ||
-			($this->post->reply_status == BlorgPost::REPLY_STATUS_MODERATED &&
-			!$this->reply_ui->getWidget('preview_button')->hasBeenClicked()) ||
-			$this->post->reply_status == BlorgPost::REPLY_STATUS_LOCKED) {
+			$this->post->reply_status == BlorgPost::REPLY_STATUS_MODERATED ||
+			$this->post->reply_status == BlorgPost::REPLY_STATUS_LOCKED ||
+			$this->reply_ui->getWidget('preview_button')->hasBeenClicked()) {
 			$this->displaySubmitReply();
 		}
 
@@ -437,13 +502,6 @@ class BlorgPostPage extends SitePage
 	protected function displaySubmitReply()
 	{
 		echo '<div id="submit_reply"></div>';
-	}
-
-	// }}}
-	// {{{ protected function displayReplyPreview()
-
-	protected function displayReplyPreview()
-	{
 	}
 
 	// }}}
