@@ -121,6 +121,11 @@ class BlorgAtomFeedPage extends SitePage
 				$post->post_date);
 
 			$entry->setContent($post->bodytext, 'html');
+
+			foreach ($post->tags as $tag) {
+				$entry->addCategory($tag->shortname, $base_href, $tag->title);
+			}
+
 			$this->feed->addEntry($entry);
 		}
 	}
