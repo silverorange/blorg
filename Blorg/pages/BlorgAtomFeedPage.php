@@ -81,25 +81,22 @@ class BlorgAtomFeedPage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function displayAtomFeed()
-
-	protected function displayAtomFeed()
-	{
-		echo $this->feed;
-	}
-
-	// }}}
 	// {{{ protected function buildAtomFeed()
 
 	protected function buildAtomFeed()
 	{
 		$base_href = $this->app->getBaseHref();
 
-		$this->feed = new XML_Atom_Feed($base_href,
+		$this->feed = new XML_Atom_Feed(
+			$base_href.$this->app->config->blorg->path,
 			$this->app->config->site->title);
 
 		$this->feed->addLink($base_href.$this->source, 'self',
 			'application/atom+xml');
+
+		$this->feed->addLink(
+			$base_href.$this->app->config->blorg->path, 'alternate',
+			'text/html');
 
 		foreach ($this->posts as $post) {
 			$path = $base_href.$this->app->config->blorg->path.'archive';
@@ -142,6 +139,14 @@ class BlorgAtomFeedPage extends SitePage
 
 			$this->feed->addEntry($entry);
 		}
+	}
+
+	// }}}
+	// {{{ protected function displayAtomFeed()
+
+	protected function displayAtomFeed()
+	{
+		echo $this->feed;
 	}
 
 	// }}}
