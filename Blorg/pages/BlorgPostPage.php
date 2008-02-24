@@ -310,11 +310,11 @@ class BlorgPostPage extends SitePage
 		$this->buildNavBar();
 		$this->buildReplyUi();
 
-		ob_start();
+		$this->layout->startCapture('content');
 		$this->displayPost();
 		$this->displayReplies();
 		$this->displayReplyUi();
-		$this->layout->data->content = ob_get_clean();
+		$this->layout->endCapture();
 
 		$this->layout->data->html_title = $this->post->getTitle();
 	}

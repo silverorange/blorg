@@ -73,12 +73,11 @@ class BlorgAtomFeedPage extends SitePage
 
 	public function build()
 	{
-		header('Content-type: application/atom+xml; charset="utf-8"');
 		$this->buildAtomFeed();
 
-		ob_start();
+		$this->layout->startCapture('content');
 		$this->displayAtomFeed();
-		$this->layout->data->content = ob_get_clean();
+		$this->layout->endCapture();
 	}
 
 	// }}}

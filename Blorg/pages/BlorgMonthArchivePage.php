@@ -61,9 +61,9 @@ class BlorgMonthArchivePage extends SitePage
 	{
 		$this->buildNavBar();
 
-		ob_start();
+		$this->layout->startCapture('content');
 		$this->displayPosts();
-		$this->layout->data->content = ob_get_clean();
+		$this->layout->endCapture();
 
 		$date = new SwatDate();
 		$date->setYear($this->year);

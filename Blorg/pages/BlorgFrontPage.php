@@ -80,10 +80,10 @@ class BlorgFrontPage extends SitePage
 
 	public function build()
 	{
-		ob_start();
+		$this->layout->startCapture('content');
 		$this->displayPosts();
 		$this->displayFooter();
-		$this->layout->data->content = ob_get_clean();
+		$this->layout->endCapture();
 	}
 
 	// }}}
