@@ -99,9 +99,8 @@ class BlorgAtomFeedPage extends SitePage
 		$this->feed = new XML_Atom_Feed($base_href,
 			$this->app->config->site->title);
 
-		$self_link = new XML_Atom_Link($base_href.$this->source);
-		$self_link->setRelation('self');
-		$this->feed->addLink($self_link);
+		$this->feed->addLink($base_href.$this->source, 'self',
+			'application/atom+xml');
 
 		foreach ($this->posts as $post) {
 			$path = $base_href.$this->app->config->blorg->path.'archive';
@@ -120,10 +119,26 @@ class BlorgAtomFeedPage extends SitePage
 			$entry = new XML_Atom_Entry($post_uri, $post->title,
 				$post->post_date);
 
-			$entry->setContent($post->bodytext, 'html');
+			if (strlen($post->extended_bodytext) > 0) {
+				$full_bodytext = $post->bodytext.$post->extended_bodytext;
+				$entry->setSummary($post->bodytext, 'html');
+				$entry->setContent($full_bodytext, 'html');
+			} else {
+				$entry->setContent($post->bodytext, 'html');
+			}
 
 			foreach ($post->tags as $tag) {
 				$entry->addCategory($tag->shortname, $base_href, $tag->title);
+			}
+
+			$entry->addLink($post_uri, 'alternate', 'text/html');
+
+			$visible_reply_count = count($post->getVisibleReplies());
+			if ($post->reply_status == BlorgPost::REPLY_STATUS_OPEN ||
+				$post->reply_status == BlorgPost::REPLY_STATUS_MODERATED ||
+				($post->reply_status == BlorgPost::REPLY_STATUS_LOCKED &&
+				$visible_reply_count > 0)) {
+				$entry->addLink($post_uri.'#replies', 'replies', 'text/html');
 			}
 
 			$this->feed->addEntry($entry);
