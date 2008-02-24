@@ -99,6 +99,10 @@ class BlorgAtomFeedPage extends SitePage
 		$this->feed = new XML_Atom_Feed($base_href,
 			$this->app->config->site->title);
 
+		$self_link = new XML_Atom_Link($base_href.$this->source);
+		$self_link->setRelation('self');
+		$this->feed->addLink($self_link);
+
 		foreach ($this->posts as $post) {
 			$path = $base_href.$this->app->config->blorg->path.'archive';
 
@@ -113,9 +117,9 @@ class BlorgAtomFeedPage extends SitePage
 				$month_name,
 				$post->shortname);
 
-			$post_date = $post->post_date->format(DATE_FORMAT_ISO_EXTENDED);
+			$entry = new XML_Atom_Entry($post_uri, $post->title,
+				$post->post_date);
 
-			$entry = new XML_Atom_Entry($post_uri, $post->title, $post_date);
 			$entry->setContent($post->bodytext, 'html');
 			$this->feed->addEntry($entry);
 		}
