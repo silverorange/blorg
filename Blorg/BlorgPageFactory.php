@@ -234,14 +234,16 @@ class BlorgPageFactory extends SitePageFactory
 		$months = implode('|', self::$month_names);
 
 		return array(
-			'^(?:page(\d+)|)$'                         => 'BlorgFrontPage',
-			'^author$'                                 => 'BlorgAuthorIndexPage',
-			'^author/([\w-]+)$'                        => 'BlorgAuthorPage',
-			'^archive$'                                => 'BlorgArchivePage',
-			'^archive/(\d{4})$'                        => 'BlorgYearArchivePage',
-			'^archive/(\d{4})/('.$months.')$'          => 'BlorgMonthArchivePage',
-			'^archive/(\d{4})/('.$months.')/([\w-]+)$' => 'BlorgPostPage',
-			'^atom'                                    => 'BlorgAtomFeedPage',
+			'^(?:page(\d+)|)$'                              => 'BlorgFrontPage',
+			'^author$'                                      => 'BlorgAuthorIndexPage',
+			'^author/([\w-]+)$'                             => 'BlorgAuthorPage',
+			'^archive$'                                     => 'BlorgArchivePage',
+			'^archive/(\d{4})$'                             => 'BlorgYearArchivePage',
+			'^archive/(\d{4})/('.$months.')$'               => 'BlorgMonthArchivePage',
+			'^archive/(\d{4})/('.$months.')/([\w-]+)$'      => 'BlorgPostPage',
+			'^atom$'                                        => 'BlorgAtomFrontPage',
+			'^atom/replies$'                                => 'BlorgAtomRepliesPage',
+			'^archive/(\d{4})/('.$months.')/([\w-]+)/atom$' => 'BlorgAtomPostPage',
 		);
 	}
 
