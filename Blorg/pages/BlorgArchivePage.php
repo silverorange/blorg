@@ -64,9 +64,9 @@ class BlorgArchivePage extends SitePage
 	{
 		$this->buildNavBar();
 
-		ob_start();
+		$this->layout->startCapture('content');
 		$this->displayArchive();
-		$this->layout->data->content = ob_get_clean();
+		$this->layout->endCapture();
 
 		$this->layout->data->title = Blorg::_('Archive');
 	}
