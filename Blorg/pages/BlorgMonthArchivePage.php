@@ -65,6 +65,10 @@ class BlorgMonthArchivePage extends SitePage
 		$this->displayPosts();
 		$this->layout->endCapture();
 
+		$this->layout->startCapture('html_head_entries');
+		$this->displayAtomLinks();
+		$this->layout->endCapture();
+
 		$date = new SwatDate();
 		$date->setYear($this->year);
 		$date->setMonth($this->month);
@@ -89,6 +93,38 @@ class BlorgMonthArchivePage extends SitePage
 		$month_name = BlorgPageFactory::$month_names[$this->month];
 		$path.= '/'.$month_name;
 		$this->layout->navbar->createEntry($month_title, $path);
+	}
+
+	// }}}
+	// {{{ protected function displayAtomLinks()
+
+	protected function displayAtomLinks()
+	{
+		$link = new SwatHtmlTag('link');
+		$link->rel = 'alternate';
+		$link->href = $this->app->getBaseHref().
+			$this->app->config->blorg->path.'atom';
+
+		$link->type = 'application/atom+xml';
+		$link->title = sprintf(Blorg::_('%s - Recent Posts'),
+			$this->app->config->site->title);
+
+		$link->display();
+
+		echo "\n\t";
+
+		$link = new SwatHtmlTag('link');
+		$link->rel = 'alternate';
+		$link->href = $this->app->getBaseHref().
+			$this->app->config->blorg->path.'atom/replies';
+
+		$link->type = 'application/atom+xml';
+		$link->title = sprintf(Blorg::_('%s - Recent Replies'),
+			$this->app->config->site->title);
+
+		$link->display();
+
+		echo "\n";
 	}
 
 	// }}}

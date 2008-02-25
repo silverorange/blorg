@@ -61,6 +61,10 @@ class BlorgYearArchivePage extends SitePathPage
 		$this->displayMonths();
 		$this->layout->endCapture();
 
+		$this->layout->startCapture('html_head_entries');
+		$this->displayAtomLinks();
+		$this->layout->endCapture();
+
 		$this->layout->data->title = $this->year;
 	}
 
@@ -74,6 +78,38 @@ class BlorgYearArchivePage extends SitePathPage
 
 		$path.= '/'.$this->year;
 		$this->layout->navbar->createEntry($this->year, $path);
+	}
+
+	// }}}
+	// {{{ protected function displayAtomLinks()
+
+	protected function displayAtomLinks()
+	{
+		$link = new SwatHtmlTag('link');
+		$link->rel = 'alternate';
+		$link->href = $this->app->getBaseHref().
+			$this->app->config->blorg->path.'atom';
+
+		$link->type = 'application/atom+xml';
+		$link->title = sprintf(Blorg::_('%s - Recent Posts'),
+			$this->app->config->site->title);
+
+		$link->display();
+
+		echo "\n\t";
+
+		$link = new SwatHtmlTag('link');
+		$link->rel = 'alternate';
+		$link->href = $this->app->getBaseHref().
+			$this->app->config->blorg->path.'atom/replies';
+
+		$link->type = 'application/atom+xml';
+		$link->title = sprintf(Blorg::_('%s - Recent Replies'),
+			$this->app->config->site->title);
+
+		$link->display();
+
+		echo "\n";
 	}
 
 	// }}}
