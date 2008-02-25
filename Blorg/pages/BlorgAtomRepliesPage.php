@@ -98,6 +98,7 @@ class BlorgAtomRepliesPage extends SitePage
 			'application/atom+xml');
 
 		$this->feed->setGenerator('Blörg');
+		$this->feed->setBase($base_href);
 
 		foreach ($this->replies as $reply) {
 			$post = $reply->post;
