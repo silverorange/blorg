@@ -4,7 +4,7 @@ require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Blorg/dataobjects/BlorgReplyWrapper.php';
 require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
-require_once 'BLorg/dataobjects/BlorgAuthor.php';
+require_once 'Blorg/dataobjects/BlorgAuthor.php';
 
 /**
  * A Blörg Post
