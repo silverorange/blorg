@@ -316,6 +316,10 @@ class BlorgPostPage extends SitePage
 		$this->displayReplyUi();
 		$this->layout->endCapture();
 
+		$this->layout->startCapture('html_head_entries');
+		$this->displayAtomLinks();
+		$this->layout->endCapture();
+
 		$this->layout->data->html_title = $this->post->getTitle();
 	}
 
@@ -422,6 +426,49 @@ class BlorgPostPage extends SitePage
 			$container = $this->reply_ui->getWidget('reply_preview_container');
 			$container->visible = true;
 		}
+	}
+
+	// }}}
+	// {{{ protected function displayAtomLinks()
+
+	protected function displayAtomLinks()
+	{
+		$link = new SwatHtmlTag('link');
+		$link->rel = 'alternate';
+		$link->href = $this->app->getBaseHref().
+			$this->app->config->blorg->path.'atom';
+
+		$link->type = 'application/atom+xml';
+		$link->title = sprintf(Blorg::_('%s - Recent Posts'),
+			$this->app->config->site->title);
+
+		$link->display();
+
+		echo "\n\t";
+
+		$link = new SwatHtmlTag('link');
+		$link->rel = 'alternate';
+		$link->href = $this->app->getBaseHref().
+			$this->app->config->blorg->path.'atom/replies';
+
+		$link->type = 'application/atom+xml';
+		$link->title = sprintf(Blorg::_('%s - Recent Replies'),
+			$this->app->config->site->title);
+
+		$link->display();
+
+		echo "\n";
+
+		$link = new SwatHtmlTag('link');
+		$link->rel = 'alternate';
+		$link->href = $this->app->getBaseHref().$this->source.'/atom';
+		$link->type = 'application/atom+xml';
+		$link->title = sprintf(Blorg::_('Replies to “%s”'),
+			$this->post->title);
+
+		$link->display();
+
+		echo "\n";
 	}
 
 	// }}}
