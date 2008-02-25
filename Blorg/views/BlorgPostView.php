@@ -546,7 +546,7 @@ class BlorgPostView
 	{
 		$show = $this->show['author'];
 		if ($show['mode'] > self::SHOW_NONE) {
-			//if ($post->author->) { // TODO: make sure author can be displayed
+			if ($post->author->show) {
 				$span_tag = new SwatHtmlTag('span');
 				$span_tag->class = 'vcard author';
 				$span_tag->open();
@@ -560,7 +560,7 @@ class BlorgPostView
 				$anchor_tag->display();
 
 				$span_tag->close();
-			//}
+			}
 		}
 	}
 
@@ -739,7 +739,7 @@ class BlorgPostView
 		$path = $this->app->config->blorg->path.'author';
 		return sprintf('%s/%s',
 			$path,
-			$author->email); // TODO: use shortname
+			$author->shortname);
 	}
 
 	// }}}

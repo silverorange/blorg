@@ -74,20 +74,26 @@ class BlorgReplyView
 			}
 		} else {
 			// system author
-			//if ($reply->author->show) {
+			if ($reply->author->show) {
+				$span_tag = new SwatHtmlTag('span');
+				$span_tag->class = 'vcard author';
+				$span_tag->open();
+
 				$anchor_tag = new SwatHtmlTag('a');
-				$anchor_tag->class = 'reply-author system-reply-author';
+				$anchor_tag->class = 'reply-author system-reply-author fn url';
 				$anchor_tag->href =
 					$this->getAuthorRelativeUri($reply->author);
 
 				$anchor_tag->setContent($reply->author->name);
 				$anchor_tag->display();
-			//} else {
-			//	$span_tag = new SwatHtmlTag('span');
-			//	$span_tag->class = 'reply-author system-reply-author';
-			//	$span_tag->setContent($this->reply->author->name);
-			//	$span_tag->display();
-			//}
+
+				$span_tag->close();
+			} else {
+				$span_tag = new SwatHtmlTag('span');
+				$span_tag->class = 'reply-author system-reply-author';
+				$span_tag->setContent($this->reply->author->name);
+				$span_tag->display();
+			}
 		}
 	}
 
