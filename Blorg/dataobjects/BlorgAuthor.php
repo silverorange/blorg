@@ -115,6 +115,35 @@ class BlorgAuthor extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getVisiblePosts()
+
+	/**
+	 * Gets visible posts of this author
+	 *
+	 * @param integer $limit optional. Limit number of returned posts. If not
+	 *                        specified, all posts are returned.
+	 * @param integer $offset optional. Offset returned results. If not
+	 *                         specified, results are not offset.
+	 *
+	 * @return BlorgPostWrapper the visible posts by this author.
+	 */
+	public function getVisiblePosts($limit = null, $offset = 0)
+	{
+		$sql = sprintf('select * from BlorgPost
+			where author = %s and enabled = %s
+			order by post_date desc',
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote(true, 'boolean'));
+
+		if ($limit !== null) {
+			$this->db->setLimit($limit, $offset);
+		}
+
+		$wrapper_class = SwatDBClassMap::get('BlorgPostWrapper');
+		return SwatDB::query($this->db, $sql, $wrapper_class);
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
@@ -132,13 +161,13 @@ class BlorgAuthor extends SwatDBDataObject
 	/**
 	 * Get's all the posts by this author for the specified site instance
 	 *
-	 * @return BlorgPostWrapper the posts by this author in the specified site
-	 *                          instance.
+	 * @return BlorgPostWrapper the posts by this author.
 	 */
 	protected function loadPosts()
 	{
 		$sql = sprintf('select * from BlorgPost
-			where author = %s',
+			where author = %s
+			order by post_date desc',
 			$this->db->quote($this->id, 'integer'));
 
 		$wrapper_class = SwatDBClassMap::get('BlorgPostWrapper');
