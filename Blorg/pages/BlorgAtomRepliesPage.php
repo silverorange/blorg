@@ -143,7 +143,7 @@ class BlorgAtomRepliesPage extends SitePage
 			$entry->setContent(BlorgReply::getBodytextXhtml($reply->bodytext),
 				'html');
 
-			$entry->addAuthor($author_name, $author_uri);
+			$entry->addAuthor($author_name, $author_uri, $author_email);
 			$entry->addLink($reply_uri, 'alternate', 'text/html');
 
 			$this->feed->addEntry($entry);
