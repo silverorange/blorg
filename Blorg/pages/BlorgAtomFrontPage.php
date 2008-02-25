@@ -97,6 +97,7 @@ class BlorgAtomFrontPage extends SitePage
 			'text/html');
 
 		$this->feed->setGenerator('Blörg');
+		$this->feed->setBase($base_href);
 
 		foreach ($this->posts as $post) {
 			$path = $base_href.$this->app->config->blorg->path.'archive';
