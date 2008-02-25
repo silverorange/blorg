@@ -129,6 +129,16 @@ class BlorgAtomFrontPage extends SitePage
 
 			$entry->addLink($post_uri, 'alternate', 'text/html');
 
+			if ($post->author->show) {
+				$author_uri = $blorg_base_href.'author/'.
+					$post->author->shortname;
+			} else {
+				$author_uri = '';
+			}
+
+			$entry->addAuthor($post->author->name, $author_uri,
+				$post->author->email);
+
 			$visible_reply_count = count($post->getVisibleReplies());
 			if ($post->reply_status == BlorgPost::REPLY_STATUS_OPEN ||
 				$post->reply_status == BlorgPost::REPLY_STATUS_MODERATED ||
