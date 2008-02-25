@@ -14,7 +14,7 @@ require_once 'XML/Atom/Entry.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgAtomFrontPage extends SitePage
+class BlorgAtomPage extends SitePage
 {
 	// {{{ class constants
 
