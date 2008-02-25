@@ -1,7 +1,5 @@
 <?php
 
-set_include_path(get_include_path().':/so/packages/xml-atom/work-gauthierm');
-
 require_once 'Site/pages/SitePage.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 require_once 'XML/Atom/Feed.php';
