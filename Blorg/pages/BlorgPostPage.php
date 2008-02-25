@@ -321,6 +321,9 @@ class BlorgPostPage extends SitePage
 		$this->layout->endCapture();
 
 		$this->layout->data->html_title = $this->post->getTitle();
+
+		$this->layout->data->meta_description = SwatString::minimizeEntities(
+			SwatString::ellipsizeRight(strip_tags($this->post->bodytext), 300));
 	}
 
 	// }}}
