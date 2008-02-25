@@ -1,34 +1,54 @@
 <?php
 
-require_once 'Admin/dataobjects/AdminUser.php';
+require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Admin/dataobjects/AdminUserWrapper.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
 /**
  * Author for a Blörg site
  *
- * Authors are also admin users. The <i>show</i> flag on authors determines
- * whether or not an author is visible on the front-end of a Blörg site.
+ * The <i>show</i> flag on authors determines whether or not an author is
+ * visible on the front-end of a Blörg site.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @see       AdminUser
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgAdminUser extends AdminUser
+class BlorgAuthor extends SwatDBDataObject
 {
-	// {{{ protected properties
+	// {{{ public properties
 
 	/**
-	 * Array of BlorgPostWrapper objects indexed by instance id
+	 * Id of this author
 	 *
-	 * @var array
-	 *
-	 * @see BlorgAdminUser::getPosts()
+	 * @var integer
 	 */
-	protected $posts_by_instance = array();
+	public $id;
 
-	// }}}
-	// {{{ public properties
+	/**
+	 * Full name of this author
+	 *
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * Short, textual identifier for this author used in URIs
+	 *
+	 * Often this will be a lowercase version of the author's first name. This
+	 * identifier must be unique within a site instance.
+	 *
+	 * @var string
+	 */
+	public $shortname;
+
+	/**
+	 * Email address of this author
+	 *
+	 * @var string
+	 */
+	public $email;
 
 	/**
 	 * Whether or not this user is shown on the front-end as an author
@@ -50,15 +70,6 @@ class BlorgAdminUser extends AdminUser
 	 * @var string
 	 */
 	public $bodytext;
-
-	/**
-	 * Short, textual identifier for this author used in URIs
-	 *
-	 * Often this will be a lowercase version of the author's first name.
-	 *
-	 * @var string
-	 */
-	public $shortname;
 
 	// }}}
 	// {{{ public function loadByShortname()
@@ -104,35 +115,55 @@ class BlorgAdminUser extends AdminUser
 	}
 
 	// }}}
-	// {{{ public function getPosts()
+	// {{{ protected function init()
+
+	protected function init()
+	{
+		$this->registerInternalProperty('instance',
+			SwatDBClassMap::get('SiteInstance'));
+
+		$this->table = 'BlorgAuthor';
+		$this->id_field = 'integer:id';
+	}
+
+	// }}}
+	// {{{ protected function loadPosts()
 
 	/**
 	 * Get's all the posts by this author for the specified site instance
 	 *
-	 * @param SiteInstance $instance optional. The instance to get the posts
-	 *                                from. If the application does not use
-	 *                                instances, this should be specified as
-	 *                                null.
-	 *
 	 * @return BlorgPostWrapper the posts by this author in the specified site
 	 *                          instance.
 	 */
-	public function getPosts(SiteInstance $instance = null)
+	protected function loadPosts()
 	{
-		$instance_id = ($instance === null) ? null : $instance->id;
+		$sql = sprintf('select * from BlorgPost
+			where author = %s',
+			$this->db->quote($this->id, 'integer'));
 
-		if (!array_key_exists($instance_id, $this->posts_by_instance)) {
-			$sql = sprintf('select * from BlorgPost
-				where instance %s %s and author = %s',
-				SwatDB::equalityOperator($instance_id),
-				$this->db->quote($instance_id, 'integer'),
-				$this->db->quote($this->id, 'integer'));
+		$wrapper_class = SwatDBClassMap::get('BlorgPostWrapper');
+		return SwatDB::query($this->db, $sql, $wrapper_class);
+	}
 
-			$wrapper_class = SwatDBClassMap::get('BlorgPostWrapper');
-			return SwatDB::query($this->db, $sql, $wrapper_class);
-		}
+	// }}}
+	// {{{ protected function loadAdminUsers()
 
-		return $this->posts_by_instance[$instance_id];
+	/**
+	 * Gets all the admin users that can post as this author
+	 *
+	 *
+	 * @return AdminUserWrapper the admin users that can post as this author.
+	 */
+	protected function loadAdminUsers()
+	{
+		$sql = sprintf('select * from AdminUser
+			inner join BlorgAuthorAdminUserBinding on
+				BlorgAuthorAdminUserBinding.usernum = AdminUser.id and
+				BlorgAuthorAdminUserBinding.author = %s',
+			$this->db->quote($this->id, 'integer'));
+
+		$wrapper_class = SwatDBClassMap::get('AdminUserWrapper');
+		return SwatDB::query($this->db, $sql, $wrapper_class);
 	}
 
 	// }}}

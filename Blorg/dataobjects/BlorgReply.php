@@ -2,6 +2,7 @@
 
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Swat/SwatString.php';
+require_once 'Blorg/dataobjects/BlorgAuthor.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 
 /**
@@ -153,7 +154,7 @@ class BlorgReply extends SwatDBDataObject
 			SwatDBClassMap::get('BlorgPost'));
 
 		$this->registerInternalProperty('author',
-			SwatDBClassMap::get('AdminUser'));
+			SwatDBClassMap::get('BlorgAuthor'));
 
 		$this->table = 'BlorgReply';
 		$this->id_field = 'integer:id';
