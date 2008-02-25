@@ -19,6 +19,7 @@ class BlorgReplyWrapper extends SwatDBRecordsetWrapper
 	{
 		parent::init();
 		$this->row_wrapper_class = SwatDBClassMap::get('BlorgReply');
+		$this->index_field = 'id';
 	}
 
 	// }}}
