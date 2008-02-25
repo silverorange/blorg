@@ -84,6 +84,24 @@ class BlorgFrontPage extends SitePage
 		$this->displayPosts();
 		$this->displayFooter();
 		$this->layout->endCapture();
+
+		$this->layout->startCapture('html_head_entries');
+		$this->displayAtomLink();
+		$this->layout->endCapture();
+	}
+
+	// }}}
+	// {{{ protected function displayAtomLink()
+
+	protected function displayAtomLink()
+	{
+		$link = new SwatHtmlTag('link');
+		$link->rel = 'alternate';
+		$link->href = $this->app->getBaseHref().
+			$this->app->config->blorg->path.'atom';
+
+		$link->type = 'application/atom+xml';
+		$link->display();
 	}
 
 	// }}}
