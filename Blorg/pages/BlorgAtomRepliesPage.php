@@ -120,16 +120,20 @@ class BlorgAtomRepliesPage extends SitePage
 
 			if ($reply->author !== null) {
 				$author_name = $reply->author->name;
-//              TODO: author support
-//				if ($reply->author->show) {
-//					$author_uri = $reply->author->
-//				} else {
-					$author_uri = null;
-//				}
+				if ($reply->author->show) {
+					$author_uri = $blorg_base_href.'author/'.
+						$post->author->shortname;
+
+					$author_email = $post->author->email;
+				} else {
+					$author_uri   = '';
+					$author_email = '';
+				}
 			} else {
-				$author_name = $reply->fullname;
-				$author_uri = $reply->link;
-				// don't show author email so authors don't get spammed
+				$author_name  = $reply->fullname;
+				$author_uri   = $reply->link;
+				// don't show anonymous author email
+				$author_email = '';
 			}
 
 			$entry = new XML_Atom_Entry($reply_uri,
