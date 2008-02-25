@@ -87,23 +87,23 @@ class BlorgAtomRepliesPage extends SitePage
 
 	protected function buildAtomFeed()
 	{
-		$base_href = $this->app->getBaseHref();
+		$site_base_href  = $this->app->getBaseHref();
+		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
 
-		$this->feed = new XML_Atom_Feed(
-			$base_href.$this->app->config->blorg->path,
+		$this->feed = new XML_Atom_Feed($blorg_base_href,
 			sprintf(Blorg::_('%s - Recent Replies'),
 				$this->app->config->site->title));
 
-		$this->feed->addLink($base_href.$this->source, 'self',
+		$this->feed->addLink($site_base_href.$this->source, 'self',
 			'application/atom+xml');
 
 		$this->feed->setGenerator('Blörg');
-		$this->feed->setBase($base_href);
+		$this->feed->setBase($site_base_href);
 
 		foreach ($this->replies as $reply) {
 			$post = $reply->post;
 
-			$path = $base_href.$this->app->config->blorg->path.'archive';
+			$path = $blorg_base_href.'archive';
 
 			$date = clone $post->post_date;
 			$date->convertTZ($this->app->default_time_zone);
