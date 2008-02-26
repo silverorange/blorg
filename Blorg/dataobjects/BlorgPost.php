@@ -248,6 +248,17 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function hasVisibleReplyStatus()
+
+	public function hasVisibleReplyStatus()
+	{
+		return ($this->reply_status == self::REPLY_STATUS_OPEN ||
+			$this->reply_status == self::REPLY_STATUS_MODERATED ||
+			($this->reply_status == self::REPLY_STATUS_LOCKED &&
+			count($this->getVisibleReplies()) > 0));
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
