@@ -109,12 +109,11 @@ class Blorg
 	 *
 	 * @return SwatHtmlHeadEntrySet the HTML head entries used by Blörg.
 	 */
-	public static function getHtmlHeadEntrySet()
+	public static function getHtmlHeadEntrySet(SiteApplication $app)
 	{
 		$set = new SwatHtmlHeadEntrySet();
 
-		$blorg_base_href = $this->app->getBaseHref().
-			$this->app->config->blorg->path;
+		$blorg_base_href = $app->getBaseHref().$app->config->blorg->path;
 
 		$recent_posts = new SwatLinkHtmlHeadEntry(
 			$blorg_base_href.'atom', 'alternate',
