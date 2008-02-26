@@ -434,9 +434,12 @@ class BlorgPostPage extends SitePage
 
 	protected function buildAtomLinks()
 	{
-		$this->layout->addHtmlHeadEntry(new SwatLinkHtmlHeadEntry(
-			$this->source.'/atom', 'alternate', 'application/atom+xml',
-			sprintf(Blorg::_('Recent Replies to “%s”'), $this->post->title)));
+		if ($this->post->hasVisibleReplyStatus()) {
+			$this->layout->addHtmlHeadEntry(new SwatLinkHtmlHeadEntry(
+				$this->source.'/atom', 'alternate', 'application/atom+xml',
+				sprintf(Blorg::_('Recent Replies to “%s”'),
+					$this->post->title)));
+		}
 	}
 
 	// }}}
