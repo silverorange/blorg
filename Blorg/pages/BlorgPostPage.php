@@ -443,9 +443,7 @@ class BlorgPostPage extends SitePage
 			$this->app->config->blorg->path.'atom';
 
 		$link->type = 'application/atom+xml';
-		$link->title = sprintf(Blorg::_('%s - Recent Posts'),
-			$this->app->config->site->title);
-
+		$link->title = Blorg::_('Recent Posts');
 		$link->display();
 
 		echo "\n\t";
@@ -456,9 +454,7 @@ class BlorgPostPage extends SitePage
 			$this->app->config->blorg->path.'atom/replies';
 
 		$link->type = 'application/atom+xml';
-		$link->title = sprintf(Blorg::_('%s - Recent Replies'),
-			$this->app->config->site->title);
-
+		$link->title = Blorg::_('Recent Replies');
 		$link->display();
 
 		echo "\n";
@@ -467,7 +463,7 @@ class BlorgPostPage extends SitePage
 		$link->rel = 'alternate';
 		$link->href = $this->app->getBaseHref().$this->source.'/atom';
 		$link->type = 'application/atom+xml';
-		$link->title = sprintf(Blorg::_('Replies to “%s”'),
+		$link->title = sprintf(Blorg::_('Recent Replies to “%s”'),
 			$this->post->title);
 
 		$link->display();
