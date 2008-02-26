@@ -1,6 +1,8 @@
 <?php
 
 require_once 'Swat/Swat.php';
+require_once 'Swat/SwatHtmlHeadEntrySet.php';
+require_once 'Swat/SwatLinkHtmlHeadEntry.php';
 require_once 'Site/Site.php';
 require_once 'Admin/Admin.php';
 require_once 'Blorg/BlorgViewFactory.php';
@@ -95,6 +97,37 @@ class Blorg
 			// Optional Wordpress API key for Akismet spam filtering.
 			'blorg.akismet_key' => null,
 		);
+	}
+
+	// }}}
+	// {{{ public static function getHtmlHeadEntrySet()
+
+	/**
+	 * Gets site-wide HTML head entries for sites using Blörg
+	 *
+	 * Applications may add these head entries to their layout.
+	 *
+	 * @return SwatHtmlHeadEntrySet the HTML head entries used by Blörg.
+	 */
+	public static function getHtmlHeadEntries()
+	{
+		$set = new SwatHtmlHeadEntrySet();
+
+		$blorg_base_href = $this->app->getBaseHref().
+			$this->app->config->blorg->path;
+
+		$recent_posts = new SwatLinkHtmlHeadEntry(
+			$blorg_base_href.'atom', 'alternate',
+			'application/atom+xml', Blorg::_('Recent Posts'));
+
+		$recent_replies = new SwatLinkHtmlHeadEntry(
+			$blorg_base_href.'atom/replies', 'alternate',
+			'application/atom+xml', Blorg::_('Recent Replies'));
+
+		$set->addEntry($recent_posts);
+		$set->addEntry($recent_posts);
+
+		return $set;
 	}
 
 	// }}}

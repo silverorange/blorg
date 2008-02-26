@@ -68,10 +68,6 @@ class BlorgArchivePage extends SitePage
 		$this->displayArchive();
 		$this->layout->endCapture();
 
-		$this->layout->startCapture('html_head_entries');
-		$this->displayAtomLinks();
-		$this->layout->endCapture();
-
 		$this->layout->data->title = Blorg::_('Archive');
 	}
 
@@ -82,34 +78,6 @@ class BlorgArchivePage extends SitePage
 	{
 		$path = $this->app->config->blorg->path.'archive';
 		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
-	}
-
-	// }}}
-	// {{{ protected function displayAtomLinks()
-
-	protected function displayAtomLinks()
-	{
-		$link = new SwatHtmlTag('link');
-		$link->rel = 'alternate';
-		$link->href = $this->app->getBaseHref().
-			$this->app->config->blorg->path.'atom';
-
-		$link->type = 'application/atom+xml';
-		$link->title = Blorg::_('Recent Posts');
-		$link->display();
-
-		echo "\n\t";
-
-		$link = new SwatHtmlTag('link');
-		$link->rel = 'alternate';
-		$link->href = $this->app->getBaseHref().
-			$this->app->config->blorg->path.'atom/replies';
-
-		$link->type = 'application/atom+xml';
-		$link->title = Blorg::_('Recent Replies');
-		$link->display();
-
-		echo "\n";
 	}
 
 	// }}}

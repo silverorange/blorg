@@ -309,15 +309,12 @@ class BlorgPostPage extends SitePage
 	{
 		$this->buildNavBar();
 		$this->buildReplyUi();
+		$this->buildAtomLinks();
 
 		$this->layout->startCapture('content');
 		$this->displayPost();
 		$this->displayReplies();
 		$this->displayReplyUi();
-		$this->layout->endCapture();
-
-		$this->layout->startCapture('html_head_entries');
-		$this->displayAtomLinks();
 		$this->layout->endCapture();
 
 		$this->layout->data->html_title = $this->post->getTitle();
@@ -433,42 +430,13 @@ class BlorgPostPage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function displayAtomLinks()
+	// {{{ protected function buildAtomLinks()
 
-	protected function displayAtomLinks()
+	protected function buildAtomLinks()
 	{
-		$link = new SwatHtmlTag('link');
-		$link->rel = 'alternate';
-		$link->href = $this->app->getBaseHref().
-			$this->app->config->blorg->path.'atom';
-
-		$link->type = 'application/atom+xml';
-		$link->title = Blorg::_('Recent Posts');
-		$link->display();
-
-		echo "\n\t";
-
-		$link = new SwatHtmlTag('link');
-		$link->rel = 'alternate';
-		$link->href = $this->app->getBaseHref().
-			$this->app->config->blorg->path.'atom/replies';
-
-		$link->type = 'application/atom+xml';
-		$link->title = Blorg::_('Recent Replies');
-		$link->display();
-
-		echo "\n";
-
-		$link = new SwatHtmlTag('link');
-		$link->rel = 'alternate';
-		$link->href = $this->app->getBaseHref().$this->source.'/atom';
-		$link->type = 'application/atom+xml';
-		$link->title = sprintf(Blorg::_('Recent Replies to “%s”'),
-			$this->post->title);
-
-		$link->display();
-
-		echo "\n";
+		$this->layout->addHtmlHeadEntry(new SwatLinkHtmlHeadEntry(
+			$this->app->getBaseHref().$this->source.'/atom', 'alternate',
+			'application/atom+xml', Blorg::_('Recent Replies')));
 	}
 
 	// }}}
