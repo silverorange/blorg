@@ -109,7 +109,7 @@ class Blorg
 	 *
 	 * @return SwatHtmlHeadEntrySet the HTML head entries used by Blörg.
 	 */
-	public static function getHtmlHeadEntries()
+	public static function getHtmlHeadEntrySet()
 	{
 		$set = new SwatHtmlHeadEntrySet();
 
