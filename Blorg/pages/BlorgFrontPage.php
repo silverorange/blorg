@@ -101,9 +101,7 @@ class BlorgFrontPage extends SitePage
 			$this->app->config->blorg->path.'atom';
 
 		$link->type = 'application/atom+xml';
-		$link->title = sprintf(Blorg::_('%s - Recent Posts'),
-			$this->app->config->site->title);
-
+		$link->title = Blorg::_('Recent Posts');
 		$link->display();
 
 		echo "\n\t";
@@ -114,9 +112,7 @@ class BlorgFrontPage extends SitePage
 			$this->app->config->blorg->path.'atom/replies';
 
 		$link->type = 'application/atom+xml';
-		$link->title = sprintf(Blorg::_('%s - Recent Replies'),
-			$this->app->config->site->title);
-
+		$link->title = Blorg::_('Recent Replies');
 		$link->display();
 
 		echo "\n";
