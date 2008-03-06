@@ -122,9 +122,8 @@ class BlorgPostIndex extends AdminSearch
 
 		$author_flydown = $this->ui->getWidget('search_author');
 		$author_flydown->show_blank = true;
-		// TODO: update this once show is moved into the AdminUserInstanceBindingTable
 		$author_flydown->addOptionsByArray(SwatDB::getOptionArray(
-			$this->app->db, 'AdminUser', 'name', 'id', 'name',
+			$this->app->db, 'BlorgAuthor', 'name', 'id', 'name',
 			sprintf('show = %s', $this->app->db->quote(true, 'boolean'))));
 
 	}
