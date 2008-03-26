@@ -106,15 +106,6 @@ class BlorgFrontPage extends SitePage
 
 		$path = $this->app->config->blorg->path;
 
-		echo '<div class="archive-link">';
-
-		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->href = $path.'archive';
-		$anchor_tag->setContent(Blorg::_('Archive'));
-		$anchor_tag->display();
-
-		echo '</div>';
-
 		$instance_id = $this->app->instance->getId();
 
 		$sql = sprintf('select count(id) from BlorgPost
@@ -133,13 +124,20 @@ class BlorgFrontPage extends SitePage
 		$this->pager->setCurrentPage($this->current_page);
 		$this->pager->link = $path.'page%s';
 
+		$this->pager->display();
+
 		echo '<div class="results-message">';
 		echo $this->pager->getResultsMessage(
 			Blorg::_('post'), Blorg::_('posts'));
 
 		echo '</div>';
 
-		$this->pager->display();
+		echo '<div class="archive-link">';
+		$anchor_tag = new SwatHtmlTag('a');
+		$anchor_tag->href = $path.'archive';
+		$anchor_tag->setContent(Blorg::_('Archive'));
+		$anchor_tag->display();
+		echo '</div>';
 
 		echo '</div>';
 	}
