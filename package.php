@@ -2,7 +2,7 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.0.16';
+$version = '0.0.17';
 $notes = <<<EOT
 see ChangeLog
 EOT;
@@ -49,9 +49,9 @@ $package->addReplacement('Blorg/Blorg.php', 'pear-config', '@DATA-DIR@', 'data_d
 
 $package->setPhpDep('5.1.5');
 $package->setPearinstallerDep('1.4.0');
-$package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.3.2');
-$package->addPackageDepWithChannel('required', 'Site', 'pear.silverorange.com', '1.2.4');
-$package->addPackageDepWithChannel('required', 'Admin', 'pear.silverorange.com', '1.2.1');
+$package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.3.15');
+$package->addPackageDepWithChannel('required', 'Site', 'pear.silverorange.com', '1.2.27');
+$package->addPackageDepWithChannel('required', 'Admin', 'pear.silverorange.com', '1.3.9');
 $package->addPackageDepWithChannel('required', 'XML_RPC2', 'pear.silverorange.com', '1.0.1so1');
 $package->generateContents();
 
