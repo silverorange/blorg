@@ -144,7 +144,7 @@ class BlorgYearArchivePage extends SitePathPage
 		$date->setMinute(0);
 		$date->setSecond(0);
 
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select id, title, bodytext, shortname, post_date,
 				reply_status

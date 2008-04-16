@@ -217,7 +217,7 @@ class BlorgPostReplies extends AdminSearch
 	protected function getWhereClause()
 	{
 		if ($this->where_clause === null) {
-			$instance_id = $this->app->instance->getId();
+			$instance_id = $this->app->getInstanceId();
 
 			$where = sprintf(
 				'post in (select id from BlorgPost where instance %s %s)',

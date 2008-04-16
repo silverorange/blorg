@@ -123,7 +123,7 @@ class BlorgTagIndex extends AdminSearch
 	protected function getWhereClause()
 	{
 		if ($this->where_clause === null) {
-			$instance_id = $this->app->instance->getId();
+			$instance_id = $this->app->getInstanceId();
 
 			$where = sprintf('instance %s %s ',
 				SwatDB::equalityOperator($instance_id),

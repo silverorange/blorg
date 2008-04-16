@@ -51,7 +51,7 @@ class BlorgAtomRepliesPage extends SitePage
 
 	protected function initReplies()
 	{
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select BlorgReply.* from BlorgReply
 			inner join BlorgPost on BlorgReply.post = BlorgPost.id

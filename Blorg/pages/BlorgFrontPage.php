@@ -50,7 +50,7 @@ class BlorgFrontPage extends SitePage
 
 	protected function initPosts($current_page)
 	{
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select * from BlorgPost
 			where instance %s %s
@@ -106,7 +106,7 @@ class BlorgFrontPage extends SitePage
 
 		$path = $this->app->config->blorg->path;
 
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select count(id) from BlorgPost
 			where instance %s %s

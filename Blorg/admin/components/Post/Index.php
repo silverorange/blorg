@@ -62,7 +62,7 @@ class BlorgPostIndex extends AdminSearch
 
 	public function processActions(SwatTableView $view, SwatActions $actions)
 	{
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 		$num = count($view->getSelection());
 		$message = null;
 		foreach ($view->getSelection() as $item)
@@ -238,12 +238,12 @@ class BlorgPostIndex extends AdminSearch
 	protected function getWhereClause()
 	{
 		if ($this->where_clause === null) {
-			$instance_id = $this->app->instance->getId();
+			$instance_id = $this->app->getInstanceId();
 
 			$where = sprintf('instance %s %s ',
 				SwatDB::equalityOperator($instance_id),
 				$this->app->db->quote($instance_id, 'integer'));
-		
+
 			// keywords are included in the where clause if fulltext searching
 			// is turned off
 			$keywords = $this->ui->getWidget('search_keywords')->value;

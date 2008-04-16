@@ -147,7 +147,7 @@ class BlorgArchivePage extends SitePage
 
 	protected function initYears()
 	{
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select post_date from BlorgPost
 				where instance %s %s and enabled = %s
