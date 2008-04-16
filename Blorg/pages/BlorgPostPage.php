@@ -85,7 +85,7 @@ class BlorgPostPage extends SitePage
 		$this->post = new $class_name();
 		$this->post->setDatabase($this->app->db);
 		if (!$this->post->loadByDateAndShortname($date, $shortname,
-			$this->app->instance->getInstance())) {
+			$this->app->getInstance())) {
 			throw new SiteNotFoundException('Post not found.');
 		}
 

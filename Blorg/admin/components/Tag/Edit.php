@@ -82,7 +82,7 @@ class BlorgTagEdit extends AdminDBEdit
 		$sql = 'select shortname from BlorgTag
 			where shortname = %s and id %s %s and instance %s %s';
 
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf($sql,
 			$this->app->db->quote($shortname, 'text'),
@@ -114,7 +114,7 @@ class BlorgTagEdit extends AdminDBEdit
 			$now->toUTC();
 			$this->tag->createdate = $now;
 
-			$this->tag->instance = $this->app->instance->getId();
+			$this->tag->instance = $this->app->getInstanceId();
 		}
 
 		$this->tag->save();

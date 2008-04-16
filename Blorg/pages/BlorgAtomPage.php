@@ -50,7 +50,7 @@ class BlorgAtomPage extends SitePage
 
 	protected function initPosts()
 	{
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select * from BlorgPost
 			where instance %s %s

@@ -46,7 +46,7 @@ class BlorgPostEdit extends AdminDBEdit
 				SwatDateEntry::CALENDAR | SwatDateEntry::TIME;
 		}
 
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 		$tag_where_clause = sprintf('instance %s %s',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'));
@@ -162,7 +162,7 @@ class BlorgPostEdit extends AdminDBEdit
 		}
 
 		$post_date->setTZ($this->app->default_time_zone);
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = 'select shortname from BlorgPost
 			where shortname = %s and instance %s %s and id %s %s
@@ -211,7 +211,7 @@ class BlorgPostEdit extends AdminDBEdit
 		if ($this->id === null) {
 			$this->post->createdate = $now;
 			$this->post->post_date  = $now;
-			$this->post->instance   = $this->app->instance->getId();
+			$this->post->instance   = $this->app->getInstanceId();
 			// TODO: Fix up author support
 			// $this->post->author     = $this->app->session->getUserID();
 		} else {

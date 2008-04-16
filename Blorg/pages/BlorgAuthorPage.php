@@ -54,7 +54,7 @@ class BlorgAuthorPage extends SitePage
 		$this->author = new $class_name();
 		$this->author->setDatabase($this->app->db);
 		if (!$this->author->loadByShortname($shortname,
-			$this->app->instance->getInstance())) {
+			$this->app->getInstance())) {
 			throw new SiteNotFoundException('Author not found.');
 		}
 

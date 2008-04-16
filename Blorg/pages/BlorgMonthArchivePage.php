@@ -123,7 +123,7 @@ class BlorgMonthArchivePage extends SitePage
 		$date->setMinute(0);
 		$date->setSecond(0);
 
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select * from BlorgPost
 			where date_trunc(\'month\', convertTZ(createdate, %s)) =

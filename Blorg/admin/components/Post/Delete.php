@@ -24,7 +24,7 @@ class BlorgPostDelete extends AdminDBDelete
 		parent::processDBData();
 
 		$item_list = $this->getItemList('integer');
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('delete from BlorgPost
 			where instance %s %s and id in (%s)',
@@ -53,7 +53,7 @@ class BlorgPostDelete extends AdminDBDelete
 		parent::buildInternal();
 
 		$item_list = $this->getItemList('integer');
-		$instance_id = $this->app->instance->getId();
+		$instance_id = $this->app->getInstanceId();
 
 		$dep = new AdminListDependency();
 		$dep->setTitle(Blorg::_('post'), Blorg::_('posts'));
