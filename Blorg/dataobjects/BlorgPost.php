@@ -260,6 +260,29 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getVisibleFiles()
+
+	/**
+	 * Gets visible files for this post
+	 *
+	 * @return BlorgFileWrapper
+	 */
+	public function getVisibleFiles()
+	{
+		$sql = 'select BlorgFile.*
+			from BlorgFile
+			where BlorgFile.post = %s and BlorgFile.show = %s
+			order by BlorgFile.createdate';
+
+		$sql = sprintf($sql,
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote(true, 'boolean'));
+
+		return SwatDB::query($this->db, $sql,
+			SwatDBClassMap::get('BlorgFileWrapper'));
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
@@ -330,7 +353,7 @@ class BlorgPost extends SwatDBDataObject
 	// {{{ protected function loadFiles()
 
 	/**
-	 * Loads tags for this post
+	 * Loads files for this post
 	 *
 	 * @return BlorgFileWrapper
 	 */
@@ -339,7 +362,7 @@ class BlorgPost extends SwatDBDataObject
 		$sql = 'select BlorgFile.*
 			from BlorgFile
 			where BlorgFile.post = %s
-			order by createdate';
+			order by BlorgFile.createdate';
 
 		$sql = sprintf($sql, $this->db->quote($this->id, 'integer'));
 
