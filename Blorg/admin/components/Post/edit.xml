@@ -70,10 +70,10 @@
 							<widget class="SwatEntry" id="file_description" />
 						</object>
 					</object>
-					<object class="SwatTableViewColumn" id="attach">
+					<object class="SwatTableViewColumn" id="show">
 						<property name="title" translatable="yes">Attach?</property>
 						<object class="SwatInputCell">
-							<widget class="SwatCheckbox" id="attach_file" />
+							<widget class="SwatCheckbox" id="show_file" />
 						</object>
 					</object>
 					<object class="SwatTableViewInputRow" id="input_row">
