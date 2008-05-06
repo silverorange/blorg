@@ -180,11 +180,10 @@ class BlorgPostEdit extends AdminDBEdit
 				if (!$file->isUploaded())
 					continue;
 
-				if ($input_row->view->hasColumn('description'))
-					$description = $input_row->getWidget('description',
-						$replicator_id)->value;
-				else
-					$description = null;
+				$description = $input_row->getWidget('description',
+					$replicator_id)->value;
+
+				$show = $input_row->getWidget('show', $replicator_id)->value;
 
 				$class_name = SwatDBClassMap::get('BlorgFile');
 				$blorg_file = new $class_name();
@@ -197,6 +196,7 @@ class BlorgPostEdit extends AdminDBEdit
 					$blorg_file->post = $this->id;
 
 				$blorg_file->description = $description;
+				$blorg_file->show = $show;
 				$blorg_file->filename = $file->getUniqueFileName('../files');
 				$blorg_file->mime_type = $file->getMimeType();
 				$blorg_file->filesize = $file->getSize();
