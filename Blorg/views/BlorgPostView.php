@@ -54,6 +54,13 @@ class BlorgPostView
 	protected $app;
 
 	/**
+	 * Path prefix for relatively referenced paths
+	 *
+	 * @var string
+	 */
+	protected $path_prefix = '';
+
+	/**
 	 * Maximum length of bodytext before it is ellipsized in the summary
 	 * display mode
 	 *
@@ -81,6 +88,7 @@ class BlorgPostView
 		'permalink'         => array('mode' => self::SHOW_ALL,     'link' => true),
 		'reply_count'       => array('mode' => self::SHOW_ALL,     'link' => true),
 		'tags'              => array('mode' => self::SHOW_ALL,     'link' => true),
+		'files'             => array('mode' => self::SHOW_ALL,     'link' => true),
 		'bodytext'          => array('mode' => self::SHOW_ALL,     'link' => true),
 		'extended_bodytext' => array('mode' => self::SHOW_SUMMARY, 'link' => true),
 	);
@@ -108,6 +116,21 @@ class BlorgPostView
 	public function __construct(SiteApplication $app)
 	{
 		$this->app = $app;
+	}
+
+	// }}}
+	// {{{ public function setPathPrefix()
+
+	/**
+	 * Sets the prefix to use for relatively referenced paths such as file
+	 * download links.
+	 *
+	 * @param string A relative path prefix to access the web root such as
+	 *               "../"
+	 */
+	public function setPathPrefix($path_prefix)
+	{
+		$this->path_prefix = $path_prefix;
 	}
 
 	// }}}
@@ -160,6 +183,10 @@ class BlorgPostView
 				break;
 			case 'tags':
 				$this->showTags($mode, $link);
+				break;
+			case 'files':
+				$this->showFiles($mode, $link);
+				break;
 			case 'bodytext':
 				$this->showBodytext($mode, $link);
 				break;
@@ -299,6 +326,31 @@ class BlorgPostView
 	}
 
 	// }}}
+	// {{{ public function showFiles()
+
+	/**
+	 * Sets the display mode of the files element of this post view
+	 *
+	 * @param integer $mode the display mode of the files element of this
+	 *                       post view. The files element supports
+	 *                       {@link BlorgPostView::SHOW_NONE},
+	 *                       {@link BlorgPostView::SHOW_SUMMARY} and
+	 *                       {@link BlorgPostView::SHOW_ALL}. If an invalid
+	 *                       mode is specified, BlorgPostView::SHOW_NONE is
+	 *                       used.
+	 * @param boolean|string $link the bodytext is never linked. Setting a
+	 *                              value here has no effect. This parameter is
+	 *                              here to match the API of the other show
+	 *                              methods.
+	 */
+	public function showFiles($mode = self::SHOW_ALL, $link = true)
+	{
+		$mode = $this->getMode($mode);
+		$link = $this->getLink($link);
+		$this->show['files'] = array('mode' => $mode, 'link' => $link);
+	}
+
+	// }}}
 	// {{{ public function showBodytext()
 
 	/**
@@ -388,6 +440,7 @@ class BlorgPostView
 
 			$this->displayHeader($post);
 			$this->displayBody($post);
+			$this->displayFooter($post);
 
 			echo '</div>';
 		}
@@ -472,6 +525,14 @@ class BlorgPostView
 	{
 		$this->displayBodytext($post);
 		$this->displayExtendedBodytext($post);
+	}
+
+	// }}}
+	// {{{ protected function displayFooter()
+
+	protected function displayFooter(BlorgPost $post)
+	{
+		$this->displayFiles($post);
 	}
 
 	// }}}
@@ -706,6 +767,33 @@ class BlorgPostView
 
 				$div_tag->close();
 				break;
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function displayFiles()
+
+	protected function displayFiles(BlorgPost $post)
+	{
+		$show = $this->show['files'];
+		if ($show['mode'] > self::SHOW_NONE) {
+			$files = $post->getVisibleFiles();
+			if (count($files) > 0) {
+				$h4_tag = new SwatHtmlTag('h4');
+				$h4_tag->setContent(Blorg::_('Attachments:'));
+				$h4_tag->display();
+
+				foreach ($files as $file) {
+					$div_tag = new SwatHtmlTag('div');
+					$div_tag->open();
+					$a_tag = new SwatHtmlTag('a');
+					$a_tag->href = $file->getRelativeUri($this->path_prefix);
+					$a_tag->setContent($file->getDescription());
+					$a_tag->display();
+					echo ' '.SwatString::byteFormat($file->filesize);
+					$div_tag->close();
+				}
 			}
 		}
 	}
