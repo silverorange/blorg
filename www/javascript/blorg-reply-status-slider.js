@@ -86,8 +86,6 @@ BlorgReplyStatusSlider.prototype.createContextNote = function()
 	} else {
 		container.parentNode.appendChild(this.context_note);
 	}
-
-	//this.updateContextNote();
 }
 
 BlorgReplyStatusSlider.prototype.handleChange = function()
