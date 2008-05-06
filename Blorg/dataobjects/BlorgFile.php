@@ -77,6 +77,11 @@ class BlorgFile extends SwatDBDataObject
 	public $form_unique_id;
 
 	// }}}
+	// {{{ private properties
+
+	private $file_base;
+
+	// }}}
 	// {{{ public function getRelativeUri()
 
 	public function getRelativeUri($prefix = null)
@@ -87,6 +92,37 @@ class BlorgFile extends SwatDBDataObject
 			$uri = $prefix.$uri;
 
 		return $uri;
+	}
+
+	// }}}
+	// {{{ public function setFileBase()
+
+	public function setFileBase($path)
+	{
+		$this->file_base = $path;
+	}
+
+	// }}}
+	// {{{ public function getFilePath()
+
+	public function getFilePath()
+	{
+		return sprintf('%s/files/%s',
+			$this->getFileBase(),
+			$this->filename);
+	}
+
+	// }}}
+	// {{{ protected function getFileBase()
+
+	protected function getFileBase()
+	{
+		if ($this->file_base === null)
+			throw new SwatException('File base has not been set on the '.
+				'dataobject. Set the path to the webroot using '.
+				'setFileBase().');
+
+		return $this->file_base;
 	}
 
 	// }}}
@@ -104,6 +140,27 @@ class BlorgFile extends SwatDBDataObject
 
 		$this->table = 'BlorgFile';
 		$this->id_field = 'integer:id';
+	}
+
+	// }}}
+	// {{{ protected function deleteInternal()
+
+	/**
+	 * Deletes this object from the database
+	 */
+	protected function deleteInternal()
+	{
+		$filename = $this->getFilePath();
+
+		if ($this->image !== null) {
+			$this->image->setFileBase($this->getFileBase());
+			$this->image->delete();
+		}
+
+		parent::deleteInternal();
+
+		if (file_exists($filename))
+			unlink($filename);
 	}
 
 	// }}}
