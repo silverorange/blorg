@@ -3,6 +3,7 @@ function BlorgReplyStatusSlider(id, options)
 	this.id = id;
 	this.options = options;
 	this.width = 200;
+	this.legend_labels = [];
 	if (this.options.length < 2) {
 		// prevent script execution errors when there are no or one option
 		this.increment = 1;
@@ -66,6 +67,8 @@ BlorgReplyStatusSlider.prototype.createLabels = function()
 		container.appendChild(span);
 		YAHOO.util.Dom.setXY(span,
 			[pos[0] + (this.increment * i) + x_offset, pos[1] + y_offset]);
+
+		this.legend_labels[i] = span;
 	}
 }
 
@@ -94,6 +97,7 @@ BlorgReplyStatusSlider.prototype.handleChange = function()
 		this.input.value = this.options[index][0];
 	}
 	this.updateContextNote();
+	this.updateLegendLabels();
 }
 
 BlorgReplyStatusSlider.prototype.getIndex = function()
@@ -110,5 +114,19 @@ BlorgReplyStatusSlider.prototype.updateContextNote = function()
 	if (this.options.length > 1) {
 		this.context_note.appendChild(
 			document.createTextNode(this.options[index][2]));
+	}
+}
+
+BlorgReplyStatusSlider.prototype.updateLegendLabels = function()
+{
+	var index = this.getIndex();
+	for (var i = 0; i < this.options.length; i++) {
+		if (i == index) {
+			YAHOO.util.Dom.addClass(this.legend_labels[i],
+				'blorg-reply-status-slider-legend-selected');
+		} else {
+			YAHOO.util.Dom.removeClass(this.legend_labels[i],
+				'blorg-reply-status-slider-legend-selected');
+		}
 	}
 }
