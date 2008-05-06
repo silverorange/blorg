@@ -84,7 +84,7 @@ class BlorgFile extends SwatDBDataObject
 		$uri = 'files/'.$this->filename;
 
 		if ($prefix !== null)
-			$uri = $prefix.filename;
+			$uri = $prefix.$uri;
 
 		return $uri;
 	}
