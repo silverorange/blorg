@@ -1,3 +1,18 @@
+#title,
 #bodytext, #extended_bodytext {
 	width: 98%;
+}
+
+#post_primary {
+	margin-right: 265px;
+}
+
+#post_sidebar {
+	float: right;
+	display: inline; /* IE6 hack */
+	width: 250px;
+}
+
+#post_secondary {
+	clear: both;
 }
