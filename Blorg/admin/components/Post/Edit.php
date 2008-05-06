@@ -4,6 +4,8 @@ require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'Blorg/BlorgWeblogsDotComPinger.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
+require_once 'Blorg/dataobjects/BlorgFile.php';
+require_once 'Blorg/dataobjects/BlorgFileImage.php';
 
 /**
  * Page for editing Posts
@@ -31,6 +33,7 @@ class BlorgPostEdit extends AdminDBEdit
 	protected function initInternal()
 	{
 		parent::initInternal();
+
 		$this->ui->loadFromXML($this->ui_xml);
 		$this->initPost();
 		$this->initReplyStatuses();
@@ -59,6 +62,10 @@ class BlorgPostEdit extends AdminDBEdit
 			$tag_list->addOptionsByArray($tag_options);
 		} else
 			$this->ui->getWidget('tag_field')->visible = false;
+
+		$form = $this->ui->getWidget('edit_form');
+		if ($this->id === null && $form->getHiddenField('unique_id') === null)
+			$form->addHiddenField('unique_id', uniqid());
 	}
 
 	// }}}
@@ -125,6 +132,121 @@ class BlorgPostEdit extends AdminDBEdit
 	// }}}
 
 	// process phase
+	// {{{ protected function processInternal()
+
+	protected function processInternal()
+	{
+		$form = $this->ui->getWidget('edit_form');
+
+		$view = $this->ui->getWidget('upload_file_view');
+		$input_row = $view->getRow('input_row');
+		$count = $this->uploadFiles($input_row);
+
+		if ($count > 0) {
+			$message = new SwatMessage(
+				Blorg::ngettext('One file has been attached to this post.',
+					sprintf('%s files have been attached to this post',
+						$count),
+					$count));
+
+			$this->ui->getWidget('message_display')->add($message);
+		}
+
+		$view = $this->ui->getWidget('upload_image_view');
+		$input_row = $view->getRow('input_row');
+		$count = $this->uploadFiles($input_row, true);
+
+		if ($count > 0) {
+			$message = new SwatMessage(
+				Blorg::ngettext('One image has been uploaded for this post.',
+					sprintf('%s images have been uploaded for this post',
+						$count),
+					$count));
+
+			$this->ui->getWidget('message_display')->add($message);
+		}
+
+
+		$upload_file_button = $this->ui->getWidget('upload_file_button');
+		$upload_image_button = $this->ui->getWidget('upload_image_button');
+
+		if ($upload_file_button->hasBeenClicked() ||
+			$upload_image_button->hasBeenClicked()) {
+
+			$this->ui->getWidget('bodytext_field')->display_messages = false;
+			$this->ui->getWidget('post_date_field')->display_messages = false;
+		} else {
+			parent::processInternal();
+		}
+	}
+
+	// }}}
+	// {{{ protected function uploadFiles()
+
+	protected function uploadFiles(SwatTableViewInputRow $input_row,
+		$is_image = false)
+	{
+		$form = $this->ui->getWidget('edit_form');
+		$replicators = $input_row->getReplicators();
+		$now = new SwatDate();
+		$now->toUTC();
+		$count = 0;
+
+		foreach ($replicators as $replicator_id) {
+			if (!$input_row->rowHasMessage($replicator_id)) {
+				$file = $input_row->getWidget('file', $replicator_id);
+				if (!$file->isUploaded())
+					continue;
+
+				if ($input_row->view->hasColumn('description'))
+					$description = $input_row->getWidget('description',
+						$replicator_id)->value;
+				else
+					$description = null;
+
+				$class_name = SwatDBClassMap::get('BlorgFile');
+				$blorg_file = new $class_name();
+				$blorg_file->setDatabase($this->app->db);
+				$unique_id = $form->getHiddenField('unique_id');
+
+				if ($this->id === null)
+					$blorg_file->form_unique_id = $unique_id;
+				else
+					$blorg_file->post = $this->id;
+
+				$blorg_file->description = $description;
+				$blorg_file->filename = $file->getUniqueFileName('../files');
+				$blorg_file->mime_type = $file->getMimeType();
+				$blorg_file->filesize = $file->getSize();
+				$blorg_file->createdate = $now;
+
+				if ($is_image)
+					$blorg_file->image = $this->createImage($file);
+
+				$blorg_file->save();
+
+				$file->saveFile('../files', $blorg_file->filename);
+				$count++;
+			}
+		}
+
+		return $count;
+	}
+
+	// }}}
+	// {{{ protected function createImage()
+
+	protected function createImage(SwatFileEntry $file)
+	{
+		$class_name = SwatDBClassMap::get('BlorgFileImage');
+		$image = new $class_name();
+		$image->setDatabase($this->app->db);
+		$image->setFileBase('../');
+		$image->process($file->getTempFileName());
+		return $image;
+	}
+
+	// }}}
 	// {{{ protected function validate()
 
 	protected function validate()
@@ -142,7 +264,7 @@ class BlorgPostEdit extends AdminDBEdit
 
 		} elseif (!$this->validateShortname($shortname)) {
 			$message = new SwatMessage(
-				Site::_('Shortname already exists and must be unique.'),
+				Blorg::_('Shortname already exists and must be unique.'),
 				SwatMessage::ERROR);
 
 			$this->ui->getWidget('shortname')->addMessage($message);
@@ -207,8 +329,9 @@ class BlorgPostEdit extends AdminDBEdit
 
 		$now = new SwatDate();
 		$now->toUTC();
+		$id = $this->id;
 
-		if ($this->id === null) {
+		if ($id === null) {
 			$this->post->createdate = $now;
 			$this->post->post_date  = $now;
 			$this->post->instance   = $this->app->getInstanceId();
@@ -230,6 +353,18 @@ class BlorgPostEdit extends AdminDBEdit
 		SwatDB::updateBinding($this->app->db, 'BlorgPostTagBinding',
 			'post', $this->post->id, 'tag', $tag_list->values,
 			'BlorgTag', 'id');
+
+		if ($id === null) {
+			$form = $this->ui->getWidget('edit_form');
+			$unique_id = $form->getHiddenField('unique_id');
+			$sql = sprintf('update BlorgFile set post = %s,
+				form_unique_id = null
+				where form_unique_id = %s',
+				$this->app->db->quote($this->post->id, 'integer'),
+				$this->app->db->quote($unique_id, 'text'));
+
+			SwatDB::exec($this->app->db, $sql);
+		}
 
 		$message = new SwatMessage(sprintf(Blorg::_('“%s” has been saved.'),
 			$this->post->getTitle()));
@@ -264,6 +399,20 @@ class BlorgPostEdit extends AdminDBEdit
 	// }}}
 
 	// build phase
+	// {{{ protected function buildInternal()
+
+	protected function buildInternal()
+	{
+		parent::buildInternal();
+
+		$this->ui->getWidget('upload_image_view')->model =
+			new BlorgFileWrapper();
+
+		$this->ui->getWidget('upload_file_view')->model =
+			new BlorgFileWrapper();
+	}
+
+	// }}}
 	// {{{ protected function loadDBData()
 
 	protected function loadDBData()

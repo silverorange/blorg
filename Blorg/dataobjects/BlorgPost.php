@@ -4,6 +4,7 @@ require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Blorg/dataobjects/BlorgReplyWrapper.php';
 require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
+require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgAuthor.php';
 
 /**
@@ -323,6 +324,27 @@ class BlorgPost extends SwatDBDataObject
 
 		return SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('BlorgTagWrapper'));
+	}
+
+	// }}}
+	// {{{ protected function loadFiles()
+
+	/**
+	 * Loads tags for this post
+	 *
+	 * @return BlorgFileWrapper
+	 */
+	protected function loadFiles()
+	{
+		$sql = 'select BlorgFile.*
+			from BlorgFile
+			where BlorgFile.post = %s
+			order by createdate';
+
+		$sql = sprintf($sql, $this->db->quote($this->id, 'integer'));
+
+		return SwatDB::query($this->db, $sql,
+			SwatDBClassMap::get('BlorgFileWrapper'));
 	}
 
 	// }}}
