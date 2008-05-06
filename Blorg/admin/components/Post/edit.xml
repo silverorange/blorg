@@ -6,83 +6,95 @@
 		<property name="title" translatable="yes">Post</property>
 		<widget class="SwatForm" id="edit_form">
 			<property name="encoding_type">multipart/form-data</property>
-			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Title</property>
-				<widget class="SwatEntry" id="title">
-					<property name="maxlength" type="integer">255</property>
+			<!-- {{{ Form Sidebar Area -->
+			<widget class="SwatDisplayableContainer" id="post_sidebar">
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Show on Site</property>
+					<widget class="SwatCheckbox" id="enabled" />
+				</widget>
+				<widget class="SwatFormField" id="post_date_field">
+					<property name="title" translatable="yes">Displayed Date</property>
+					<widget class="SwatDateEntry" id="post_date">
+						<property name="required" type="boolean">true</property>
+					</widget>
+				</widget>
+				<widget class="SwatGroupingFormField">
+					<property name="title" translatable="yes">Reply Status</property>
+					<widget class="BlorgReplyStatusSlider" id="reply_status" />
+				</widget>
+				<widget class="SwatGroupingFormField" id="tag_field">
+					<property name="title" translatable="yes">Tags</property>
+					<widget class="SwatCheckboxList" id="tags" />
 				</widget>
 			</widget>
-			<widget class="SwatFormField" id="shortname_field">
-				<property name="title" translatable="yes">Short Name</property>
-				<widget class="AdminUniqueEntry" id="shortname">
-					<property name="required" type="boolean">true</property>
-					<property name="maxlength" type="integer">255</property>
+			<!-- }}} -->
+			<!-- {{{ Primary Form Area -->
+			<widget class="SwatDisplayableContainer" id="post_primary">
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Title</property>
+					<widget class="SwatEntry" id="title">
+						<property name="maxlength" type="integer">255</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField" id="shortname_field">
+					<property name="title" translatable="yes">Short Name</property>
+					<widget class="AdminUniqueEntry" id="shortname">
+						<property name="required" type="boolean">true</property>
+						<property name="maxlength" type="integer">255</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField" id="bodytext_field">
+					<property name="title" translatable="yes">Body Text</property>
+					<widget class="SwatXHTMLTextarea" id="bodytext">
+						<property name="required" type="boolean">true</property>
+						<property name="rows" type="integer">15</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Extended Text</property>
+					<widget class="SwatXHTMLTextarea" id="extended_bodytext">
+						<property name="rows" type="integer">15</property>
+					</widget>
 				</widget>
 			</widget>
-			<widget class="SwatFormField" id="bodytext_field">
-				<property name="title" translatable="yes">Body Text</property>
-				<widget class="SwatXHTMLTextarea" id="bodytext">
-					<property name="required" type="boolean">true</property>
-					<property name="rows" type="integer">15</property>
-				</widget>
-			</widget>
-			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Extended Text</property>
-				<widget class="SwatXHTMLTextarea" id="extended_bodytext">
-					<property name="rows" type="integer">15</property>
-				</widget>
-			</widget>
-			<widget class="SwatGroupingFormField" id="tag_field">
-				<property name="title" translatable="yes">Tags</property>
-				<widget class="SwatCheckboxList" id="tags" />
-			</widget>
-			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Reply Status</property>
-				<widget class="BlorgReplyStatusSlider" id="reply_status" />
-			</widget>
-			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Show on Site</property>
-				<widget class="SwatCheckbox" id="enabled" />
-			</widget>
-			<widget class="SwatFormField" id="post_date_field">
-				<property name="title" translatable="yes">Displayed Date</property>
-				<widget class="SwatDateEntry" id="post_date">
-					<property name="required" type="boolean">true</property>
-				</widget>
-			</widget>
-			<!-- {{{ attach files -->
-			<widget class="SwatDisclosure">
-				<property name="title" translatable="yes">Attach Files</property>
-				<property name="open" type="boolean">false</property>
-				<widget class="SwatTableView" id="upload_file_view">
-					<object class="SwatTableViewColumn" id="remove">
-						<object class="SwatRemoveInputCell" />
-					</object>
-					<object class="SwatTableViewColumn" id="file">
-						<property name="title" translatable="yes">Choose File</property>
-						<object class="SwatInputCell">
-							<widget class="SwatFileEntry" id="upload_file" />
+			<!-- }}} -->
+			<!-- {{{ Secondary Form Area -->
+			<widget class="SwatDisplayableContainer" id="post_secondary">
+				<!-- {{{ attach files -->
+				<widget class="SwatDisclosure">
+					<property name="title" translatable="yes">Attach Files</property>
+					<property name="open" type="boolean">false</property>
+					<widget class="SwatTableView" id="upload_file_view">
+						<object class="SwatTableViewColumn" id="remove">
+							<object class="SwatRemoveInputCell" />
 						</object>
-					</object>
-					<object class="SwatTableViewColumn" id="description">
-						<property name="title" translatable="yes">Description (optional)</property>
-						<object class="SwatInputCell">
-							<widget class="SwatEntry" id="file_description" />
+						<object class="SwatTableViewColumn" id="file">
+							<property name="title" translatable="yes">Choose File</property>
+							<object class="SwatInputCell">
+								<widget class="SwatFileEntry" id="upload_file" />
+							</object>
 						</object>
-					</object>
-					<object class="SwatTableViewColumn" id="show">
-						<property name="title" translatable="yes">Attach?</property>
-						<object class="SwatInputCell">
-							<widget class="SwatCheckbox" id="show_file" />
+						<object class="SwatTableViewColumn" id="description">
+							<property name="title" translatable="yes">Description (optional)</property>
+							<object class="SwatInputCell">
+								<widget class="SwatEntry" id="file_description" />
+							</object>
 						</object>
-					</object>
-					<object class="SwatTableViewInputRow" id="input_row">
-						<property name="number" type="integer">1</property>
-					</object>
+						<object class="SwatTableViewColumn" id="show">
+							<property name="title" translatable="yes">Attach?</property>
+							<object class="SwatInputCell">
+								<widget class="SwatCheckbox" id="show_file" />
+							</object>
+						</object>
+						<object class="SwatTableViewInputRow" id="input_row">
+							<property name="number" type="integer">1</property>
+						</object>
+					</widget>
+					<widget class="SwatButton" id="upload_file_button">
+						<property name="title" translatable="yes">Upload</property>
+					</widget>
 				</widget>
-				<widget class="SwatButton" id="upload_file_button">
-					<property name="title" translatable="yes">Upload</property>
-				</widget>
+				<!-- }}} -->
 			</widget>
 			<!-- }}} -->
 			<widget class="SwatFooterFormField">
