@@ -6,6 +6,7 @@ require_once 'Admin/pages/AdminDBDelete.php';
 require_once 'Admin/AdminListDependency.php';
 require_once 'Admin/AdminDependencyEntry.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
+require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 
 /**
  * Delete confirmation page for Posts
@@ -26,6 +27,24 @@ class BlorgPostDelete extends AdminDBDelete
 		$item_list = $this->getItemList('integer');
 		$instance_id = $this->app->getInstanceId();
 
+		// delete attached files using their dataobjects to remove the actual
+		// files
+		$sql = sprintf('select * from BlorgFile
+			inner join BlorgPost on BlorgPost.id = BlorgFile.post
+			where BlorgPost.instance %s %s and BlorgFile.post in (%s)',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$item_list);
+
+		$files = SwatDB::query($this->app->db, $sql,
+			SwatDBClassMap::get('BlorgFileWrapper'));
+
+		foreach ($files as $file) {
+			$file->setFileBase('../');
+			$file->delete();
+		}
+
+		// delete the posts
 		$sql = sprintf('delete from BlorgPost
 			where instance %s %s and id in (%s)',
 			SwatDB::equalityOperator($instance_id),
