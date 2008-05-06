@@ -13,3 +13,13 @@ img.blorg-reply-status-slider-image {
 	position: relative;
 	top: 3px;
 }
+
+.blorg-reply-status-slider-legend {
+	color: #666;
+	font-size: 85%;
+}
+
+.blorg-reply-status-slider-legend-selected {
+	color: #333;
+	font-weight: bold;
+}
