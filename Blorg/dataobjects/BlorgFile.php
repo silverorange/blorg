@@ -77,6 +77,19 @@ class BlorgFile extends SwatDBDataObject
 	public $form_unique_id;
 
 	// }}}
+	// {{{ public function getRelativeUri()
+
+	public function getRelativeUri($prefix = null)
+	{
+		$uri = 'files/'.$this->filename;
+
+		if ($prefix !== null)
+			$uri = $prefix.filename;
+
+		return $uri;
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
