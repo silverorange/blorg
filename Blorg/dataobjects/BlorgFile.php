@@ -23,7 +23,7 @@ class BlorgFile extends SwatDBDataObject
 	public $id;
 
 	/**
-	 * Filename of the media
+	 * Filename of the file
 	 *
 	 * @var string
 	 */
@@ -44,21 +44,21 @@ class BlorgFile extends SwatDBDataObject
 	public $mime_type;
 
 	/**
-	 * A description of what the media contains.
+	 * A description of what the file contains.
 	 *
 	 * @var string
 	 */
 	public $description;
 
 	/**
-	 * Whether or not the media is available on the site.
+	 * Whether or not the file is automatically linked on the site.
 	 *
 	 * @var boolean
 	 */
-	public $enabled;
+	public $show;
 
 	/**
-	 * Date the media entry was added.
+	 * Date the file entry was added.
 	 *
 	 * @var Date
 	 */

@@ -7,7 +7,7 @@ create table BlorgFile (
 	filesize integer,
 	mime_type varchar(50),
 	description text,
-	enabled boolean not null default true,
+	show boolean not null default false,
 	createdate timestamp not null,
 	primary key (id)
 );

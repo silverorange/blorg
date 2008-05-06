@@ -50,32 +50,6 @@
 					<property name="required" type="boolean">true</property>
 				</widget>
 			</widget>
-			<!-- {{{ upload images -->
-			<widget class="SwatFieldset">
-				<property name="title" translatable="yes">Images</property>
-			</widget>
-			<widget class="SwatDisclosure">
-				<property name="title" translatable="yes">Upload Images</property>
-				<property name="open" type="boolean">false</property>
-				<widget class="SwatTableView" id="upload_image_view">
-					<object class="SwatTableViewColumn" id="remove">
-						<object class="SwatRemoveInputCell" />
-					</object>
-					<object class="SwatTableViewColumn" id="file">
-						<property name="title" translatable="yes">Choose File</property>
-						<object class="SwatInputCell">
-							<widget class="SwatFileEntry" id="upload_image_file" />
-						</object>
-					</object>
-					<object class="SwatTableViewInputRow" id="input_row">
-						<property name="number" type="integer">1</property>
-					</object>
-				</widget>
-				<widget class="SwatButton" id="upload_image_button">
-					<property name="title" translatable="yes">Upload</property>
-				</widget>
-			</widget>
-			<!-- }}} -->
 			<!-- {{{ attach files -->
 			<widget class="SwatDisclosure">
 				<property name="title" translatable="yes">Attach Files</property>
@@ -94,6 +68,12 @@
 						<property name="title" translatable="yes">Description (optional)</property>
 						<object class="SwatInputCell">
 							<widget class="SwatEntry" id="file_description" />
+						</object>
+					</object>
+					<object class="SwatTableViewColumn" id="attach">
+						<property name="title" translatable="yes">Attach?</property>
+						<object class="SwatInputCell">
+							<widget class="SwatCheckbox" id="attach_file" />
 						</object>
 					</object>
 					<object class="SwatTableViewInputRow" id="input_row">
