@@ -2,6 +2,7 @@
 
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
+require_once 'Site/exceptions/SiteInvalidImageException.php';
 require_once 'Blorg/BlorgWeblogsDotComPinger.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgFile.php';
@@ -152,27 +153,9 @@ class BlorgPostEdit extends AdminDBEdit
 			$this->ui->getWidget('message_display')->add($message);
 		}
 
-		$view = $this->ui->getWidget('upload_image_view');
-		$input_row = $view->getRow('input_row');
-		$count = $this->uploadFiles($input_row, true);
-
-		if ($count > 0) {
-			$message = new SwatMessage(
-				Blorg::ngettext('One image has been uploaded for this post.',
-					sprintf('%s images have been uploaded for this post',
-						$count),
-					$count));
-
-			$this->ui->getWidget('message_display')->add($message);
-		}
-
-
 		$upload_file_button = $this->ui->getWidget('upload_file_button');
-		$upload_image_button = $this->ui->getWidget('upload_image_button');
 
-		if ($upload_file_button->hasBeenClicked() ||
-			$upload_image_button->hasBeenClicked()) {
-
+		if ($upload_file_button->hasBeenClicked()) {
 			$this->ui->getWidget('bodytext_field')->display_messages = false;
 			$this->ui->getWidget('post_date_field')->display_messages = false;
 		} else {
@@ -183,8 +166,7 @@ class BlorgPostEdit extends AdminDBEdit
 	// }}}
 	// {{{ protected function uploadFiles()
 
-	protected function uploadFiles(SwatTableViewInputRow $input_row,
-		$is_image = false)
+	protected function uploadFiles(SwatTableViewInputRow $input_row)
 	{
 		$form = $this->ui->getWidget('edit_form');
 		$replicators = $input_row->getReplicators();
@@ -220,8 +202,10 @@ class BlorgPostEdit extends AdminDBEdit
 				$blorg_file->filesize = $file->getSize();
 				$blorg_file->createdate = $now;
 
-				if ($is_image)
+				if (array_shift(explode('/',
+					$blorg_file->mime_type)) == 'image') {
 					$blorg_file->image = $this->createImage($file);
+				}
 
 				$blorg_file->save();
 
@@ -242,7 +226,13 @@ class BlorgPostEdit extends AdminDBEdit
 		$image = new $class_name();
 		$image->setDatabase($this->app->db);
 		$image->setFileBase('../');
-		$image->process($file->getTempFileName());
+
+		try {
+			$image->process($file->getTempFileName());
+		} catch (SiteInvalidImageException $e) {
+			$image = null;
+		}
+
 		return $image;
 	}
 
@@ -405,9 +395,6 @@ class BlorgPostEdit extends AdminDBEdit
 	{
 		parent::buildInternal();
 
-		$this->ui->getWidget('upload_image_view')->model =
-			new BlorgFileWrapper();
-
 		$this->ui->getWidget('upload_file_view')->model =
 			new BlorgFileWrapper();
 	}
@@ -427,8 +414,8 @@ class BlorgPostEdit extends AdminDBEdit
 
 		$tag_list = $this->ui->getWidget('tags');
 		$tag_list->values = SwatDB::queryColumn($this->app->db,
-			'BlorgPostTagBinding', 'tag', 'post',
-			$this->id);
+				'BlorgPostTagBinding', 'tag', 'post',
+				$this->id);
 	}
 
 	// }}}
