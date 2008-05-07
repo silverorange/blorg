@@ -4,6 +4,7 @@ require_once 'Site/pages/SitePage.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 require_once 'XML/Atom/Feed.php';
 require_once 'XML/Atom/Entry.php';
+require_once 'XML/Atom/Link.php';
 
 /**
  * Displays an Atom feed of all recent posts in reverse chronological order
@@ -131,6 +132,17 @@ class BlorgAtomPage extends SitePage
 			}
 
 			$entry->addLink($post_uri, 'alternate', 'text/html');
+
+			foreach ($post->getVisibleFiles() as $file) {
+				$link = new XML_Atom_Link(
+					$site_base_href.$file->getRelativeUri(),
+					'enclosure',
+					$file->mime_type);
+
+				$link->setTitle($file->getDescription());
+				$link->setLength($file->filesize);
+				$entry->addLink($link);
+			}
 
 			if ($post->author->show) {
 				$author_uri = $blorg_base_href.'author/'.
