@@ -31,3 +31,11 @@ img.blorg-file-icon {
 	background: transparent;
 	padding-left: 0;
 }
+
+.blorg-reply-status-slider-context-note {
+	min-height: 4em;
+}
+
+* html .blorg-reply-status-slider-context-note {
+	height: 4em; /* IE 6 hack */
+}
