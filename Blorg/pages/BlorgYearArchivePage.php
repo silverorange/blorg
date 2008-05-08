@@ -146,14 +146,14 @@ class BlorgYearArchivePage extends SitePathPage
 
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select id, title, bodytext, shortname, post_date,
+		$sql = sprintf('select id, title, bodytext, shortname, publish_date,
 				reply_status
 			from BlorgPost
 			where date_trunc(\'year\', convertTZ(createdate, %s)) =
 				date_trunc(\'year\', timestamp %s) and
 				instance %s %s
 				and enabled = true
-			order by post_date desc',
+			order by publish_date desc',
 			$this->app->db->quote($date->tz->getId(), 'text'),
 			$this->app->db->quote($date->getDate(), 'date'),
 			SwatDB::equalityOperator($instance_id),
@@ -162,7 +162,7 @@ class BlorgYearArchivePage extends SitePathPage
 		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
 		$posts = SwatDB::query($this->app->db, $sql, $wrapper);
 		foreach ($posts as $post) {
-			$month = $post->post_date->getMonth();
+			$month = $post->publish_date->getMonth();
 			if (!array_key_exists($month, $this->months)) {
 				$this->months[$month] = array();
 			}

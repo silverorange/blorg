@@ -653,10 +653,10 @@ class BlorgPostView
 			$abbr_tag = new SwatHtmlTag('abbr');
 			$abbr_tag->class = 'published';
 			$abbr_tag->title =
-				$post->post_date->getDate(DATE_FORMAT_ISO_EXTENDED);
+				$post->publish_date->getDate(DATE_FORMAT_ISO_EXTENDED);
 
 			// display human-readable date in local time
-			$date = clone $post->post_date;
+			$date = clone $post->publish_date;
 			$date->convertTZ($this->app->default_time_zone);
 			$abbr_tag->setContent($date->format(SwatDate::DF_DATE_LONG));
 			$abbr_tag->display();
@@ -807,7 +807,7 @@ class BlorgPostView
 	{
 		$path = $this->app->config->blorg->path.'archive';
 
-		$date = clone $post->post_date;
+		$date = clone $post->publish_date;
 		$date->convertTZ($this->app->default_time_zone);
 		$year = $date->getYear();
 		$month_name = BlorgPageFactory::$month_names[$date->getMonth()];

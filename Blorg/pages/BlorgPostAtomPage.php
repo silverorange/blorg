@@ -105,7 +105,7 @@ class BlorgPostAtomPage extends SitePage
 		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
 		$path            = $blorg_base_href.'archive';
 
-		$date = clone $this->post->post_date;
+		$date = clone $this->post->publish_date;
 		$date->convertTZ($this->app->default_time_zone);
 		$year = $date->getYear();
 		$month_name = BlorgPageFactory::$month_names[$date->getMonth()];

@@ -149,7 +149,7 @@ class BlorgReplyView
 	{
 		$path = $this->app->config->blorg->path.'archive';
 
-		$date = clone $post->post_date;
+		$date = clone $post->publish_date;
 		$date->convertTZ($this->app->default_time_zone);
 		$year = $date->getYear();
 		$month_name = BlorgPageFactory::$month_names[$date->getMonth()];
