@@ -97,11 +97,13 @@
 								<widget class="SwatToolLink" id="file_title">
 									<property name="classes[]">blorg-file-title</property>
 								</widget>
-								<widget class="SwatButton" id="file_delete_button">
-									<property name="title" translatable="yes">Delete</property>
-								</widget>
-								<widget class="SwatButton" id="file_attach_button">
+								<widget class="SwatImageButton" id="file_attach_button">
 									<property name="title" translatable="yes">Attachment</property>
+									<property name="image">packages/blorg/admin/images/file-attach.png</property>
+								</widget>
+								<widget class="SwatImageButton" id="file_delete_button">
+									<property name="title" translatable="yes">Delete</property>
+									<property name="image">packages/blorg/admin/images/file-delete.png</property>
 								</widget>
 							</widget>
 							<widget class="SwatDisplayableContainer">
