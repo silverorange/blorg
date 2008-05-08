@@ -78,7 +78,7 @@
 							</widget>
 						</widget>
 						<widget class="SwatFormField">
-							<property name="title" translatable="yes">Attachment</property>
+							<property name="title" translatable="yes">Attach File to Post</property>
 							<widget class="SwatCheckbox" id="upload_attachment" />
 						</widget>
 						<widget class="SwatFormField">
@@ -90,6 +90,8 @@
 					<widget class="SwatReplicableContainer" id="file_replicator">
 						<widget class="SwatImageDisplay" id="file_icon">
 							<property name="classes[]">blorg-file-icon</property>
+							<property name="occupy_width" type="integer">48</property>
+							<property name="occupy_height" type="integer">48</property>
 						</widget>
 						<widget class="SwatDisplayableContainer">
 							<property name="classes[]">blorg-file-content</property>
@@ -98,11 +100,11 @@
 									<property name="classes[]">blorg-file-title</property>
 								</widget>
 								<widget class="SwatImageButton" id="file_attach_button">
-									<property name="title" translatable="yes">Attachment</property>
-									<property name="image">packages/blorg/admin/images/file-attach.png</property>
+									<property name="title" translatable="yes">Attach File to Post</property>
+									<property name="image">packages/blorg/admin/images/file-attach-off.png</property>
 								</widget>
 								<widget class="SwatImageButton" id="file_delete_button">
-									<property name="title" translatable="yes">Delete</property>
+									<property name="title" translatable="yes">Delete File</property>
 									<property name="image">packages/blorg/admin/images/file-delete.png</property>
 								</widget>
 							</widget>
