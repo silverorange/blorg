@@ -62,36 +62,55 @@
 			<widget class="SwatDisplayableContainer" id="post_secondary">
 				<!-- {{{ attach files -->
 				<widget class="SwatDisclosure">
-					<property name="title" translatable="yes">Attach Files</property>
+					<property name="title" translatable="yes">Files</property>
 					<property name="open" type="boolean">false</property>
-					<widget class="SwatTableView" id="upload_file_view">
-						<object class="SwatTableViewColumn" id="remove">
-							<object class="SwatRemoveInputCell" />
-						</object>
-						<object class="SwatTableViewColumn" id="file">
+					<widget class="SwatDisplayableContainer" id="upload_container">
+						<widget class="SwatFormField">
 							<property name="title" translatable="yes">Choose File</property>
-							<object class="SwatInputCell">
-								<widget class="SwatFileEntry" id="upload_file" />
-							</object>
-						</object>
-						<object class="SwatTableViewColumn" id="description">
+							<widget class="SwatFileEntry" id="upload_file">
+								<property name="size" type="integer">30</property>
+							</widget>
+						</widget>
+						<widget class="SwatFormField">
 							<property name="title" translatable="yes">Description (optional)</property>
-							<object class="SwatInputCell">
-								<widget class="SwatEntry" id="file_description" />
-							</object>
-						</object>
-						<object class="SwatTableViewColumn" id="show">
-							<property name="title" translatable="yes">Attach?</property>
-							<object class="SwatInputCell">
-								<widget class="SwatCheckbox" id="show_file" />
-							</object>
-						</object>
-						<object class="SwatTableViewInputRow" id="input_row">
-							<property name="number" type="integer">1</property>
-						</object>
+							<widget class="SwatEntry" id="upload_description">
+								<property name="size" type="integer">40</property>
+							</widget>
+						</widget>
+						<widget class="SwatFormField">
+							<property name="title" translatable="yes">Attachment</property>
+							<widget class="SwatCheckbox" id="upload_attachment" />
+						</widget>
+						<widget class="SwatFormField">
+							<widget class="SwatButton" id="upload_button">
+								<property name="title" translatable="yes">Upload</property>
+							</widget>
+						</widget>
 					</widget>
-					<widget class="SwatButton" id="upload_file_button">
-						<property name="title" translatable="yes">Upload</property>
+					<widget class="SwatReplicableContainer" id="file_replicator">
+						<widget class="SwatImageDisplay" id="file_icon">
+							<property name="classes[]">blorg-file-icon</property>
+						</widget>
+						<widget class="SwatDisplayableContainer">
+							<property name="classes[]">blorg-file-content</property>
+							<widget class="SwatDisplayableContainer">
+								<widget class="SwatToolLink" id="file_title">
+									<property name="classes[]">blorg-file-title</property>
+								</widget>
+								<widget class="SwatButton" id="file_delete_button">
+									<property name="title" translatable="yes">Delete</property>
+								</widget>
+								<widget class="SwatButton" id="file_attach_button">
+									<property name="title" translatable="yes">Attachment</property>
+								</widget>
+							</widget>
+							<widget class="SwatDisplayableContainer">
+								<widget class="SwatEntry" id="file_markup">
+									<property name="read_only" type="boolean">true</property>
+									<property name="size" type="integer">40</property>
+								</widget>
+							</widget>
+						</widget>
 					</widget>
 				</widget>
 				<!-- }}} -->

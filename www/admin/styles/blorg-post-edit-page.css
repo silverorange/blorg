@@ -16,3 +16,18 @@
 #post_secondary {
 	clear: both;
 }
+
+img.blorg-file-icon {
+	float: left;
+	padding-right: 3px;
+}
+
+.blorg-file-content {
+	margin-top: 1em;
+}
+
+.blorg-file-title {
+	border: none;
+	background: transparent;
+	padding-left: 0;
+}

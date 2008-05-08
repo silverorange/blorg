@@ -67,6 +67,9 @@ class BlorgPostEdit extends AdminDBEdit
 		$form = $this->ui->getWidget('edit_form');
 		if ($this->id === null && $form->getHiddenField('unique_id') === null)
 			$form->addHiddenField('unique_id', uniqid());
+
+		$this->ui->getWidget('file_replicator')->replicators =
+			$this->getFileReplicators();
 	}
 
 	// }}}
@@ -131,6 +134,23 @@ class BlorgPostEdit extends AdminDBEdit
 	}
 
 	// }}}
+	// {{{ protected function getFileReplicators()
+
+	protected function getFileReplicators()
+	{
+		// TODO:
+//		$sql = 'select * from BlorgFile
+//			where post %s %s and form_id %s %s';
+
+		$replicators = array();
+		foreach ($this->post->files as $file) {
+			$replicators[$file->id] = null;
+		}
+
+		return $replicators;
+	}
+
+	// }}}
 
 	// process phase
 	// {{{ protected function processInternal()
@@ -139,11 +159,11 @@ class BlorgPostEdit extends AdminDBEdit
 	{
 		$form = $this->ui->getWidget('edit_form');
 
-		$view = $this->ui->getWidget('upload_file_view');
-		$input_row = $view->getRow('input_row');
-		$count = $this->uploadFiles($input_row);
+//		$view = $this->ui->getWidget('upload_file_view');
+//		$input_row = $view->getRow('input_row');
+//		$count = $this->uploadFiles($input_row);
 
-		if ($count > 0) {
+/*		if ($count > 0) {
 			$message = new SwatMessage(
 				Blorg::ngettext('One file has been attached to this post.',
 					sprintf('%s files have been attached to this post',
@@ -152,8 +172,8 @@ class BlorgPostEdit extends AdminDBEdit
 
 			$this->ui->getWidget('message_display')->add($message);
 		}
-
-		$upload_file_button = $this->ui->getWidget('upload_file_button');
+*/
+		$upload_file_button = $this->ui->getWidget('upload_button');
 
 		if ($upload_file_button->hasBeenClicked()) {
 			$this->ui->getWidget('bodytext_field')->display_messages = false;
@@ -322,14 +342,14 @@ class BlorgPostEdit extends AdminDBEdit
 		$id = $this->id;
 
 		if ($id === null) {
-			$this->post->createdate = $now;
-			$this->post->publish_date  = $now;
-			$this->post->instance   = $this->app->getInstanceId();
+			$this->post->createdate   = $now;
+			$this->post->publish_date = $now;
+			$this->post->instance     = $this->app->getInstanceId();
 			// TODO: Fix up author support
 			// $this->post->author     = $this->app->session->getUserID();
 		} else {
 			$this->post->modified_date = $now;
-			$this->post->publish_date     = $values['publish_date'];
+			$this->post->publish_date  = $values['publish_date'];
 
 			if ($this->post->publish_date !== null) {
 				$this->post->publish_date->setTZ($this->app->default_time_zone);
@@ -394,9 +414,7 @@ class BlorgPostEdit extends AdminDBEdit
 	protected function buildInternal()
 	{
 		parent::buildInternal();
-
-		$this->ui->getWidget('upload_file_view')->model =
-			new BlorgFileWrapper();
+		$this->buildFiles();
 	}
 
 	// }}}
@@ -432,6 +450,124 @@ class BlorgPostEdit extends AdminDBEdit
 
 			$this->layout->navbar->addEntry($entry);
 		}
+	}
+
+	// }}}
+	// {{{ protected function buildFiles()
+
+	protected function buildFiles()
+	{
+		$files = $this->post->files;
+		$replicator = $this->ui->getWidget('file_replicator');
+		foreach ($this->getFileReplicators() as $key => $null) {
+			$file = $files[$key];
+
+			// file title
+			$title = $this->getFileTitle($file);
+			$file_title = $replicator->getWidget('file_title', $key);
+			$file_title->title = $title;
+			$file_title->link = $file->getRelativeUri('../');
+
+			// file icon
+			$icon = $this->getFileIcon($file);
+			$file_icon = $replicator->getWidget('file_icon', $key);
+			$file_icon->image  = $icon['image'];
+			$file_icon->width  = $icon['width'];
+			$file_icon->height = $icon['height'];
+
+			// markup
+			$markup = $this->getFileMarkup($file);
+			$file_markup = $replicator->getWidget('file_markup', $key);
+			$file_markup->value = $markup;
+		}
+	}
+
+	// }}}
+	// {{{ protected function getFileTitle()
+
+	protected function getFileTitle(BlorgFile $file)
+	{
+		if (strlen($file->filename) > 20) {
+			$filename = SwatString::ellipsizeRight($file->filename, 20);
+
+			$position = strrpos($file->filename, '.');
+			if ($position !== false) {
+				$extension = substr($file->filename, $position + 1);
+				$filename.= '&nbsp;'.$extension;
+			}
+		} else {
+			$filename = $file->filename;
+		}
+
+		if ($file->description === null) {
+			$title = sprintf('%s %s',
+				$filename,
+				SwatString::byteFormat($file->filesize));
+		} else {
+			$description = SwatString::ellipsizeRight($file->description, 20);
+			$title = sprintf('%s (%s) %s',
+				$description,
+				$filename,
+				SwatString::byteFormat($file->filesize));
+		}
+
+		return $title;
+	}
+
+	// }}}
+	// {{{ protected function getFileIcon()
+
+	protected function getFileIcon(BlorgFile $file)
+	{
+		$icon = array();
+
+		if ($file->image === null) {
+			$icon['width']  = 48;
+			$icon['height'] = 48;
+
+			if       (strncmp('image',       $file->mime_type, 5 ) == 0) {
+				$icon['image'] = 'packages/blorg/images/image.png';
+			} elseif (strncmp('audio',       $file->mime_type, 5 ) == 0) {
+				$icon['image'] = 'packages/blorg/images/audio.png';
+			} elseif (strncmp('video',       $file->mime_type, 5 ) == 0) {
+				$icon['image'] = 'packages/blorg/images/video.png';
+			} elseif (strncmp('text',        $file->mime_type, 4 ) == 0) {
+				$icon['image'] = 'packages/blorg/images/text.png';
+			} elseif (strncmp('application', $file->mime_type, 11) == 0) {
+				$icon['image'] = 'packages/blorg/images/package.png';
+			} else {
+				// TODO:
+			}
+		} else {
+			$icon['width']  = $file->image->getWidth('pinky');
+			$icon['height'] = $file->image->getHeight('pinky');
+			$icon['image']  = $file->image->getUri('pinky', '../');
+		}
+
+		return $icon;
+	}
+
+	// }}}
+	// {{{ protected function getFileMarkup()
+
+	protected function getFileMarkup(BlorgFile $file)
+	{
+		if ($file->image === null) {
+			$uri = $file->getRelativeUri();
+			$description = ($file->description === null) ?
+				$file->filename : $file->description;
+
+			$markup = sprintf('<a class="file" href="%s">%s</a>',
+				$uri, $description);
+		} else {
+			$uri = $file->image->getUri('original');
+			$img = $file->image->getImgTag('thumb');
+			$img->title = $file->description;
+			$markup = sprintf('<a class="file" href="%s">%s</a>',
+				$uri, $img);
+		}
+
+		return $markup;
 	}
 
 	// }}}
