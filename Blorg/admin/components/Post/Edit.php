@@ -525,19 +525,25 @@ class BlorgPostEdit extends AdminDBEdit
 			$icon['width']  = 48;
 			$icon['height'] = 48;
 
-			if       (strncmp('image',       $file->mime_type, 5 ) == 0) {
-				$icon['image'] = 'packages/blorg/images/image.png';
-			} elseif (strncmp('audio',       $file->mime_type, 5 ) == 0) {
-				$icon['image'] = 'packages/blorg/images/audio.png';
-			} elseif (strncmp('video',       $file->mime_type, 5 ) == 0) {
-				$icon['image'] = 'packages/blorg/images/video.png';
-			} elseif (strncmp('text',        $file->mime_type, 4 ) == 0) {
-				$icon['image'] = 'packages/blorg/images/text.png';
-			} elseif (strncmp('application', $file->mime_type, 11) == 0) {
-				$icon['image'] = 'packages/blorg/images/package.png';
-			} else {
-				// TODO:
+			$types = array(
+				'image',
+				'audio',
+				'video',
+				'text',
+				'application',
+			);
+
+			$file_type = 'application';
+
+			foreach ($types as $type) {
+				if (strncmp($type, $file->mime_type, strlen($type)) == 0) {
+					$file_type = $type;
+					break;
+				}
 			}
+
+			$icon['image'] = 'packages/blorg/admin/images/file-'.$type.'.png';
+
 		} else {
 			$icon['width']  = $file->image->getWidth('pinky');
 			$icon['height'] = $file->image->getHeight('pinky');
