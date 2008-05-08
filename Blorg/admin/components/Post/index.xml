@@ -39,9 +39,9 @@
 		<widget class="SwatForm" id="index_form">
 			<widget class="SwatTableView" id="index_view">
 				<object class="SwatTableViewGroup">
-					<property name="group_by">post_date_month</property>
+					<property name="group_by">publish_date_month</property>
 					<object class="SwatDateCellRenderer">
-						<property name="date" type="data">post_date_month</property>
+						<property name="date" type="data">publish_date_month</property>
 						<property name="format" translatable="yes">%B, %Y</property>
 					</object>
 				</object>

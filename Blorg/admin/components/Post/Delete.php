@@ -80,7 +80,7 @@ class BlorgPostDelete extends AdminDBDelete
 		$sql = sprintf(
 			'select id, title, bodytext from BlorgPost
 			where instance %s %s and id in (%s)
-			order by post_date desc, title',
+			order by publish_date desc, title',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
 			$item_list);

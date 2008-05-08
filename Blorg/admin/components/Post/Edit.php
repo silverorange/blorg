@@ -41,11 +41,11 @@ class BlorgPostEdit extends AdminDBEdit
 
 		if ($this->id === null) {
 			$this->ui->getWidget('shortname_field')->visible = false;
-			$this->ui->getWidget('post_date_field')->visible = false;
+			$this->ui->getWidget('publish_date_field')->visible = false;
 		} else {
-			$post_date = $this->ui->getWidget('post_date');
-			$post_date->display_time_zone = $this->app->default_time_zone;
-			$post_date->display_parts  = SwatDateEntry::YEAR |
+			$publish_date = $this->ui->getWidget('publish_date');
+			$publish_date->display_time_zone = $this->app->default_time_zone;
+			$publish_date->display_parts  = SwatDateEntry::YEAR |
 				SwatDateEntry::MONTH | SwatDateEntry::DAY |
 				SwatDateEntry::CALENDAR | SwatDateEntry::TIME;
 		}
@@ -157,7 +157,7 @@ class BlorgPostEdit extends AdminDBEdit
 
 		if ($upload_file_button->hasBeenClicked()) {
 			$this->ui->getWidget('bodytext_field')->display_messages = false;
-			$this->ui->getWidget('post_date_field')->display_messages = false;
+			$this->ui->getWidget('publish_date_field')->display_messages = false;
 		} else {
 			parent::processInternal();
 		}
@@ -267,18 +267,18 @@ class BlorgPostEdit extends AdminDBEdit
 	protected function validateShortname($shortname)
 	{
 		if ($this->post->id === null) {
-			$post_date = new SwatDate();
-			$post_date->toUTC();
+			$publish_date = new SwatDate();
+			$publish_date->toUTC();
 		} else {
-			$post_date = $this->ui->getWidget('post_date')->value;
+			$publish_date = $this->ui->getWidget('publish_date')->value;
 		}
 
-		$post_date->setTZ($this->app->default_time_zone);
+		$publish_date->setTZ($this->app->default_time_zone);
 		$instance_id = $this->app->getInstanceId();
 
 		$sql = 'select shortname from BlorgPost
 			where shortname = %s and instance %s %s and id %s %s
-			and date_trunc(\'month\', convertTZ(post_date, %s)) =
+			and date_trunc(\'month\', convertTZ(publish_date, %s)) =
 				date_trunc(\'month\', timestamp %s)';
 
 		$sql = sprintf($sql,
@@ -287,8 +287,8 @@ class BlorgPostEdit extends AdminDBEdit
 			$this->app->db->quote($instance_id, 'integer'),
 			SwatDB::equalityOperator($this->id, true),
 			$this->app->db->quote($this->id, 'integer'),
-			$this->app->db->quote($post_date->tz->getId(), 'text'),
-			$this->app->db->quote($post_date->getDate(), 'date'));
+			$this->app->db->quote($publish_date->tz->getId(), 'text'),
+			$this->app->db->quote($publish_date->getDate(), 'date'));
 
 		$query = SwatDB::query($this->app->db, $sql);
 
@@ -307,7 +307,7 @@ class BlorgPostEdit extends AdminDBEdit
 			'extended_bodytext',
 			'reply_status',
 			'enabled',
-			'post_date',
+			'publish_date',
 		));
 
 		$this->post->title             = $values['title'];
@@ -323,17 +323,17 @@ class BlorgPostEdit extends AdminDBEdit
 
 		if ($id === null) {
 			$this->post->createdate = $now;
-			$this->post->post_date  = $now;
+			$this->post->publish_date  = $now;
 			$this->post->instance   = $this->app->getInstanceId();
 			// TODO: Fix up author support
 			// $this->post->author     = $this->app->session->getUserID();
 		} else {
 			$this->post->modified_date = $now;
-			$this->post->post_date     = $values['post_date'];
+			$this->post->publish_date     = $values['publish_date'];
 
-			if ($this->post->post_date !== null) {
-				$this->post->post_date->setTZ($this->app->default_time_zone);
-				$this->post->post_date->toUTC();
+			if ($this->post->publish_date !== null) {
+				$this->post->publish_date->setTZ($this->app->default_time_zone);
+				$this->post->publish_date->toUTC();
 			}
 		}
 
@@ -406,10 +406,10 @@ class BlorgPostEdit extends AdminDBEdit
 	{
 		$this->ui->setValues(get_object_vars($this->post));
 
-		if ($this->post->post_date !== null) {
-			$post_date = new SwatDate($this->post->post_date);
-			$post_date->convertTZ($this->app->default_time_zone);
-			$this->ui->getWidget('post_date')->value = $post_date;
+		if ($this->post->publish_date !== null) {
+			$publish_date = new SwatDate($this->post->publish_date);
+			$publish_date->convertTZ($this->app->default_time_zone);
+			$this->ui->getWidget('publish_date')->value = $publish_date;
 		}
 
 		$tag_list = $this->ui->getWidget('tags');

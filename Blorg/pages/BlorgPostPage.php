@@ -273,7 +273,7 @@ class BlorgPostPage extends SitePage
 		if ($this->app->config->blorg->akismet_key !== null) {
 			$uri = $this->app->getBaseHref().$this->app->config->blorg->path;
 
-			$date = clone $this->post->post_date;
+			$date = clone $this->post->publish_date;
 			$date->convertTZ($this->app->default_time_zone);
 			$permalink = sprintf('%sarchive/%s/%s/%s',
 				$uri,
@@ -332,7 +332,7 @@ class BlorgPostPage extends SitePage
 		$path = $this->app->config->blorg->path.'archive';
 		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
 
-		$date = clone $this->post->post_date;
+		$date = clone $this->post->publish_date;
 		$date->convertTZ($this->app->default_time_zone);
 
 		$path.= '/'.$date->getYear();

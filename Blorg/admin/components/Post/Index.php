@@ -143,7 +143,7 @@ class BlorgPostIndex extends AdminSearch
 		$pager->total_records = SwatDB::queryOne($this->app->db, $sql);
 
 		$sql = sprintf(
-			'select id, title, shortname, post_date, enabled,
+			'select id, title, shortname, publish_date, enabled,
 				bodytext
 			from BlorgPost
 			%s
@@ -151,7 +151,7 @@ class BlorgPostIndex extends AdminSearch
 			order by %s',
 			$this->getJoinClause(),
 			$this->getWhereClause(),
-			$this->getOrderByClause($view, 'post_date desc, title'));
+			$this->getOrderByClause($view, 'publish_date desc, title'));
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 		$posts = SwatDB::query($this->app->db, $sql, 'BlorgPostWrapper');
@@ -161,10 +161,10 @@ class BlorgPostIndex extends AdminSearch
 		foreach ($posts as $post) {
 
 			if ($current_date === null ||
-				$post->post_date->getMonth() != $current_date->getMonth() ||
-				$post->post_date->getYear() != $current_date->getYear()) {
+				$post->publish_date->getMonth() != $current_date->getMonth() ||
+				$post->publish_date->getYear() != $current_date->getYear()) {
 
-				$current_date = clone $post->post_date;
+				$current_date = clone $post->publish_date;
 				$current_date->setDay(1);
 				$current_date->setHour(0);
 				$current_date->setMinute(0);
@@ -173,7 +173,7 @@ class BlorgPostIndex extends AdminSearch
 
 			$ds = new SwatDetailsStore($post);
 			$ds->title = $post->getTitle();
-			$ds->post_date_month = $current_date;
+			$ds->publish_date_month = $current_date;
 
 			$store->add($ds);
 		}

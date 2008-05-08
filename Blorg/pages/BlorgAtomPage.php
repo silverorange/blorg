@@ -56,7 +56,7 @@ class BlorgAtomPage extends SitePage
 		$sql = sprintf('select * from BlorgPost
 			where instance %s %s
 				and enabled = true
-			order by post_date desc limit %s',
+			order by publish_date desc limit %s',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote(self::MAX_POSTS, 'integer'));
@@ -104,7 +104,7 @@ class BlorgAtomPage extends SitePage
 		foreach ($this->posts as $post) {
 			$path = $blorg_base_href.'archive';
 
-			$date = clone $post->post_date;
+			$date = clone $post->publish_date;
 			$date->convertTZ($this->app->default_time_zone);
 			$year = $date->getYear();
 			$month_name = BlorgPageFactory::$month_names[$date->getMonth()];
@@ -116,7 +116,7 @@ class BlorgAtomPage extends SitePage
 				$post->shortname);
 
 			$entry = new XML_Atom_Entry($post_uri, $post->title,
-				$post->post_date);
+				$post->publish_date);
 
 			if (strlen($post->extended_bodytext) > 0) {
 				$full_bodytext = $post->bodytext.$post->extended_bodytext;

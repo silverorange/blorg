@@ -131,7 +131,7 @@ class BlorgAuthor extends SwatDBDataObject
 	{
 		$sql = sprintf('select * from BlorgPost
 			where author = %s and enabled = %s
-			order by post_date desc',
+			order by publish_date desc',
 			$this->db->quote($this->id, 'integer'),
 			$this->db->quote(true, 'boolean'));
 
@@ -167,7 +167,7 @@ class BlorgAuthor extends SwatDBDataObject
 	{
 		$sql = sprintf('select * from BlorgPost
 			where author = %s
-			order by post_date desc',
+			order by publish_date desc',
 			$this->db->quote($this->id, 'integer'));
 
 		$wrapper_class = SwatDBClassMap::get('BlorgPostWrapper');

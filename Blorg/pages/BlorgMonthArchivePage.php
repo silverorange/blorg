@@ -130,7 +130,7 @@ class BlorgMonthArchivePage extends SitePage
 				date_trunc(\'month\', timestamp %s) and
 				instance %s %s
 				and enabled = true
-			order by post_date desc',
+			order by publish_date desc',
 			$this->app->db->quote($date->tz->getId(), 'text'),
 			$this->app->db->quote($date->getDate(), 'date'),
 			SwatDB::equalityOperator($instance_id),
