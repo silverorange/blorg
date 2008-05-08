@@ -157,53 +157,34 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function processInternal()
 	{
-		$form = $this->ui->getWidget('edit_form');
-
-//		$view = $this->ui->getWidget('upload_file_view');
-//		$input_row = $view->getRow('input_row');
-//		$count = $this->uploadFiles($input_row);
-
-/*		if ($count > 0) {
-			$message = new SwatMessage(
-				Blorg::ngettext('One file has been attached to this post.',
-					sprintf('%s files have been attached to this post',
-						$count),
-					$count));
-
-			$this->ui->getWidget('message_display')->add($message);
-		}
-*/
 		$upload_file_button = $this->ui->getWidget('upload_button');
-
 		if ($upload_file_button->hasBeenClicked()) {
 			$this->ui->getWidget('bodytext_field')->display_messages = false;
 			$this->ui->getWidget('publish_date_field')->display_messages = false;
+			$this->processUploadFile();
 		} else {
 			parent::processInternal();
 		}
 	}
 
 	// }}}
-	// {{{ protected function uploadFiles()
+	// {{{ protected function processUploadFile()
 
-	protected function uploadFiles(SwatTableViewInputRow $input_row)
+	protected function processUploadFile()
 	{
 		$form = $this->ui->getWidget('edit_form');
-		$replicators = $input_row->getReplicators();
+
+		$upload_container = $this->ui->getWidget('upload_container');
+
 		$now = new SwatDate();
 		$now->toUTC();
-		$count = 0;
 
-		foreach ($replicators as $replicator_id) {
-			if (!$input_row->rowHasMessage($replicator_id)) {
-				$file = $input_row->getWidget('file', $replicator_id);
-				if (!$file->isUploaded())
-					continue;
+		if (!$upload_container->hasMessage()) {
+			$file = $this->ui->getWidget('upload_file');
+			if ($file->isUploaded()) {
 
-				$description = $input_row->getWidget('description',
-					$replicator_id)->value;
-
-				$show = $input_row->getWidget('show', $replicator_id)->value;
+				$description = $this->ui->getWidget('upload_description')->value;
+				$attachment  = $this->ui->getWidget('upload_attachment')->value;
 
 				$class_name = SwatDBClassMap::get('BlorgFile');
 				$blorg_file = new $class_name();
@@ -216,25 +197,27 @@ class BlorgPostEdit extends AdminDBEdit
 					$blorg_file->post = $this->id;
 
 				$blorg_file->description = $description;
-				$blorg_file->show = $show;
+	//			$blorg_file->show = $show;
 				$blorg_file->filename = $file->getUniqueFileName('../files');
 				$blorg_file->mime_type = $file->getMimeType();
 				$blorg_file->filesize = $file->getSize();
 				$blorg_file->createdate = $now;
 
-				if (array_shift(explode('/',
-					$blorg_file->mime_type)) == 'image') {
+				if (strncmp('image', $blorg_file->mime_type, 5) == 0) {
 					$blorg_file->image = $this->createImage($file);
 				}
 
 				$blorg_file->save();
 
 				$file->saveFile('../files', $blorg_file->filename);
-				$count++;
+
+				$message = new SwatMessage(
+					Blorg::_('One file has been added to this post.'));
+
+				$this->ui->getWidget('message_display')->add($message);
+
 			}
 		}
-
-		return $count;
 	}
 
 	// }}}
