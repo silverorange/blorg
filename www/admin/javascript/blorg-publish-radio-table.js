@@ -20,11 +20,16 @@ function BlorgPublishRadioTable(list_name, publish_now_id,
 			var choose_at_tr = this.choose_at_option.parentNode.parentNode;
 			choose_at_tr.style.display = 'none';
 
-			this.anchor = document.createElement('a');
-			this.anchor.href = '#';
-			this.anchor.title = choose_date_text;
-			this.anchor.innerHTML = choose_date_text;
-			YAHOO.util.Event.addListener(this.anchor, 'click',
+			this.anchor = document.createElement('span');
+			this.anchor.className = 'edit-publish-date-link';
+
+			this.anchor.appendChild(document.createTextNode(' ('));
+
+			var a_tag = document.createElement('a');
+			a_tag.href = '#';
+			a_tag.title = choose_date_text;
+			a_tag.innerHTML = choose_date_text;
+			YAHOO.util.Event.addListener(a_tag, 'click',
 			function(e, list)
 			{
 				YAHOO.util.Event.preventDefault(e);
@@ -34,6 +39,8 @@ function BlorgPublishRadioTable(list_name, publish_now_id,
 			var publish_now_td = document.getElementById(
 				list_name + '_' + publish_now_id + '_label');
 
+			this.anchor.appendChild(a_tag);
+			this.anchor.appendChild(document.createTextNode(')'));
 			publish_now_td.appendChild(this.anchor);
 		}
 	}
