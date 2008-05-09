@@ -333,7 +333,7 @@ class BlorgPostEdit extends AdminDBEdit
 			$this->ui->getWidget('publish')->getPublishDate();
 
 		$this->post->enabled = ($this->ui->getWidget('publish')->value !=
-			BlorgPostPublishRadioList::HIDDEN);
+			BlorgPublishRadioTable::HIDDEN);
 
 		if ($this->post->publish_date !== null) {
 			$this->post->publish_date->setTZ($this->app->default_time_zone);
