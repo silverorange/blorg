@@ -3,7 +3,7 @@
 require_once 'Swat/SwatFormField.php';
 require_once 'Swat/SwatEntry.php';
 require_once 'Swat/SwatDateEntry.php';
-require_once 'Swat/SwatRadioList.php';
+require_once 'Swat/SwatRadioTable.php';
 require_once 'Swat/SwatYUI.php';
 
 /**
@@ -13,7 +13,7 @@ require_once 'Swat/SwatYUI.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostPublishRadioList extends SwatRadioList
+class BlorgPostPublishRadioList extends SwatRadioTable
 {
 	// {{{ class constants
 
