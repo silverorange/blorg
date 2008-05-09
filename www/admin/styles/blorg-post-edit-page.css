@@ -3,6 +3,8 @@
 	width: 98%;
 }
 
+/* {{{ Edit Page Layout */
+
 #post_primary {
 	margin-right: 265px;
 }
@@ -16,6 +18,9 @@
 #post_secondary {
 	clear: both;
 }
+
+/* }}} */
+/* {{{ Files */
 
 img.blorg-file-icon {
 	float: left;
@@ -33,6 +38,9 @@ a.blorg-file-title:hover {
 	padding-left: 0;
 }
 
+/* }}} */
+/* {{{ Reply Status Slider */
+
 .blorg-reply-status-slider-context-note {
 	min-height: 4em;
 }
@@ -40,3 +48,5 @@ a.blorg-file-title:hover {
 * html .blorg-reply-status-slider-context-note {
 	height: 4em; /* IE 6 hack */
 }
+
+/* }}} */
