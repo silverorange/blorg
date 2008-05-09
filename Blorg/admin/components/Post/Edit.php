@@ -6,6 +6,7 @@ require_once 'Site/exceptions/SiteInvalidImageException.php';
 require_once 'Blorg/BlorgWeblogsDotComPinger.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgFile.php';
+require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgFileImage.php';
 
 /**
@@ -138,12 +139,9 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function getFileReplicators()
 	{
-		// TODO:
-//		$sql = 'select * from BlorgFile
-//			where post %s %s and form_id %s %s';
-
 		$replicators = array();
-		foreach ($this->post->files as $file) {
+
+		foreach ($this->getFiles() as $file) {
 			$replicators[$file->id] = null;
 		}
 
@@ -183,8 +181,8 @@ class BlorgPostEdit extends AdminDBEdit
 			$file = $this->ui->getWidget('upload_file');
 			if ($file->isUploaded()) {
 
-				$description = $this->ui->getWidget('upload_description')->value;
-				$attachment  = $this->ui->getWidget('upload_attachment')->value;
+				$description = $this->ui->getWidget('upload_description');
+				$attachment  = $this->ui->getWidget('upload_attachment');
 
 				$class_name = SwatDBClassMap::get('BlorgFile');
 				$blorg_file = new $class_name();
@@ -196,13 +194,14 @@ class BlorgPostEdit extends AdminDBEdit
 				else
 					$blorg_file->post = $this->id;
 
-				$blorg_file->description = $description;
-	//			$blorg_file->show = $show;
+				$blorg_file->description = $description->value;
+	//			$blorg_file->show = $show; // TODO: support attachment flag
 				$blorg_file->filename = $file->getUniqueFileName('../files');
 				$blorg_file->mime_type = $file->getMimeType();
 				$blorg_file->filesize = $file->getSize();
 				$blorg_file->createdate = $now;
 
+				// automatically create an image object for image files
 				if (strncmp('image', $blorg_file->mime_type, 5) == 0) {
 					$blorg_file->image = $this->createImage($file);
 				}
@@ -211,11 +210,26 @@ class BlorgPostEdit extends AdminDBEdit
 
 				$file->saveFile('../files', $blorg_file->filename);
 
-				$message = new SwatMessage(
-					Blorg::_('One file has been added to this post.'));
+				// add message
+				// TODO: if attachment
+				if (false) {
+					$message = new SwatMessage(Blorg::_('The following file '.
+						'has been attached to this post:'));
+				} else {
+					$message = new SwatMessage(Blorg::_('The following file '.
+						'has been uploaded:'));
+				}
 
+				$message->secondary_content = $this->getFileTitle($blorg_file);
 				$this->ui->getWidget('message_display')->add($message);
 
+				// clear upload form values
+				$description->value = null;
+				$attachment->value = false;
+
+				// add replication for new file
+				$replicator = $this->ui->getWidget('file_replicator');
+				$replicator->addReplication($blorg_file->id);
 			}
 		}
 	}
@@ -440,10 +454,10 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function buildFiles()
 	{
-		$files = $this->post->files;
+		$files = $this->getFiles();
 		$replicator = $this->ui->getWidget('file_replicator');
-		foreach ($this->getFileReplicators() as $key => $null) {
-			$file = $files[$key];
+		foreach ($files as $file) {
+			$key = $file->id;
 
 			// file title
 			$title = $this->getFileTitle($file);
@@ -557,6 +571,26 @@ class BlorgPostEdit extends AdminDBEdit
 		}
 
 		return $markup;
+	}
+
+	// }}}
+	// {{{ protected function getFiles()
+
+	protected function getFiles()
+	{
+		$form = $this->ui->getWidget('edit_form');
+		$form_unique_id = $form->getHiddenField('unique_id');
+
+		$sql = sprintf('select * from BlorgFile
+			where post %s %s and form_unique_id %s %s
+			order by id',
+			SwatDB::equalityOperator($this->post->id),
+			$this->app->db->quote($this->post->id, 'integer'),
+			SwatDB::equalityOperator($form_unique_id),
+			$this->app->db->quote($form_unique_id, 'text'));
+
+		return SwatDB::query($this->app->db, $sql,
+			SwatDBClassMap::get('BlorgFileWrapper'));
 	}
 
 	// }}}
