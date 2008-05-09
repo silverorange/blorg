@@ -88,7 +88,6 @@
 						</widget>
 					</widget>
 					<widget class="SwatReplicableContainer" id="file_replicator">
-						<widget class="SwatDisplayableContainer">
 						<widget class="SwatImageDisplay" id="file_icon">
 							<property name="classes[]">blorg-file-icon</property>
 							<property name="occupy_width" type="integer">48</property>
@@ -115,7 +114,6 @@
 									<property name="size" type="integer">40</property>
 								</widget>
 							</widget>
-						</widget>
 						</widget>
 					</widget>
 				</widget>
