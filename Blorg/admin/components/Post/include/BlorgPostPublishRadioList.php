@@ -49,6 +49,8 @@ class BlorgPostPublishRadioList extends SwatRadioTable
 		);
 
 		$this->addOptionsByArray($statuses);
+
+		$this->value = self::PUBLISH_NOW;
 	}
 
 	// }}}
