@@ -80,6 +80,13 @@
 								<property name="title" translatable="yes">Upload</property>
 							</widget>
 						</widget>
+						<widget class="AdminNote">
+							<property name="content"><![CDATA[
+							<p>Files marked as attachments are automatically listed and linked at the bottom of this post.</p>
+							<p>Use the <img src="packages/blorg/admin/images/file-attach-on.png" width="16" height="16" alt="attach graphic" style="vertical-align: middle;" /> to attach files to and detach files from this post.</p>
+							]]></property>
+							<property name="content_type">text/xml</property>
+						</widget>
 					</widget>
 					<widget class="SwatReplicableContainer" id="file_replicator">
 						<widget class="SwatDisplayableContainer">
