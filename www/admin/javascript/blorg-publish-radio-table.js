@@ -31,10 +31,10 @@ function BlorgPublishRadioTable(list_name, publish_now_id,
 				list.toggle();
 			}, this);
 
-			var publish_now_tr = document.getElementById(
-				list_name + '_' + publish_now_id + '_label').parentNode;
+			var publish_now_td = document.getElementById(
+				list_name + '_' + publish_now_id + '_label');
 
-			publish_now_tr.appendChild(this.anchor);
+			publish_now_td.appendChild(this.anchor);
 		}
 	}
 }
