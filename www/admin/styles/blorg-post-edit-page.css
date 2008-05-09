@@ -20,6 +20,37 @@
 }
 
 /* }}} */
+/* {{{ Publish Widget */
+
+#publish_date select {
+	font-size: 75%;
+}
+
+#publish_date .swat-radio-table-input input {
+	margin: 0;
+}
+
+#publish_date #publish_date_month {
+	width: 6em;
+}
+
+.edit-publish-date-link {
+	font-size: 85%;
+	position: relative;
+	bottom: 0.15em;
+	color: #666;
+}
+
+.edit-publish-date-link a:link,
+.edit-publish-date-link a:visited {
+	color: #666;
+}
+.edit-publish-date-link a:hover,
+.edit-publish-date-link a:active {
+	color: #333;
+}
+
+/* }}} */
 /* {{{ Files */
 
 img.blorg-file-icon {
