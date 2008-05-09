@@ -8,7 +8,7 @@
 			<property name="encoding_type">multipart/form-data</property>
 			<!-- {{{ Form Sidebar Area -->
 			<widget class="SwatDisplayableContainer" id="post_sidebar">
-				<widget class="SwatFormField" id="publish_field">
+				<widget class="SwatGroupingFormField" id="publish_field">
 					<property name="title" translatable="yes">Publish Post</property>
 					<widget class="BlorgPostPublishRadioList" id="publish" />
 				</widget>
