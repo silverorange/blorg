@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Swat/SwatHtmlTag.php';
+require_once 'Swat/SwatYUI.php';
 require_once 'Swat/SwatControl.php';
 require_once 'Blorg/dataobjects/BlorgFile.php';
 require_once 'XML/RPCAjax.php';
@@ -35,6 +36,9 @@ class BlorgFileAttachControl extends SwatControl
 		$this->html_head_entry_set->addEntrySet(
 			XML_RPCAjax::getHtmlHeadEntrySet());
 
+		$yui = new SwatYUI(array('dom', 'event'));
+		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
+
 		$this->addJavaScript(
 			'packages/blorg/admin/javascript/blorg-file-attach-control.js',
 			Blorg::PACKAGE_ID);
@@ -43,7 +47,7 @@ class BlorgFileAttachControl extends SwatControl
 			'packages/blorg/admin/styles/blorg-file-attach-control.css',
 			Blorg::PACKAGE_ID);
 
-		$this->required_id = true;
+		$this->requires_id = true;
 	}
 
 	// }}}
@@ -60,7 +64,7 @@ class BlorgFileAttachControl extends SwatControl
 			'packages/blorg/admin/images/file-attach-on.png' :
 			'packages/blorg/admin/images/file-attach-off.png';
 
-		$img_tag->alt = 'attachment graphic';
+		$img_tag->alt = Blorg::_('attachment graphic');
 		$img_tag->width  = '16';
 		$img_tag->height = '16';
 
