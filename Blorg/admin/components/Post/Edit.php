@@ -8,6 +8,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgFile.php';
 require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgFileImage.php';
+require_once dirname(__FILE__).'/include/BlorgFileAttachControl.php';
 
 /**
  * Page for editing Posts
@@ -231,6 +232,8 @@ class BlorgPostEdit extends AdminDBEdit
 				$replicator->addReplication($blorg_file->id);
 			}
 		}
+
+		$this->ui->getWidget('file_disclosure')->open = true;
 	}
 
 	// }}}
@@ -477,12 +480,9 @@ class BlorgPostEdit extends AdminDBEdit
 			$file_markup->value = $markup;
 
 			// attachment status
-			$file_attach_button =
-				$replicator->getWidget('file_attach_button', $key);
-
-			$file_attach_button->image = ($file->show) ?
-				'packages/blorg/admin/images/file-attach-on.png' :
-				'packages/blorg/admin/images/file-attach-off.png';
+			$file_attach = $replicator->getWidget('file_attach_control', $key);
+			$file_attach->show = $file->show;
+			$file_attach->file = $file;
 		}
 	}
 

@@ -61,7 +61,7 @@
 			<!-- {{{ Secondary Form Area -->
 			<widget class="SwatDisplayableContainer" id="post_secondary">
 				<!-- {{{ attach files -->
-				<widget class="SwatDisclosure">
+				<widget class="SwatDisclosure" id="file_disclosure">
 					<property name="title" translatable="yes">Files</property>
 					<property name="open" type="boolean">false</property>
 					<widget class="SwatDisplayableContainer" id="upload_container">
@@ -100,10 +100,7 @@
 									<widget class="SwatToolLink" id="file_title">
 										<property name="classes[]">blorg-file-title</property>
 									</widget>
-									<widget class="SwatImageButton" id="file_attach_button">
-										<property name="title" translatable="yes">Attach File to Post</property>
-										<property name="image">packages/blorg/admin/images/file-attach-off.png</property>
-									</widget>
+									<widget class="BlorgFileAttachControl" id="file_attach_control" />
 									<widget class="SwatImageButton" id="file_delete_button">
 										<property name="title" translatable="yes">Delete File</property>
 										<property name="image">packages/blorg/admin/images/file-delete.png</property>
