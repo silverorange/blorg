@@ -26,7 +26,8 @@ img.blorg-file-icon {
 	margin-top: 1em;
 }
 
-.blorg-file-title {
+a.blorg-file-title,
+a.blorg-file-title:hover {
 	border: none;
 	background: transparent;
 	padding-left: 0;
