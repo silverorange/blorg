@@ -3,7 +3,7 @@ function BlorgFileAttachControl(id, file_id, show)
 	this.id = id;
 	this.file_id = file_id;
 	this.show = show;
-	this.xml_rpc_client = new XML_RPC_Client('Post/FileAttachServer');
+	this.xml_rpc_client = new XML_RPC_Client('Post/FileAjaxServer');
 
 	this.img = document.getElementById(this.id);
 	this.anchor = document.createElement('a');
