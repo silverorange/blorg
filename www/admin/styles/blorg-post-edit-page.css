@@ -13,6 +13,7 @@
 	float: right;
 	display: inline; /* IE6 hack */
 	width: 250px;
+	position: relative;
 }
 
 #post_secondary {
@@ -22,11 +23,23 @@
 /* }}} */
 /* {{{ Publish Widget */
 
+#publish {
+	border-collapse: collapse;
+}
+
+#publish td {
+	padding: 0 0 0.3em 0;
+}
+
 #publish_date select {
 	font-size: 75%;
 }
 
-#publish_date .swat-radio-table-input input {
+#publish td.swat-radio-table-input {
+	padding-right: 0.2em;
+}
+
+#publish .swat-radio-table-input input {
 	margin: 0;
 }
 
