@@ -17,7 +17,8 @@ function BlorgPostPublishRadioList(list_name, publish_now_id,
 		this.updateSensitivity();
 
 		if (document.getElementById(list_name + '_' + publish_now_id)) {
-			this.choose_at_option.parentNode.style.display = 'none';
+			var choose_at_tr = this.choose_at_option.parentNode.parentNode;
+			choose_at_tr.style.display = 'none';
 
 			this.anchor = document.createElement('a');
 			this.anchor.href = '#';
@@ -30,15 +31,17 @@ function BlorgPostPublishRadioList(list_name, publish_now_id,
 				list.toggle();
 			}, this);
 
-			var o = document.getElementById(list_name + '_' + publish_now_id);
-			o.parentNode.appendChild(this.anchor);
+			var publish_now_tr = document.getElementById(
+				list_name + '_' + publish_now_id + '_label').parentNode;
+
+			publish_now_tr.appendChild(this.anchor);
 		}
 	}
 }
 
 BlorgPostPublishRadioList.prototype.toggle = function()
 {
-	this.choose_at_option.parentNode.style.display = 'block';
+	this.choose_at_option.parentNode.parentNode.style.display = 'table-row';
 	this.anchor.style.display = 'none';
 	this.choose_at_option.checked = true;
 	this.updateSensitivity();
