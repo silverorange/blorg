@@ -195,7 +195,7 @@ class BlorgPostEdit extends AdminDBEdit
 					$blorg_file->post = $this->id;
 
 				$blorg_file->description = $description->value;
-	//			$blorg_file->show = $show; // TODO: support attachment flag
+				$blorg_file->show = $attachment->value;
 				$blorg_file->filename = $file->getUniqueFileName('../files');
 				$blorg_file->mime_type = $file->getMimeType();
 				$blorg_file->filesize = $file->getSize();
@@ -211,8 +211,7 @@ class BlorgPostEdit extends AdminDBEdit
 				$file->saveFile('../files', $blorg_file->filename);
 
 				// add message
-				// TODO: if attachment
-				if (false) {
+				if ($blorg_file->show) {
 					$message = new SwatMessage(Blorg::_('The following file '.
 						'has been attached to this post:'));
 				} else {
@@ -476,6 +475,14 @@ class BlorgPostEdit extends AdminDBEdit
 			$markup = $this->getFileMarkup($file);
 			$file_markup = $replicator->getWidget('file_markup', $key);
 			$file_markup->value = $markup;
+
+			// attachment status
+			$file_attach_button =
+				$replicator->getWidget('file_attach_button', $key);
+
+			$file_attach_button->image = ($file->show) ?
+				'packages/blorg/admin/images/file-attach-on.png' :
+				'packages/blorg/admin/images/file-attach-off.png';
 		}
 	}
 
