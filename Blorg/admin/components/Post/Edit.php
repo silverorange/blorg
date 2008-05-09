@@ -9,6 +9,7 @@ require_once 'Blorg/dataobjects/BlorgFile.php';
 require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgFileImage.php';
 require_once dirname(__FILE__).'/include/BlorgFileAttachControl.php';
+require_once dirname(__FILE__).'/include/BlorgPostPublishRadioList.php';
 
 /**
  * Page for editing Posts
@@ -41,16 +42,8 @@ class BlorgPostEdit extends AdminDBEdit
 		$this->initPost();
 		$this->initReplyStatuses();
 
-		if ($this->id === null) {
+		if ($this->post->publish_date === null)
 			$this->ui->getWidget('shortname_field')->visible = false;
-			$this->ui->getWidget('publish_date_field')->visible = false;
-		} else {
-			$publish_date = $this->ui->getWidget('publish_date');
-			$publish_date->display_time_zone = $this->app->default_time_zone;
-			$publish_date->display_parts  = SwatDateEntry::YEAR |
-				SwatDateEntry::MONTH | SwatDateEntry::DAY |
-				SwatDateEntry::CALENDAR | SwatDateEntry::TIME;
-		}
 
 		$instance_id = $this->app->getInstanceId();
 		$tag_where_clause = sprintf('instance %s %s',
@@ -159,7 +152,7 @@ class BlorgPostEdit extends AdminDBEdit
 		$upload_file_button = $this->ui->getWidget('upload_button');
 		if ($upload_file_button->hasBeenClicked()) {
 			$this->ui->getWidget('bodytext_field')->display_messages = false;
-			$this->ui->getWidget('publish_date_field')->display_messages = false;
+			$this->ui->getWidget('publish_field')->display_messages = false;
 			$this->processUploadFile();
 		} else {
 			parent::processInternal();
@@ -262,7 +255,11 @@ class BlorgPostEdit extends AdminDBEdit
 	{
 		$shortname = $this->ui->getWidget('shortname')->value;
 
-		if ($this->id === null && $shortname === null) {
+		$publish_date = $this->ui->getWidget('publish')->getPublishDate();
+		if ($publish_date === null)
+			return;
+
+		if ($shortname === null) {
 			$title_value = strlen($this->ui->getWidget('title')->value) ?
 				$this->ui->getWidget('title')->value :
 				$this->ui->getWidget('bodytext')->value;
@@ -285,12 +282,10 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function validateShortname($shortname)
 	{
-		if ($this->post->id === null) {
-			$publish_date = new SwatDate();
-			$publish_date->toUTC();
-		} else {
-			$publish_date = $this->ui->getWidget('publish_date')->value;
-		}
+		$publish_date = $this->ui->getWidget('publish')->getPublishDate();
+
+		if ($publish_date === null)
+			return;
 
 		$publish_date->setTZ($this->app->default_time_zone);
 		$instance_id = $this->app->getInstanceId();
@@ -325,8 +320,6 @@ class BlorgPostEdit extends AdminDBEdit
 			'bodytext',
 			'extended_bodytext',
 			'reply_status',
-			'enabled',
-			'publish_date',
 		));
 
 		$this->post->title             = $values['title'];
@@ -334,7 +327,17 @@ class BlorgPostEdit extends AdminDBEdit
 		$this->post->bodytext          = $values['bodytext'];
 		$this->post->extended_bodytext = $values['extended_bodytext'];
 		$this->post->reply_status      = $values['reply_status'];
-		$this->post->enabled           = $values['enabled'];
+
+		$this->post->publish_date =
+			$this->ui->getWidget('publish')->getPublishDate();
+
+		$this->post->enabled = ($this->ui->getWidget('publish')->value !=
+			BlorgPostPublishRadioList::HIDDEN);
+
+		if ($this->post->publish_date !== null) {
+			$this->post->publish_date->setTZ($this->app->default_time_zone);
+			$this->post->publish_date->toUTC();
+		}
 
 		$now = new SwatDate();
 		$now->toUTC();
@@ -342,18 +345,9 @@ class BlorgPostEdit extends AdminDBEdit
 
 		if ($id === null) {
 			$this->post->createdate   = $now;
-			$this->post->publish_date = $now;
 			$this->post->instance     = $this->app->getInstanceId();
-			// TODO: Fix up author support
-			// $this->post->author     = $this->app->session->getUserID();
 		} else {
 			$this->post->modified_date = $now;
-			$this->post->publish_date  = $values['publish_date'];
-
-			if ($this->post->publish_date !== null) {
-				$this->post->publish_date->setTZ($this->app->default_time_zone);
-				$this->post->publish_date->toUTC();
-			}
 		}
 
 		$this->post->save();
@@ -426,7 +420,8 @@ class BlorgPostEdit extends AdminDBEdit
 		if ($this->post->publish_date !== null) {
 			$publish_date = new SwatDate($this->post->publish_date);
 			$publish_date->convertTZ($this->app->default_time_zone);
-			$this->ui->getWidget('publish_date')->value = $publish_date;
+			$this->ui->getWidget('publish')->setPublishDate(
+				$publish_date, ($this->post->enabled === false));
 		}
 
 		$tag_list = $this->ui->getWidget('tags');
