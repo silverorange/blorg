@@ -9,7 +9,7 @@ require_once 'Blorg/dataobjects/BlorgFile.php';
 require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgFileImage.php';
 require_once dirname(__FILE__).'/include/BlorgFileAttachControl.php';
-require_once dirname(__FILE__).'/include/BlorgPostPublishRadioList.php';
+require_once dirname(__FILE__).'/include/BlorgPublishRadioTable.php';
 
 /**
  * Page for editing Posts

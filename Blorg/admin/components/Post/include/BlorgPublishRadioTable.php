@@ -7,13 +7,13 @@ require_once 'Swat/SwatRadioTable.php';
 require_once 'Swat/SwatYUI.php';
 
 /**
- * A custom radio list for publishing posts
+ * A custom radio table for publishing posts
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostPublishRadioList extends SwatRadioTable
+class BlorgPublishRadioTable extends SwatRadioTable
 {
 	// {{{ class constants
 
@@ -25,7 +25,7 @@ class BlorgPostPublishRadioList extends SwatRadioTable
 	// {{{ public function __construct()
 
 	/**
-	 * Creates a new radiolist
+	 * Creates a new radio table
 	 *
 	 * @param string $id a non-visible unique id for this widget.
 	 *
@@ -36,7 +36,7 @@ class BlorgPostPublishRadioList extends SwatRadioTable
 		parent::__construct($id);
 
 		$this->addJavaScript(
-			'packages/blorg/admin/javascript/blorg-post-publish-radio-list.js',
+			'packages/blorg/admin/javascript/blorg-publish-radio-table.js',
 			Blorg::PACKAGE_ID);
 
 		$yui = new SwatYUI(array('dom', 'event', 'animation'));
@@ -87,7 +87,7 @@ class BlorgPostPublishRadioList extends SwatRadioTable
 	// {{{ public function display()
 
 	/**
-	 * Displays this radio list
+	 * Displays this radio table
 	 */
 	public function display()
 	{
@@ -99,7 +99,7 @@ class BlorgPostPublishRadioList extends SwatRadioTable
 	// {{{ protected function displayOptionLabel()
 
 	/**
-	 * Displays an option in the radio list
+	 * Displays an option in the radio table
 	 *
 	 * @param SwatOption $option
 	 */
@@ -134,7 +134,7 @@ class BlorgPostPublishRadioList extends SwatRadioTable
 	protected function getInlineJavaScript()
 	{
 		$javascript = sprintf("var %s_obj = ".
-			"new BlorgPostPublishRadioList('%s', %d, %d, %s);\n",
+			"new BlorgPublishRadioTable('%s', %d, %d, %s);\n",
 			$this->id, $this->id, self::PUBLISH_NOW, self::PUBLISH_AT,
 			SwatString::quoteJavaScriptString(Blorg::_('Edit Publish Date')));
 

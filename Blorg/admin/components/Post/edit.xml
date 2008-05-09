@@ -10,7 +10,7 @@
 			<widget class="SwatDisplayableContainer" id="post_sidebar">
 				<widget class="SwatGroupingFormField" id="publish_field">
 					<property name="title" translatable="yes">Publish Post</property>
-					<widget class="BlorgPostPublishRadioList" id="publish" />
+					<widget class="BlorgPublishRadioTable" id="publish" />
 				</widget>
 				<widget class="SwatGroupingFormField">
 					<property name="title" translatable="yes">Reply Status</property>

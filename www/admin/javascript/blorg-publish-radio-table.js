@@ -1,4 +1,4 @@
-function BlorgPostPublishRadioList(list_name, publish_now_id,
+function BlorgPublishRadioTable(list_name, publish_now_id,
 	publish_at_id, choose_date_text)
 {
 	var radio_list = document.getElementsByName(list_name);
@@ -39,7 +39,7 @@ function BlorgPostPublishRadioList(list_name, publish_now_id,
 	}
 }
 
-BlorgPostPublishRadioList.prototype.toggle = function()
+BlorgPublishRadioTable.prototype.toggle = function()
 {
 	this.choose_at_option.parentNode.parentNode.style.display = 'table-row';
 	this.anchor.style.display = 'none';
@@ -47,7 +47,7 @@ BlorgPostPublishRadioList.prototype.toggle = function()
 	this.updateSensitivity();
 }
 
-BlorgPostPublishRadioList.prototype.updateSensitivity = function()
+BlorgPublishRadioTable.prototype.updateSensitivity = function()
 {
 	var entries = [
 		document.getElementById('publish_date_year'),
