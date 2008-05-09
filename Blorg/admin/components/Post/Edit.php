@@ -9,6 +9,7 @@ require_once 'Blorg/dataobjects/BlorgFile.php';
 require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgFileImage.php';
 require_once dirname(__FILE__).'/include/BlorgFileAttachControl.php';
+require_once dirname(__FILE__).'/include/BlorgFileDeleteControl.php';
 require_once dirname(__FILE__).'/include/BlorgPublishRadioTable.php';
 
 /**
@@ -478,6 +479,11 @@ class BlorgPostEdit extends AdminDBEdit
 			$file_attach = $replicator->getWidget('file_attach_control', $key);
 			$file_attach->show = $file->show;
 			$file_attach->file = $file;
+
+			// delete
+			$file_delete = $replicator->getWidget('file_delete_control', $key);
+			$file_delete->file_title = $this->getFileTitle($file);
+			$file_delete->file = $file;
 		}
 	}
 
