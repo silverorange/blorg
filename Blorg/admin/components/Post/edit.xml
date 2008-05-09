@@ -102,10 +102,7 @@
 										<property name="classes[]">blorg-file-title</property>
 									</widget>
 									<widget class="BlorgFileAttachControl" id="file_attach_control" />
-									<widget class="SwatImageButton" id="file_delete_button">
-										<property name="title" translatable="yes">Delete File</property>
-										<property name="image">packages/blorg/admin/images/file-delete.png</property>
-									</widget>
+									<widget class="BlorgFileDeleteControl" id="file_delete_control" />
 								</widget>
 								<widget class="SwatDisplayableContainer">
 									<widget class="SwatEntry" id="file_markup">
