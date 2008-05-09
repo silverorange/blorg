@@ -529,24 +529,26 @@ class BlorgPostEdit extends AdminDBEdit
 			$icon['width']  = 48;
 			$icon['height'] = 48;
 
-			$types = array(
-				'image',
-				'audio',
-				'video',
-				'text',
-				'application',
-			);
+			$file_type = $this->mapMimeType($file->mime_type);
+			if ($file_type === null) {
+				$file_type = 'archive';
+				$types = array(
+					'image',
+					'audio',
+					'video',
+					'text',
+				);
 
-			$file_type = 'application';
-
-			foreach ($types as $type) {
-				if (strncmp($type, $file->mime_type, strlen($type)) == 0) {
-					$file_type = $type;
-					break;
+				foreach ($types as $type) {
+					if (strncmp($type, $file->mime_type, strlen($type)) == 0) {
+						$file_type = $type;
+						break;
+					}
 				}
 			}
 
-			$icon['image'] = 'packages/blorg/admin/images/file-'.$type.'.png';
+			$icon['image'] =
+				'packages/blorg/admin/images/file-'.$file_type.'.png';
 
 		} else {
 			$icon['width']  = $file->image->getWidth('pinky');
@@ -598,6 +600,36 @@ class BlorgPostEdit extends AdminDBEdit
 
 		return SwatDB::query($this->app->db, $sql,
 			SwatDBClassMap::get('BlorgFileWrapper'));
+	}
+
+	// }}}
+	// {{{ protected function mimeMap()
+
+	protected function mapMimeType($mime_type)
+	{
+		$type = null;
+		switch ($mime_type) {
+		case 'application/ogg':
+			$type = 'audio';
+			break;
+
+		case 'application/x-zip':
+		case 'application/x-bzip2':
+		case 'application/x-bzip-compressed-tar':
+		case 'application/x-gzip':
+			$type = 'archive';
+			break;
+
+		case 'application/msword':
+		case 'application/pdf':
+		case 'application/vnd.oasis.opendocument.text':
+		case 'application/vnd.sun.xml.writer':
+		case 'application/x-abiword':
+			$type = 'document';
+			break;
+		}
+
+		return $type;
 	}
 
 	// }}}
