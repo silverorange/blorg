@@ -27,7 +27,7 @@ class BlorgFileImage extends SiteImage
 
 	protected function getUriBase()
 	{
-		return '.';
+		return null;
 	}
 
 	// }}}
