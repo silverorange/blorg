@@ -25,8 +25,9 @@ function BlorgPublishRadioTable(list_name, publish_now_id,
 
 			this.edit_span = document.createElement('span');
 			this.edit_span.className = 'edit-publish-date-link';
+			this.edit_span.style.backgroundColor = '#fff';
 
-			this.edit_span.appendChild(document.createTextNode(' ('));
+			this.edit_span.appendChild(document.createTextNode('('));
 
 			var a_tag = document.createElement('a');
 			a_tag.href = '#';
@@ -45,6 +46,10 @@ function BlorgPublishRadioTable(list_name, publish_now_id,
 			var publish_now_td = document.getElementById(
 				list_name + '_' + publish_now_id + '_label');
 
+			// this non-breaking space is appended outside the span because
+			// IE6 likes to collapse the whitespace when animating opacity
+			publish_now_td.appendChild(document.createTextNode('\u00a0'));
+
 			publish_now_td.appendChild(this.edit_span);
 		}
 	}
@@ -52,7 +57,7 @@ function BlorgPublishRadioTable(list_name, publish_now_id,
 
 BlorgPublishRadioTable.prototype.showPublishAt = function()
 {
-	this.publish_at_tr.style.display = 'table-row';
+	this.publish_at_tr.style.display = 'block';
 	this.publish_at_option.checked = true;
 	var in_attributes = { opacity: { from: 0, to: 1 } };
 	var in_animation = new YAHOO.util.Anim(this.publish_at_tr, in_attributes,
@@ -60,7 +65,7 @@ BlorgPublishRadioTable.prototype.showPublishAt = function()
 
 	var out_attributes = { opacity: { from: 1, to: 0 } };
 	var out_animation = new YAHOO.util.Anim(this.edit_span, out_attributes,
-		0.25, YAHOO.util.Easing.easeOut);
+		3.5, YAHOO.util.Easing.easeOut);
 
 	out_animation.onComplete.subscribe(function(e)
 	{
