@@ -50,7 +50,7 @@ class BlorgFileLoaderPage extends SitePage
 	public function build()
 	{
 		header(sprintf('Content-type: %s', $this->file->mime_type));
-		header(sprintf('Content-Disposition: attachment; filename="%s"',
+		header(sprintf('Content-Disposition: filename="%s"',
 			$this->file->filename));
 
 		$this->file->setFileBase('../');
