@@ -36,7 +36,7 @@ class BlorgFileDeleteControl extends SwatControl
 		$this->html_head_entry_set->addEntrySet(
 			XML_RPCAjax::getHtmlHeadEntrySet());
 
-		$yui = new SwatYUI(array('dom', 'event'));
+		$yui = new SwatYUI(array('dom', 'event', 'animation'));
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavaScript(
@@ -60,9 +60,7 @@ class BlorgFileDeleteControl extends SwatControl
 		$span_tag = new SwatHtmlTag('span');
 		$span_tag->id = $this->id;
 		$span_tag->class = 'blorg-file-delete-control';
-		$span_tag->setContent('Delete');
-
-		echo ' ';
+		$span_tag->setContent('');
 		$span_tag->display();
 
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
@@ -119,7 +117,7 @@ class BlorgFileDeleteControl extends SwatControl
 			Blorg::_('Delete the file “%s”?'));
 
 		$delete_text = SwatString::quoteJavaScriptString(
-			Blorg::_('delete'));
+			Blorg::_('Delete'));
 
 		return
 			"BlorgFileDeleteControl.confirm_text = {$confirm_text};\n".
