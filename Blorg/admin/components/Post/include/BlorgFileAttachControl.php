@@ -57,18 +57,26 @@ class BlorgFileAttachControl extends SwatControl
 	{
 		parent::display();
 
-		$img_tag = new SwatHtmlTag('img');
-		$img_tag->id = $this->id;
-		$img_tag->class = 'blorg-file-attach-control';
-		$img_tag->src = ($this->show) ?
-			'packages/blorg/admin/images/file-attach-on.png' :
-			'packages/blorg/admin/images/file-attach-off.png';
+		$span_tag = new SwatHtmlTag('span');
+		$span_tag->id = $this->id;
+		$span_tag->class = 'blorg-file-attach-status';
 
-		$img_tag->alt = Blorg::_('attachment graphic');
-		$img_tag->width  = '16';
-		$img_tag->height = '16';
+		$a_tag = new SwatHtmlTag('a');
+		$a_tag->class = 'blorg-file-attach-status-link';
+		if ($this->show) {
+			$a_tag->setContent(Blorg::_('Detach'));
+		} else {
+			$a_tag->setContent(Blorg::_('Attach'));
+		}
 
-		$img_tag->display();
+		$span_tag->open();
+		if ($this->show) {
+			echo '(attached)';
+		} else {
+			echo '(not attached)';
+		}
+		$a_tag->display();
+		$span_tag->close();
 
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 	}

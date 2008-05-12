@@ -57,14 +57,13 @@ class BlorgFileDeleteControl extends SwatControl
 	{
 		parent::display();
 
-		$img_tag = new SwatHtmlTag('img');
-		$img_tag->id = $this->id;
-		$img_tag->class = 'blorg-file-delete-control';
-		$img_tag->src = 'packages/blorg/admin/images/file-delete.png';
-		$img_tag->alt = Blorg::_('delete graphic');
-		$img_tag->width  = '16';
-		$img_tag->height = '16';
-		$img_tag->display();
+		$span_tag = new SwatHtmlTag('span');
+		$span_tag->id = $this->id;
+		$span_tag->class = 'blorg-file-delete-control';
+		$span_tag->setContent('Delete');
+
+		echo ' ';
+		$span_tag->display();
 
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 	}

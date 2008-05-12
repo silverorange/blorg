@@ -480,6 +480,11 @@ class BlorgPostEdit extends AdminDBEdit
 			$file_title->title = $title;
 			$file_title->link = $file->getRelativeUri('../');
 
+			// file details
+			$file_details = $this->getFileDetails($file);
+			$file_title = $replicator->getWidget('file_details', $key);
+			$file_title->content = $file_details;
+
 			// file icon
 			$icon = $this->getFileIcon($file);
 			$file_icon = $replicator->getWidget('file_icon', $key);
@@ -509,6 +514,20 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function getFileTitle(BlorgFile $file)
 	{
+		if ($file->description === null) {
+			$title = $this->getFileFilename($file);
+		} else {
+			$title = SwatString::ellipsizeRight($file->description, 30);
+		}
+
+		return $title;
+	}
+
+	// }}}
+	// {{{ protected function getFileFilename()
+
+	protected function getFileFilename(BlorgFile $file)
+	{
 		$extension_position = strrpos($file->filename, '.');
 		if ($extension_position !== false) {
 			$base = substr($file->filename, 0, $extension_position);
@@ -527,19 +546,23 @@ class BlorgPostEdit extends AdminDBEdit
 			$filename = $file->filename;
 		}
 
+		return $filename;
+	}
+
+	// }}}
+	// {{{ protected function getFileDetails()
+
+	protected function getFileDetails(BlorgFile $file)
+	{
 		if ($file->description === null) {
-			$title = sprintf('%s %s',
-				$filename,
-				SwatString::byteFormat($file->filesize));
+			$details = SwatString::byteFormat($file->filesize);
 		} else {
-			$description = SwatString::ellipsizeRight($file->description, 30);
-			$title = sprintf('%s (%s) %s',
-				$description,
-				$filename,
+			$details = sprintf('(%s) %s',
+				$this->getFileFilename($file),
 				SwatString::byteFormat($file->filesize));
 		}
 
-		return $title;
+		return $details;
 	}
 
 	// }}}
