@@ -4,6 +4,7 @@ require_once 'Swat/SwatDate.php';
 require_once 'Swat/SwatString.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
+require_once 'Blorg/dataobjects/BlorgAuthor.php';
 require_once 'Blorg/Blorg.php';
 require_once 'Blorg/BlorgPageFactory.php';
 
@@ -822,7 +823,7 @@ class BlorgPostView
 	// }}}
 	// {{{ protected function getAuthorRelativeUri()
 
-	protected function getAuthorRelativeUri(AdminUser $author)
+	protected function getAuthorRelativeUri(BlorgAuthor $author)
 	{
 		$path = $this->app->config->blorg->path.'author';
 		return sprintf('%s/%s',
