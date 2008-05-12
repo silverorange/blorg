@@ -504,7 +504,9 @@ class BlorgPostEdit extends AdminDBEdit
 
 			// delete
 			$file_delete = $replicator->getWidget('file_delete_control', $key);
-			$file_delete->file_title = $this->getFileTitle($file);
+			$file_delete->file_title = $this->getFileTitle($file).' '.
+				$this->getFileDetails($file);
+
 			$file_delete->file = $file;
 		}
 	}
