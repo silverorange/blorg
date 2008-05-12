@@ -5,20 +5,24 @@ function BlorgFileDeleteControl(id, file_id, file_title)
 
 	this.xml_rpc_client = new XML_RPC_Client('Post/FileAjaxServer');
 
-	var img = document.getElementById(id);
-	this.div = img.parentNode.parentNode.parentNode;
 
 	this.anchor = document.createElement('a');
 	this.anchor.href = '#';
-	this.anchor.title = BlorgFileDeleteControl.delete_text;
-	img.parentNode.replaceChild(this.anchor, img);
-	this.anchor.appendChild(img);
+	if (typeof this.anchor.textContent == 'undefined')
+		this.anchor.innerText = BlorgFileDeleteControl.delete_text;
+	else
+		this.anchor.textContent = BlorgFileDeleteControl.delete_text;
 
 	YAHOO.util.Event.on(this.anchor, 'click', this.handleClick, this, true);
+
+	var span = document.getElementById(id);
+	span.appendChild(this.anchor);
+
+	this.div = span.parentNode.parentNode.parentNode;
 }
 
 BlorgFileDeleteControl.confirm_text = 'Delete the file “%s”?';
-BlorgFileDeleteControl.delete_text  = 'delete';
+BlorgFileDeleteControl.delete_text  = 'Delete';
 
 BlorgFileDeleteControl.prototype.handleClick = function(e)
 {
