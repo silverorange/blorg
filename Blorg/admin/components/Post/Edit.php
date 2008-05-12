@@ -208,10 +208,13 @@ class BlorgPostEdit extends AdminDBEdit
 
 				$blorg_file->description = $description->value;
 				$blorg_file->show = $attachment->value;
-				$blorg_file->filename = $file->getUniqueFileName('../files');
+				$blorg_file->filename = $file->getUniqueFileName(
+					'../../files');
+
 				$blorg_file->mime_type = $file->getMimeType();
 				$blorg_file->filesize = $file->getSize();
 				$blorg_file->createdate = $now;
+				$blorg_file->instance   = $this->app->getInstanceId();
 
 				// automatically create an image object for image files
 				if (strncmp('image', $blorg_file->mime_type, 5) == 0) {
@@ -220,7 +223,7 @@ class BlorgPostEdit extends AdminDBEdit
 
 				$blorg_file->save();
 
-				$file->saveFile('../files', $blorg_file->filename);
+				$file->saveFile('../../files', $blorg_file->filename);
 
 				// add message
 				if ($blorg_file->show) {
@@ -255,7 +258,7 @@ class BlorgPostEdit extends AdminDBEdit
 		$class_name = SwatDBClassMap::get('BlorgFileImage');
 		$image = new $class_name();
 		$image->setDatabase($this->app->db);
-		$image->setFileBase('../');
+		$image->setFileBase('../images');
 
 		try {
 			$image->process($file->getTempFileName());
@@ -478,7 +481,8 @@ class BlorgPostEdit extends AdminDBEdit
 			$title = $this->getFileTitle($file);
 			$file_title = $replicator->getWidget('file_title', $key);
 			$file_title->title = $title;
-			$file_title->link = $file->getRelativeUri('../');
+			$file_title->link = $file->getRelativeUri(
+				$this->app->config->blorg->path, '../');
 
 			// file details
 			$file_details = $this->getFileDetails($file);
@@ -614,7 +618,9 @@ class BlorgPostEdit extends AdminDBEdit
 	protected function getFileMarkup(BlorgFile $file)
 	{
 		if ($file->image === null) {
-			$uri = $file->getRelativeUri();
+			$uri = $file->getRelativeUri(
+				$this->app->config->blorg->path);
+
 			$description = ($file->description === null) ?
 				$file->filename : $file->description;
 

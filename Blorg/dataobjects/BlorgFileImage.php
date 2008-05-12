@@ -23,12 +23,4 @@ class BlorgFileImage extends SiteImage
 	}
 
 	// }}}
-	// {{{ protected function getUriBase()
-
-	protected function getUriBase()
-	{
-		return null;
-	}
-
-	// }}}
 }

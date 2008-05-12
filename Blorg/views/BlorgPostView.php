@@ -786,7 +786,9 @@ class BlorgPostView
 					$li_tag = new SwatHtmlTag('li');
 					$li_tag->open();
 					$a_tag = new SwatHtmlTag('a');
-					$a_tag->href = $file->getRelativeUri($this->path_prefix);
+					$a_tag->href = $file->getRelativeUri(
+						$this->app->config->blorg->path, $this->path_prefix);
+
 					$a_tag->setContent($file->getDescription());
 					$a_tag->display();
 					echo ' '.SwatString::byteFormat($file->filesize);

@@ -135,7 +135,8 @@ class BlorgAtomPage extends SitePage
 
 			foreach ($post->getVisibleFiles() as $file) {
 				$link = new XML_Atom_Link(
-					$site_base_href.$file->getRelativeUri(),
+					$site_base_href.$file->getRelativeUri(
+						$this->app->config->blorg->path),
 					'enclosure',
 					$file->mime_type);
 

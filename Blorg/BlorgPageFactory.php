@@ -243,6 +243,7 @@ class BlorgPageFactory extends SitePageFactory
 			'^archive/(\d{4})/('.$months.')/([\w-]+)$'      => 'BlorgPostPage',
 			'^archive/(\d{4})/('.$months.')/([\w-]+)/atom$' => 'BlorgPostAtomPage',
 			'^atom$'                                        => 'BlorgAtomPage',
+			'^files/(.*)$'                                  => 'BlorgFileLoaderPage',
 			'^atom/replies$'                                => 'BlorgAtomRepliesPage',
 		);
 	}
