@@ -9,5 +9,6 @@ create table BlorgFile (
 	description text,
 	show boolean not null default false,
 	createdate timestamp not null,
+	instance integer references Instance(id),
 	primary key (id)
 );

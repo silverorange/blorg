@@ -95,9 +95,9 @@ class BlorgFile extends SwatDBDataObject
 	// }}}
 	// {{{ public function getRelativeUri()
 
-	public function getRelativeUri($prefix = null)
+	public function getRelativeUri($blorg_path = '', $prefix = null)
 	{
-		$uri = 'files/'.$this->filename;
+		$uri = $blorg_path.'files/'.$this->filename;
 
 		if ($prefix !== null)
 			$uri = $prefix.$uri;
@@ -121,6 +121,48 @@ class BlorgFile extends SwatDBDataObject
 		return sprintf('%s/files/%s',
 			$this->getFileBase(),
 			$this->filename);
+	}
+
+	// }}}
+	// {{{ public function loadByDateAndShortname()
+
+	/**
+	 * Loads a file by its filename
+	 *
+	 * @param string $filename the filename of the file to load.
+	 * @param SiteInstance $instance optional. The instance to load the file in.
+	 *                               If the site does not use instances, this
+	 *                               should be null.
+	 *
+	 * @return boolean true if this file was loaded and false if it was not.
+	 */
+	public function loadByFilename($filename, SiteInstance $instance = null)
+	{
+		$this->checkDB();
+
+		$loaded = false;
+		$row = null;
+		if ($this->table !== null) {
+			$instance_id  = ($instance === null) ? null : $instance->id;
+
+			$sql = sprintf('select * from %s
+				where filename = %s and instance %s %s',
+				$this->table,
+				$this->db->quote($filename, 'text'),
+				SwatDB::equalityOperator($instance_id),
+				$this->db->quote($instance_id, 'integer'));
+
+			$rs = SwatDB::query($this->db, $sql, null);
+			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+		}
+
+		if ($row !== null) {
+			$this->initFromRow($row);
+			$this->generatePropertyHashes();
+			$loaded = true;
+		}
+
+		return $loaded;
 	}
 
 	// }}}
@@ -148,6 +190,9 @@ class BlorgFile extends SwatDBDataObject
 
 		$this->registerInternalProperty('image',
 			SwatDBClassMap::get('BlorgFileImage'));
+
+		$this->registerInternalProperty('instance',
+			SwatDBClassMap::get('SiteInstance'));
 
 		$this->table = 'BlorgFile';
 		$this->id_field = 'integer:id';
