@@ -65,7 +65,7 @@ BlorgPublishRadioTable.prototype.showPublishAt = function()
 
 	var out_attributes = { opacity: { from: 1, to: 0 } };
 	var out_animation = new YAHOO.util.Anim(this.edit_span, out_attributes,
-		3.5, YAHOO.util.Easing.easeOut);
+		0.25, YAHOO.util.Easing.easeOut);
 
 	out_animation.onComplete.subscribe(function(e)
 	{
