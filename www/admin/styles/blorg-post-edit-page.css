@@ -111,8 +111,8 @@ img.blorg-file-icon {
 	white-space: nowrap;
 }
 
-.blorg-file-controls a {
-	margin-left: 0.5em;
+.blorg-file-attach-status {
+	margin-right: 0.5em;
 }
 
 .blorg-file-controls a:link,
