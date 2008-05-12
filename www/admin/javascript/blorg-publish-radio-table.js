@@ -57,7 +57,13 @@ function BlorgPublishRadioTable(list_name, publish_now_id,
 
 BlorgPublishRadioTable.prototype.showPublishAt = function()
 {
-	this.publish_at_tr.style.display = 'block';
+	var is_ie = (navigator.userAgent.indexOf('MSIE') != -1);
+
+	if (is_ie)
+		this.publish_at_tr.style.display = 'block';
+	else
+		this.publish_at_tr.style.display = 'table-row';
+
 	this.publish_at_option.checked = true;
 	var in_attributes = { opacity: { from: 0, to: 1 } };
 	var in_animation = new YAHOO.util.Anim(this.publish_at_tr, in_attributes,
