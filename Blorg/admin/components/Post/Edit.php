@@ -125,7 +125,24 @@ class BlorgPostEdit extends AdminDBEdit
 			'on this post.'));
 
 		if ($this->id === null) {
-			// TODO: default status to config default
+			switch ($this->app->config->blorg->default_reply_status) {
+			case 'open':
+				$status->value = BlorgPost::REPLY_STATUS_OPEN;
+				break;
+
+			case 'moderated':
+				$status->value = BlorgPost::REPLY_STATUS_MODERATED;
+				break;
+
+			case 'locked':
+				$status->value = BlorgPost::REPLY_STATUS_LOCKED;
+				break;
+
+			case 'closed':
+			default:
+				$status->value = BlorgPost::REPLY_STATUS_CLOSED;
+				break;
+			}
 		}
 	}
 
@@ -427,8 +444,8 @@ class BlorgPostEdit extends AdminDBEdit
 
 		$tag_list = $this->ui->getWidget('tags');
 		$tag_list->values = SwatDB::queryColumn($this->app->db,
-				'BlorgPostTagBinding', 'tag', 'post',
-				$this->id);
+			'BlorgPostTagBinding', 'tag', 'post',
+			$this->id);
 	}
 
 	// }}}
