@@ -56,23 +56,24 @@
 			<widget class="SwatDisplayableContainer" id="post_secondary">
 				<!-- {{{ attach files -->
 				<widget class="SwatDisclosure" id="file_disclosure">
-					<property name="title" translatable="yes">Files</property>
+					<property name="title" translatable="yes">Upload File</property>
 					<property name="open" type="boolean">false</property>
 					<widget class="SwatDisplayableContainer" id="upload_container">
-						<widget class="SwatFormField">
+						<widget class="SwatFormField" id="upload_file_field">
 							<property name="title" translatable="yes">Choose File</property>
 							<widget class="SwatFileEntry" id="upload_file">
+								<property name="size" type="integer">20</property>
+							</widget>
+						</widget>
+						<widget class="SwatFormField" id="upload_description_field">
+							<property name="title" translatable="yes">Description (optional)</property>
+							<widget class="SwatEntry" id="upload_description">
 								<property name="size" type="integer">30</property>
 							</widget>
 						</widget>
-						<widget class="SwatFormField">
-							<property name="title" translatable="yes">Description (optional)</property>
-							<widget class="SwatEntry" id="upload_description">
-								<property name="size" type="integer">40</property>
-							</widget>
-						</widget>
-						<widget class="SwatFormField">
+						<widget class="SwatFormField" id="upload_attachment_field">
 							<property name="title" translatable="yes">Attach File to Post</property>
+							<property name="note">Files marked as attachments are automatically listed and linked at the bottom of the post. Use this for podcasting.</property>
 							<widget class="SwatCheckbox" id="upload_attachment" />
 						</widget>
 						<widget class="SwatFormField">
@@ -80,16 +81,13 @@
 								<property name="title" translatable="yes">Upload</property>
 							</widget>
 						</widget>
-						<widget class="AdminNote">
-							<property name="content"><![CDATA[
-							<p>Files marked as attachments are automatically listed and linked at the bottom of this post.</p>
-							<p>Use the <img src="packages/blorg/admin/images/file-attach-on.png" width="16" height="16" alt="attach graphic" style="vertical-align: middle;" /> to attach files to and detach files from this post.</p>
-							]]></property>
-							<property name="content_type">text/xml</property>
-						</widget>
 					</widget>
+					</widget>
+				</widget>
 					<widget class="SwatReplicableContainer" id="file_replicator">
+						<property name="classes[]">clearfix</property>
 						<widget class="SwatDisplayableContainer">
+							<property name="classes[]">blorg-file</property>
 							<widget class="SwatImageDisplay" id="file_icon">
 								<property name="classes[]">blorg-file-icon</property>
 								<property name="occupy_width" type="integer">48</property>
@@ -98,22 +96,24 @@
 							<widget class="SwatDisplayableContainer">
 								<property name="classes[]">blorg-file-content</property>
 								<widget class="SwatDisplayableContainer">
+									<property name="classes[]">blorg-file-details</property>
 									<widget class="SwatToolLink" id="file_title">
 										<property name="classes[]">blorg-file-title</property>
 									</widget>
+									<widget class="SwatContentBlock" id="file_details" />
+								</widget>
+								<widget class="SwatDisplayableContainer">
+									<property name="classes[]">blorg-file-controls</property>
 									<widget class="BlorgFileAttachControl" id="file_attach_control" />
 									<widget class="BlorgFileDeleteControl" id="file_delete_control" />
 								</widget>
 								<widget class="SwatDisplayableContainer">
 									<widget class="SwatEntry" id="file_markup">
 										<property name="read_only" type="boolean">true</property>
-										<property name="size" type="integer">40</property>
 									</widget>
 								</widget>
 							</widget>
 						</widget>
-					</widget>
-				</widget>
 				<!-- }}} -->
 			</widget>
 			<!-- }}} -->

@@ -66,20 +66,83 @@
 /* }}} */
 /* {{{ Files */
 
+#file_replicator {
+	margin: 1em 0 0 0;
+}
+
+#upload_file_field,
+#upload_description_field {
+	float: left;
+}
+
+#upload_file_field {
+	margin-right: 2em;
+}
+
+#upload_attachment_field {
+	clear: left;
+}
+
+.blorg-file {
+	margin: 1em 0.5em;
+	clear: left;
+	min-height: 48px;
+}
+
+* html .blorg-file { height: 48px; /* IE 6 hack */ }
+
 img.blorg-file-icon {
 	float: left;
-	padding-right: 3px;
 }
 
 .blorg-file-content {
-	margin-top: 1em;
+	margin-left: 54px;
+	color: #666;
 }
 
-a.blorg-file-title,
+.blorg-file-details {
+	float: left;
+}
+
+.blorg-file-controls {
+	text-align: right;
+	margin-right: 1%;
+	font-size: 85%;
+	white-space: nowrap;
+}
+
+.blorg-file-controls a {
+	margin-left: 0.5em;
+}
+
+.blorg-file-controls a:link,
+.blorg-file-controls a:visited {
+	color: #666;
+}
+
+.blorg-file-controls a:hover,
+.blorg-file-controls a:active {
+	color: #333;
+}
+
+a.blorg-file-title:link,
+a.blorg-file-title:visited,
+a.blorg-file-title:active,
 a.blorg-file-title:hover {
 	border: none;
 	background: transparent;
 	padding-left: 0;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.blorg-file-content .swat-entry {
+	font-family: monospace;
+	font-size: 80%;
+	color: #666;
+	border: 1px solid #ccc;
+	width: 99%;
+	margin-top: 0.2em;
 }
 
 /* }}} */
