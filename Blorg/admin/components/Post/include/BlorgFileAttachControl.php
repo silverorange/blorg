@@ -60,23 +60,8 @@ class BlorgFileAttachControl extends SwatControl
 		$span_tag = new SwatHtmlTag('span');
 		$span_tag->id = $this->id;
 		$span_tag->class = 'blorg-file-attach-status';
-
-		$a_tag = new SwatHtmlTag('a');
-		$a_tag->class = 'blorg-file-attach-status-link';
-		if ($this->show) {
-			$a_tag->setContent(Blorg::_('Detach'));
-		} else {
-			$a_tag->setContent(Blorg::_('Attach'));
-		}
-
-		$span_tag->open();
-		if ($this->show) {
-			echo '(attached)';
-		} else {
-			echo '(not attached)';
-		}
-		$a_tag->display();
-		$span_tag->close();
+		$span_tag->setContent('');
+		$span_tag->display();
 
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 	}
@@ -123,15 +108,20 @@ class BlorgFileAttachControl extends SwatControl
 	 */
 	protected function getInlineJavaScriptTranslations()
 	{
-		$attach_text = SwatString::quoteJavaScriptString(
-			Blorg::_('attach to this post'));
+		$attach_text = SwatString::quoteJavaScriptString(Blorg::_('Attach'));
+		$detach_text = SwatString::quoteJavaScriptString(Blorg::_('Detach'));
 
-		$detach_text = SwatString::quoteJavaScriptString(
-			Blorg::_('detach from this post'));
+		$attached_text = SwatString::quoteJavaScriptString(
+			Blorg::_('(attached)'));
+
+		$detached_text = SwatString::quoteJavaScriptString(
+			Blorg::_('(not attached)'));
 
 		return
 			"BlorgFileAttachControl.attach_text = {$attach_text};\n".
-			"BlorgFileAttachControl.detach_text = {$detach_text};\n";
+			"BlorgFileAttachControl.detach_text = {$detach_text};\n".
+			"BlorgFileAttachControl.attached_text = {$attached_text};\n".
+			"BlorgFileAttachControl.detached_text = {$detached_text};\n";
 	}
 
 	// }}}
