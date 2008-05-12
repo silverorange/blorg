@@ -2,6 +2,17 @@
 
 require_once 'Swat/exceptions/SwatClassNotFoundException.php';
 
+/**
+ * Creates views objects for Blörg
+ *
+ * This factory class provides an easy method for overriding the default views
+ * provided by Blörg.
+ *
+ * @package   Blörg
+ * @copyright 2008 silverorange
+ * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @todo      Add method documentation.
+ */
 class BlorgViewFactory extends SwatObject
 {
 	private static $view_class_names_by_type = array();
@@ -48,7 +59,7 @@ class BlorgViewFactory extends SwatObject
 	 *
 	 * @param string $search_path the path to search for class-definition files.
 	 *
-	 * @see SwatDBClassMap::removePath()
+	 * @see BlorgViewFactory::removePath()
 	 */
 	public static function addPath($search_path)
 	{
