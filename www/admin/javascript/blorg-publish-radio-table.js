@@ -21,6 +21,7 @@ function BlorgPublishRadioTable(list_name, publish_now_id,
 		if (this.publish_at_option && !this.publish_at_option.checked) {
 			this.publish_at_tr = this.publish_at_option.parentNode.parentNode;
 			this.publish_at_tr.style.display = 'none';
+			YAHOO.util.Dom.setStyle(this.publish_at_tr, 'opacity', 0);
 
 			this.edit_span = document.createElement('span');
 			this.edit_span.className = 'edit-publish-date-link';
