@@ -1,6 +1,8 @@
 function BlorgPublishRadioTable(list_name, publish_now_id,
 	publish_at_id, choose_date_text)
 {
+	this.publish_date = window[list_name + '_date_obj'];
+
 	var radio_list = document.getElementsByName(list_name);
 	if (radio_list) {
 		this.choose_at_option = document.getElementById(
@@ -56,24 +58,5 @@ BlorgPublishRadioTable.prototype.toggle = function()
 
 BlorgPublishRadioTable.prototype.updateSensitivity = function()
 {
-	var entries = [
-		document.getElementById('publish_date_year'),
-		document.getElementById('publish_date_month'),
-		document.getElementById('publish_date_day'),
-		document.getElementById('publish_date_time_entry_hour'),
-		document.getElementById('publish_date_time_entry_minute'),
-		document.getElementById('publish_date_time_entry_am_pm'),
-	];
-
-	for (var i = 0; i < entries.length; i++) {
-		var entry = entries[i];
-
-		if (this.choose_at_option.checked) {
-			YAHOO.util.Dom.removeClass(entry, 'swat-insensitive');
-			entry.disabled = false;
-		} else {
-			YAHOO.util.Dom.addClass(entry, 'swat-insensitive');
-			entry.disabled = true;
-		}
-	}
+	this.publish_date.setSensitivity(this.choose_at_option.checked);
 }
