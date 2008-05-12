@@ -84,31 +84,33 @@
 }
 
 .blorg-file {
-	margin: 1em 0.5em;
 	clear: left;
-	min-height: 48px;
 }
-
-* html .blorg-file { height: 48px; /* IE 6 hack */ }
 
 img.blorg-file-icon {
 	float: left;
 }
 
-.blorg-file-content {
-	margin-left: 54px;
-	color: #666;
-}
-
-.blorg-file-details {
-	float: left;
-}
-
+.blorg-file-details,
+.blorg-file-title,
 .blorg-file-controls {
-	text-align: right;
-	margin-right: 1%;
+	margin-left: 54px;
+}
+
+.blorg-file-content {
+	color: #666;
+	margin: 1em 0.5em;
+	width: 18em;
+	min-height: 48px;
+	float: left;
+	display: inline;
+}
+
+* html .blorg-file-content { height: 48px; /* IE 6 hack */ }
+
+.blorg-file-details,
+.blorg-file-controls {
 	font-size: 85%;
-	white-space: nowrap;
 }
 
 .blorg-file-attach-status {
@@ -125,10 +127,10 @@ img.blorg-file-icon {
 	color: #333;
 }
 
-a.blorg-file-title:link,
-a.blorg-file-title:visited,
-a.blorg-file-title:active,
-a.blorg-file-title:hover {
+.blorg-file-title a:link,
+.blorg-file-title a:visited,
+.blorg-file-title a:active,
+.blorg-file-title a:hover {
 	border: none;
 	background: transparent;
 	padding-left: 0;
@@ -136,13 +138,17 @@ a.blorg-file-title:hover {
 	text-decoration: underline;
 }
 
-.blorg-file-content .swat-entry {
+.blorg-file-markup {
+	margin-left: 20em;
+	padding-top: 1.3em;
+}
+
+.blorg-file-markup .swat-textarea {
 	font-family: monospace;
 	font-size: 80%;
 	color: #666;
 	border: 1px solid #ccc;
-	width: 99%;
-	margin-top: 0.2em;
+	width: 98%;
 }
 
 /* }}} */

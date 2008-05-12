@@ -54,7 +54,7 @@
 			<!-- }}} -->
 			<!-- {{{ Secondary Form Area -->
 			<widget class="SwatDisplayableContainer" id="post_secondary">
-				<!-- {{{ attach files -->
+				<!-- {{{ files -->
 				<widget class="SwatDisclosure" id="file_disclosure">
 					<property name="title" translatable="yes">Upload File</property>
 					<property name="open" type="boolean">false</property>
@@ -88,18 +88,19 @@
 						<property name="classes[]">clearfix</property>
 						<widget class="SwatDisplayableContainer">
 							<property name="classes[]">blorg-file</property>
-							<widget class="SwatImageDisplay" id="file_icon">
-								<property name="classes[]">blorg-file-icon</property>
-								<property name="occupy_width" type="integer">48</property>
-								<property name="occupy_height" type="integer">48</property>
-							</widget>
 							<widget class="SwatDisplayableContainer">
 								<property name="classes[]">blorg-file-content</property>
+								<widget class="SwatImageDisplay" id="file_icon">
+									<property name="classes[]">blorg-file-icon</property>
+									<property name="occupy_width" type="integer">48</property>
+									<property name="occupy_height" type="integer">48</property>
+								</widget>
+								<widget class="SwatDisplayableContainer">
+									<property name="classes[]">blorg-file-title</property>
+									<widget class="SwatToolLink" id="file_title" />
+								</widget>
 								<widget class="SwatDisplayableContainer">
 									<property name="classes[]">blorg-file-details</property>
-									<widget class="SwatToolLink" id="file_title">
-										<property name="classes[]">blorg-file-title</property>
-									</widget>
 									<widget class="SwatContentBlock" id="file_details" />
 								</widget>
 								<widget class="SwatDisplayableContainer">
@@ -107,10 +108,14 @@
 									<widget class="BlorgFileAttachControl" id="file_attach_control" />
 									<widget class="BlorgFileDeleteControl" id="file_delete_control" />
 								</widget>
-								<widget class="SwatDisplayableContainer">
-									<widget class="SwatEntry" id="file_markup">
-										<property name="read_only" type="boolean">true</property>
-									</widget>
+							</widget>
+							<widget class="SwatDisplayableContainer">
+								<property name="classes[]">blorg-file-markup</property>
+								<widget class="BlorgMarkupTextarea" id="file_markup">
+									<property name="read_only" type="boolean">true</property>
+									<property name="resizeable" type="boolean">false</property>
+									<property name="rows" type="integer">2</property>
+									<property name="cols" type="integer">40</property>
 								</widget>
 							</widget>
 						</widget>

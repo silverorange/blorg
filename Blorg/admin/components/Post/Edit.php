@@ -11,6 +11,7 @@ require_once 'Blorg/dataobjects/BlorgFileImage.php';
 require_once dirname(__FILE__).'/include/BlorgFileAttachControl.php';
 require_once dirname(__FILE__).'/include/BlorgFileDeleteControl.php';
 require_once dirname(__FILE__).'/include/BlorgPublishRadioTable.php';
+require_once dirname(__FILE__).'/include/BlorgMarkupTextarea.php';
 
 /**
  * Page for editing Posts
@@ -543,8 +544,8 @@ class BlorgPostEdit extends AdminDBEdit
 			$extension = '';
 		}
 
-		if (strlen($base) > 30) {
-			$filename = SwatString::ellipsizeRight($base, 30);
+		if (strlen($base) > 18) {
+			$filename = SwatString::ellipsizeRight($base, 18);
 			if ($extension != '') {
 				$filename.= '&nbsp;'.$extension;
 			}
@@ -563,7 +564,7 @@ class BlorgPostEdit extends AdminDBEdit
 		if ($file->description === null) {
 			$details = SwatString::byteFormat($file->filesize);
 		} else {
-			$details = sprintf('(%s) %s',
+			$details = sprintf('%s - %s',
 				$this->getFileFilename($file),
 				SwatString::byteFormat($file->filesize));
 		}
