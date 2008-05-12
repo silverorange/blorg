@@ -518,8 +518,8 @@ class BlorgPostEdit extends AdminDBEdit
 			$extension = '';
 		}
 
-		if (strlen($base) > 20) {
-			$filename = SwatString::ellipsizeRight($base, 20);
+		if (strlen($base) > 30) {
+			$filename = SwatString::ellipsizeRight($base, 30);
 			if ($extension != '') {
 				$filename.= '&nbsp;'.$extension;
 			}
@@ -532,7 +532,7 @@ class BlorgPostEdit extends AdminDBEdit
 				$filename,
 				SwatString::byteFormat($file->filesize));
 		} else {
-			$description = SwatString::ellipsizeRight($file->description, 20);
+			$description = SwatString::ellipsizeRight($file->description, 30);
 			$title = sprintf('%s (%s) %s',
 				$description,
 				$filename,
