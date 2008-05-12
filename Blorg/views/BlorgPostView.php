@@ -786,19 +786,19 @@ class BlorgPostView
 
 				echo '<div class="attachments">';
 				$h4_tag->display();
+				echo '<ul>';
 
 				foreach ($files as $file) {
-					$div_tag = new SwatHtmlTag('div');
-					$div_tag->class = 'attachment';
-					$div_tag->open();
+					$li_tag = new SwatHtmlTag('li');
+					$li_tag->open();
 					$a_tag = new SwatHtmlTag('a');
 					$a_tag->href = $file->getRelativeUri($this->path_prefix);
 					$a_tag->setContent($file->getDescription());
 					$a_tag->display();
 					echo ' '.SwatString::byteFormat($file->filesize);
-					$div_tag->close();
+					$li_tag->close();
 				}
-				echo '</div>';
+				echo '</ul></div>';
 			}
 		}
 	}
