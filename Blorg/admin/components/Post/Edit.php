@@ -618,17 +618,16 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function getFileMarkup(BlorgFile $file)
 	{
-		if ($file->image === null) {
-			$uri = $file->getRelativeUri(
-				$this->app->config->blorg->path);
+		$uri = $file->getRelativeUri(
+			$this->app->config->blorg->path);
 
+		if ($file->image === null) {
 			$description = ($file->description === null) ?
 				$file->filename : $file->description;
 
 			$markup = sprintf('<a class="file" href="%s">%s</a>',
 				$uri, $description);
 		} else {
-			$uri = $file->image->getUri('original');
 			$img = $file->image->getImgTag('thumb');
 			$img->title = $file->description;
 			$markup = sprintf('<a class="file" href="%s">%s</a>',
