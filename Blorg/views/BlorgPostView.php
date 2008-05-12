@@ -781,13 +781,7 @@ class BlorgPostView
 		if ($show['mode'] > self::SHOW_NONE) {
 			$files = $post->getVisibleFiles();
 			if (count($files) > 0) {
-				$h4_tag = new SwatHtmlTag('h4');
-				$h4_tag->setContent(Blorg::_('Attachments:'));
-
-				echo '<div class="attachments">';
-				$h4_tag->display();
-				echo '<ul>';
-
+				echo '<ul class="attachments">';
 				foreach ($files as $file) {
 					$li_tag = new SwatHtmlTag('li');
 					$li_tag->open();
@@ -798,7 +792,7 @@ class BlorgPostView
 					echo ' '.SwatString::byteFormat($file->filesize);
 					$li_tag->close();
 				}
-				echo '</ul></div>';
+				echo '</ul>';
 			}
 		}
 	}
