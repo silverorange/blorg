@@ -14,7 +14,7 @@ require_once 'Swat/exceptions/SwatObjectNotFoundException.php';
  * four.
  *
  * Context-help can be added for options using the
- * {BlorgReplyStatusSlider::addContextNote()} method.
+ * {@link BlorgReplyStatusSlider::addContextNote()} method.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
