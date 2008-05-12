@@ -82,6 +82,9 @@ class Blorg
 	 * Applications should add these definitions to their config module before
 	 * loading the application configuration.
 	 *
+	 * This contains default configuration values which may be overridden in
+	 * a loaded configuration file.
+	 *
 	 * @return array the configuration definitions used by this package.
 	 *
 	 * @see SiteConfigModule::addDefinitions()
@@ -92,10 +95,15 @@ class Blorg
 			// Optional path prefix for all Blörg content. If specified, this
 			// must have a trailing slash. This is used to integrate Blörg
 			// content into another site.
-			'blorg.path'        => '',
+			'blorg.path'                 => '',
 
 			// Optional Wordpress API key for Akismet spam filtering.
-			'blorg.akismet_key' => null,
+			'blorg.akismet_key'          => null,
+
+			// Default post reply status. Valid config values are 'open',
+			// 'moderated', 'locked' and 'closed'. Any other values are
+			// interpreted as 'closed'.
+			'blorg.default_reply_status' => 'closed',
 		);
 	}
 
