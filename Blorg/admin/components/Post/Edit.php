@@ -509,12 +509,18 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function getFileTitle(BlorgFile $file)
 	{
-		if (strlen($file->filename) > 20) {
-			$filename = SwatString::ellipsizeRight($file->filename, 20);
+		$extension_position = strrpos($file->filename, '.');
+		if ($extension_position !== false) {
+			$base = substr($file->filename, 0, $extension_position);
+			$extension = substr($file->filename, $extension_position + 1);
+		} else {
+			$base = $file->filename;
+			$extension = '';
+		}
 
-			$position = strrpos($file->filename, '.');
-			if ($position !== false) {
-				$extension = substr($file->filename, $position + 1);
+		if (strlen($base) > 20) {
+			$filename = SwatString::ellipsizeRight($base, 20);
+			if ($extension != '') {
 				$filename.= '&nbsp;'.$extension;
 			}
 		} else {
