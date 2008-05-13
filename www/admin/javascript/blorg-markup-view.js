@@ -36,7 +36,7 @@ BlorgMarkupView.prototype.initTabs = function()
 			this.selected_tab = anchor;
 			span.parentNode.appendChild(document.createTextNode(' '));
 		} else {
-			span.parentNode.appendChild(document.createTextNode(', '));
+			span.parentNode.appendChild(document.createTextNode(' '));
 		}
 
 		this.tabs.push(anchor);
