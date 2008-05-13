@@ -1,0 +1,15 @@
+label.blorg-markup-view-label {
+	font-size: 80%;
+	font-weight: normal;
+}
+
+label.blorg-markup-view-label a {
+	border: 1px solid #fff;
+}
+
+label.blorg-markup-view-label a.blorg-markup-view-selected {
+	background-color: #f8f6f0;
+	background-color: #ccc;
+	border: 1px solid #ccc;
+	outline: none;
+}
