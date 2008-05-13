@@ -57,7 +57,7 @@ class BlorgMarkupView extends SwatOptionControl
 
 		$label_tag = new SwatHtmlTag('label');
 		$label_tag->for = $this->id.'_textarea';
-		$label_tag->class = 'blorg-markup-textarea-label';
+		$label_tag->class = 'blorg-markup-view-label';
 		$label_tag->open();
 
 		$span_tag = new SwatHtmlTag('span');
