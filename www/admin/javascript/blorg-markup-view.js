@@ -33,6 +33,7 @@ BlorgMarkupView.prototype.initTabs = function()
 
 		if (i == 0) {
 			YAHOO.util.Dom.addClass(anchor, 'blorg-markup-view-selected');
+			this.selected_tab = anchor;
 			span.parentNode.appendChild(document.createTextNode(' '));
 		} else {
 			span.parentNode.appendChild(document.createTextNode(', '));
