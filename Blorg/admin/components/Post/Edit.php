@@ -501,7 +501,7 @@ class BlorgPostEdit extends AdminDBEdit
 			// markup
 			$options = $this->getFileMarkupOptions($file);
 			$file_markup = $replicator->getWidget('file_markup', $key);
-			$file_markup->options = &$options;
+			$file_markup->options = $options;
 
 			// attachment status
 			$file_attach = $replicator->getWidget('file_attach_control', $key);
