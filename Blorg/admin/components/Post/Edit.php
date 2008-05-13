@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swat/SwatOption.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'Site/exceptions/SiteInvalidImageException.php';
@@ -11,7 +12,7 @@ require_once 'Blorg/dataobjects/BlorgFileImage.php';
 require_once dirname(__FILE__).'/include/BlorgFileAttachControl.php';
 require_once dirname(__FILE__).'/include/BlorgFileDeleteControl.php';
 require_once dirname(__FILE__).'/include/BlorgPublishRadioTable.php';
-require_once dirname(__FILE__).'/include/BlorgMarkupTextarea.php';
+require_once dirname(__FILE__).'/include/BlorgMarkupView.php';
 
 /**
  * Page for editing Posts
@@ -498,9 +499,9 @@ class BlorgPostEdit extends AdminDBEdit
 			$file_icon->height = $icon['height'];
 
 			// markup
-			$markup = $this->getFileMarkup($file);
+			$options = $this->getFileMarkupOptions($file);
 			$file_markup = $replicator->getWidget('file_markup', $key);
-			$file_markup->value = $markup;
+			$file_markup->options = &$options;
 
 			// attachment status
 			$file_attach = $replicator->getWidget('file_attach_control', $key);
@@ -614,10 +615,12 @@ class BlorgPostEdit extends AdminDBEdit
 	}
 
 	// }}}
-	// {{{ protected function getFileMarkup()
+	// {{{ protected function getFileMarkupOptions()
 
-	protected function getFileMarkup(BlorgFile $file)
+	protected function getFileMarkupOptions(BlorgFile $file)
 	{
+		$options = array();
+
 		$uri = $file->getRelativeUri(
 			$this->app->config->blorg->path);
 
@@ -627,14 +630,38 @@ class BlorgPostEdit extends AdminDBEdit
 
 			$markup = sprintf('<a class="file" href="%s">%s</a>',
 				$uri, $description);
+
+			$options[] = new SwatOption($markup, 'Link');
 		} else {
-			$img = $file->image->getImgTag('thumb');
-			$img->title = $file->description;
-			$markup = sprintf('<a class="file" href="%s">%s</a>',
-				$uri, $img);
+			// thumbnail
+			$img_tag = $file->image->getImgTag('thumb');
+			$img_tag->title = $file->description;
+
+			$thumb_markup = sprintf('<a class="file" href="%s">%s</a>',
+				$uri, $img_tag);
+
+			$options[] = new SwatOption($thumb_markup, 'Thumbnail');
+
+			// small
+			$img_tag = $file->image->getImgTag('small');
+			$img_tag->title = $file->description;
+
+			$small_markup = sprintf('<a class="file" href="%s">%s</a>',
+				$uri, $img_tag);
+
+			$options[] = new SwatOption($small_markup, 'Small');
+
+			// original
+			$description = ($file->description === null) ?
+				$file->filename : $file->description;
+
+			$original_markup = sprintf('<a class="file" href="%s">%s</a>',
+				$uri, $description);
+
+			$options[] = new SwatOption($original_markup, 'Link Only');
 		}
 
-		return $markup;
+		return $options;
 	}
 
 	// }}}

@@ -111,12 +111,7 @@
 							</widget>
 							<widget class="SwatDisplayableContainer">
 								<property name="classes[]">blorg-file-markup</property>
-								<widget class="BlorgMarkupTextarea" id="file_markup">
-									<property name="read_only" type="boolean">true</property>
-									<property name="resizeable" type="boolean">false</property>
-									<property name="rows" type="integer">2</property>
-									<property name="cols" type="integer">40</property>
-								</widget>
+								<widget class="BlorgMarkupView" id="file_markup" />
 							</widget>
 						</widget>
 				<!-- }}} -->
