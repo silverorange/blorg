@@ -5,7 +5,9 @@
 	<widget class="SwatFrame" id="edit_frame">
 		<property name="title" translatable="yes">Post</property>
 		<widget class="SwatForm" id="edit_form">
-			<property name="encoding_type">multipart/form-data</property>
+			<widget class="SwatFormField" id="top_submit_button_field">
+				<widget class="SwatButton" id="top_submit_button" />
+			</widget>
 			<!-- {{{ Form Sidebar Area -->
 			<widget class="SwatDisplayableContainer" id="post_sidebar">
 				<widget class="SwatGroupingFormField" id="publish_field">
@@ -118,7 +120,9 @@
 			</widget>
 			<!-- }}} -->
 			<widget class="SwatFooterFormField">
-				<widget class="SwatButton" id="submit_button" />
+				<widget class="SwatButton" id="submit_button">
+					<property name="classes[]">swat-primary</property>
+				</widget>
 			</widget>
 		</widget>
 	</widget>

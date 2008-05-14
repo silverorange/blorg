@@ -12,6 +12,11 @@ body:last-child:not(:root:root) #extended_bodytext {
 
 /* {{{ Edit Page Layout */
 
+#top_submit_button_field {
+	position: absolute;
+	top: -10000px;
+}
+
 #post_primary {
 	margin-right: 265px;
 }
