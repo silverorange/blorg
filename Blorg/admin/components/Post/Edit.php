@@ -235,8 +235,8 @@ class BlorgPostEdit extends AdminDBEdit
 					'has been uploaded:'));
 			}
 
-			$message->secondary_content = $this->getFileTitle($blorg_file).' '.
-				$this->getFileDetails($blorg_file);
+			$message->secondary_content =
+				$this->getFileDescription($blorg_file);
 
 			$this->ui->getWidget('message_display')->add($message);
 
@@ -510,9 +510,7 @@ class BlorgPostEdit extends AdminDBEdit
 
 			// delete
 			$file_delete = $replicator->getWidget('file_delete_control', $key);
-			$file_delete->file_title = $this->getFileTitle($file).' '.
-				$this->getFileDetails($file);
-
+			$file_delete->file_title = $this->getFileDescription($file);
 			$file_delete->file = $file;
 		}
 	}
@@ -571,6 +569,25 @@ class BlorgPostEdit extends AdminDBEdit
 		}
 
 		return $details;
+	}
+
+	// }}}
+	// {{{ protected function getFileDescription()
+
+	protected function getFileDescription(BlorgFile $file)
+	{
+		if ($file->description === null) {
+			$description = sprintf('%s - %s',
+				$file->filename,
+				SwatString::byteFormat($file->filesize));
+		} else {
+			$description = sprintf('%s (%s) - %s',
+				$file->description,
+				$file->filename,
+				SwatString::byteFormat($file->filesize));
+		}
+
+		return $description;
 	}
 
 	// }}}
