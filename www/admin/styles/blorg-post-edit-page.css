@@ -1,6 +1,13 @@
-#title,
-#bodytext, #extended_bodytext {
+#title, #bodytext, #extended_bodytext {
 	width: 98%;
+}
+
+/* Safari hack */
+body:last-child:not(:root:root) #bodytext,
+body:last-child:not(:root:root) #extended_bodytext {
+	resize: vertical;
+	max-width: 98%;
+	min-width: 98%;
 }
 
 /* {{{ Edit Page Layout */
@@ -149,6 +156,7 @@ img.blorg-file-icon {
 	color: #666;
 	border: 1px solid #ccc;
 	width: 98%;
+	resize: none;
 }
 
 /* }}} */
