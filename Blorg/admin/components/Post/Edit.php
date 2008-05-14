@@ -191,65 +191,65 @@ class BlorgPostEdit extends AdminDBEdit
 		$now = new SwatDate();
 		$now->toUTC();
 
-		if (!$upload_container->hasMessage()) {
-			$file = $this->ui->getWidget('upload_file');
-			if ($file->isUploaded()) {
+		$file = $this->ui->getWidget('upload_file');
 
-				$description = $this->ui->getWidget('upload_description');
-				$attachment  = $this->ui->getWidget('upload_attachment');
+		if (!$upload_container->hasMessage() && $file->isUploaded()) {
+			$description = $this->ui->getWidget('upload_description');
+			$attachment  = $this->ui->getWidget('upload_attachment');
 
-				$class_name = SwatDBClassMap::get('BlorgFile');
-				$blorg_file = new $class_name();
-				$blorg_file->setDatabase($this->app->db);
-				$unique_id = $form->getHiddenField('unique_id');
+			$class_name = SwatDBClassMap::get('BlorgFile');
+			$blorg_file = new $class_name();
+			$blorg_file->setDatabase($this->app->db);
+			$unique_id = $form->getHiddenField('unique_id');
 
-				if ($this->id === null)
-					$blorg_file->form_unique_id = $unique_id;
-				else
-					$blorg_file->post = $this->id;
+			if ($this->id === null)
+				$blorg_file->form_unique_id = $unique_id;
+			else
+				$blorg_file->post = $this->id;
 
-				$blorg_file->description = $description->value;
-				$blorg_file->show = $attachment->value;
-				$blorg_file->filename = $file->getUniqueFileName(
-					'../../files');
+			$blorg_file->description = $description->value;
+			$blorg_file->show = $attachment->value;
+			$blorg_file->filename = $file->getUniqueFileName(
+				'../../files');
 
-				$blorg_file->mime_type = $file->getMimeType();
-				$blorg_file->filesize = $file->getSize();
-				$blorg_file->createdate = $now;
-				$blorg_file->instance   = $this->app->getInstanceId();
+			$blorg_file->mime_type = $file->getMimeType();
+			$blorg_file->filesize = $file->getSize();
+			$blorg_file->createdate = $now;
+			$blorg_file->instance   = $this->app->getInstanceId();
 
-				// automatically create an image object for image files
-				if (strncmp('image', $blorg_file->mime_type, 5) == 0) {
-					$blorg_file->image = $this->createImage($file);
-				}
-
-				$blorg_file->save();
-
-				$file->saveFile('../../files', $blorg_file->filename);
-
-				// add message
-				if ($blorg_file->show) {
-					$message = new SwatMessage(Blorg::_('The following file '.
-						'has been attached to this post:'));
-				} else {
-					$message = new SwatMessage(Blorg::_('The following file '.
-						'has been uploaded:'));
-				}
-
-				$message->secondary_content = $this->getFileTitle($blorg_file);
-				$this->ui->getWidget('message_display')->add($message);
-
-				// clear upload form values
-				$description->value = null;
-				$attachment->value = false;
-
-				// add replication for new file
-				$replicator = $this->ui->getWidget('file_replicator');
-				$replicator->addReplication($blorg_file->id);
+			// automatically create an image object for image files
+			if (strncmp('image', $blorg_file->mime_type, 5) == 0) {
+				$blorg_file->image = $this->createImage($file);
 			}
-		}
 
-		$this->ui->getWidget('file_disclosure')->open = true;
+			$blorg_file->save();
+
+			$file->saveFile('../../files', $blorg_file->filename);
+
+			// add message
+			if ($blorg_file->show) {
+				$message = new SwatMessage(Blorg::_('The following file '.
+					'has been attached to this post:'));
+			} else {
+				$message = new SwatMessage(Blorg::_('The following file '.
+					'has been uploaded:'));
+			}
+
+			$message->secondary_content = $this->getFileTitle($blorg_file).' '.
+				$this->getFileDetails($blorg_file);
+
+			$this->ui->getWidget('message_display')->add($message);
+
+			// clear upload form values
+			$description->value = null;
+			$attachment->value = false;
+
+			// add replication for new file
+			$replicator = $this->ui->getWidget('file_replicator');
+			$replicator->addReplication($blorg_file->id);
+		} else {
+			$this->ui->getWidget('file_disclosure')->open = true;
+		}
 	}
 
 	// }}}
@@ -685,7 +685,7 @@ class BlorgPostEdit extends AdminDBEdit
 	}
 
 	// }}}
-	// {{{ protected function mimeMap()
+	// {{{ protected function mapMimeType()
 
 	protected function mapMimeType($mime_type)
 	{
