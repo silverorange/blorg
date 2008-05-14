@@ -6,7 +6,6 @@ function BlorgMarkupView(id, values, titles)
 	this.textarea = document.getElementById(this.id + '_textarea');
 
 	YAHOO.util.Event.on(this.textarea, 'focus', this.textarea.select);
-	YAHOO.util.Event.on(this.textarea, 'click', this.textarea.select);
 
 	this.selected_tab = null;
 	this.tabs = [];
