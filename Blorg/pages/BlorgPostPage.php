@@ -461,7 +461,7 @@ class BlorgPostPage extends SitePage
 		if ($this->post->reply_status != BlorgPost::REPLY_STATUS_CLOSED) {
 
 			$div_tag = new SwatHtmlTag('div');
-			$div_tag->id = 'replies'.$this->post->id;
+			$div_tag->id = 'replies';
 			$div_tag->class = 'entry-replies';
 			$div_tag->open();
 
