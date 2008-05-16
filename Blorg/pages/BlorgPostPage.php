@@ -307,6 +307,7 @@ class BlorgPostPage extends SitePage
 
 	public function build()
 	{
+		$this->buildTitle();
 		$this->buildNavBar();
 		$this->buildReplyUi();
 		$this->buildAtomLinks();
@@ -316,7 +317,13 @@ class BlorgPostPage extends SitePage
 		$this->displayReplies();
 		$this->displayReplyUi();
 		$this->layout->endCapture();
+	}
 
+	// }}}
+	// {{{ protected function buildTitle()
+
+	protected function buildTitle()
+	{
 		$this->layout->data->html_title = $this->post->getTitle();
 
 		$this->layout->data->meta_description = SwatString::minimizeEntities(
