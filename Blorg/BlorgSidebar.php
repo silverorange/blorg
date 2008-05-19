@@ -102,10 +102,10 @@ class BlorgSidebar extends SwatWidget implements SwatUIParent
 			$div_tag->class = 'blorg-sidebar-gadget';
 
 			if ($first === $gadget)
-				$div_tag->class.= 'blorg-sidebar-gadget-first';
+				$div_tag->class.= ' blorg-sidebar-gadget-first';
 
 			if ($iterator->isLast())
-				$div_tag->class.= 'blorg-sidebar-gadget-last';
+				$div_tag->class.= ' blorg-sidebar-gadget-last';
 
 			$div_tag->open();
 
