@@ -65,6 +65,7 @@ class BlorgTagGadget extends BlorgGadget
 	protected function define()
 	{
 		$this->defineDefaultTitle(Blorg::_('Tags'));
+		$this->defineSetting('show_empty', 'Show Empty Tags', 'boolean', false);
 	}
 
 	// }}}
@@ -72,13 +73,21 @@ class BlorgTagGadget extends BlorgGadget
 
 	protected function getTags()
 	{
+		if ($this->getValue('show_empty')) {
+			$extra_where = ' and post_count > 0';
+
+		} else {
+			$extra_where = '';
+		}
+
 		$sql = sprintf('select * from BlorgTag
 			inner join BlorgTagPostCountView
 				on BlorgTag.id = BlorgTagPostCountView.tag
-			where instance %s %s
+			where instance %s %s %s
 			order by title desc',
 			SwatDB::equalityOperator($this->app->getInstanceId()),
-			$this->app->db->quote($this->app->getInstanceId(), 'integer'));
+			$this->app->db->quote($this->app->getInstanceId(), 'integer'),
+			$extra_where);
 
 		return SwatDB::query($this->app->db, $sql);
 	}
