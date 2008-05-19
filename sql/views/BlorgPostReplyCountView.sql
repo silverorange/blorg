@@ -3,4 +3,3 @@ create or replace view BlorgPostReplyCountView as
 		from BlorgReply
 		where status = 1 and spam = false -- status 1 is published
 		group by post;
-
