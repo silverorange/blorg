@@ -110,7 +110,9 @@
 						</object>
 					</object>
 				</widget>
-				<widget class="AdminPagination" id="pager" />
+				<widget class="AdminPagination" id="pager">
+					<property name="link">Post/Details</property>
+				</widget>
 				<widget class="SwatActions" id="reply_actions">
 					<widget class="SwatActionItem" id="approve">
 						<property name="title" translatable="yes">publish</property>
