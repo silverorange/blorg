@@ -124,14 +124,14 @@ class BlorgPost extends SwatDBDataObject
 	/**
 	 * Loads a post by a date and the post's shortname
 	 *
-	 * @param SwatDate $date the date the createdate of the post. Only the year
-	 *                        and month are used for comparison.
+	 * @param SwatDate $date the date the <i>publish_date<i> of the post. Only
+	 *                        the year and month fields are used for comparison.
 	 * @param string $shortname the shortname of the post to load.
 	 * @param SiteInstance $instance optional. The instance to load the post in.
 	 *                               If the site does not use instances, this
 	 *                               should be null.
 	 *
-	 * @return boolean true if this post was loaded from the given createdate
+	 * @return boolean true if this post was loaded from the given publish_date
 	 *                 and shortname and false if it was not.
 	 */
 	public function loadByDateAndShortname(SwatDate $date, $shortname,
@@ -148,7 +148,7 @@ class BlorgPost extends SwatDBDataObject
 			$sql = sprintf('select * from %s
 				where shortname = %s and
 					date_trunc(\'month\',
-						convertTZ(createdate, %s)) =
+						convertTZ(publish_date, %s)) =
 					date_trunc(\'month\', timestamp %s) and
 					instance %s %s',
 				$this->table,
