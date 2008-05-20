@@ -146,9 +146,8 @@ class BlorgPostReplies extends AdminSearch
 
 		$author_flydown = $this->ui->getWidget('search_author');
 		$author_flydown->show_blank = true;
-		// TODO: update this once show is moved into the AdminUserInstanceBindingTable
 		$author_flydown->addOptionsByArray(SwatDB::getOptionArray(
-			$this->app->db, 'AdminUser', 'name', 'id', 'name',
+			$this->app->db, 'BlorgAuthor', 'name', 'id', 'name',
 			sprintf('show = %s', $this->app->db->quote(true, 'boolean'))));
 
 	}
@@ -172,7 +171,7 @@ class BlorgPostReplies extends AdminSearch
 			order by %s',
 			$this->getWhereClause(),
 			$this->getOrderByClause($view, 'createdate desc'));
-//echo $sql;
+
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 		$replies = SwatDB::query($this->app->db, $sql, 'BlorgReplyWrapper');
 
@@ -192,7 +191,7 @@ class BlorgPostReplies extends AdminSearch
 				$reply->createdate->getYear() != $current_date->getYear()) {
 
 				$current_date = clone $reply->createdate;
-			} 
+			}
 
 			$ds = new SwatDetailsStore($reply);
 			$ds->reply_date_day = $current_date;
