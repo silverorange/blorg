@@ -126,15 +126,15 @@ class BlorgMonthArchivePage extends SitePage
 		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select * from BlorgPost
-			where date_trunc(\'month\', convertTZ(createdate, %s)) =
+			where date_trunc(\'month\', convertTZ(publish_date, %s)) =
 				date_trunc(\'month\', timestamp %s) and
-				instance %s %s
-				and enabled = true
+				instance %s %s and enabled = %s
 			order by publish_date desc',
 			$this->app->db->quote($date->tz->getId(), 'text'),
 			$this->app->db->quote($date->getDate(), 'date'),
 			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'));
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->app->db->quote(true, 'boolean'));
 
 		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
 		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
