@@ -149,15 +149,15 @@ class BlorgYearArchivePage extends SitePathPage
 		$sql = sprintf('select id, title, bodytext, shortname, publish_date,
 				author, reply_status
 			from BlorgPost
-			where date_trunc(\'year\', convertTZ(createdate, %s)) =
+			where date_trunc(\'year\', convertTZ(publish_date, %s)) =
 				date_trunc(\'year\', timestamp %s) and
-				instance %s %s
-				and enabled = true
+				instance %s %s and enabled = %s
 			order by publish_date desc',
 			$this->app->db->quote($date->tz->getId(), 'text'),
 			$this->app->db->quote($date->getDate(), 'date'),
 			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'));
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->app->db->quote(true, 'boolean'));
 
 		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
 		$posts = SwatDB::query($this->app->db, $sql, $wrapper);
