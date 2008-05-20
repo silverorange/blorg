@@ -1,7 +1,7 @@
 create table BlorgReply (
 	id serial,
 	post integer not null references BlorgPost(id) on delete cascade,
-	author integer references BlorgAUthor(id),
+	author integer references BlorgAuthor(id),
 	fullname varchar(255),
 	link varchar(255),
 	email varchar(255),
