@@ -146,14 +146,16 @@ class BlorgYearArchivePage extends SitePathPage
 
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select id, title, bodytext, shortname, publish_date,
+		$sql = sprintf('select id, title, bodytext, shortname,
+				convertTZ(publish_date, %s) as publish_date,
 				author, reply_status
 			from BlorgPost
 			where date_trunc(\'year\', convertTZ(publish_date, %s)) =
 				date_trunc(\'year\', timestamp %s) and
 				instance %s %s and enabled = %s
 			order by publish_date desc',
-			$this->app->db->quote($date->tz->getId(), 'text'),
+			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
 			$this->app->db->quote($date->getDate(), 'date'),
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
