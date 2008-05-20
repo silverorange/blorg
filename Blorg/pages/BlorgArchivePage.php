@@ -149,9 +149,11 @@ class BlorgArchivePage extends SitePage
 	{
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select publish_date from BlorgPost
+		$sql = sprintf('select convertTZ(publish_date, %s)
+				from BlorgPost
 				where instance %s %s and enabled = %s
 				order by publish_date desc',
+			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote(true, 'boolean'));
