@@ -55,11 +55,13 @@ class BlorgAtomPage extends SitePage
 
 		$sql = sprintf('select * from BlorgPost
 			where instance %s %s
-				and enabled = true
-			order by publish_date desc limit %s',
+				and enabled = %s
+			order by publish_date desc',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(self::MAX_POSTS, 'integer'));
+			$this->app->db->quote(true, 'boolean'));
+
+		$this->app->db->setLimit(self::MAX_POSTS);
 
 		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
 		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
