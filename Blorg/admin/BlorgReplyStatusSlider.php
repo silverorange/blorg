@@ -60,11 +60,11 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavaScript(
-			'packages/blorg/javascript/blorg-reply-status-slider.js',
+			'packages/blorg/admin/javascript/blorg-reply-status-slider.js',
 			Blorg::PACKAGE_ID);
 
 		$this->addStyleSheet(
-			'packages/blorg/styles/blorg-reply-status-slider.css',
+			'packages/blorg/admin/styles/blorg-reply-status-slider.css',
 			Blorg::PACKAGE_ID);
 	}
 
@@ -115,7 +115,9 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 
 		$img_tag = new SwatHtmlTag('img');
 		$img_tag->class = 'blorg-reply-status-slider-image';
-		$img_tag->src = 'packages/blorg/images/thumb-s.gif';
+		$img_tag->src =
+			'packages/blorg/admin/images/blorg-reply-status-slider-thumb.gif';
+
 		$img_tag->alt = '';
 		$img_tag->display();
 
