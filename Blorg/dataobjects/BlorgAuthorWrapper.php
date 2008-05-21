@@ -11,7 +11,7 @@ require_once 'Blorg/dataobjects/BlorgAuthor.php';
  * @see       BlorgAuthor
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostWrapper extends SwatDBRecordsetWrapper
+class BlorgAuthorWrapper extends SwatDBRecordsetWrapper
 {
 	// {{{ protected function init()
 
