@@ -63,6 +63,28 @@ class BlorgTag extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getVisiblePostCount()
+
+	/**
+	 * Gets the number of visible posts this tag applies to
+	 *
+	 * This is more efficient than getting the set of posts and counting the
+	 * set. Use this method if you don't need the actual post objects.
+	 *
+	 * @return integer the number of posts this tag applies to.
+	 */
+	public function getPostCount()
+	{
+		$sql = 'select count(id) from BlorgPost
+			inner join BlorgPostTagBinding on id = post
+			where tag = %s and BlorgPost.enabled = %s';
+
+		return SwatDB::queryOne($this->db, sprintf($sql,
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote(true, 'boolean')));
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
