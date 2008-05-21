@@ -9,6 +9,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgFile.php';
 require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgFileImage.php';
+require_once 'Blorg/admin/BlorgReplyStatusSlider.php';
 require_once dirname(__FILE__).'/include/BlorgFileAttachControl.php';
 require_once dirname(__FILE__).'/include/BlorgFileDeleteControl.php';
 require_once dirname(__FILE__).'/include/BlorgPublishRadioTable.php';
