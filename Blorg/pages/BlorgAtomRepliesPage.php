@@ -54,15 +54,19 @@ class BlorgAtomRepliesPage extends SitePage
 		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select BlorgReply.* from BlorgReply
-			inner join BlorgPost on BlorgReply.post = BlorgPost.id
-			where BlorgPost.instance %s %s and BlorgPost.enabled = true and
-				BlorgPost.reply_status != %s and BlorgReply.status = %s
-			order by BlorgReply.createdate desc limit %s',
+			inner join BlorgPost on BlorgReply.post = BlorgPost.id and
+				BlorgPost.enabled = %s and BlorgPost.instance %s %s and
+				BlorgPost.reply_status != %s
+			where BlorgReply.status = %s and BlorgReply.spam = %s
+			order by BlorgReply.createdate desc',
+			$this->app->db->quote(true, 'boolean'),
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote(BlorgPost::REPLY_STATUS_CLOSED, 'integer'),
 			$this->app->db->quote(BlorgReply::STATUS_PUBLISHED, 'integer'),
-			$this->app->db->quote(self::MAX_REPLIES, 'integer'));
+			$this->app->db->quote(false, 'boolean'));
+
+		$this->app->db->setLimit(self::MAX_REPLIES);
 
 		$wrapper = SwatDBClassMap::get('BlorgReplyWrapper');
 		$this->replies = SwatDB::query($this->app->db, $sql, $wrapper);
