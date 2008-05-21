@@ -73,7 +73,7 @@ class BlorgTag extends SwatDBDataObject
 	 *
 	 * @return integer the number of posts this tag applies to.
 	 */
-	public function getPostCount()
+	public function getVisiblePostCount()
 	{
 		$sql = 'select count(id) from BlorgPost
 			inner join BlorgPostTagBinding on id = post
