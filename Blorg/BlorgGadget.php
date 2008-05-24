@@ -125,8 +125,15 @@ abstract class BlorgGadget extends SwatUIObject
 		// add user defined settings and default title
 		$this->define();
 
+		// save user-defined settings so we can place common settings first
+		$user_defined_settings = $this->settings;
+		$this->settings = array();
+
 		// add settings common to all gadgets
 		$this->defineSetting('title', 'Title', 'string', $this->default_title);
+
+		// put common settings before user-defined settings
+		$this->settings = array_merge($this->settings, $user_defined_settings);
 	}
 
 	// }}}
