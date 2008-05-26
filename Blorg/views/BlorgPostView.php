@@ -648,6 +648,7 @@ class BlorgPostView
 					$permalink_tag->href = $show['link'];
 				}
 			}
+			$permalink_tag->class = 'permalink';
 			$permalink_tag->open();
 
 			// display machine-readable date in UTC
