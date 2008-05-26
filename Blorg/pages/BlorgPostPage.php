@@ -200,7 +200,7 @@ class BlorgPostPage extends SitePage
 		switch ($this->post->reply_status) {
 		case BlorgPost::REPLY_STATUS_OPEN:
 			$message = new SwatMessage(
-				Blorg::_('Your reply has been added.'));
+				Blorg::_('Your reply has been published.'));
 
 			$this->reply_ui->getWidget('message_display')->add($message,
 				SwatMessageDisplay::DISMISS_OFF);
@@ -212,8 +212,8 @@ class BlorgPostPage extends SitePage
 				Blorg::_('Your reply has been submitted.'));
 
 			$message->secondary_content =
-				Blorg::_('Your reply will be added to this post after being '.
-					'approved by the site moderators.');
+				Blorg::_('Your reply will be published after being '.
+					'approved by the site moderator.');
 
 			$this->reply_ui->getWidget('message_display')->add($message,
 				SwatMessageDisplay::DISMISS_OFF);
@@ -407,12 +407,12 @@ class BlorgPostPage extends SitePage
 			$button_tag = new SwatHtmlTag('input');
 			$button_tag->type = 'submit';
 			$button_tag->name = 'post_button';
-			$button_tag->value = Blorg::_('Post Now');
+			$button_tag->value = Blorg::_('Post');
 
-			$message = new SwatMessage(Blorg::_('Preview'));
-			$message->secondary_content = sprintf(Blorg::_('Your reply has '.
-				'not been published. When you are happy with your reply, '.
-				'click the Post button to submit your reply. REWRITE %s'),
+			$message = new SwatMessage(Blorg::_('Your reply has not yet been '.
+				'published.'));
+			$message->secondary_content = sprintf(Blorg::_('Review your reply '.
+				'and press the Post button when it’s ready to publish. %s'),
 				$button_tag);
 
 			$message->content_type = 'text/xml';
