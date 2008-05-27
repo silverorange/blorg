@@ -1,4 +1,4 @@
-create table BlorgGadgetSetting (
+create table BlorgGadgetInstanceSettingValue (
 	gadget_instance integer not null
 		references BlorgGadgetInstance(id) on delete cascade,
 
