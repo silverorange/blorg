@@ -2,11 +2,12 @@
 
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteInstance.php';
+require_once 'Blorg/dataobjects/BlorgGadgetInstanceSettingValueWrapper.php';
 
 /**
  * A gadget that belongs to a site instance
  *
- * Responsible for binding settings in the database to a gadget object.
+ * Responsible for binding settings in the database to a gadget.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -56,21 +57,22 @@ class BlorgGadgetInstance extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function loadSettings()
+	// {{{ protected function loadSettingValues()
 
 	/**
-	 * Loads setting values s for this gadget instance
+	 * Loads setting values for this gadget instance
 	 *
-	 * @return SwatDBDefaultRecordsetWrapper the setting values s of this
-	 *                                       gadget instance.
+	 * @return BlorgGadgetInstanceSettingValueWrapper the setting values of
+	 *                                                this gadget instance.
 	 */
-	protected function loadSettings()
+	protected function loadSettingValues()
 	{
-		$sql = sprintf('select name, value from BlorgGadgetSetting
+		$sql = sprintf('select name, value from BlorgGadgetInstanceSettingValue
 			where gadget_instance = %s',
 			$this->db->quote($this->id, 'integer'));
 
-		return SwatDB::query($this->db, $sql);
+		return SwatDB::query($this->db, $sql,
+			SwatDBClassMap::get('BlorgGadgetInstanceSettingValueWrapper'));
 	}
 
 	// }}}
