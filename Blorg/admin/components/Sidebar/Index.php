@@ -67,8 +67,9 @@ class BlorgSidebarIndex extends AdminIndex
 
 		$store = new SwatTableStore();
 		foreach ($gadget_instances as $gadget_instance) {
+			$gadget = BlorgGadgetFactory::get($this->app, $gadget_instance);
 			$ds = new SwatDetailsStore($gadget_instance);
-			$ds->title = $available[$gadget_instance->gadget]->title;
+			$ds->title = $gadget->getTitle();
 			$store->add($ds);
 		}
 
