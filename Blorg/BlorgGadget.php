@@ -270,7 +270,7 @@ abstract class BlorgGadget extends SwatUIObject
 		if ($this->values === null) {
 			$this->values = array();
 			try {
-				foreach ($this->gadget_instance->settings as $setting) {
+				foreach ($this->gadget_instance->setting_values as $setting) {
 					$setting_name = $setting->name;
 					$setting_value = $setting->value;
 					$setting_value =
