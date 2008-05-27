@@ -8,8 +8,8 @@ require_once 'Blorg/dataobjects/BlorgGadgetInstance.php';
  *
  * @package   Blörg
  * @copyright 2008 silverorange
- * @see       BlorgGadgetInstance
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
+ * @see       BlorgGadgetInstance
  */
 class BlorgGadgetInstanceWrapper extends SwatDBRecordsetWrapper
 {
