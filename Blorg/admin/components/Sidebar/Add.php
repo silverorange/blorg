@@ -57,7 +57,15 @@ class BlorgSidebarAdd extends AdminDBEdit
 		$radio_list = $this->ui->getWidget('gadget');
 		$available = BlorgGadgetFactory::getAvailable($this->app);
 		foreach ($available as $gadget_class => $gadget) {
-			$radio_list->addOption($gadget_class, $gadget->title);
+			$option_title = SwatString::minimizeEntities($gadget->title);
+			if ($gadget->description !== null) {
+				$span_tag = new SwatHtmlTag('span');
+				$span_tag->class = 'swat-note';
+				$span_tag->setContent($gadget->description);
+				$option_title.='<br />'.$span_tag;
+			}
+			$radio_list->addOption($gadget_class, $option_title,
+				'text/xml');
 		}
 	}
 
