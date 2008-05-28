@@ -33,8 +33,8 @@ class BlorgSidebarDelete extends AdminDBDelete
 
 		$locale = SwatI18NLocale::get();
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
-			'One sidebar gadget has been deleted.',
-			'%s sidebar gadgets have been deleted.', $num),
+			'One gadget has been removed from the sidebar.',
+			'%s gadgets have been removed from the sidebar.', $num),
 			$locale->formatNumber($num)));
 
 		$this->app->messages->add($message);
@@ -69,8 +69,8 @@ class BlorgSidebarDelete extends AdminDBDelete
 
 		$h3_tag = new SwatHtmlTag('h3');
 		$h3_tag->setContent(Blorg::ngettext(
-			'Delete the following sidebar gadget?',
-			'Delete the following sidebar gadgets?',
+			'Remove the following gadget from the sidebar?',
+			'Remove the following gadgets from the sidebar?',
 			$this->getItemCount()));
 
 		$h3_tag->display();
