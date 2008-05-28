@@ -206,10 +206,14 @@ class BlorgGadgetFactory extends SwatObject
 	 * @return array an array of available gadgets with the array key being
 	 *               the gadget class name the the array value being an object
 	 *               of type stdClass with the following members:
-	 *               - <i>string title</i> the default title of the gadget,
-	 *               - <i>string class</i> the class name of the gadget, and
-	 *               - <i>array settings</i> an array of BlorgGadgetSetting
-	 *                                       objects available for the gadget.
+	 *               - <i>string title</i>       the default title of the
+	 *                                           gadget,
+	 *               - <i>string class</i>       the class name of the gadget,
+	 *               - <i>string description</i> the description of the gadget,
+	 *                                           and
+	 *               - <i>array settings</i>     an array of BlorgGadgetSetting
+	 *                                           objects available for the
+	 *                                           gadget.
 	 *
 	 * @throws SwatClassNotFoundException if no suitable class exists for a
 	 *                                    gadget definition file.
@@ -252,6 +256,7 @@ class BlorgGadgetFactory extends SwatObject
 				$return_object = new stdClass();
 				$return_object->title = $gadget->getTitle();
 				$return_object->class = $class_name;
+				$return_object->description = $gadget->getDescription();
 				$return_object->settings = $gadget->getSettings();
 
 				self::$available_gadgets[$class_name] = $return_object;
