@@ -49,6 +49,12 @@ class BlorgSidebarDelete extends AdminDBDelete
 	{
 		parent::buildInternal();
 
+		$yes_button = $this->ui->getWidget('yes_button');
+		$yes_button->title = Blorg::_('Remove');
+
+		$this->navbar->popEntry();
+		$this->navbar->createEntry(Blorg::_('Remove'));
+
 		$sql = sprintf('select id, gadget from BlorgGadgetInstance
 			where id in (%s) and instance %s %s
 			order by displayorder',
