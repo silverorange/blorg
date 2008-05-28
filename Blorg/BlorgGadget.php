@@ -363,7 +363,7 @@ abstract class BlorgGadget extends SwatUIObject
 	 *                     and string are equivalent except they may be edited
 	 *                     differently in a settings editor. If not specified,
 	 *                     'string' is used.
-	 * @param string $default optional. The default value of the setting. If
+	 * @param mixed $default optional. The default value of the setting. If
 	 *                         not specified, null is used.
 	 */
 	protected final function defineSetting($name, $title, $type = 'string',
