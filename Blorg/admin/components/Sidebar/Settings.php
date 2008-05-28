@@ -103,6 +103,8 @@ class BlorgSidebarSettings extends AdminDBEdit
 				require_once 'Swat/SwatCheckbox.php';
 				$widget = new SwatCheckbox();
 				$widget->id = $id;
+				// default boolean values
+				$widget->value = $setting->getDefault();
 				break;
 
 			case 'date':
@@ -220,7 +222,7 @@ class BlorgSidebarSettings extends AdminDBEdit
 			if ($widget->value !== null) {
 				$setting_value = new $class_name();
 				$setting_value->name = $id;
-				$setting_value->value = $widget->value;
+				$setting_value->setValue($setting->getType(), $widget->value);
 				$setting_value->gadget_instance = $this->gadget_instance;
 				$this->gadget_instance->setting_values->add($setting_value);
 			}
@@ -265,9 +267,11 @@ class BlorgSidebarSettings extends AdminDBEdit
 		$values = $this->gadget_instance->setting_values;
 		$settings = $this->gadget->getSettings();
 		foreach ($values as $object) {
-			if (array_key_exists($object->name, $settings)) {
-				$widget = $this->settings_widgets[$object->name];
-				$widget->value = $object->value;
+			$setting_name = $object->name;
+			if (array_key_exists($setting_name, $settings)) {
+				$widget = $this->settings_widgets[$setting_name];
+				$type = $settings[$setting_name]->getType();
+				$widget->value = $object->getValue($type);
 			}
 		}
 	}

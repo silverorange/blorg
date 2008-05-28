@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 
 /**
@@ -66,6 +67,11 @@ class BlorgGadgetInstanceSettingValue extends SwatDBDataObject
 	// }}}
 	// {{{ public function getValue()
 
+	/**
+	 * @param string $type
+	 *
+	 * @return mixed
+	 */
 	public function getValue($type)
 	{
 		$value = null;
@@ -98,6 +104,46 @@ class BlorgGadgetInstanceSettingValue extends SwatDBDataObject
 		}
 
 		return $value;
+	}
+
+	// }}}
+	// {{{ public function setValue()
+
+	/**
+	 * @param string $type
+	 * @param mixed $value
+	 */
+	public function setValue($type, $value)
+	{
+		switch ($type) {
+		case 'boolean':
+			$this->value_boolean = (boolean)$value;
+			break;
+
+		case 'date':
+			if (!($value instanceof SwatDate)) {
+				$value = new SwatDate($value);
+			}
+			$this->value_date = $value;
+			break;
+
+		case 'float':
+			$this->value_float = (float)$value;
+			break;
+
+		case 'integer':
+			$this->value_integer = (integer)$value;
+			break;
+
+		case 'text':
+			$this->value_text = (string)$value;
+			break;
+
+		case 'string':
+		default:
+			$this->value_string = (string)$value;
+			break;
+		}
 	}
 
 	// }}}
