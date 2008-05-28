@@ -4,6 +4,14 @@ require_once 'Swat/SwatDate.php';
 require_once 'Swat/SwatObject.php';
 
 /**
+ * Setting types and the corresponding PHP types are:
+ *
+ * - 'boolean' PHP type boolean
+ * - 'date'    PHP type SwatDate
+ * - 'float'   PHP type float
+ * - 'integer' PHP type integer
+ * - 'string'  PHP type string
+ * - 'text'    PHP type string
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -48,9 +56,9 @@ class BlorgGadgetSetting extends SwatObject
 	 */
 	protected static $valid_types = array(
 		'boolean',
-		'integer',
-		'float',
 		'date',
+		'float',
+		'integer',
 		'string',
 		'text',
 	);
@@ -70,11 +78,12 @@ class BlorgGadgetSetting extends SwatObject
 	 *                     and string are equivalent except they may be edited
 	 *                     differently in a settings editor. If not specified,
 	 *                     'string' is used.
-	 * @param string $default optional. The default value of the setting. If
-	 *                         not specified, null is used.
+	 * @param mixed $default optional. The default value of the setting. If
+	 *                        not specified, null is used. This value should be
+	 *                        of the PHP type corresponding to <i>$type</i>.
 	 *
 	 * @throws InvalidArgumentException if the specified <i>$type</i> is not a
-	 *                                  valid type.
+	 *                                  valid setting type.
 	 */
 	public function __construct($name, $title, $type, $default)
 	{
@@ -121,10 +130,6 @@ class BlorgGadgetSetting extends SwatObject
 	/**
 	 * Gets the default value of this setting
 	 *
-	 * Note: This is the default value as specified in the constructor. This
-	 * value should be passed to the {@link BlorgGadgetSetting::convertValue()}
-	 * method before being used.
-	 *
 	 * @return mixed the default value of this setting.
 	 */
 	public function getDefault()
@@ -138,61 +143,12 @@ class BlorgGadgetSetting extends SwatObject
 	/**
 	 * Gets the type of this setting
 	 *
-	 * @return string one of 'string', 'text', 'integer', 'float', 'boolean' or
-	 *                'date'.
+	 * @return string one of 'boolean', 'date', 'float', 'integer', 'string' or
+	 *                'text'.
 	 */
 	public function getType()
 	{
 		return $this->type;
-	}
-
-	// }}}
-	// {{{ public function convertValue()
-
-	/**
-	 * Converts a string to a value of this setting's type
-	 *
-	 * @param string $value the value to convert.
-	 *
-	 * @return mixed the converted value.
-	 */
-	public function convertValue($value)
-	{
-		switch ($this->type) {
-		case 'date':
-			$value = new SwatDate($value);
-			break;
-
-		case 'boolean':
-			switch (strtolower($value)) {
-			case 'no':
-			case 'off':
-			case 'f':
-			case 'false':
-			case '0':
-				$value = false;
-				break;
-			default:
-				$value = true;
-				break;
-			}
-			break;
-
-		case 'integer':
-			$value = intval($value);
-			break;
-
-		case 'float':
-			$value = floatval($value);
-			break;
-
-		case 'string':
-		case 'text':
-		default:
-			break;
-		}
-
-		return $value;
 	}
 
 	// }}}

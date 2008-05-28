@@ -272,11 +272,11 @@ abstract class BlorgGadget extends SwatUIObject
 			try {
 				foreach ($this->gadget_instance->setting_values as $setting) {
 					$setting_name = $setting->name;
-					$setting_value = $setting->value;
-					$setting_value =
-						$this->settings[$name]->convertValue($setting_value);
-
-					$this->values[$setting_name] = $setting_value;
+					if (array_key_exists($setting_name, $this->settings)) {
+						$type = $this->settings[$setting_name]->getType();
+						$setting_value = $setting->getValue($type);
+						$this->values[$setting_name] = $setting_value;
+					}
 				}
 			} catch (SwatDBNoDatabaseException $e) {
 				// don't try to load settings if we don't have a database
@@ -287,7 +287,6 @@ abstract class BlorgGadget extends SwatUIObject
 			$value = $this->values[$name];
 		} else {
 			$value = $this->getDefaultValue($name);
-			$value = $this->settings[$name]->convertValue($value);
 		}
 
 		return $value;
