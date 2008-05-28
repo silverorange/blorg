@@ -40,6 +40,11 @@ class BlorgContentGadget extends BlorgGadget
 		$this->defineSetting('content', Blorg::_('Content'), 'text');
 		$this->defineSetting('content_type', Blorg::_('Content Type'),
 			'string', 'text/plain');
+
+		$this->defineDescription(Blorg::_(
+			'Provides a place to place arbitrary content in the sidebar. '.
+			'Content may include custom XHTML by specifying the '.
+			'“content_type” setting.'));
 	}
 
 	// }}}
