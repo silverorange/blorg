@@ -85,7 +85,7 @@ class BlorgGadgetSetting extends SwatObject
 	 * @throws InvalidArgumentException if the specified <i>$type</i> is not a
 	 *                                  valid setting type.
 	 */
-	public function __construct($name, $title, $type, $default)
+	public function __construct($name, $title, $type, $default = null)
 	{
 		if (!in_array($type, self::$valid_types)) {
 			throw new InvalidArgumentException('Type "'.$type.'" is not a '.
@@ -95,7 +95,7 @@ class BlorgGadgetSetting extends SwatObject
 		$this->name    = (string)$name;
 		$this->title   = (string)$title;
 		$this->type    = (string)$type;
-		$this->default = (string)$default;
+		$this->default = $default;
 	}
 
 	// }}}
