@@ -28,7 +28,7 @@ class BlorgDiggGadget extends BlorgGadget
 			$what = 'front/all';
 		} else {
 			$username = SwatString::minimizeEntities(urlencode($username));
-			$what = 'user/dugg'.$username;
+			$what = 'user/dugg/'.$username;
 		}
 
 		printf('<script type="text/javascript" '.
