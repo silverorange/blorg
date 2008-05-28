@@ -237,6 +237,14 @@ class BlorgSidebarSettings extends AdminDBEdit
 	}
 
 	// }}}
+	// {{{ protected function relocate()
+
+	protected function relocate()
+	{
+		$this->app->relocate('Sidebar');
+	}
+
+	// }}}
 
 	// build phase
 	// {{{ protected function buildInternal()
