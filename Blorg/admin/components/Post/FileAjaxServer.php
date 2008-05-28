@@ -72,7 +72,7 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 		$file->setDatabase($this->app->db);
 		$file->setFileBase('../');
 		if ($file->load(intval($file_id))) {
-	//		$file->delete();
+			$file->delete();
 		}
 
 		return true;
