@@ -23,7 +23,7 @@ class BlorgGadgetInstance extends SwatDBDataObject
 	 *
 	 * @var integer
 	 */
-	public $id = 0;
+	public $id;
 
 	/**
 	 * The gadget class of this instance
@@ -34,7 +34,7 @@ class BlorgGadgetInstance extends SwatDBDataObject
 	 *
 	 * @var string
 	 */
-	public $gadget = '';
+	public $gadget;
 
 	/**
 	 * Position of this sidebar gadget relative to other gadgets
