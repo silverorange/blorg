@@ -100,6 +100,15 @@ abstract class BlorgGadget extends SwatUIObject
 	 */
 	private $gadget_instance = null;
 
+	/**
+	 * The description of this gadget
+	 *
+	 * @var string
+	 *
+	 * @see BlorgGadget::defineDescription()
+	 */
+	private $description = null;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -195,6 +204,22 @@ abstract class BlorgGadget extends SwatUIObject
 	public function getTitle()
 	{
 		return $this->getValue('title');
+	}
+
+	// }}}
+	// {{{ public function getDescription()
+
+	/**
+	 * Gets the description of this gadget
+	 *
+	 * @return string the description of this gadget. If no description is
+	 *                defined, null is returned.
+	 *
+	 * @see BlorgGadget::defineDescription()
+	 */
+	public function getDescription()
+	{
+		return $this->description;
 	}
 
 	// }}}
@@ -346,6 +371,28 @@ abstract class BlorgGadget extends SwatUIObject
 	protected function defineDefaultTitle($title)
 	{
 		$this->default_title = (string)$title;
+	}
+
+	// }}}
+	// {{{ protected function defineDescription()
+
+	/**
+	 * Defines the description of this gadget
+	 *
+	 * The description is used on the gadget selection page in the admin and
+	 * provides a short description of this gadget above and beyond the title.
+	 *
+	 * For example, an 'Arbitrary Content' gadget may have the following
+	 * description:
+	 *
+	 *   Provides a place to place arbitrary content in the sidebar. Content
+	 *   may include custom XHTML by specifying the 'content_type' setting.
+	 *
+	 * @param string $description the description of this gadget.
+	 */
+	protected function defineDescription($description)
+	{
+		$this->description = (string)$description;
 	}
 
 	// }}}
