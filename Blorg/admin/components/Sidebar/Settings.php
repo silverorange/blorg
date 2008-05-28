@@ -245,9 +245,8 @@ class BlorgSidebarSettings extends AdminDBEdit
 	{
 		parent::buildInternal();
 
-		$this->ui->getWidget('edit_frame')->subtitle = sprintf(
-			Blorg::_('for %s'),
-			$this->gadget->getTitle());
+		$this->ui->getWidget('edit_frame')->subtitle =
+			$this->gadget->getTitle();
 	}
 
 	// }}}
@@ -275,7 +274,7 @@ class BlorgSidebarSettings extends AdminDBEdit
 		$this->navbar->popEntry();
 
 		$this->navbar->addEntry(new SwatNavBarEntry(
-			Blorg::_('Edit Sidebar Gadget Settings')));
+			Blorg::_('Edit Sidebar Gadget')));
 	}
 
 	// }}}
