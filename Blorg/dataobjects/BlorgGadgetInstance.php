@@ -67,7 +67,7 @@ class BlorgGadgetInstance extends SwatDBDataObject
 	 */
 	protected function loadSettingValues()
 	{
-		$sql = sprintf('select name, value from BlorgGadgetInstanceSettingValue
+		$sql = sprintf('select * from BlorgGadgetInstanceSettingValue
 			where gadget_instance = %s',
 			$this->db->quote($this->id, 'integer'));
 

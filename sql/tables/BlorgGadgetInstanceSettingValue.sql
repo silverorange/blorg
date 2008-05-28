@@ -3,5 +3,11 @@ create table BlorgGadgetInstanceSettingValue (
 		references BlorgGadgetInstance(id) on delete cascade,
 
 	name varchar(255) not null,
-	value varchar(255) not null
+
+	value_boolean boolean,
+	value_date    timestamp,
+	value_float   double precision,
+	value_integer integer,
+	value_string  varchar(255),
+	value_text    text
 );
