@@ -104,6 +104,9 @@ class Blorg
 			// 'moderated', 'locked' and 'closed'. Any other values are
 			// interpreted as 'closed'.
 			'blorg.default_reply_status' => 'closed',
+
+			// THeme to use. If null, the default theme is used.
+			'blorg.theme'                => null,
 		);
 	}
 
