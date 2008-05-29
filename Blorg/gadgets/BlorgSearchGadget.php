@@ -64,6 +64,10 @@ class BlorgSearchGadget extends BlorgGadget
 		$this->defineDefaultTitle(Blorg::_('Search'));
 		$this->defineSetting('label', Blorg::_('Label'), 'string',
 			Blorg::_('Keywords …'));
+
+		$this->defineDescription(Blorg::_(
+			'Displays a search form, allowing searching from any page that '.
+			'displays the sidebar.'));
 	}
 
 	// }}}

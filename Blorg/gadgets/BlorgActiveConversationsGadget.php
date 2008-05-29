@@ -66,6 +66,8 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 	{
 		$this->defineDefaultTitle(Blorg::_('Active Conversations'));
 		$this->defineSetting('limit', Blorg::_('Limit'), 'integer', 10);
+		$this->defineDescription(Blorg::_(
+			'Displays a list of posts with recent reader comments.'));
 	}
 
 	// }}}

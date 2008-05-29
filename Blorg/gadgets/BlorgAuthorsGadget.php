@@ -50,6 +50,9 @@ class BlorgAuthorsGadget extends BlorgGadget
 	protected function define()
 	{
 		$this->defineDefaultTitle(Blorg::_('Authors'));
+		$this->defineDescription(Blorg::_(
+			'Lists the visible authors of this site. The author '.
+			'descriptions are also displayed if they exist.'));
 	}
 
 	// }}}
