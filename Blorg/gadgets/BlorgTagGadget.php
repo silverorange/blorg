@@ -84,8 +84,8 @@ class BlorgTagGadget extends BlorgGadget
 		}
 
 		$sql = sprintf('select * from BlorgTag
-			inner join BlorgTagPostCountView
-				on BlorgTag.id = BlorgTagPostCountView.tag
+			inner join BlorgTagVisiblePostCountView
+				on BlorgTag.id = BlorgTagVisiblePostCountView.tag
 			where instance %s %s %s
 			order by title desc',
 			SwatDB::equalityOperator($this->app->getInstanceId()),
