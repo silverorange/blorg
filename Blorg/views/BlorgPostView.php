@@ -759,7 +759,7 @@ class BlorgPostView
 				} else {
 					$anchor_tag = new SwatHtmlTag('a');
 					if (is_string($show['link'])) {
-						$anchor_tag->href = $$show['link'];
+						$anchor_tag->href = $show['link'];
 					} else {
 						$anchor_tag->href = $this->getPostRelativeUri($post);
 					}
