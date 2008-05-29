@@ -71,13 +71,23 @@ class BlorgAuthorPage extends SitePage
 	public function build()
 	{
 		$this->buildNavBar();
+		$this->buildTitle();
 
 		$this->layout->startCapture('content');
 		$this->displayAuthor();
 		$this->displayPosts();
 		$this->layout->endCapture();
+	}
 
-		$this->layout->data->title = $this->author->name;
+	// }}}
+	// {{{ protected function buildTitle()
+
+	protected function buildTitle()
+	{
+		$this->layout->data->html_title = $this->author->name;
+		$this->layout->data->meta_description = SwatString::minimizeEntities(
+			SwatString::ellipsizeRight(
+				SwatString::condense($this->author->bodytext), 300));
 	}
 
 	// }}}
@@ -94,7 +104,11 @@ class BlorgAuthorPage extends SitePage
 
 	protected function displayAuthor()
 	{
-		echo $this->author;
+		$view = BlorgViewFactory::build('author', $this->app);
+		$view->showName(BlorgView::SHOW_ALL, false);
+		$view->showBodytext(BlorgView::SHOW_ALL);
+		$view->showDescription(BlorgView::SHOW_NONE);
+		$view->display($this->author);
 	}
 
 	// }}}
@@ -102,6 +116,11 @@ class BlorgAuthorPage extends SitePage
 
 	protected function displayPosts()
 	{
+		$div_tag = new SwatHtmlTag('div');
+		$div_tag->id = 'posts';
+		$div_tag->class = 'author-posts';
+		$div_tag->open();
+
 		$view = BlorgViewFactory::build('post', $this->app);
 		$view->showBodytext(BlorgPostView::SHOW_SUMMARY);
 		$view->showExtendedBodytext(BlorgPostView::SHOW_NONE);
@@ -110,6 +129,8 @@ class BlorgAuthorPage extends SitePage
 		foreach ($posts as $post) {
 			$view->display($post);
 		}
+
+		$div_tag->close();
 	}
 
 	// }}}
