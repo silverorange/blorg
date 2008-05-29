@@ -32,6 +32,10 @@ class BlorgArchiveGadget extends BlorgGadget
 		$this->defineDefaultTitle(Blorg::_('Archive'));
 		$this->defineSetting('display_full', Blorg::_('Display Full Archive'),
 			'boolean', true);
+
+		$this->defineDescription(Blorg::_(
+			'Links to the archive page and provides a summarized list of '.
+			'posts organized by the posts’ publish dates.'));
 	}
 
 	// }}}

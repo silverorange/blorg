@@ -43,6 +43,8 @@ class BlorgDiggGadget extends BlorgGadget
 	{
 		$this->defineDefaultTitle(Blorg::_('Recently Dugg'));
 		$this->defineSetting('username', Blorg::_('User Name'), 'string');
+		$this->defineDescription(Blorg::_(
+			'Lists recently dugg stories for a user on Digg.'));
 	}
 
 	// }}}

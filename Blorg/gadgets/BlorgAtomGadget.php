@@ -43,6 +43,9 @@ class BlorgAtomGadget extends BlorgGadget
 	protected function define()
 	{
 		$this->defineDefaultTitle(Blorg::_('Syndication'));
+		$this->defineDescription(Blorg::_(
+			'Displays links to the Atom feeds for recent posts and reader '.
+			'comments.'));
 	}
 
 	// }}}

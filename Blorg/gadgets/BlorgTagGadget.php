@@ -66,6 +66,9 @@ class BlorgTagGadget extends BlorgGadget
 	{
 		$this->defineDefaultTitle(Blorg::_('Tags'));
 		$this->defineSetting('show_empty', 'Show Empty Tags', 'boolean', false);
+		$this->defineDescription(Blorg::_(
+			'Displays a list of tags and a post count for each tag. This can '.
+			'easily be styled to be a “cloud view”.'));
 	}
 
 	// }}}
