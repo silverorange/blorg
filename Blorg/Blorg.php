@@ -159,7 +159,8 @@ SwatUI::mapClassPrefixToPath('Blorg', 'Blorg');
 SwatDBClassMap::addPath('Blorg/dataobjects');
 
 BlorgViewFactory::addPath('Blorg/views');
-BlorgViewFactory::registerView('post',  'BlorgPostView');
-BlorgViewFactory::registerView('reply', 'BlorgReplyView');
+BlorgViewFactory::registerView('post',   'BlorgPostView');
+BlorgViewFactory::registerView('reply',  'BlorgReplyView');
+BlorgViewFactory::registerView('author', 'BlorgAuthorView');
 
 ?>
