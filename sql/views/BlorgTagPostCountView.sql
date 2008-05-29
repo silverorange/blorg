@@ -5,5 +5,5 @@ create or replace view BlorgTagPostCountView as
 			left outer join BlorgPostTagBinding
 				on BlorgTag.id = BlorgPostTagBinding.tag
 			left outer join BlorgPost
-				on BlorgPostTagBinding.post = BlorgPost.id;
+				on BlorgPostTagBinding.post = BlorgPost.id
 		group by BlorgTag.id;
