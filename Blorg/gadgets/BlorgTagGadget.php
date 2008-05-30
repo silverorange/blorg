@@ -76,10 +76,9 @@ class BlorgTagGadget extends BlorgGadget
 	protected function getTags()
 	{
 		if ($this->getValue('show_empty')) {
-			$extra_where = ' and post_count > 0';
-
-		} else {
 			$extra_where = '';
+		} else {
+			$extra_where = ' and post_count > 0';
 		}
 
 		$sql = sprintf('select * from BlorgTag
