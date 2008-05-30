@@ -85,10 +85,11 @@ class BlorgYearArchivePage extends SitePathPage
 
 		$view = BlorgViewFactory::build('post', $this->app);
 
-		$view->showTitle(BlorgPostView::SHOW_SUMMARY);
-		$view->showBodytext(BlorgPostView::SHOW_NONE);
-		$view->showExtendedBodytext(BlorgPostView::SHOW_NONE);
-		$view->showTags(BlorgPostView::SHOW_NONE);
+		$view->setPartMode('title', BlorgView::MODE_SUMMARY);
+		$view->setPartMode('bodytext', BlorgView::MODE_NONE);
+		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
+		$view->setPartMode('tags', BlorgView::MODE_NONE);
+		$view->setPartMode('files', BlorgView::MODE_NONE);
 
 		$ul_tag = new SwatHtmlTag('ul');
 		$ul_tag->class = 'months';

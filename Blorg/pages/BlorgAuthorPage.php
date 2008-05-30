@@ -105,9 +105,9 @@ class BlorgAuthorPage extends SitePage
 	protected function displayAuthor()
 	{
 		$view = BlorgViewFactory::build('author', $this->app);
-		$view->showName(BlorgView::SHOW_ALL, false);
-		$view->showBodytext(BlorgView::SHOW_ALL);
-		$view->showDescription(BlorgView::SHOW_NONE);
+		$view->setPartMode('name', BlorgView::MODE_ALL, false);
+		$view->setPartMode('bodytext', BlorgView::MODE_ALL);
+		$view->setPartMode('description', BlorgView::MODE_NONE);
 		$view->display($this->author);
 	}
 
@@ -122,8 +122,8 @@ class BlorgAuthorPage extends SitePage
 		$div_tag->open();
 
 		$view = BlorgViewFactory::build('post', $this->app);
-		$view->showBodytext(BlorgPostView::SHOW_SUMMARY);
-		$view->showExtendedBodytext(BlorgPostView::SHOW_NONE);
+		$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
+		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
 
 		$posts = $this->author->getVisiblePosts(self::MAX_POSTS);
 		foreach ($posts as $post) {
