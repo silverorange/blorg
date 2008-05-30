@@ -36,22 +36,21 @@ class BlorgTagGadget extends BlorgGadget
 				$popularity = $tag->post_count / $max;
 
 				$li_tag = new SwatHtmlTag('li');
-				$li_tag->open();
 				$anchor_tag = new SwatHtmlTag('a');
 				$anchor_tag->href = $tag->shortname;
 				$anchor_tag->class = $this->getTagClass($popularity);
-				$anchor_tag->open();
-
-				echo SwatString::minimizeEntities($tag->title), ' ';
+				$anchor_tag->setContent(
+					SwatString::minimizeEntities($tag->title));
 
 				$span_tag = new SwatHtmlTag('span');
 				$span_tag->setContent(sprintf(Blorg::ngettext(
 					'(%s post)', '(%s posts)', $tag->post_count),
 					$locale->formatNumber($tag->post_count)));
 
+				$li_tag->open();
+				$anchor_tag->display();
+				echo ' ';
 				$span_tag->display();
-
-				$anchor_tag->close();
 				$li_tag->close();
 			}
 
