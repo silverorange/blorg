@@ -47,12 +47,14 @@ class BlorgPostReplyEdit extends AdminDBEdit
 
 	protected function initBlorgReply()
 	{
-		$this->reply = new BlorgReply();
+		$class_name = SwatDBClassMap::get('BlorgReply');
+		$this->reply = new $class_name();
 		$this->reply->setDatabase($this->app->db);
 
 		if ($this->id === null) {
 			$post_id = $this->app->initVar('post');
-			$post = new BlorgPost();
+			$class_name = SwatDBClassMap::get('BlorgPost');
+			$post = new $class_name();
 			$post->setDatabase($this->app->db);
 
 			if ($post_id === null || !$post->load($post_id))
