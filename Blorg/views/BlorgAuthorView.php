@@ -21,9 +21,11 @@ require_once 'Blorg/BlorgPageFactory.php';
  *                 MODE_NONE. Links to the author details page by default.
  * - bodytext    - The bodytext of the author. Supports MODE_ALL, MODE_SUMMARY
  *                 and MODE_NONE. Does not link anywhere.
- * - post_count  - The number of visible posts by the author. Supports MODE_ALL
- *                 and MODE_NONE. Links to the author details page with a
- *                 URI fragment of '#posts' appended.
+ * - post_count  - The number of visible posts by the author. Supports MODE_ALL,
+ *                 MODE_SUMMARY and MODE_NONE. If summary mode is used, the
+ *                 post count is only displayed if greater than zero and is
+ *                 displayed in parenthesis. Links to the author details page
+ *                 with a URI fragment of '#posts' appended.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -221,14 +223,15 @@ class BlorgAuthorView extends BlorgView
 	}
 
 	// }}}
-	// {{{ protected function displayReplyCount()
+	// {{{ protected function displayPostCount()
 
 	/**
 	 * Displays the number of posts for a weblog author
 	 */
 	protected function displayPostCount(BlorgAuthor$author)
 	{
-		if ($this->getMode('post_count') > BlorgView::MODE_NONE) {
+		switch ($this->getMode('post_count')) {
+		case BlorgView::MODE_ALL:
 			$link = $this->getLink('post_count');
 			$count = count($author->getVisiblePosts());
 
@@ -256,6 +259,35 @@ class BlorgAuthorView extends BlorgView
 			}
 
 			$post_count_tag->display();
+			break;
+
+		case BlorgView::MODE_SUMMARY:
+			$count = count($author->getVisiblePosts());
+			if ($count > 0) {
+				$link = $this->getLink('post_count');
+
+				if ($link === false) {
+					$post_count_tag = new SwatHtmlTag('span');
+				} else {
+					$post_count_tag = new SwatHtmlTag('a');
+					if (is_string($link)) {
+						$post_count_tag->href = $link;
+					} else {
+						$post_count_tag->href =
+							$this->getAuthorRelativeUri($author).'#posts';
+					}
+				}
+
+				$post_count_tag->class = 'author-post-count';
+
+				$locale = SwatI18NLocale::get();
+				$post_count_tag->setContent(sprintf(
+					Blorg::ngettext('(%s post)', '(%s posts)', $count),
+					$locale->formatNumber($count)));
+
+				$post_count_tag->display();
+			}
+			break;
 		}
 	}
 
