@@ -139,10 +139,10 @@ class BlorgPostDetails extends AdminIndex
 		ob_start();
 		$view = BlorgViewFactory::build('post', $this->app);
 		$view->setPathPrefix('../');
-		$view->showTitle(BlorgPostView::SHOW_ALL, false);
-		$view->showPermalink(BlorgPostView::SHOW_ALL, false);
-		$view->showReplyCount(BlorgPostView::SHOW_ALL, false);
-		$view->showExtendedBodytext(BlorgPostView::SHOW_ALL);
+		$view->setPartMode('title', BlorgView::MODE_ALL, false);
+		$view->setPartMode('permalink', BlorgView::MODE_ALL, false);
+		$view->setPartMode('reply_count', BlorgView::MODE_ALL, false);
+		$view->setPartMode('extended_bodytext', BlorgView::MODE_ALL, false);
 		$view->display($this->post);
 		$content_block->content = ob_get_clean();
 		$content_block->content_type = 'text/xml';
