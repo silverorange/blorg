@@ -11,8 +11,6 @@ require_once 'Swat/SwatHtmlTag.php';
  *
  * There are no settings for this gadget.
  *
- * TODO: show author post count in span.
- *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
