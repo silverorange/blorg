@@ -107,6 +107,8 @@ class BlorgSidebar extends SwatWidget implements SwatUIParent
 			if ($iterator->isLast())
 				$div_tag->class.= ' blorg-sidebar-gadget-last';
 
+			$div_tag->class.= $this->getGadgetCSSClassName($gadget);
+
 			$div_tag->open();
 
 			$gadget->display();
@@ -394,6 +396,41 @@ class BlorgSidebar extends SwatWidget implements SwatUIParent
 			}
 			echo '</ul>';
 		}
+	}
+
+	// }}}
+	// {{{ protected function getGadgetCSSClassName()
+
+	/**
+	 * @param BlorgGadget $gadget
+	 *
+	 * @return string
+	 */
+	protected function getGadgetCSSClassName(BlorgGadget $gadget)
+	{
+		$php_class_name = get_class($gadget);
+		$css_class_names = array();
+
+		// get the ancestors that are swat classes
+		while (strcmp($php_class_name, 'BlorgGadget') !== 0) {
+			if (strncmp($php_class_name, 'Blorg', 5) === 0) {
+				$css_class_name = strtolower(preg_replace('/([A-Z])/u',
+					'-\1', $php_class_name));
+
+				if (substr($css_class_name, 0, 1) === '-')
+					$css_class_name = substr($css_class_name, 1);
+
+				array_unshift($css_class_names, $css_class_name);
+			}
+			$php_class_name = get_parent_class($php_class_name);
+		}
+
+		$css_class_name = implode(' ', $css_class_names);
+		if (count($css_class_names) > 0) {
+			$css_class_name = ' '.$css_class_name;
+		}
+
+		return $css_class_name;
 	}
 
 	// }}}
