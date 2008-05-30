@@ -72,7 +72,7 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 
 				// is last reply is later than last visit date, mark as new
 				if (Date::compare($last_reply_date, $last_visit_date) > 0) {
-					$li_tag->class = 'new-reply';
+					$li_tag->class = 'new';
 				}
 
 				$li_tag->open();
