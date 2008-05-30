@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Blorg/BlorgGadget.php';
+require_once 'Blorg/BlorgViewFactory.php';
 require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
 require_once 'Swat/SwatString.php';
 require_once 'Swat/SwatHtmlTag.php';
@@ -88,39 +89,16 @@ class BlorgAuthorsGadget extends BlorgGadget
 
 	protected function displayAuthor(BlorgAuthor $author)
 	{
-		$div_tag = new SwatHtmlTag('div');
-		$div_tag->class = 'blorg-author';
-		$div_tag->open();
-
-		$header_tag = new SwatHtmlTag('h4');
-		$header_tag->open();
-
-		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->href = $this->getAuthorRelativeUri($author);
-		$anchor_tag->open();
-
-		echo SwatString::minimizeEntities($author->name), ' ';
-
-// TODO: Show author post count here.
-//		$span_tag =  new SwatHtmlTag('span');
-//		$span_tag->setContent(sprintf(Blorg::ngettext(
-//			'(%s reply)', '(%s replies)', $conversation->reply_count),
-//			$locale->formatNumber($conversation->reply_count)));
-
-//		$span_tag->display();
-
-		$anchor_tag->close();
-
-		$header_tag->close();
-
-		if (strlen($author->description) > 0) {
-			$description_div_tag = new SwatHtmlTag('div');
-			$description_div_tag->setContent($author->description, 'text/xml');
-			$description_div_tag->display();
-		}
-
-		$div_tag->close();
+		$view = BlorgViewFactory::build('author', $this->app);
+		$view->setPartMode('name', BlorgView::MODE_SUMMARY);
+		$view->setPartMode('bodytext', BlorgView::MODE_NONE);
+		$view->setPartMode('email', BlorgView::MODE_NONE);
+		$view->setPartMode('description', BlorgView::MODE_ALL, false);
+		$view->setPartMode('post_count', BlorgView::MODE_SUMMARY, false);
+		$view->display($author);
 	}
+
+	// }}}
 }
 
 ?>
