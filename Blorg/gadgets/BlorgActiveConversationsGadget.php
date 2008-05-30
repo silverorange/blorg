@@ -79,18 +79,17 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 
 				$anchor_tag = new SwatHtmlTag('a');
 				$anchor_tag->href = $this->getPostRelativeUri($post);
-				$anchor_tag->open();
-
-				echo SwatString::minimizeEntities($post->getTitle()), ' ';
+				$anchor_tag->setContent($post->getTitle());
 
 				$span_tag =  new SwatHtmlTag('span');
 				$span_tag->setContent(sprintf(Blorg::ngettext(
 					'(%s reply)', '(%s replies)', $conversation->reply_count),
 					$locale->formatNumber($conversation->reply_count)));
 
+				$anchor_tag->display();
+				echo ' ';
 				$span_tag->display();
 
-				$anchor_tag->close();
 				$li_tag->close();
 			}
 
