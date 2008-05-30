@@ -20,6 +20,22 @@ require_once 'SwatI18N/SwatI18NLocale.php';
  */
 class BlorgActiveConversationsGadget extends BlorgGadget
 {
+	// {{{ public function init()
+
+	public function init()
+	{
+		parent::init();
+
+		// set a cookie with the last visit date
+		if ($this->app->hasModule('SiteCookieModule')) {
+			$now = new SwatDate();
+			$cookie = $this->app->getModule('SiteCookieModule');
+			$cookie->setCookie('last_visit_date',
+				$now->getDate(DATE_FORMAT_ISO_EXTENDED));
+		}
+	}
+
+	// }}}
 	// {{{ public function display()
 
 	public function display()
@@ -29,6 +45,19 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 		$conversations = $this->getActiveConversations();
 
 		if (count($conversations) > 0) {
+
+			// get last visited date based on cookie value
+			if ($this->app->hasModule('SiteCookieModule')) {
+				$cookie = $this->app->getModule('SiteCookieModule');
+				if (isset($cookie->last_visit_date)) {
+					$last_visit_date = new SwatDate($cookie->last_visit_date);
+				} else {
+					$last_visit_date = new SwatDate();
+				}
+			} else {
+				$last_visit_date = new SwatDate();
+			}
+
 			echo '<ul>';
 
 			$locale = SwatI18NLocale::get();
@@ -36,8 +65,18 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 			foreach ($conversations as $conversation) {
 				$post = new $class_name($conversation);
 
+				$last_reply_date = new SwatDate($conversation->last_reply_date);
+				$last_reply_date->setTZ('UTC');
+
 				$li_tag = new SwatHtmlTag('li');
+
+				// is last reply is later than last visit date, mark as new
+				if (Date::compare($last_reply_date, $last_visit_date) > 0) {
+					$li_tag->class = 'new-reply';
+				}
+
 				$li_tag->open();
+
 				$anchor_tag = new SwatHtmlTag('a');
 				$anchor_tag->href = $this->getPostRelativeUri($post);
 				$anchor_tag->open();
@@ -76,7 +115,7 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 	protected function getActiveConversations()
 	{
 		$sql = sprintf('select title, bodytext, publish_date, shortname,
-				reply_count
+				reply_count, last_reply_date
 			from BlorgPost
 				inner join BlorgPostReplyCountView
 					on BlorgPost.id = BlorgPostReplyCountView.post
