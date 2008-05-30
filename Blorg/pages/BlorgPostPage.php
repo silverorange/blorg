@@ -455,8 +455,7 @@ class BlorgPostPage extends SitePage
 	protected function displayPost()
 	{
 		$view = BlorgViewFactory::build('post', $this->app);
-		$view->showTitle(BlorgPostView::SHOW_ALL, false);
-		$view->showExtendedBodytext(BlorgPostView::SHOW_ALL);
+		$view->setPartMode('title', BlorgView::MODE_ALL, false);
 		$view->display($this->post);
 	}
 

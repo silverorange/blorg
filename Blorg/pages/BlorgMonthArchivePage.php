@@ -97,8 +97,8 @@ class BlorgMonthArchivePage extends SitePage
 	protected function displayPosts()
 	{
 		$view = BlorgViewFactory::build('post', $this->app);
-		$view->showBodytext(BlorgPostView::SHOW_SUMMARY);
-		$view->showExtendedBodytext(BlorgPostView::SHOW_NONE);
+		$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
+		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
 		foreach ($this->posts as $post) {
 			$view->display($post);
 		}
