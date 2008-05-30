@@ -92,7 +92,7 @@ class BlorgAuthorsGadget extends BlorgGadget
 		$view->setPartMode('bodytext', BlorgView::MODE_NONE);
 		$view->setPartMode('email', BlorgView::MODE_NONE);
 		$view->setPartMode('description', BlorgView::MODE_ALL, false);
-		$view->setPartMode('post_count', BlorgView::MODE_SUMMARY, false);
+		$view->setPartMode('post_count', BlorgView::MODE_NONE, false);
 		$view->display($author);
 	}
 
