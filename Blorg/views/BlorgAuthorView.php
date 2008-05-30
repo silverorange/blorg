@@ -13,8 +13,10 @@ require_once 'Blorg/BlorgPageFactory.php';
  *
  * By default, this author view's parts are:
  *
- * - name        - The name of the author. Supports MODE_ALL and MODE_NONE.
- *                 Links to the author details page by default.
+ * - name        - The name of the author. Supports MODE_ALL, MODE_SUMMARY and
+ *                 MODE_NONE. If summary mode is used, the author name is
+ *                 displayed in a h4 instead of a h3. Links to the author
+ *                 details page by default.
  * - email       - The email of the author. Supports MODE_ALL and MODE_NONE.
  *                 Links to the author email by default.
  * - description - The description of the author. Supports MODE_ALL and
@@ -162,7 +164,11 @@ class BlorgAuthorView extends BlorgView
 		if ($this->getMode('name') > BlorgView::MODE_NONE) {
 			$link = $this->getLink('name');
 			if (strlen($author->name) > 0) {
-				$header_tag = new SwatHtmlTag('h3');
+				if ($this->getMode('name') > BlorgView::MODE_SUMMARY)
+					$header_tag = new SwatHtmlTag('h3');
+				else
+					$header_tag = new SwatHtmlTag('h4');
+
 				$header_tag->class = 'author-name';
 				if (strlen($author->shortname) > 0) {
 					$header_tag->id = sprintf('author_%s', $author->shortname);
