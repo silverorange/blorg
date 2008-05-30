@@ -7,9 +7,20 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgAuthor.php';
 require_once 'Blorg/Blorg.php';
 require_once 'Blorg/BlorgPageFactory.php';
+require_once 'Blorg/views/BlorgView.php';
 
 /**
  * Base class for Blörg post views
+ *
+ * By default, this post view's element modes are:
+ *
+ * - title:             show all and link
+ * - author:            show all and link
+ * - permalink:         show all and link
+ * - reply_count:       show all and link
+ * - tags:              show all and link
+ * - bodytext:          show all
+ * - extended_bodytext: show summary and link
  *
  * Usage pattern is as follows:
  * 1. instantiate a view object,
@@ -21,45 +32,9 @@ require_once 'Blorg/BlorgPageFactory.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostView
+class BlorgPostView extends BlorgView
 {
-	// {{{ class constants
-
-	/**
-	 * Do not show the element. All elements should support this mode.
-	 */
-	const SHOW_NONE    = 1;
-
-	/**
-	 * Show a shortened or summarized version of the element. Not all elements
-	 * support this mode. If it is unsupported, it is treated like
-	 * {@link BlorgPostView::SHOW_ALL}.
-	 */
-	const SHOW_SUMMARY = 2;
-
-	/**
-	 * Show all of the element. This is the default mode for most elements.
-	 */
-	const SHOW_ALL     = 3;
-
-	// }}}
 	// {{{ protected properties
-
-	/**
-	 * The application to which this view belongs
-	 *
-	 * @var SiteApplication
-	 *
-	 * @see BlorgPostView::__construct()
-	 */
-	protected $app;
-
-	/**
-	 * Path prefix for relatively referenced paths
-	 *
-	 * @var string
-	 */
-	protected $path_prefix = '';
 
 	/**
 	 * Maximum length of bodytext before it is ellipsized in the summary
@@ -84,55 +59,15 @@ class BlorgPostView
 	 * @see BlorgPostView::show()
 	 */
 	protected $show = array(
-		'title'             => array('mode' => self::SHOW_ALL,     'link' => true),
-		'author'            => array('mode' => self::SHOW_ALL,     'link' => true),
-		'permalink'         => array('mode' => self::SHOW_ALL,     'link' => true),
-		'reply_count'       => array('mode' => self::SHOW_ALL,     'link' => true),
-		'tags'              => array('mode' => self::SHOW_ALL,     'link' => true),
-		'files'             => array('mode' => self::SHOW_ALL,     'link' => true),
-		'bodytext'          => array('mode' => self::SHOW_ALL,     'link' => true),
-		'extended_bodytext' => array('mode' => self::SHOW_SUMMARY, 'link' => true),
+		'title'             => array('mode' => BlorgView::SHOW_ALL,     'link' => true),
+		'author'            => array('mode' => BlorgView::SHOW_ALL,     'link' => true),
+		'permalink'         => array('mode' => BlorgView::SHOW_ALL,     'link' => true),
+		'reply_count'       => array('mode' => BlorgView::SHOW_ALL,     'link' => true),
+		'tags'              => array('mode' => BlorgView::SHOW_ALL,     'link' => true),
+		'files'             => array('mode' => BlorgView::SHOW_ALL,     'link' => true),
+		'bodytext'          => array('mode' => BlorgView::SHOW_ALL,     'link' => true),
+		'extended_bodytext' => array('mode' => BlorgView::SHOW_SUMMARY, 'link' => true),
 	);
-
-	// }}}
-	// {{{ public function __construct()
-
-	/**
-	 * Creates a new post view
-	 *
-	 * By default, this post view's element modes are:
-	 *
-	 * - title:             show all and link
-	 * - author:            show all and link
-	 * - permalink:         show all and link
-	 * - reply_count:       show all and link
-	 * - tags:              show all and link
-	 * - bodytext:          show all
-	 * - extended_bodytext: show summary and link
-	 *
-	 * @param SiteApplication $app the application to which this view belongs.
-	 *
-	 * @see BlorgPostView::show()
-	 */
-	public function __construct(SiteApplication $app)
-	{
-		$this->app = $app;
-	}
-
-	// }}}
-	// {{{ public function setPathPrefix()
-
-	/**
-	 * Sets the prefix to use for relatively referenced paths such as file
-	 * download links.
-	 *
-	 * @param string A relative path prefix to access the web root such as
-	 *               "../"
-	 */
-	public function setPathPrefix($path_prefix)
-	{
-		$this->path_prefix = $path_prefix;
-	}
 
 	// }}}
 
@@ -160,12 +95,12 @@ class BlorgPostView
 
 			if (is_array($value)) {
 				$mode = (array_key_exists('mode', $value)) ?
-					$value['mode'] : self::SHOW_NONE;
+					$value['mode'] : BlorgView::SHOW_NONE;
 
 				$link = (array_key_exists('link', $value)) ?
 					$value['link'] : false;
 			} else {
-				$mode = self::SHOW_NONE;
+				$mode = BlorgView::SHOW_NONE;
 				$link = false;
 			}
 
@@ -207,18 +142,17 @@ class BlorgPostView
 	 *
 	 * @param integer $mode the display mode of the title element of this post
 	 *                       view. The title element supports
-	 *                       {@link BlorgPostView::SHOW_NONE},
-	 *                       {@link BlorgPostView::SHOW_SUMMARY} and
-	 *                       {@link BlorgPostView::SHOW_ALL}. If an invalid
-	 *                       mode is specified, BlorgPostView::SHOW_NONE is
-	 *                       used.
+	 *                       {@link BlorgView::SHOW_NONE},
+	 *                       {@link BlorgView::SHOW_SUMMARY} and
+	 *                       {@link BlorgView::SHOW_ALL}. If an invalid mode is
+	 *                       specified, BlorgView::SHOW_NONE is used.
 	 * @param boolean|string $link if false, the title will not be linked. If
 	 *                              true, the title will be linked to the
 	 *                              permalink of the post. If a string, the
 	 *                              title will be linked to the specified
 	 *                              string.
 	 */
-	public function showTitle($mode = self::SHOW_ALL, $link = true)
+	public function showTitle($mode = BlorgView::SHOW_ALL, $link = true)
 	{
 		$mode = $this->getMode($mode);
 		$link = $this->getLink($link);
@@ -233,17 +167,16 @@ class BlorgPostView
 	 *
 	 * @param integer $mode the display mode of the author element of this post
 	 *                       view. The author element supports
-	 *                       {@link BlorgPostView::SHOW_NONE} and
-	 *                       {@link BlorgPostView::SHOW_ALL}. If an invalid
-	 *                       mode is specified, BlorgPostView::SHOW_NONE is
-	 *                       used.
+	 *                       {@link BlorgView::SHOW_NONE} and
+	 *                       {@link BlorgView::SHOW_ALL}. If an invalid mode is
+	 *                       specified, BlorgView::SHOW_NONE is used.
 	 * @param boolean|string $link if false, the author will not be linked. If
 	 *                              true, the author will be linked to the
 	 *                              author bio page (if such a page exists). If
 	 *                              a string, the author will be linked to the
 	 *                              specified string.
 	 */
-	public function showAuthor($mode = self::SHOW_ALL, $link = true)
+	public function showAuthor($mode = BlorgView::SHOW_ALL, $link = true)
 	{
 		$mode = $this->getMode($mode);
 		$link = $this->getLink($link);
@@ -258,17 +191,16 @@ class BlorgPostView
 	 *
 	 * @param integer $mode the display mode of the permalink element of this
 	 *                       post view. The permalink element supports
-	 *                       {@link BlorgPostView::SHOW_NONE} and
-	 *                       {@link BlorgPostView::SHOW_ALL}. If an invalid
-	 *                       mode is specified, BlorgPostView::SHOW_NONE is
-	 *                       used.
+	 *                       {@link BlorgView::SHOW_NONE} and
+	 *                       {@link BlorgView::SHOW_ALL}. If an invalid mode is
+	 *                       specified, BlorgView::SHOW_NONE is used.
 	 * @param boolean|string $link if false, the permalink will not be linked.
 	 *                              If true, the permalink will be linked to
 	 *                              the permalink of the post. If a string, the
 	 *                              permalink will be linked to the specified
 	 *                              string.
 	 */
-	public function showPermalink($mode = self::SHOW_ALL, $link = true)
+	public function showPermalink($mode = BlorgView::SHOW_ALL, $link = true)
 	{
 		$mode = $this->getMode($mode);
 		$link = $this->getLink($link);
@@ -283,10 +215,9 @@ class BlorgPostView
 	 *
 	 * @param integer $mode the display mode of the reply_count element of this
 	 *                       post view. The reply_count element supports
-	 *                       {@link BlorgPostView::SHOW_NONE} and
-	 *                       {@link BlorgPostView::SHOW_ALL}. If an invalid
-	 *                       mode is specified, BlorgPostView::SHOW_NONE is
-	 *                       used.
+	 *                       {@link BlorgView::SHOW_NONE} and
+	 *                       {@link BlorgView::SHOW_ALL}. If an invalid mode is
+	 *                       specified, BlorgView::SHOW_NONE is used.
 	 * @param boolean|string $link if false, the reply_count will not be linked.
 	 *                              If true, the reply_count will be linked to
 	 *                              the permalink of the post with a URI
@@ -294,7 +225,7 @@ class BlorgPostView
 	 *                              reply_count will be linked to the specified
 	 *                              string.
 	 */
-	public function showReplyCount($mode = self::SHOW_ALL, $link = true)
+	public function showReplyCount($mode = BlorgView::SHOW_ALL, $link = true)
 	{
 		$mode = $this->getMode($mode);
 		$link = $this->getLink($link);
@@ -309,17 +240,17 @@ class BlorgPostView
 	 *
 	 * @param integer $mode the display mode of the tags element of this
 	 *                       post view. The tags element supports
-	 *                       {@link BlorgPostView::SHOW_NONE},
-	 *                       {@link BlorgPostView::SHOW_SUMMARY} and
-	 *                       {@link BlorgPostView::SHOW_ALL}. If an invalid
-	 *                       mode is specified, BlorgPostView::SHOW_NONE is
-	 *                       used. The summary mode presents an inline list
-	 *                       delimited by commas. The all mode presents an
-	 *                       unordered XHTML list.
+	 *                       {@link BlorgView::SHOW_NONE},
+	 *                       {@link BlorgView::SHOW_SUMMARY} and
+	 *                       {@link BlorgView::SHOW_ALL}. If an invalid mode is
+	 *                       specified, BlorgView::SHOW_NONE is used. The
+	 *                       summary mode displays an inline list delimited by
+	 *                       commas. The all mode displays an unordered XHTML
+	 *                       list.
 	 * @param boolean $link if true, the tags are linked to tag pages. If false,
 	 *                       the tags are not linked.
 	 */
-	public function showTags($mode = self::SHOW_ALL, $link = true)
+	public function showTags($mode = BlorgView::SHOW_ALL, $link = true)
 	{
 		$mode = $this->getMode($mode);
 		$link = $this->getLink($link);
@@ -334,17 +265,16 @@ class BlorgPostView
 	 *
 	 * @param integer $mode the display mode of the files element of this
 	 *                       post view. The files element supports
-	 *                       {@link BlorgPostView::SHOW_NONE},
-	 *                       {@link BlorgPostView::SHOW_SUMMARY} and
-	 *                       {@link BlorgPostView::SHOW_ALL}. If an invalid
-	 *                       mode is specified, BlorgPostView::SHOW_NONE is
-	 *                       used.
+	 *                       {@link BlorgView::SHOW_NONE},
+	 *                       {@link BlorgView::SHOW_SUMMARY} and
+	 *                       {@link BlorgView::SHOW_ALL}. If an invalid mode is
+	 *                       specified, BlorgView::SHOW_NONE is used.
 	 * @param boolean|string $link the bodytext is never linked. Setting a
 	 *                              value here has no effect. This parameter is
 	 *                              here to match the API of the other show
 	 *                              methods.
 	 */
-	public function showFiles($mode = self::SHOW_ALL, $link = true)
+	public function showFiles($mode = BlorgView::SHOW_ALL, $link = true)
 	{
 		$mode = $this->getMode($mode);
 		$link = $this->getLink($link);
@@ -359,19 +289,22 @@ class BlorgPostView
 	 *
 	 * @param integer $mode the display mode of the bodytext element of this
 	 *                       post view. The bodytext element supports
-	 *                       {@link BlorgPostView::SHOW_NONE},
-	 *                       {@link BlorgPostView::SHOW_SUMMARY} and
-	 *                       {@link BlorgPostView::SHOW_ALL}. If an invalid
-	 *                       mode is specified, BlorgPostView::SHOW_NONE is
-	 *                       used. The summary mode presents a condensed,
-	 *                       ellipsized version of the post bodytext that is
-	 *                       no more than 300 characters long.
+	 *                       {@link BlorgView::SHOW_NONE},
+	 *                       {@link BlorgView::SHOW_SUMMARY} and
+	 *                       {@link BlorgView::SHOW_ALL}. If an invalid mode is
+	 *                       specified, BlorgView::SHOW_NONE is used. The
+	 *                       summary mode displays a condensed, ellipsized
+	 *                       version of the post bodytext that is no more than
+	 *                       {@link BlorgPostView::$bodytext_summary_length}
+	 *                       characters long.
 	 * @param boolean|string $link the bodytext is never linked. Setting a
 	 *                              value here has no effect. This parameter is
 	 *                              here to match the API of the other show
 	 *                              methods.
+	 *
+	 * @see BlorgPostView::setBodytextSummaryLength()
 	 */
-	public function showBodytext($mode = self::SHOW_ALL, $link = true)
+	public function showBodytext($mode = BlorgView::SHOW_ALL, $link = true)
 	{
 		$mode = $this->getMode($mode);
 		$link = $this->getLink($link);
@@ -384,23 +317,24 @@ class BlorgPostView
 	/**
 	 * Sets the display mode of the extended_bodytext element of this post view
 	 *
-	 * @param integer $mode the display mode of the extended_bodytext element of
-	 *                       this post view. The extended_bodytext element
-	 *                       supports {@link BlorgPostView::SHOW_NONE},
-	 *                       {@link BlorgPostView::SHOW_SUMMARY} and
-	 *                       {@link BlorgPostView::SHOW_ALL}. If an invalid
-	 *                       mode is specified, BlorgPostView::SHOW_NONE is
-	 *                       used. The summary mode presents a 'Read More ...'
-	 *                       link if the post has extended bodytext.
+	 * @param integer $mode the display mode of the extended_bodytext element
+	 *                       of this post view. The extended_bodytext element
+	 *                       supports {@link BlorgView::SHOW_NONE},
+	 *                       {@link BlorgView::SHOW_SUMMARY} and
+	 *                       {@link BlorgView::SHOW_ALL}. If an invalid mode is
+	 *                       specified, BlorgView::SHOW_NONE is used. The
+	 *                       summary mode displays a “Read More …” link if the
+	 *                       post has extended bodytext.
 	 * @param boolean|string $link the extended_bodytext is only linked when
-	 *                              using BlorgPostView::SHOW_SUMMARY.
-	 *                              If false, the extended_bodytext will not be
-	 *                              linked. If true, the extended_bodytext will
-	 *                              be linked to the permalink of the post. If
-	 *                              a string, the extended_bodytext will be
+	 *                              using BlorgView::SHOW_SUMMARY. If false,
+	 *                              the extended_bodytext will not be linked.
+	 *                              If true, the extended_bodytext will be
+	 *                              linked to the permalink of the post. If a
+	 *                              string, the extended_bodytext will be
 	 *                              linked to the specified string.
 	 */
-	public function showExtendedBodytext($mode = self::SHOW_ALL, $link = true)
+	public function showExtendedBodytext($mode = BlorgView::SHOW_ALL,
+		$link = true)
 	{
 		$mode = $this->getMode($mode);
 		$link = $this->getLink($link);
@@ -546,7 +480,7 @@ class BlorgPostView
 		$show = $this->show['title'];
 
 		switch ($show['mode']) {
-		case self::SHOW_ALL:
+		case BlorgView::SHOW_ALL:
 			if (strlen($post->title) > 0) {
 				$header_tag = new SwatHtmlTag('h3');
 				$header_tag->class = 'entry-title';
@@ -571,7 +505,7 @@ class BlorgPostView
 				}
 			}
 			break;
-		case self::SHOW_SUMMARY:
+		case BlorgView::SHOW_SUMMARY:
 			$title = $post->getTitle();
 			if (strlen($title) > 0) {
 				$header_tag = new SwatHtmlTag('h3');
@@ -607,7 +541,7 @@ class BlorgPostView
 	protected function displayAuthor(BlorgPost $post)
 	{
 		$show = $this->show['author'];
-		if ($show['mode'] > self::SHOW_NONE) {
+		if ($show['mode'] > BlorgView::SHOW_NONE) {
 			if ($post->author->show) {
 				$span_tag = new SwatHtmlTag('span');
 				$span_tag->class = 'vcard author';
@@ -637,7 +571,7 @@ class BlorgPostView
 	protected function displayPermalink(BlorgPost $post)
 	{
 		$show = $this->show['permalink'];
-		if ($show['mode'] > self::SHOW_NONE) {
+		if ($show['mode'] > BlorgView::SHOW_NONE) {
 			if ($show['link'] === false) {
 				$permalink_tag = new SwatHtmlTag('span');
 			} else {
@@ -676,7 +610,7 @@ class BlorgPostView
 	protected function displayReplyCount(BlorgPost $post)
 	{
 		$show = $this->show['reply_count'];
-		if ($show['mode'] > self::SHOW_NONE) {
+		if ($show['mode'] > BlorgView::SHOW_NONE) {
 			$count = count($post->getVisibleReplies());
 
 			if ($show['link'] === false) {
@@ -713,14 +647,14 @@ class BlorgPostView
 	{
 		$show = $this->show['bodytext'];
 		switch ($show['mode']) {
-		case self::SHOW_ALL:
+		case BlorgView::SHOW_ALL:
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'entry-content';
 			$div_tag->setContent($post->bodytext, 'text/xml');
 			$div_tag->display();
 			break;
 
-		case self::SHOW_SUMMARY:
+		case BlorgView::SHOW_SUMMARY:
 			$bodytext = SwatString::ellipsizeRight(SwatString::condense(
 				$post->bodytext), $this->bodytext_summary_length);
 
@@ -740,14 +674,14 @@ class BlorgPostView
 		$show = $this->show['extended_bodytext'];
 		if (strlen($post->extended_bodytext) > 0) {
 			switch ($show['mode']) {
-			case self::SHOW_ALL:
+			case BlorgView::SHOW_ALL:
 				$div_tag = new SwatHtmlTag('div');
 				$div_tag->class = 'entry-content entry-content-extended';
 				$div_tag->setContent($post->extended_bodytext, 'text/xml');
 				$div_tag->display();
 				break;
 
-			case self::SHOW_SUMMARY:
+			case BlorgView::SHOW_SUMMARY:
 				$div_tag = new SwatHtmlTag('div');
 				$div_tag->class = 'entry-content entry-content-extended';
 				$div_tag->open();
@@ -779,7 +713,7 @@ class BlorgPostView
 	protected function displayFiles(BlorgPost $post)
 	{
 		$show = $this->show['files'];
-		if ($show['mode'] > self::SHOW_NONE) {
+		if ($show['mode'] > BlorgView::SHOW_NONE) {
 			$files = $post->getVisibleFiles();
 			if (count($files) > 0) {
 				echo '<ul class="attachments">';
@@ -803,87 +737,6 @@ class BlorgPostView
 	// }}}
 
 	// helper methods
-	// {{{ protected function getPostRelativeUri()
-
-	protected function getPostRelativeUri(BlorgPost $post)
-	{
-		$path = $this->app->config->blorg->path.'archive';
-
-		$date = clone $post->publish_date;
-		$date->convertTZ($this->app->default_time_zone);
-		$year = $date->getYear();
-		$month_name = BlorgPageFactory::$month_names[$date->getMonth()];
-
-		return sprintf('%s/%s/%s/%s',
-			$path,
-			$year,
-			$month_name,
-			$post->shortname);
-	}
-
-	// }}}
-	// {{{ protected function getAuthorRelativeUri()
-
-	protected function getAuthorRelativeUri(BlorgAuthor $author)
-	{
-		$path = $this->app->config->blorg->path.'author';
-		return sprintf('%s/%s',
-			$path,
-			$author->shortname);
-	}
-
-	// }}}
-	// {{{ protected function getMode()
-
-	/**
-	 * Ensures the specified mode is a valid mode and makes it valid if
-	 * invalid
-	 *
-	 * If an invalid mode is specified, {@link BlorgPostView::SHOW_NONE} is
-	 * returned. Otherwise, the specified mode is returned.
-	 *
-	 * @param integer $mode the mode.
-	 *
-	 * @return integer a valid display mode.
-	 */
-	protected function getMode($mode)
-	{
-		$valid_modes = array(
-			self::SHOW_ALL,
-			self::SHOW_SUMMARY,
-			self::SHOW_NONE,
-		);
-
-		if (!in_array($mode, $valid_modes)) {
-			$mode = self::SHOW_NONE;
-		}
-
-		return $mode;
-	}
-
-	// }}}
-	// {{{ protected function getLink()
-
-	/**
-	 * Ensures the specified link is valid for the link parameter of a show
-	 * method and makes it valid if invalid
-	 *
-	 * If an invalid link is specified, false is returned. Otherwise the
-	 * specified link is returned.
-	 *
-	 * @param boolean|string $link the link.
-	 *
-	 * @return boolean|string a valid link.
-	 */
-	protected function getLink($link)
-	{
-		if (!is_bool($link) && !is_string($link)) {
-			$link = false;
-		}
-		return $link;
-	}
-
-	// }}}
 	// {{{ protected function isVisible()
 
 	/**
@@ -911,7 +764,7 @@ class BlorgPostView
 
 		$visible = false;
 		foreach ($this->show as $key => $show) {
-			if (in_array($key, $keys) && $show['mode'] > self::SHOW_NONE) {
+			if (in_array($key, $keys) && $show['mode'] > BlorgView::SHOW_NONE) {
 				$visible = true;
 				break;
 			}
@@ -948,7 +801,7 @@ class BlorgPostView
 		// make sure fields that have content are visible
 		$visible = false;
 		foreach ($this->show as $key => $show) {
-			if (in_array($key, $keys) && $show['mode'] > self::SHOW_NONE) {
+			if (in_array($key, $keys) && $show['mode'] > BlorgView::SHOW_NONE) {
 				$visible = true;
 				break;
 			}
@@ -987,7 +840,7 @@ class BlorgPostView
 		// make sure fields that have content are visible
 		$visible = false;
 		foreach ($this->show as $key => $show) {
-			if (in_array($key, $keys) && $show['mode'] > self::SHOW_NONE) {
+			if (in_array($key, $keys) && $show['mode'] > BlorgView::SHOW_NONE) {
 				$visible = true;
 				break;
 			}
