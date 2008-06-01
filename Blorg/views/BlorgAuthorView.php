@@ -84,8 +84,14 @@ class BlorgAuthorView extends BlorgView
 	 *
 	 * @param BlorgAuthor $author
 	 */
-	public function display(BlorgAuthor $author)
+	public function display($author)
 	{
+		if (!($author instanceof BlorgAuthor)) {
+			throw new InvalidArgumentException(sprintf('The view "%s" can '.
+				'only display BlorgAuthor objects.',
+				get_class($this)));
+		}
+
 		if ($this->isVisible($author)) {
 			echo '<div class="author">';
 

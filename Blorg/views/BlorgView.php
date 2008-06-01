@@ -159,6 +159,11 @@ abstract class BlorgView
 	}
 
 	// }}}
+	// {{{ abstract public function display()
+
+	abstract public function display($object);
+
+	// }}}
 	// {{{ protected function getMode()
 
 	/**

@@ -96,8 +96,14 @@ class BlorgPostView extends BlorgView
 	 *
 	 * @param BlorgPost $post
 	 */
-	public function display(BlorgPost $post)
+	public function display($post)
 	{
+		if (!($post instanceof BlorgPost)) {
+			throw new InvalidArgumentException(sprintf('The view "%s" can '.
+				'only display BlorgPost objects.',
+				get_class($this)));
+		}
+
 		if ($this->isVisible($post)) {
 			echo '<div class="entry hentry">';
 
