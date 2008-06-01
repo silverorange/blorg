@@ -62,29 +62,21 @@ class BlorgReplyView extends BlorgView
 
 	protected function displayHeader(BlorgReply $reply)
 	{
-		ob_start();
-		$this->displayAuthor($reply);
-		$author = ob_get_clean();
-
-		if (strlen($author) > 0) {
-			$elements[] = $author;
-		}
-
-		ob_start();
-		$this->displayPermalink($reply);
-		$permalink = ob_get_clean();
-
-		if (strlen($permalink) > 0) {
-			$elements[] = $permalink;
-		}
-
 		$heading_tag = new SwatHtmlTag('h4');
 		$heading_tag->class = 'reply-title';
+
+		$web_address_tag = new SwatHtmlTag('div');
+		$web_address_tag->class = 'reply-link';
+
 		$heading_tag->open();
-
-		echo implode(' ', $elements);
-
+		$this->displayAuthor($reply);
+		echo ' ';
+		$this->displayPermalink($reply);
 		$heading_tag->close();
+
+		$web_address_tag->open();
+		$this->displayWebAddress($reply);
+		$web_address_tag->close();
 	}
 
 	// }}}
@@ -106,20 +98,10 @@ class BlorgReplyView extends BlorgView
 			$link = $this->getLink('author');
 			if ($reply->author === null) {
 				// anonymous author
-				$reply_link = (is_string($link)) ? $link : $reply->link;
-
-				if (strlen($reply_link) > 0 && $link !== false) {
-					$anchor_tag = new SwatHtmlTag('a');
-					$anchor_tag->href = $reply_link;
-					$anchor_tag->class = 'reply-author';
-					$anchor_tag->setContent($reply->fullname);
-					$anchor_tag->display();
-				} else {
-					$span_tag = new SwatHtmlTag('span');
-					$span_tag->class = 'reply-author';
-					$span_tag->setContent($reply->fullname);
-					$span_tag->display();
-				}
+				$span_tag = new SwatHtmlTag('span');
+				$span_tag->class = 'reply-author';
+				$span_tag->setContent($reply->fullname);
+				$span_tag->display();
 			} else {
 				// system author
 				if ($reply->author->show && $link !== false) {
@@ -148,6 +130,25 @@ class BlorgReplyView extends BlorgView
 					$span_tag->setContent($this->reply->author->name);
 					$span_tag->display();
 				}
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function displayWebAddress()
+
+	protected function displayWebAddress(BlorgReply $reply)
+	{
+		if ($this->getMode('author') > BlorgView::MODE_NONE) {
+			$link = $this->getLink('author');
+			$reply_link = (is_string($link)) ? $link : $reply->link;
+
+			if (strlen($reply_link) > 0 && $link !== false) {
+				$anchor_tag = new SwatHtmlTag('a');
+				$anchor_tag->href = $reply_link;
+				$anchor_tag->class = 'reply-link';
+				$anchor_tag->setContent($reply_link);
+				$anchor_tag->display();
 			}
 		}
 	}
