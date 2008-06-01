@@ -339,6 +339,14 @@ abstract class BlorgView
 	}
 
 	// }}}
+	// {{{ protected function getReplyRelativeUri()
+
+	protected function getReplyRelativeUri(BlorgReply $reply)
+	{
+		return $this->getPostRelativeUri($reply->post).'#reply'.$reply->id;
+	}
+
+	// }}}
 }
 
 ?>
