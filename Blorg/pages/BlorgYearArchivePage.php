@@ -83,7 +83,7 @@ class BlorgYearArchivePage extends SitePathPage
 	{
 		$path = $this->app->config->blorg->path.'archive';
 
-		$view = BlorgViewFactory::build('post', $this->app);
+		$view = BlorgViewFactory::get($this->app, 'post');
 
 		$view->setPartMode('title', BlorgView::MODE_SUMMARY);
 		$view->setPartMode('bodytext', BlorgView::MODE_NONE);
