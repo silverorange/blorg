@@ -375,7 +375,7 @@ class BlorgPostView extends BlorgView
 			$reply_count_tag->class = 'reply-count';
 
 			if ($count == 0) {
-				$reply_count_tag->setContent(Blorg::_('no replies'));
+				$reply_count_tag->setContent(Blorg::_('reply'));
 			} else {
 				$locale = SwatI18NLocale::get();
 				$reply_count_tag->setContent(sprintf(
