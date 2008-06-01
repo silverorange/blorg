@@ -475,6 +475,9 @@ class BlorgPostPage extends SitePage
 
 			$view = BlorgViewFactory::get($this->app, 'reply');
 			$count = count($replies);
+
+			if ($count > 0) echo '<h3 class="replies-title">Replies</h3>';
+
 			foreach ($replies as $i => $reply) {
 				if ($i == $count - 1) {
 					// Reply form submits to the top of the new reply if a new
