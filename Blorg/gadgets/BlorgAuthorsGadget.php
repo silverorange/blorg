@@ -87,7 +87,7 @@ class BlorgAuthorsGadget extends BlorgGadget
 
 	protected function displayAuthor(BlorgAuthor $author)
 	{
-		$view = BlorgViewFactory::build('author', $this->app);
+		$view = BlorgViewFactory::get($this->app, 'author');
 		$view->setPartMode('name', BlorgView::MODE_SUMMARY);
 		$view->setPartMode('bodytext', BlorgView::MODE_NONE);
 		$view->setPartMode('email', BlorgView::MODE_NONE);

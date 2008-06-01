@@ -137,7 +137,7 @@ class BlorgPostDetails extends AdminIndex
 	{
 		$content_block = $this->ui->getWidget('post_preview');
 		ob_start();
-		$view = BlorgViewFactory::build('post', $this->app);
+		$view = BlorgViewFactory::get($this->app, 'post');
 		$view->setPathPrefix('../');
 		$view->setPartMode('title', BlorgView::MODE_ALL, false);
 		$view->setPartMode('permalink', BlorgView::MODE_ALL, false);

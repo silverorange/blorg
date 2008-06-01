@@ -104,7 +104,7 @@ class BlorgAuthorPage extends SitePage
 
 	protected function displayAuthor()
 	{
-		$view = BlorgViewFactory::build('author', $this->app);
+		$view = BlorgViewFactory::get($this->app, 'author');
 		$view->setPartMode('name', BlorgView::MODE_ALL, false);
 		$view->setPartMode('bodytext', BlorgView::MODE_ALL);
 		$view->setPartMode('description', BlorgView::MODE_NONE);
@@ -121,7 +121,7 @@ class BlorgAuthorPage extends SitePage
 		$div_tag->class = 'author-posts';
 		$div_tag->open();
 
-		$view = BlorgViewFactory::build('post', $this->app);
+		$view = BlorgViewFactory::get($this->app, 'post');
 		$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
 		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
 

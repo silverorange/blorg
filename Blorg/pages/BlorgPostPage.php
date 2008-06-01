@@ -424,7 +424,7 @@ class BlorgPostPage extends SitePage
 
 			ob_start();
 
-			$view = BlorgViewFactory::build('reply', $this->app);
+			$view = BlorgViewFactory::get($this->app, 'reply');
 			$view->display($this->reply);
 
 			$reply_preview = $this->reply_ui->getWidget('reply_preview');
@@ -454,7 +454,7 @@ class BlorgPostPage extends SitePage
 
 	protected function displayPost()
 	{
-		$view = BlorgViewFactory::build('post', $this->app);
+		$view = BlorgViewFactory::get($this->app, 'post');
 		$view->setPartMode('title', BlorgView::MODE_ALL, false);
 		$view->display($this->post);
 	}
@@ -473,7 +473,7 @@ class BlorgPostPage extends SitePage
 
 			$replies = $this->post->getVisibleReplies();
 
-			$view = BlorgViewFactory::build('reply', $this->app);
+			$view = BlorgViewFactory::get($this->app, 'reply');
 			$count = count($replies);
 			foreach ($replies as $i => $reply) {
 				if ($i == $count - 1) {
