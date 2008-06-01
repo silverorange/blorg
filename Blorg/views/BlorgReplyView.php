@@ -70,7 +70,7 @@ class BlorgReplyView extends BlorgView
 
 		$heading_tag->open();
 		$this->displayAuthor($reply);
-		echo ' ';
+		echo ' - ';
 		$this->displayPermalink($reply);
 		$heading_tag->close();
 
@@ -182,7 +182,7 @@ class BlorgReplyView extends BlorgView
 			// display human-readable date in local time
 			$date = clone $reply->createdate;
 			$date->convertTZ($this->app->default_time_zone);
-			$abbr_tag->setContent($date->format(SwatDate::DF_DATE));
+			$abbr_tag->setContent($date->format(SwatDate::DF_DATE_TIME));
 			$abbr_tag->display();
 
 			$permalink_tag->close();
