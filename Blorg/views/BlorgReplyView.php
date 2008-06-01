@@ -9,8 +9,9 @@ require_once 'Blorg/views/BlorgView.php';
  *
  * - author    - The author of the reply. Supports MODE_ALL and MODE_NONE. By
  *               default, links to the author details page for replies made by
- *               site authors and links to the entered web address for non-site
- *               author replies.
+ *               site authors. Non-site author replies are not linked.
+ * - link      - The web address of the reply. Supports MODE_ALL and MODE_NONE.
+ *               By default, links to the web address entered in the reply.
  * - permalink - Permalink (and publish date) of the reply. Supports MODE_ALL
  *               and MODE_NONE. Links to the reply on the reply's post page
  *               by default.
@@ -29,6 +30,7 @@ class BlorgReplyView extends BlorgView
 	protected function define()
 	{
 		$this->definePart('author');
+		$this->definePart('link');
 		$this->definePart('permalink');
 		$this->definePart('bodytext');
 	}
@@ -65,18 +67,29 @@ class BlorgReplyView extends BlorgView
 		$heading_tag = new SwatHtmlTag('h4');
 		$heading_tag->class = 'reply-title';
 
-		$web_address_tag = new SwatHtmlTag('div');
-		$web_address_tag->class = 'reply-link';
-
 		$heading_tag->open();
+
+		ob_start();
 		$this->displayAuthor($reply);
-		echo ' - ';
+		$author = ob_get_clean();
+
+		if (strlen($author) > 0) {
+			$elements[] = $author;
+		}
+
+		ob_start();
 		$this->displayPermalink($reply);
+		$permalink = ob_get_clean();
+
+		if (strlen($permalink) > 0) {
+			$elements[] = $permalink;
+		}
+
+		echo implode(' - ', $elements);
+
 		$heading_tag->close();
 
-		$web_address_tag->open();
-		$this->displayWebAddress($reply);
-		$web_address_tag->close();
+		$this->displayLink($reply);
 	}
 
 	// }}}
@@ -135,20 +148,36 @@ class BlorgReplyView extends BlorgView
 	}
 
 	// }}}
-	// {{{ protected function displayWebAddress()
+	// {{{ protected function displayLink()
 
-	protected function displayWebAddress(BlorgReply $reply)
+	protected function displayLink(BlorgReply $reply)
 	{
-		if ($this->getMode('author') > BlorgView::MODE_NONE) {
-			$link = $this->getLink('author');
-			$reply_link = (is_string($link)) ? $link : $reply->link;
+		if ($this->getMode('link') > BlorgView::MODE_NONE) {
+			if (strlen($reply->link) > 0) {
+				$link = $this->getLink('link');
 
-			if (strlen($reply_link) > 0 && $link !== false) {
-				$anchor_tag = new SwatHtmlTag('a');
-				$anchor_tag->href = $reply_link;
-				$anchor_tag->class = 'reply-link';
-				$anchor_tag->setContent($reply_link);
-				$anchor_tag->display();
+				$div_tag = new SwatHtmlTag('div');
+				$div_tag->class = 'reply-link';
+				$div_tag->open();
+
+				if ($link !== false) {
+					$anchor_tag = new SwatHtmlTag('a');
+					if (is_string($link)) {
+						$anchor_tag->href = $link;
+					} else {
+						$anchor_tag->href = $reply->link;
+					}
+					$anchor_tag->class = 'reply-link';
+					$anchor_tag->setContent($reply->link);
+					$anchor_tag->display();
+				} else {
+					$span_tag = new SwatHtmlTag('span');
+					$span_tag->class = 'reply-link';
+					$span_tag->setContent($reply->link);
+					$span_tag->display();
+				}
+
+				$div_tag->close();
 			}
 		}
 	}
