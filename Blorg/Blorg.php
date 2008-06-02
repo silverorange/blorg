@@ -124,11 +124,11 @@ class Blorg
 		$blorg_base_href = $app->config->blorg->path;
 
 		$recent_posts = new SwatLinkHtmlHeadEntry(
-			$blorg_base_href.'atom', 'alternate',
+			$blorg_base_href.'feed', 'alternate',
 			'application/atom+xml', Blorg::_('Recent Posts'));
 
 		$recent_replies = new SwatLinkHtmlHeadEntry(
-			$blorg_base_href.'atom/replies', 'alternate',
+			$blorg_base_href.'feed/replies', 'alternate',
 			'application/atom+xml', Blorg::_('Recent Replies'));
 
 		$set->addEntry($recent_posts);
