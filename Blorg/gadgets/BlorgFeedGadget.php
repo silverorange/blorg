@@ -44,7 +44,7 @@ class BlorgFeedGadget extends BlorgGadget
 	{
 		$this->defineDefaultTitle(Blorg::_('Syndication'));
 		$this->defineDescription(Blorg::_(
-			'Displays links to the Atom feeds for recent posts and reader '.
+			'Displays links to the feeds for recent posts and reader '.
 			'comments.'));
 	}
 
