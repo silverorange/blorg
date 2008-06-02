@@ -23,14 +23,14 @@ class BlorgFeedGadget extends BlorgGadget
 		echo '<ul class="blorg-syndication"><li>';
 
 		$a_tag = new SwatHtmlTag('a');
-		$a_tag->href = $base_href.'atom';
+		$a_tag->href = $base_href.'feed';
 		$a_tag->setContent(Blorg::_('Recent Posts'));
 		$a_tag->display();
 
 		echo '</li><li>';
 
 		$a_tag = new SwatHtmlTag('a');
-		$a_tag->href = $base_href.'atom/replies';
+		$a_tag->href = $base_href.'feed/replies';
 		$a_tag->setContent(Blorg::_('Recent Replies'));
 		$a_tag->display();
 
