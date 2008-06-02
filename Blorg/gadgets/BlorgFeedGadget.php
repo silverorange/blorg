@@ -4,13 +4,13 @@ require_once 'Blorg/BlorgGadget.php';
 require_once 'Swat/SwatHtmlTag.php';
 
 /**
- * Displays atom links
+ * Displays feed links
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgAtomGadget extends BlorgGadget
+class BlorgFeedGadget extends BlorgGadget
 {
 	// {{{ public function display()
 
