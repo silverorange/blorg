@@ -241,10 +241,10 @@ class BlorgPageFactory extends SitePageFactory
 			'^archive/(\d{4})$'                             => 'BlorgYearArchivePage',
 			'^archive/(\d{4})/('.$months.')$'               => 'BlorgMonthArchivePage',
 			'^archive/(\d{4})/('.$months.')/([\w-]+)$'      => 'BlorgPostPage',
-			'^archive/(\d{4})/('.$months.')/([\w-]+)/atom$' => 'BlorgPostAtomPage',
-			'^atom$'                                        => 'BlorgAtomPage',
+			'^archive/(\d{4})/('.$months.')/([\w-]+)/feed$' => 'BlorgPostAtomPage',
+			'^feed$'                                        => 'BlorgAtomPage',
 			'^files/(.*)$'                                  => 'BlorgFileLoaderPage',
-			'^atom/replies$'                                => 'BlorgAtomRepliesPage',
+			'^feed/replies$'                                => 'BlorgAtomRepliesPage',
 		);
 	}
 

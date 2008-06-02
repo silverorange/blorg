@@ -443,7 +443,7 @@ class BlorgPostPage extends SitePage
 	{
 		if ($this->post->hasVisibleReplyStatus()) {
 			$this->layout->addHtmlHeadEntry(new SwatLinkHtmlHeadEntry(
-				$this->source.'/atom', 'alternate', 'application/atom+xml',
+				$this->source.'/feed', 'alternate', 'application/atom+xml',
 				sprintf(Blorg::_('Recent Replies to “%s”'),
 					$this->post->title)));
 		}
