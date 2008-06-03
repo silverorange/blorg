@@ -3,6 +3,7 @@
 require_once 'Blorg/BlorgGadget.php';
 require_once 'Swat/SwatForm.php';
 require_once 'Swat/SwatFormField.php';
+require_once 'Swat/SwatButton.php';
 require_once 'Swat/SwatSearchEntry.php';
 
 /**
@@ -81,14 +82,21 @@ class BlorgSearchGadget extends BlorgGadget
 			$keywords = new SwatSearchEntry();
 			$keywords->id = 'keywords';
 
+			if (isset($_GET['keywords']))
+				$keywords->value = $_GET['keywords'];
+
 			$field = new SwatFormField();
 			$field->title = $this->getValue('label');
 			$field->add($keywords);
+
+			$button = new SwatButton();
+			$button->title = 'Search';
 
 			$this->form = new SwatForm();
 			$this->form->action = $base.'search';
 			$this->form->setMethod(SwatForm::METHOD_GET);
 			$this->form->add($field);
+			$this->form->add($button);
 		}
 	}
 
