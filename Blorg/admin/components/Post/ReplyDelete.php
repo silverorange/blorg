@@ -4,6 +4,7 @@ require_once 'Swat/SwatString.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Admin/pages/AdminDBDelete.php';
 require_once 'Admin/AdminListDependency.php';
+require_once 'NateGoSearch/NateGoSearch.php';
 
 /**
  * Delete confirmation page for Replies
@@ -37,8 +38,9 @@ class BlorgPostReplyDelete extends AdminDBDelete
 
 		$item_list = $this->getItemList('integer');
 
-		$sql = sprintf('delete from BlorgReply where id in (%s)', $item_list);
+		$this->addToSearchQueue($item_list);
 
+		$sql = sprintf('delete from BlorgReply where id in (%s)', $item_list);
 		$num = SwatDB::exec($this->app->db, $sql);
 
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
@@ -48,6 +50,37 @@ class BlorgPostReplyDelete extends AdminDBDelete
 			SwatMessage::NOTIFICATION);
 
 		$this->app->messages->add($message);
+	}
+
+	// }}}
+	// {{{ protected function addToSearchQueue()
+
+	protected function addToSearchQueue($ids)
+	{
+		// this is automatically wrapped in a transaction because it is
+		// called in saveDBData()
+		$type = NateGoSearch::getDocumentType($this->app->db, 'post');
+
+		if ($type === null)
+			return;
+
+		$sql = sprintf('delete from NateGoSearchQueue where
+				document_id in (select distinct BlorgReply.post from BlorgReply
+					where BlorgReply.id in (%s))
+				and document_type = %s',
+			$ids,
+			$this->app->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
+
+		$sql = sprintf('insert into NateGoSearchQueue
+			(document_id, document_type)
+			select distinct BlorgReply.post, %s from
+				BlorgReply where BlorgReply.id in (%s)',
+			$this->app->db->quote($type, 'integer'),
+			$ids);
+
+		SwatDB::exec($this->app->db, $sql);
 	}
 
 	// }}}
