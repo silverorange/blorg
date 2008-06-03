@@ -9,6 +9,7 @@ require_once 'Blorg/BlorgViewFactory.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgReply.php';
 require_once 'Services/Akismet.php';
+require_once 'NateGoSearch/NateGoSearch.php';
 
 /**
  * Post page for Blörg
@@ -224,6 +225,7 @@ class BlorgPostPage extends SitePage
 		$this->clearReplyUi();
 		$this->post->replies->add($this->reply);
 		$this->post->save();
+		$this->addToSearchQueue();
 	}
 
 	// }}}
@@ -298,6 +300,31 @@ class BlorgPostPage extends SitePage
 		}
 
 		return $is_spam;
+	}
+
+	// }}}
+	// {{{ protected function addToSearchQueue()
+
+	protected function addToSearchQueue()
+	{
+		$type = NateGoSearch::getDocumentType($this->app->db, 'post');
+
+		if ($type === null)
+			return;
+
+		$sql = sprintf('delete from NateGoSearchQueue
+			where document_id = %s and document_type = %s',
+			$this->app->db->quote($this->post->id, 'integer'),
+			$this->app->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
+
+		$sql = sprintf('insert into NateGoSearchQueue
+			(document_id, document_type) values (%s, %s)',
+			$this->app->db->quote($this->post->id, 'integer'),
+			$this->app->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
 	}
 
 	// }}}

@@ -4,6 +4,7 @@ require_once 'Swat/SwatOption.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'Site/exceptions/SiteInvalidImageException.php';
+require_once 'NateGoSearch/NateGoSearch.php';
 require_once 'Blorg/BlorgWeblogsDotComPinger.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgFile.php';
@@ -393,6 +394,8 @@ class BlorgPostEdit extends AdminDBEdit
 			SwatDB::exec($this->app->db, $sql);
 		}
 
+		$this->addToSearchQueue();
+
 		$message = new SwatMessage(sprintf(Blorg::_('“%s” has been saved.'),
 			$this->post->getTitle()));
 
@@ -421,6 +424,33 @@ class BlorgPostEdit extends AdminDBEdit
 		} catch (Exception $e) {
 			// ignore ping errors
 		}
+	}
+
+	// }}}
+	// {{{ protected function addToSearchQueue()
+
+	protected function addToSearchQueue()
+	{
+		// this is automatically wrapped in a transaction because it is
+		// called in saveDBData()
+		$type = NateGoSearch::getDocumentType($this->app->db, 'post');
+
+		if ($type === null)
+			return;
+
+		$sql = sprintf('delete from NateGoSearchQueue
+			where document_id = %s and document_type = %s',
+			$this->app->db->quote($this->post->id, 'integer'),
+			$this->app->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
+
+		$sql = sprintf('insert into NateGoSearchQueue
+			(document_id, document_type) values (%s, %s)',
+			$this->app->db->quote($this->post->id, 'integer'),
+			$this->app->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
 	}
 
 	// }}}

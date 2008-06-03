@@ -3,6 +3,7 @@
 require_once 'Swat/SwatDate.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
+require_once 'NateGoSearch/NateGoSearch.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgReply.php';
 
@@ -98,10 +99,38 @@ class BlorgPostReplyEdit extends AdminDBEdit
 		}
 
 		$this->reply->save();
+		$this->addToSearchQueue();
 
 		$message = new SwatMessage(Blorg::_('Reply has been saved.'));
 
 		$this->app->messages->add($message);
+	}
+
+	// }}}
+	// {{{ protected function addToSearchQueue()
+
+	protected function addToSearchQueue()
+	{
+		// this is automatically wrapped in a transaction because it is
+		// called in saveDBData()
+		$type = NateGoSearch::getDocumentType($this->app->db, 'post');
+
+		if ($type === null)
+			return;
+
+		$sql = sprintf('delete from NateGoSearchQueue
+			where document_id = %s and document_type = %s',
+			$this->app->db->quote($this->reply->post->id, 'integer'),
+			$this->app->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
+
+		$sql = sprintf('insert into NateGoSearchQueue
+			(document_id, document_type) values (%s, %s)',
+			$this->app->db->quote($this->reply->post->id, 'integer'),
+			$this->app->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
 	}
 
 	// }}}
