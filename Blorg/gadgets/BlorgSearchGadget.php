@@ -1,9 +1,9 @@
 <?php
 
 require_once 'Blorg/BlorgGadget.php';
-require_once 'Swat/SwatForm.php';
+require_once 'Site/SiteSearchForm.php';
 require_once 'Swat/SwatFormField.php';
-require_once 'Swat/SwatButton.php';
+require_once 'Site/SiteUnnamedButton.php';
 require_once 'Swat/SwatSearchEntry.php';
 
 /**
@@ -23,7 +23,7 @@ class BlorgSearchGadget extends BlorgGadget
 	// {{{ protected properties
 
 	/**
-	 * @var SwatForm
+	 * @var SiteSearchForm
 	 */
 	protected $form;
 
@@ -89,12 +89,12 @@ class BlorgSearchGadget extends BlorgGadget
 			$field->title = $this->getValue('label');
 			$field->add($keywords);
 
-			$button = new SwatButton();
+			$button = new SiteUnnamedButton();
 			$button->title = 'Search';
 
-			$this->form = new SwatForm();
+			$this->form = new SiteSearchForm();
 			$this->form->action = $base.'search';
-			$this->form->setMethod(SwatForm::METHOD_GET);
+			$this->form->setMethod(SiteSearchForm::METHOD_GET);
 			$this->form->add($field);
 			$this->form->add($button);
 		}
