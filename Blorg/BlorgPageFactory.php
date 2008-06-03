@@ -235,6 +235,7 @@ class BlorgPageFactory extends SitePageFactory
 
 		return array(
 			'^(?:page(\d+)|)$'                              => 'BlorgFrontPage',
+			'^search$'                                      => 'BlorgSearchResultsPage',
 			'^author$'                                      => 'BlorgAuthorIndexPage',
 			'^author/([\w-]+)$'                             => 'BlorgAuthorPage',
 			'^archive$'                                     => 'BlorgArchivePage',
