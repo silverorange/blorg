@@ -15,7 +15,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * - /archive/<year>/<month>/<post-shortname>
  * - /author
  * - /author/<author-shortname>
- * - /atom
+ * - /feed
  * - /
  *
  * @package   Blörg
