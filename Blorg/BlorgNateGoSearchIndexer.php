@@ -87,9 +87,10 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 		$post_indexer = new NateGoSearchIndexer('post', $this->db);
 		$post_indexer->setSpellChecker($spell_checker);
 
-		$post_indexer->addTerm(new NateGoSearchTerm('title', 20));
-		$post_indexer->addTerm(new NateGoSearchTerm('bodytext', 15));
-		$post_indexer->addTerm(new NateGoSearchTerm('extended_bodytext', 13));
+		$post_indexer->addTerm(new NateGoSearchTerm('title', 30));
+		$post_indexer->addTerm(new NateGoSearchTerm('bodytext', 20));
+		$post_indexer->addTerm(new NateGoSearchTerm('extended_bodytext', 18));
+		$post_indexer->addTerm(new NateGoSearchTerm('replies', 1));
 		$post_indexer->setMaximumWordLength(32);
 		$post_indexer->addUnindexedWords(
 			NateGoSearchIndexer::getDefaultUnindexedWords());
@@ -116,6 +117,10 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 		foreach ($posts as $post) {
 			$ds = new SwatDetailsStore($post);
 			$ds->title = $post->getTitle();
+
+			$ds->replies = '';
+			foreach ($post->getVisibleReplies() as $reply)
+				$ds->replies.= $reply->fullname.' '.$reply->bodytext.' ';
 
 			if ($count % 10 == 0) {
 				$post_indexer->commit();
