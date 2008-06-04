@@ -142,6 +142,64 @@ class BlorgTag extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function saveInternal()
+
+	/**
+	 * Saves this object to the database
+	 *
+	 * Only modified properties are updated.
+	 */
+	protected function saveInternal()
+	{
+		if ($this->id === null) {
+			$this->shortname = $this->generateShortname($this->title);
+			$this->createdate = new SwatDate();
+			$this->createdate->toUTC();
+		}
+
+		parent::saveInternal();
+	}
+
+	// }}}
+	// {{{ protected function generateShortname()
+
+	/**
+	 * Generate a shortname
+	 *
+	 * @param string $text Text to generate the shortname from.
+	 * @return string A shortname.
+	 */
+	protected function generateShortname($text)
+	{
+		$shortname_base = SwatString::condenseToName($text);
+		$count = 1;
+		$shortname = $shortname_base;
+
+		while ($this->validateShortname($shortname) === false)
+			$shortname = $shortname_base.$count++;
+
+		return $shortname;
+	}
+
+	// }}}
+	// {{{ protected function validateShortname()
+
+	protected function validateShortname($shortname)
+	{
+		$valid = true;
+
+		$class_name = SwatDBClassMap::get('BlorgTag');
+		$tag = new $class_name();
+		$tag->setDatabase($this->db);
+
+		if ($tag->loadByShortName($shortname))
+			if ($tag->id !== $this->id)
+				$valid = false;
+
+		return $valid;
+	}
+
+	// }}}
 }
 
 ?>

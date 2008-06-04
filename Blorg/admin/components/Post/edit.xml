@@ -18,9 +18,9 @@
 					<property name="title" translatable="yes">Reply Status</property>
 					<widget class="BlorgReplyStatusSlider" id="reply_status" />
 				</widget>
-				<widget class="SwatGroupingFormField" id="tag_field">
+				<widget class="SwatFormField">
 					<property name="title" translatable="yes">Tags</property>
-					<widget class="SwatCheckboxList" id="tags" />
+					<widget class="BlorgTagEntry" id="tags" />
 				</widget>
 			</widget>
 			<!-- }}} -->

@@ -11,6 +11,7 @@ require_once 'Blorg/dataobjects/BlorgFile.php';
 require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgFileImage.php';
 require_once 'Blorg/admin/BlorgReplyStatusSlider.php';
+require_once 'Blorg/admin/BlorgTagEntry.php';
 require_once dirname(__FILE__).'/include/BlorgFileAttachControl.php';
 require_once dirname(__FILE__).'/include/BlorgFileDeleteControl.php';
 require_once dirname(__FILE__).'/include/BlorgPublishRadioTable.php';
@@ -50,19 +51,9 @@ class BlorgPostEdit extends AdminDBEdit
 		if ($this->post->publish_date === null)
 			$this->ui->getWidget('shortname_field')->visible = false;
 
-		$instance_id = $this->app->getInstanceId();
-		$tag_where_clause = sprintf('instance %s %s',
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'));
-
-		$tag_options = SwatDB::getOptionArray($this->app->db, 'BlorgTag',
-			'title', 'id', 'title', $tag_where_clause);
-
-		if (count($tag_options)) {
-			$tag_list = $this->ui->getWidget('tags');
-			$tag_list->addOptionsByArray($tag_options);
-		} else
-			$this->ui->getWidget('tag_field')->visible = false;
+		// setup tag entry control
+		$this->ui->getWidget('tags')->setApplication($this->app);
+		$this->ui->getWidget('tags')->setAllTags();
 
 		$form = $this->ui->getWidget('edit_form');
 		if ($this->id === null && $form->getHiddenField('unique_id') === null)
@@ -377,10 +368,9 @@ class BlorgPostEdit extends AdminDBEdit
 
 		$this->post->save();
 
-		$tag_list = $this->ui->getWidget('tags');
-		SwatDB::updateBinding($this->app->db, 'BlorgPostTagBinding',
-			'post', $this->post->id, 'tag', $tag_list->values,
-			'BlorgTag', 'id');
+		$tags = $this->ui->getWidget('tags')->getSelectedTagArray();
+		$this->post->addTagsByShortName($tags,
+			$this->app->getInstance(), true);
 
 		if ($id === null) {
 			$form = $this->ui->getWidget('edit_form');
@@ -478,10 +468,11 @@ class BlorgPostEdit extends AdminDBEdit
 				$publish_date, ($this->post->enabled === false));
 		}
 
-		$tag_list = $this->ui->getWidget('tags');
-		$tag_list->values = SwatDB::queryColumn($this->app->db,
-			'BlorgPostTagBinding', 'tag', 'post',
-			$this->id);
+		$tags = array();
+		foreach ($this->post->tags as $tag)
+			$tags[] = $tag->shortname;
+
+		$this->ui->getWidget('tags')->setSelectedTagArray($tags);
 	}
 
 	// }}}
