@@ -126,6 +126,8 @@ abstract class BlorgGadget extends SwatUIObject
 	public function __construct(SiteApplication $app,
 		BlorgGadgetInstance $instance)
 	{
+		parent::__construct();
+
 		$this->default_title = Blorg::_('Untitled Gadget');
 
 		$this->gadget_instance = $instance;
