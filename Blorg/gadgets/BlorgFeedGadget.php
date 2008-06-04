@@ -42,7 +42,7 @@ class BlorgFeedGadget extends BlorgGadget
 
 	protected function define()
 	{
-		$this->defineDefaultTitle(Blorg::_('Syndication'));
+		$this->defineDefaultTitle(Blorg::_('Feeds'));
 		$this->defineDescription(Blorg::_(
 			'Displays links to the feeds for recent posts and reader '.
 			'comments.'));
