@@ -176,3 +176,14 @@ img.blorg-file-icon {
 }
 
 /* }}} */
+/* {{{ Tags */
+
+.site-tag-entry {
+	width: 228px;
+}
+
+.site-tag-array {
+	width: 228px;
+}
+
+/* }}} */
