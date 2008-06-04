@@ -17,7 +17,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * - /author
  * - /author/<author-shortname>
  * - /feed
- * - /files/<filename>
+ * - /file/<filename>
  * - /tag/<tag-shortname>
  * - /tag/<tag-shortname>/feed
  * - /
@@ -248,7 +248,7 @@ class BlorgPageFactory extends SitePageFactory
 			'^archive/(\d{4})/('.$months.')/([\w-]+)$'      => 'BlorgPostPage',
 			'^archive/(\d{4})/('.$months.')/([\w-]+)/feed$' => 'BlorgPostAtomPage',
 			'^feed$'                                        => 'BlorgAtomPage',
-			'^files/(.*)$'                                  => 'BlorgFileLoaderPage',
+			'^file/(.*)$'                                   => 'BlorgFileLoaderPage',
 			'^feed/replies$'                                => 'BlorgAtomRepliesPage',
 			'^tag/([\w-]+)$'                                => 'BlorgTagPage',
 			'^tag/([\w-]+)/feed$'                           => 'BlorgAtomTagPage',
