@@ -251,7 +251,7 @@ class BlorgPageFactory extends SitePageFactory
 			'^file/(.*)$'                                   => 'BlorgFileLoaderPage',
 			'^feed/replies$'                                => 'BlorgAtomRepliesPage',
 			'^tag/([\w-]+)(?:/page(\d+))?$'                 => 'BlorgTagPage',
-			'^tag/([\w-]+)/feed$'                           => 'BlorgAtomTagPage',
+			'^tag/([\w-]+)/feed$'                           => 'BlorgTagAtomPage',
 		);
 	}
 
