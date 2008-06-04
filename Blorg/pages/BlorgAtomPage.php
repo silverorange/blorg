@@ -9,7 +9,11 @@ require_once 'XML/Atom/Link.php';
 /**
  * Displays an Atom feed of all recent posts in reverse chronological order
  *
- * The constant MAX_POSTS determines how many posts are displayed in the feed.
+ * The number of posts is always at least $min_entries, but if a recently
+ * published set of posts (within the time of $recent_period) exceeds
+ * $min_entries, up to $max_entries posts will be displayed. This makes it
+ * easier to ensure that a subscriber won't miss any posts, while
+ * limiting server load for the feed.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -17,11 +21,6 @@ require_once 'XML/Atom/Link.php';
  */
 class BlorgAtomPage extends SitePage
 {
-	// {{{ class constants
-
-	const MAX_POSTS = 10;
-
-	// }}}
 	// {{{ protected properties
 
 	/**
@@ -33,6 +32,29 @@ class BlorgAtomPage extends SitePage
 	 * @var XML_Atom_Feed
 	 */
 	protected $feed;
+
+	/**
+	 * The minimum number of entries to display
+	 *
+	 * @var integer
+	 */
+	protected $min_entries = 20;
+
+	/**
+	 * The maximum number of entries to display
+	 *
+	 * @var integer
+	 */
+	protected $max_entries = 100;
+
+	/**
+	 * Period for recently added posts (in seconds)
+	 *
+	 * Default value is two days.
+	 *
+	 * @var interger
+	 */
+	protected $recent_period = 172800;
 
 	// }}}
 	// {{{ public function __construct()
@@ -61,7 +83,7 @@ class BlorgAtomPage extends SitePage
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote(true, 'boolean'));
 
-		$this->app->db->setLimit(self::MAX_POSTS);
+		$this->app->db->setLimit($this->max_entries);
 
 		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
 		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
@@ -103,7 +125,20 @@ class BlorgAtomPage extends SitePage
 		$this->feed->setLogo($site_base_href.'images/elements/title-atom.png');
 		$this->feed->setIcon($site_base_href.'favicon.ico');
 
+		$threshold = new SwatDate();
+		$threshold->toUTC();
+		$threshold->subtractSeconds($this->recent_period);
+
+		$count = 0;
+
 		foreach ($this->posts as $post) {
+			$count++;
+
+			if ($count > $this->max_entries ||
+				($count > $this->min_entries) &&
+					$post->publish_date->before($threshold))
+				break;
+
 			$path = $blorg_base_href.'archive';
 
 			$date = clone $post->publish_date;

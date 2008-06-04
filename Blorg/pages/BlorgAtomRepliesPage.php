@@ -8,8 +8,11 @@ require_once 'XML/Atom/Entry.php';
 /**
  * Displays an Atom feed of all recent replies in reverse chronological order
  *
- * The constant MAX_REPLIES determines how many replies are displayed in the
- * feed.
+ * The number of replies is always at least $min_entries, but if a recently
+ * published set of replies (within the time of $recent_period) exceeds
+ * $min_entries, up to $max_entries replies will be displayed. This makes it
+ * easier to ensure that a subscriber won't miss any replies while
+ * limiting server load for the feed.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -17,11 +20,6 @@ require_once 'XML/Atom/Entry.php';
  */
 class BlorgAtomRepliesPage extends SitePage
 {
-	// {{{ class constants
-
-	const MAX_REPLIES = 20;
-
-	// }}}
 	// {{{ protected properties
 
 	/**
@@ -33,6 +31,29 @@ class BlorgAtomRepliesPage extends SitePage
 	 * @var XML_Atom_Feed
 	 */
 	protected $feed;
+
+	/**
+	 * The minimum number of entries to display
+	 *
+	 * @var integer
+	 */
+	protected $min_entries = 20;
+
+	/**
+	 * The maximum number of entries to display
+	 *
+	 * @var integer
+	 */
+	protected $max_entries = 100;
+
+	/**
+	 * Period for recently added replies (in seconds)
+	 *
+	 * Default value is two days.
+	 *
+	 * @var interger
+	 */
+	protected $recent_period = 172800;
 
 	// }}}
 	// {{{ public function __construct()
@@ -66,7 +87,7 @@ class BlorgAtomRepliesPage extends SitePage
 			$this->app->db->quote(BlorgReply::STATUS_PUBLISHED, 'integer'),
 			$this->app->db->quote(false, 'boolean'));
 
-		$this->app->db->setLimit(self::MAX_REPLIES);
+		$this->app->db->setLimit($this->max_entries);
 
 		$wrapper = SwatDBClassMap::get('BlorgReplyWrapper');
 		$this->replies = SwatDB::query($this->app->db, $sql, $wrapper);
@@ -104,7 +125,20 @@ class BlorgAtomRepliesPage extends SitePage
 		$this->feed->setGenerator('Blörg');
 		$this->feed->setBase($site_base_href);
 
+		$threshold = new SwatDate();
+		$threshold->toUTC();
+		$threshold->subtractSeconds($this->recent_period);
+
+		$count = 0;
+
 		foreach ($this->replies as $reply) {
+			$count++;
+
+			if ($count > $this->max_entries ||
+				($count > $this->min_entries) &&
+					$reply->createdate->before($threshold))
+				break;
+
 			$post = $reply->post;
 
 			$path = $blorg_base_href.'archive';
