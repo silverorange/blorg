@@ -72,6 +72,7 @@ class BlorgTagPage extends SitePage
 	public function build()
 	{
 		$this->buildNavBar();
+		$this->buildAtomLinks();
 
 		$this->layout->startCapture('content');
 		$this->displayPosts();
@@ -102,6 +103,18 @@ class BlorgTagPage extends SitePage
 		$this->layout->navbar->createEntry(
 			sprintf(Blorg::_('Posts Tagged: %s'), $this->tag->title),
 			$path);
+	}
+
+	// }}}
+	// {{{ protected function buildAtomLinks()
+
+	protected function buildAtomLinks()
+	{
+		$path = $this->app->config->blorg->path.'tag/'.$this->tag->shortname;
+		$this->layout->addHtmlHeadEntry(new SwatLinkHtmlHeadEntry(
+			$path.'/feed', 'alternate', 'application/atom+xml',
+			sprintf(Blorg::_('Posts Tagged: %s'),
+				$this->tag->title)));
 	}
 
 	// }}}
