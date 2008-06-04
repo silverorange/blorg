@@ -7,6 +7,7 @@ require_once 'Swat/SwatTableStore.php';
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'Site/SiteNateGoFulltextSearchEngine.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
+require_once 'Blorg/admin/BlorgTagEntry.php';
 
 /**
  * Index page for Posts
@@ -40,6 +41,10 @@ class BlorgPostIndex extends AdminSearch
 		parent::initInternal();
 
 		$this->ui->loadFromXML($this->ui_xml);
+
+		// setup tag entry control
+		$this->ui->getWidget('tags')->setApplication($this->app);
+		$this->ui->getWidget('tags')->setAllTags();
 	}
 
 	// }}}
@@ -105,10 +110,56 @@ class BlorgPostIndex extends AdminSearch
 				SwatString::numberFormat($num)));
 
 			break;
+
+		case 'tags_action':
+			$tag_array = $this->ui->getWidget('tags')->getSelectedTagArray();
+			if (count($tag_array) > 0) {
+				$posts = $this->getPostsFromSelection($view->getSelection());
+				foreach ($posts as $post)
+					$post->addTagsByShortname($tag_array,
+						$this->app->getInstance());
+
+				$num = count($view->getSelection());
+				if (count($tag_array) > 1) {
+					$message = new SwatMessage(sprintf(Blorg::ngettext(
+						'%s tags have been added to one post.',
+						'%s tags have been added to %s posts.', $num),
+						SwatString::numberFormat(count($tag_array)),
+						SwatString::numberFormat($num)));
+				} else {
+					$message = new SwatMessage(sprintf(Blorg::ngettext(
+						'A tag has been added to one post.',
+						'A tag has been added to %s posts.', $num),
+						SwatString::numberFormat($num)));
+				}
+			}
+
+			break;
 		}
 
 		if ($message !== null)
 			$this->app->messages->add($message);
+	}
+
+	// }}}
+	// {{{ protected function getPostsFromSelection()
+
+	protected function getPostsFromSelection(SwatViewSelection $selection)
+	{
+		$ids = array();
+		foreach ($selection as $id)
+			$ids[] = $id;
+
+		$instance_id = $this->app->getInstanceId();
+
+		$sql = sprintf('select BlorgPost.* from BlorgPost
+			where id in (%s) and instance %s %s',
+			$this->app->db->datatype->implodeArray($ids, 'integer'),
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'));
+
+		return SwatDB::query($this->app->db, $sql,
+			SwatDBClassMap::get('BlorgPostWrapper'));
 	}
 
 	// }}}

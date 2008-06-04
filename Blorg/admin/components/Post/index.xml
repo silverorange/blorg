@@ -75,6 +75,11 @@
 				<property name="link">Post</property>
 			</widget>
 			<widget class="SwatActions" id="index_actions">
+				<widget class="SwatActionItem" id="tags_action">
+					<property name="title" translatable="yes">add tags…</property>
+					<widget class="BlorgTagEntry" id="tags" />
+				</widget>
+				<widget class="SwatActionItemDivider" />
 				<widget class="SwatActionItem" id="delete">
 					<property name="title" translatable="yes">delete…</property>
 				</widget>
