@@ -85,6 +85,49 @@ class BlorgTag extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function loadByShortname()
+
+	/**
+	 * Loads this tag by a tag shortname
+	 *
+	 * @param string $shortname the shortname of the tag to load.
+	 * @param SiteInstance $instance optional. The instance in which to load
+	 *                               tag. If the application does not use
+	 *                               instances, this should be null.
+	 *
+	 * @return boolean true if this tag was loaded from the given shortname and
+	 *                 false if it was not.
+	 */
+	public function loadByShortname($shortname, SiteInstance $instance = null)
+	{
+		$this->checkDB();
+
+		$loaded = false;
+		$row = null;
+		if ($this->table !== null) {
+			$instance_id  = ($instance === null) ? null : $instance->id;
+
+			$sql = sprintf('select * from %s
+				where shortname = %s and instance %s %s',
+				$this->table,
+				$this->db->quote($shortname, 'text'),
+				SwatDB::equalityOperator($instance_id),
+				$this->db->quote($instance_id, 'integer'));
+
+			$rs = SwatDB::query($this->db, $sql, null);
+			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+		}
+
+		if ($row !== null) {
+			$this->initFromRow($row);
+			$this->generatePropertyHashes();
+			$loaded = true;
+		}
+
+		return $loaded;
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
