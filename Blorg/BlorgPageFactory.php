@@ -7,15 +7,19 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
 /**
  * Page factory for Blörg pages
  *
- * This factory is responsible for loading URIs of the forms:
+ * This factory is responsible for loading URIs of the following forms:
  *
  * - /archive
  * - /archive/<year>
  * - /archive/<year>/<month>
  * - /archive/<year>/<month>/<post-shortname>
+ * - /archive/<year>/<month>/<post-shortname>/feed
  * - /author
  * - /author/<author-shortname>
  * - /feed
+ * - /files/<filename>
+ * - /tag/<tag-shortname>
+ * - /tag/<tag-shortname>/feed
  * - /
  *
  * @package   Blörg
@@ -246,6 +250,8 @@ class BlorgPageFactory extends SitePageFactory
 			'^feed$'                                        => 'BlorgAtomPage',
 			'^files/(.*)$'                                  => 'BlorgFileLoaderPage',
 			'^feed/replies$'                                => 'BlorgAtomRepliesPage',
+			'^tag/([\w-]+)$'                                => 'BlorgTagPage',
+			'^tag/([\w-]+)/feed$'                           => 'BlorgAtomTagPage',
 		);
 	}
 
