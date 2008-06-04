@@ -35,6 +35,11 @@ class BlorgFrontPage extends SitePage
 	 */
 	protected $current_page = 1;
 
+	/**
+	 * @var SwatPagination
+	 */
+	protected $pager;
+
 	// }}}
 	// {{{ public function __construct()
 
