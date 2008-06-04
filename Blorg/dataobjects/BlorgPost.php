@@ -283,6 +283,39 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function addTagsByShortname()
+
+	public function addTagsByShortname(array $tag_names,
+		SiteInstance $instance, $clear_existing_tags = false)
+	{
+		$this->checkDB();
+
+		$instance_id = ($instance === null) ? null : $instance->id;
+
+		$sql = sprintf('delete from BlorgPostTagBinding where post = %s',
+			$this->db->quote($this->id, 'integer'));
+
+		if (!$clear_existing_tags)
+			$sql.= sprintf(' and tag in (select id from
+				BlorgTag where shortname in (%s) and instance %s %s)',
+				$this->db->datatype->implodeArray($tag_names, 'text'),
+				SwatDB::equalityOperator($instance_id),
+				$this->db->quote($instance_id, 'integer'));
+
+		SwatDB::exec($this->db, $sql);
+
+		$sql = sprintf('insert into BlorgPostTagBinding
+			(post, tag) select %1$s, id from BlorgTag
+			where shortname in (%2$s) and BlorgTag.instance %3$s %4$s',
+			$this->db->quote($this->id, 'integer'),
+			$this->db->datatype->implodeArray($tag_names, 'text'),
+			SwatDB::equalityOperator($instance_id),
+			$this->db->quote($instance_id, 'integer'));
+
+		SwatDB::exec($this->db, $sql);
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
