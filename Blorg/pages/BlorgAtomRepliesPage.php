@@ -119,6 +119,8 @@ class BlorgAtomRepliesPage extends SitePage
 			sprintf(Blorg::_('%s - Recent Replies'),
 				$this->app->config->site->title));
 
+		$this->feed->setSubTitle(Blorg::_('Recent Replies'));
+
 		$this->feed->addLink($site_base_href.$this->source, 'self',
 			'application/atom+xml');
 
