@@ -139,6 +139,7 @@ class BlorgPostDetails extends AdminIndex
 		ob_start();
 		$view = BlorgViewFactory::get($this->app, 'post');
 		$view->setPathPrefix('../');
+		$view->setPartMode('author', BlorgView::MODE_ALL, false);
 		$view->setPartMode('title', BlorgView::MODE_ALL, false);
 		$view->setPartMode('permalink', BlorgView::MODE_ALL, false);
 		$view->setPartMode('reply_count', BlorgView::MODE_ALL, false);
