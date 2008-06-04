@@ -114,6 +114,8 @@ class BlorgAtomPage extends SitePage
 		$this->feed = new XML_Atom_Feed($blorg_base_href,
 			$this->app->config->site->title);
 
+		$this->feed->setSubTitle(Blorg::_('Recent Posts'));
+
 		$this->feed->addLink($site_base_href.$this->source, 'self',
 			'application/atom+xml');
 
