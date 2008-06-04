@@ -97,7 +97,7 @@ class BlorgFile extends SwatDBDataObject
 
 	public function getRelativeUri($blorg_path = '', $prefix = null)
 	{
-		$uri = $blorg_path.'files/'.$this->filename;
+		$uri = $blorg_path.'file/'.$this->filename;
 
 		if ($prefix !== null)
 			$uri = $prefix.$uri;
