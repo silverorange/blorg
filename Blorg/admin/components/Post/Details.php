@@ -252,7 +252,7 @@ class BlorgPostDetails extends AdminIndex
 		parent::finalize();
 		$this->layout->addHtmlHeadEntry(new SwatStyleSheetHtmlHeadEntry(
 			'packages/blorg/admin/styles/blorg-post-details-page.css',
-			Store::PACKAGE_ID));
+			Blorg::PACKAGE_ID));
 	}
 
 	// }}}
