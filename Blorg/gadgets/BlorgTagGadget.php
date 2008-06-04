@@ -20,6 +20,8 @@ class BlorgTagGadget extends BlorgGadget
 	{
 		parent::display();
 
+		$path = $this->app->config->blorg->path.'tag';
+
 		$tags = $this->getTags();
 		if (count($tags) > 0) {
 			echo '<ul>';
@@ -38,7 +40,7 @@ class BlorgTagGadget extends BlorgGadget
 				$li_tag = new SwatHtmlTag('li');
 				$li_tag->open();
 				$anchor_tag = new SwatHtmlTag('a');
-				$anchor_tag->href = $tag->shortname;
+				$anchor_tag->href = $path.'/'.$tag->shortname;
 				$anchor_tag->class = $this->getTagClass($popularity);
 				$anchor_tag->setContent($tag->title);
 
