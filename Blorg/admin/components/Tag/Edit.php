@@ -54,7 +54,7 @@ class BlorgTagEdit extends AdminDBEdit
 			$instance_id = $this->tag->getInternalValue('instance');
 			if ($instance_id !== $this->app->getInstanceId()) {
 				throw new AdminNotFoundException(sprintf(
-					Blorg::_('Tag with id ‘%d’ not found.'), $id));
+					Blorg::_('Tag with id ‘%d’ not found.'), $this->id));
 			}
 		}
 	}
