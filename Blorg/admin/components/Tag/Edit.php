@@ -45,9 +45,18 @@ class BlorgTagEdit extends AdminDBEdit
 		$this->tag = new BlorgTag();
 		$this->tag->setDatabase($this->app->db);
 
-		if ($this->id !== null && !$this->tag->load($this->id))
-			throw new AdminNotFoundException(
-				sprintf(Blorg::_('Tag with id ‘%s’ not found.'), $this->id));
+		if ($this->id !== null) {
+			if (!$this->tag->load($this->id)) {
+				throw new AdminNotFoundException(sprintf(
+					Blorg::_('Tag with id ‘%s’ not found.'), $this->id));
+			}
+
+			$instance_id = $this->tag->getInternalValue('instance');
+			if ($instance_id !== $this->app->getInstanceId()) {
+				throw new AdminNotFoundException(sprintf(
+					Blorg::_('Tag with id ‘%d’ not found.'), $id));
+			}
+		}
 	}
 
 	// }}}
