@@ -25,8 +25,13 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 	 */
 	public function attach($file_id)
 	{
-		$sql = sprintf('update BlorgFile set show = %s where id = %s',
+		$instance_id = $this->app->getInstanceId();
+
+		$sql = sprintf('update BlorgFile set show = %s
+			where instance %s %s and id = %s',
 			$this->app->db->quote(true, 'boolean'),
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote($file_id, 'integer'));
 
 		SwatDB::exec($this->app->db, $sql);
@@ -46,8 +51,13 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 	 */
 	public function detach($file_id)
 	{
-		$sql = sprintf('update BlorgFile set show = %s where id = %s',
+		$instance_id = $this->app->getInstanceId();
+
+		$sql = sprintf('update BlorgFile set show = %s
+			where instance %s %s and id = %s',
 			$this->app->db->quote(false, 'boolean'),
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote($file_id, 'integer'));
 
 		SwatDB::exec($this->app->db, $sql);
@@ -67,12 +77,16 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 	 */
 	public function delete($file_id)
 	{
+		$instance_id = $this->app->getInstanceId();
+
 		$class_name = SwatDBClassMap::get('BlorgFile');
 		$file = new $class_name();
 		$file->setDatabase($this->app->db);
 		$file->setFileBase('../');
 		if ($file->load(intval($file_id))) {
-			$file->delete();
+			if ($file->getInternalValue('instance') === $instance_id) {
+				$file->delete();
+			}
 		}
 
 		return true;
