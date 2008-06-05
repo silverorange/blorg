@@ -109,6 +109,16 @@ abstract class BlorgGadget extends SwatUIObject
 	 */
 	private $description = null;
 
+	/**
+	 * Mapping of source string to Web-service destination URIs for this
+	 * gadget
+	 *
+	 * @var array
+	 *
+	 * @see BlorgAjaxProxyPage
+	 */
+	private $ajax_proxy_map = array();
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -239,6 +249,21 @@ abstract class BlorgGadget extends SwatUIObject
 	public final function getSettings()
 	{
 		return $this->settings;
+	}
+
+	// }}}
+	// {{{ public final function getAjaxProxyMap()
+
+	/**
+	 * Gets all defined AJAX proxy mappings of this gadget
+	 *
+	 * @return array the defined AJAX proxy mappings of this gadget.
+	 *
+	 * @see BlorgGadget::defineAjaxProxyMapping()
+	 */
+	public final function getAjaxProxyMap()
+	{
+		return $this->ajax_proxy_map;
 	}
 
 	// }}}
@@ -395,6 +420,29 @@ abstract class BlorgGadget extends SwatUIObject
 	protected function defineDescription($description)
 	{
 		$this->description = (string)$description;
+	}
+
+	// }}}
+	// {{{ protected function defineAjaxProxyMapping()
+
+	/**
+	 * Defines an AJAX proxy mapping for this gadget
+	 *
+	 * An AJAX proxy is used to load third-party content from other domains
+	 * using JavaScript. If this gadget needs to load third-party content from
+	 * another domain in JavaScript, it should define an AJAX proxy mapping.
+	 *
+	 * @param string $from the source string from which the <code>$to</code> is
+	 *                      mapped.
+	 * @param string $to the URI to which to map the source string. This may
+	 *                    contain regular expression replacement markers of
+	 *                    the form <code>\1</code>, <code>\2</code>, etc.
+	 *
+	 * @see BlorgAjaxProxyPage::map()
+	 */
+	protected function defineAjaxProxyMapping($from, $to)
+	{
+		$this->ajax_proxy_map[$from] = $to;
 	}
 
 	// }}}
