@@ -258,6 +258,7 @@ class BlorgGadgetFactory extends SwatObject
 				$return_object->class = $class_name;
 				$return_object->description = $gadget->getDescription();
 				$return_object->settings = $gadget->getSettings();
+				$return_object->ajax_proxy_map = $gadget->getAjaxProxyMap();
 
 				self::$available_gadgets[$class_name] = $return_object;
 			}
