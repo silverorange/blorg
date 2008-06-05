@@ -49,9 +49,16 @@ class BlorgPostDetails extends AdminIndex
 		$this->post = new $post_class();
 		$this->post->setDatabase($this->app->db);
 
-		if (!$this->post->load($id))
+		if (!$this->post->load($id)) {
 			throw new AdminNotFoundException(sprintf(
 				Blorg::_('A post with an id of ‘%d’ does not exist.'), $id));
+		}
+
+		$instance_id = $this->post->getInternalValue('instance');
+		if ($instance_id !== $this->app->getInstanceId()) {
+			throw new AdminNotFoundException(sprintf(
+				Blorg::_('A post with an id of ‘%d’ does not exist.'), $id));
+		}
 	}
 
 	// }}}
