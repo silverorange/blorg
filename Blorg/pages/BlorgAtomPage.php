@@ -61,7 +61,7 @@ class BlorgAtomPage extends SitePage
 
 	public function __construct(SiteApplication $app, SiteLayout $layout = null)
 	{
-		$layout = new SiteLayout($app, 'Blorg/layouts/xhtml/atom.php');
+		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
 
 		parent::__construct($app, $layout);
 
