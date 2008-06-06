@@ -124,7 +124,7 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 			where enabled = %s and comment_status != %s and instance %s %s
 			order by last_comment_date desc',
 			$this->app->db->quote(true, 'boolean'),
-			$this->app->db->quote(BlorgPost::REPLY_STATUS_CLOSED, 'integer'),
+			$this->app->db->quote(BlorgPost::COMMENT_STATUS_CLOSED, 'integer'),
 			SwatDB::equalityOperator($this->app->getInstanceId()),
 			$this->app->db->quote($this->app->getInstanceId(), 'integer'));
 

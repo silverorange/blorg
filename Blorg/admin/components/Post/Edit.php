@@ -93,8 +93,8 @@ class BlorgPostEdit extends AdminDBEdit
 		$status = $this->ui->getWidget('comment_status');
 
 		// open
-		$option = new SwatOption(BlorgPost::REPLY_STATUS_OPEN,
-			BlorgPost::getCommentStatusTitle(BlorgPost::REPLY_STATUS_OPEN));
+		$option = new SwatOption(BlorgPost::COMMENT_STATUS_OPEN,
+			BlorgPost::getCommentStatusTitle(BlorgPost::COMMENT_STATUS_OPEN));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
@@ -102,9 +102,9 @@ class BlorgPostEdit extends AdminDBEdit
 			'this post.'));
 
 		// moderated
-		$option = new SwatOption(BlorgPost::REPLY_STATUS_MODERATED,
+		$option = new SwatOption(BlorgPost::COMMENT_STATUS_MODERATED,
 			BlorgPost::getCommentStatusTitle(
-				BlorgPost::REPLY_STATUS_MODERATED));
+				BlorgPost::COMMENT_STATUS_MODERATED));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
@@ -112,8 +112,8 @@ class BlorgPostEdit extends AdminDBEdit
 			'author before being visible on this post.'));
 
 		// locked
-		$option = new SwatOption(BlorgPost::REPLY_STATUS_LOCKED,
-			BlorgPost::getCommentStatusTitle(BlorgPost::REPLY_STATUS_LOCKED));
+		$option = new SwatOption(BlorgPost::COMMENT_STATUS_LOCKED,
+			BlorgPost::getCommentStatusTitle(BlorgPost::COMMENT_STATUS_LOCKED));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
@@ -121,8 +121,8 @@ class BlorgPostEdit extends AdminDBEdit
 			'still visible on this post.'));
 
 		// closed
-		$option = new SwatOption(BlorgPost::REPLY_STATUS_CLOSED,
-			BlorgPost::getCommentStatusTitle(BlorgPost::REPLY_STATUS_CLOSED));
+		$option = new SwatOption(BlorgPost::COMMENT_STATUS_CLOSED,
+			BlorgPost::getCommentStatusTitle(BlorgPost::COMMENT_STATUS_CLOSED));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
@@ -132,20 +132,20 @@ class BlorgPostEdit extends AdminDBEdit
 		if ($this->id === null) {
 			switch ($this->app->config->blorg->default_comment_status) {
 			case 'open':
-				$status->value = BlorgPost::REPLY_STATUS_OPEN;
+				$status->value = BlorgPost::COMMENT_STATUS_OPEN;
 				break;
 
 			case 'moderated':
-				$status->value = BlorgPost::REPLY_STATUS_MODERATED;
+				$status->value = BlorgPost::COMMENT_STATUS_MODERATED;
 				break;
 
 			case 'locked':
-				$status->value = BlorgPost::REPLY_STATUS_LOCKED;
+				$status->value = BlorgPost::COMMENT_STATUS_LOCKED;
 				break;
 
 			case 'closed':
 			default:
-				$status->value = BlorgPost::REPLY_STATUS_CLOSED;
+				$status->value = BlorgPost::COMMENT_STATUS_CLOSED;
 				break;
 			}
 		}
