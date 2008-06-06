@@ -2,7 +2,7 @@
 
 require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Blorg/dataobjects/BlorgReplyWrapper.php';
+require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
 require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgAuthor.php';
@@ -19,26 +19,26 @@ class BlorgPost extends SwatDBDataObject
 	// {{{ class constants
 
 	/**
-	 * New replies are allowed, and are automatically show on the site as long
+	 * New comments are allowed, and are automatically show on the site as long
 	 * as they are not detected as spam.
 	 */
-	const REPLY_STATUS_OPEN      = 0;
+	const COMMENT_STATUS_OPEN      = 0;
 
 	/**
-	 * New replies are allowed, but must be approved by an admin user before
+	 * New comments are allowed, but must be approved by an admin user before
 	 * being shown.
 	 */
-	const REPLY_STATUS_MODERATED = 1;
+	const COMMENT_STATUS_MODERATED = 1;
 
 	/**
-	 * No new replies are allowed, but exisiting replies are shown.
+	 * No new comments are allowed, but exisiting comments are shown.
 	 */
-	const REPLY_STATUS_LOCKED    = 2;
+	const COMMENT_STATUS_LOCKED    = 2;
 
 	/**
-	 * No new replies are allowed, and existing replies are no longer shown.
+	 * No new comments are allowed, and existing comments are no longer shown.
 	 */
-	const REPLY_STATUS_CLOSED    = 3;
+	const COMMENT_STATUS_CLOSED    = 3;
 
 	// }}}
 	// {{{ public properties
@@ -105,11 +105,11 @@ class BlorgPost extends SwatDBDataObject
 	public $publish_date;
 
 	/**
-	 * The status of replies on this post.
+	 * The status of comments on this post.
 	 *
 	 * @var integer
 	 */
-	public $reply_status;
+	public $comment_status;
 
 	/**
 	 * Whether or not the post is viewable on the site.
@@ -172,29 +172,29 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public static function getReplyStatusTitle()
+	// {{{ public static function getCommentStatusTitle()
 
-	public static function getReplyStatusTitle($status)
+	public static function getCommentStatusTitle($status)
 	{
 		switch ($status) {
-		case self::REPLY_STATUS_OPEN :
+		case self::COMMENT_STATUS_OPEN :
 			$title = Blorg::_('Open');
 			break;
 
-		case self::REPLY_STATUS_LOCKED :
+		case self::COMMENT_STATUS_LOCKED :
 			$title = Blorg::_('Locked');
 			break;
 
-		case self::REPLY_STATUS_MODERATED :
+		case self::COMMENT_STATUS_MODERATED :
 			$title = Blorg::_('Moderated');
 			break;
 
-		case self::REPLY_STATUS_CLOSED :
+		case self::COMMENT_STATUS_CLOSED :
 			$title = Blorg::_('Closed');
 			break;
 
 		default:
-			$title = Blorg::_('Unknown Reply Status');
+			$title = Blorg::_('Unknown Comment Status');
 			break;
 		}
 
@@ -202,19 +202,19 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public static function getReplyStatuses()
+	// {{{ public static function getCommentStatuses()
 
-	public static function getReplyStatuses()
+	public static function getCommentStatuses()
 	{
 		return array(
-			self::REPLY_STATUS_OPEN =>
-				self::getReplyStatusTitle(self::REPLY_STATUS_OPEN),
-			self::REPLY_STATUS_MODERATED =>
-				self::getReplyStatusTitle(self::REPLY_STATUS_MODERATED),
-			self::REPLY_STATUS_LOCKED =>
-				self::getReplyStatusTitle(self::REPLY_STATUS_LOCKED),
-			self::REPLY_STATUS_CLOSED =>
-				self::getReplyStatusTitle(self::REPLY_STATUS_CLOSED),
+			self::COMMENT_STATUS_OPEN =>
+				self::getCommentStatusTitle(self::COMMENT_STATUS_OPEN),
+			self::COMMENT_STATUS_MODERATED =>
+				self::getCommentStatusTitle(self::COMMENT_STATUS_MODERATED),
+			self::COMMENT_STATUS_LOCKED =>
+				self::getCommentStatusTitle(self::COMMENT_STATUS_LOCKED),
+			self::COMMENT_STATUS_CLOSED =>
+				self::getCommentStatusTitle(self::COMMENT_STATUS_CLOSED),
 		);
 	}
 
@@ -231,32 +231,32 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function getVisibleReplies()
+	// {{{ public function getVisibleComments()
 
-	public function getVisibleReplies()
+	public function getVisibleComments()
 	{
-		$replies = array();
+		$comments = array();
 
-		foreach ($this->replies as $reply) {
-			if ($reply->status == BlorgReply::STATUS_PUBLISHED &&
-				!$reply->spam) {
+		foreach ($this->comments as $comment) {
+			if ($comment->status == BlorgComment::STATUS_PUBLISHED &&
+				!$comment->spam) {
 
-				$replies[] = $reply;
+				$comments[] = $comment;
 			}
 		}
 
-		return $replies;
+		return $comments;
 	}
 
 	// }}}
-	// {{{ public function hasVisibleReplyStatus()
+	// {{{ public function hasVisibleCommentStatus()
 
-	public function hasVisibleReplyStatus()
+	public function hasVisibleCommentStatus()
 	{
-		return ($this->reply_status == self::REPLY_STATUS_OPEN ||
-			$this->reply_status == self::REPLY_STATUS_MODERATED ||
-			($this->reply_status == self::REPLY_STATUS_LOCKED &&
-			count($this->getVisibleReplies()) > 0));
+		return ($this->comment_status == self::COMMENT_STATUS_OPEN ||
+			$this->comment_status == self::COMMENT_STATUS_MODERATED ||
+			($this->comment_status == self::COMMENT_STATUS_LOCKED &&
+			count($this->getVisibleComments()) > 0));
 	}
 
 	// }}}
@@ -337,18 +337,18 @@ class BlorgPost extends SwatDBDataObject
 	// }}}
 
 	// loader methods
-	// {{{ protected function loadReplies()
+	// {{{ protected function loadComments()
 
 	/**
-	 * Loads replies for this post, this never includes spam
+	 * Loads comments for this post, this never includes spam
 	 *
-	 * @return BlorgReplyWrapper
+	 * @return BlorgCommentWrapper
 	 */
-	protected function loadReplies()
+	protected function loadComments()
 	{
-		$sql = 'select BlorgReply.*
-			from BlorgReply
-			where BlorgReply.post = %s and spam = %s
+		$sql = 'select BlorgComment.*
+			from BlorgComment
+			where BlorgComment.post = %s and spam = %s
 			order by createdate';
 
 		$sql = sprintf($sql,
@@ -356,7 +356,7 @@ class BlorgPost extends SwatDBDataObject
 			$this->db->quote(false, 'boolean'));
 
 		return SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('BlorgReplyWrapper'));
+			SwatDBClassMap::get('BlorgCommentWrapper'));
 	}
 
 	// }}}
@@ -406,18 +406,18 @@ class BlorgPost extends SwatDBDataObject
 	// }}}
 
 	// saver methods
-	// {{{ protected function saveReplies()
+	// {{{ protected function saveComments()
 
 	/**
-	 * Automatically saves replies on this post when this post is saved
+	 * Automatically saves comments on this post when this post is saved
 	 */
-	protected function saveReplies()
+	protected function saveComments()
 	{
-		foreach ($this->replies as $reply)
-			$reply->post = $this;
+		foreach ($this->comments as $comment)
+			$comment->post = $this;
 
-		$this->replies->setDatabase($this->db);
-		$this->replies->save();
+		$this->comments->setDatabase($this->db);
+		$this->comments->save();
 	}
 
 	// }}}

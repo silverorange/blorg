@@ -6,21 +6,21 @@ require_once 'Swat/SwatYUI.php';
 require_once 'Swat/exceptions/SwatObjectNotFoundException.php';
 
 /**
- * Slider widget to select between different reply statuses for Blörg posts
+ * Slider widget to select between different comment statuses for Blörg posts
  *
- * This is a SwatOptionControl with each option being the reply status value
+ * This is a SwatOptionControl with each option being the comment status value
  * and the title of the value. While the underlying code is quite flexible, the
  * display uses a background image that requires the number of options to be
  * four.
  *
  * Context-help can be added for options using the
- * {@link BlorgReplyStatusSlider::addContextNote()} method.
+ * {@link BlorgCommentStatusSlider::addContextNote()} method.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgReplyStatusSlider extends SwatOptionControl
+class BlorgCommentStatusSlider extends SwatOptionControl
 {
 	// {{{ public properties
 
@@ -45,7 +45,7 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 	// {{{ public function __construct()
 
 	/**
-	 * Creates a new reply status slider
+	 * Creates a new comment status slider
 	 *
 	 * @param string $id a non-visible unique id for this widget.
 	 *
@@ -60,11 +60,11 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavaScript(
-			'packages/blorg/admin/javascript/blorg-reply-status-slider.js',
+			'packages/blorg/admin/javascript/blorg-comment-status-slider.js',
 			Blorg::PACKAGE_ID);
 
 		$this->addStyleSheet(
-			'packages/blorg/admin/styles/blorg-reply-status-slider.css',
+			'packages/blorg/admin/styles/blorg-comment-status-slider.css',
 			Blorg::PACKAGE_ID);
 	}
 
@@ -72,7 +72,7 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 	// {{{ public function process()
 
 	/**
-	 * Processes this reply status slider
+	 * Processes this comment status slider
 	 */
 	public function process()
 	{
@@ -97,7 +97,7 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 	// {{{ public function display()
 
 	/**
-	 * Displays this reply status slider
+	 * Displays this comment status slider
 	 */
 	public function display()
 	{
@@ -105,18 +105,18 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 
 		$container_div = new SwatHtmlTag('div');
 		$container_div->id = $this->id;
-		$container_div->class = 'blorg-reply-status-slider';
+		$container_div->class = 'blorg-comment-status-slider';
 		$container_div->open();
 
 		$thumb_div = new SwatHtmlTag('div');
 		$thumb_div->id = $this->id.'_thumb';
-		$thumb_div->class = 'blorg-reply-status-slider-thumb';
+		$thumb_div->class = 'blorg-comment-status-slider-thumb';
 		$thumb_div->open();
 
 		$img_tag = new SwatHtmlTag('img');
-		$img_tag->class = 'blorg-reply-status-slider-image';
+		$img_tag->class = 'blorg-comment-status-slider-image';
 		$img_tag->src =
-			'packages/blorg/admin/images/blorg-reply-status-slider-thumb.gif';
+			'packages/blorg/admin/images/blorg-comment-status-slider-thumb.gif';
 
 		$img_tag->alt = '';
 		$img_tag->display();
@@ -200,7 +200,7 @@ class BlorgReplyStatusSlider extends SwatOptionControl
 		$options = implode(', ', $options);
 
 		return sprintf(
-			"var %s_obj = new BlorgReplyStatusSlider('%s', [%s]);",
+			"var %s_obj = new BlorgCommentStatusSlider('%s', [%s]);",
 			$this->id,
 			$this->id,
 			$options);

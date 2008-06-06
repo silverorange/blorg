@@ -1,4 +1,4 @@
-create table BlorgReply (
+create table BlorgComment (
 	id serial,
 	post integer not null references BlorgPost(id) on delete cascade,
 	author integer references BlorgAuthor(id),

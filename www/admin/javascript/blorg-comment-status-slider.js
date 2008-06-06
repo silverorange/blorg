@@ -1,4 +1,4 @@
-function BlorgReplyStatusSlider(id, options)
+function BlorgCommentStatusSlider(id, options)
 {
 	this.id = id;
 	this.options = options;
@@ -15,7 +15,7 @@ function BlorgReplyStatusSlider(id, options)
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
 }
 
-BlorgReplyStatusSlider.prototype.init = function()
+BlorgCommentStatusSlider.prototype.init = function()
 {
 	this.input = document.getElementById(this.id + '_value');
 
@@ -47,7 +47,7 @@ BlorgReplyStatusSlider.prototype.init = function()
 	this.createLabels();
 }
 
-BlorgReplyStatusSlider.prototype.createLabels = function()
+BlorgCommentStatusSlider.prototype.createLabels = function()
 {
 	var container = document.getElementById(this.id);
 	var pos = YAHOO.util.Dom.getXY(container);
@@ -63,7 +63,7 @@ BlorgReplyStatusSlider.prototype.createLabels = function()
 		span.style.width = this.label_width + 'px';
 		span.style.textAlign = 'center';
 		span.style.overflow = 'hidden';
-		YAHOO.util.Dom.addClass(span, 'blorg-reply-status-slider-legend');
+		YAHOO.util.Dom.addClass(span, 'blorg-comment-status-slider-legend');
 		container.appendChild(span);
 		YAHOO.util.Dom.setXY(span,
 			[pos[0] + (this.increment * i) + x_offset, pos[1] + y_offset]);
@@ -72,12 +72,12 @@ BlorgReplyStatusSlider.prototype.createLabels = function()
 	}
 }
 
-BlorgReplyStatusSlider.prototype.createContextNote = function()
+BlorgCommentStatusSlider.prototype.createContextNote = function()
 {
 	this.context_note = document.createElement('div');
 	YAHOO.util.Dom.addClass(this.context_note, 'swat-note');
 	YAHOO.util.Dom.addClass(this.context_note,
-		'blorg-reply-status-slider-context-note');
+		'blorg-comment-status-slider-context-note');
 
 	var container = document.getElementById(this.id);
 	if (container.nextSibling) {
@@ -88,7 +88,7 @@ BlorgReplyStatusSlider.prototype.createContextNote = function()
 	}
 }
 
-BlorgReplyStatusSlider.prototype.handleChange = function()
+BlorgCommentStatusSlider.prototype.handleChange = function()
 {
 	var index = this.getIndex();
 	if (this.options.length > 1) {
@@ -98,12 +98,12 @@ BlorgReplyStatusSlider.prototype.handleChange = function()
 	this.updateLegendLabels();
 }
 
-BlorgReplyStatusSlider.prototype.getIndex = function()
+BlorgCommentStatusSlider.prototype.getIndex = function()
 {
 	return Math.floor(this.slider.getValue() / this.increment);
 }
 
-BlorgReplyStatusSlider.prototype.updateContextNote = function()
+BlorgCommentStatusSlider.prototype.updateContextNote = function()
 {
 	var index = this.getIndex();
 	if (this.context_note.firstChild)
@@ -115,16 +115,16 @@ BlorgReplyStatusSlider.prototype.updateContextNote = function()
 	}
 }
 
-BlorgReplyStatusSlider.prototype.updateLegendLabels = function()
+BlorgCommentStatusSlider.prototype.updateLegendLabels = function()
 {
 	var index = this.getIndex();
 	for (var i = 0; i < this.options.length; i++) {
 		if (i == index) {
 			YAHOO.util.Dom.addClass(this.legend_labels[i],
-				'blorg-reply-status-slider-legend-selected');
+				'blorg-comment-status-slider-legend-selected');
 		} else {
 			YAHOO.util.Dom.removeClass(this.legend_labels[i],
-				'blorg-reply-status-slider-legend-selected');
+				'blorg-comment-status-slider-legend-selected');
 		}
 	}
 }

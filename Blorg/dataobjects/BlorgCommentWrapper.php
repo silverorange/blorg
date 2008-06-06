@@ -1,24 +1,24 @@
 <?php
 
 require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Blorg/dataobjects/BlorgReply.php';
+require_once 'Blorg/dataobjects/BlorgComment.php';
 
 /**
- * A recordset wrapper class for BlorgReply objects
+ * A recordset wrapper class for BlorgComment objects
  *
  * @package   Blörg
  * @copyright 2008 silverorange
- * @see       BlorgReply
+ * @see       BlorgComment
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgReplyWrapper extends SwatDBRecordsetWrapper
+class BlorgCommentWrapper extends SwatDBRecordsetWrapper
 {
 	// {{{ protected function init()
 
 	protected function init()
 	{
 		parent::init();
-		$this->row_wrapper_class = SwatDBClassMap::get('BlorgReply');
+		$this->row_wrapper_class = SwatDBClassMap::get('BlorgComment');
 		$this->index_field = 'id';
 	}
 

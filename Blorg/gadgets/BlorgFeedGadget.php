@@ -30,8 +30,8 @@ class BlorgFeedGadget extends BlorgGadget
 		echo '</li><li>';
 
 		$a_tag = new SwatHtmlTag('a');
-		$a_tag->href = $base_href.'feed/replies';
-		$a_tag->setContent(Blorg::_('Recent Replies'));
+		$a_tag->href = $base_href.'feed/comments';
+		$a_tag->setContent(Blorg::_('Recent Comments'));
 		$a_tag->display();
 
 		echo '</li></ul>';

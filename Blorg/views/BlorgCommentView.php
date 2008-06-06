@@ -3,19 +3,19 @@
 require_once 'Blorg/views/BlorgView.php';
 
 /**
- * View for Blörg reply objects
+ * View for Blörg comment objects
  *
- * By default, this reply view's parts are:
+ * By default, this comment view's parts are:
  *
- * - author    - The author of the reply. Supports MODE_ALL and MODE_NONE. By
- *               default, links to the author details page for replies made by
- *               site authors. Non-site author replies are not linked.
- * - link      - The web address of the reply. Supports MODE_ALL and MODE_NONE.
- *               By default, links to the web address entered in the reply.
- * - permalink - Permalink (and publish date) of the reply. Supports MODE_ALL
- *               and MODE_NONE. Links to the reply on the reply's post page
+ * - author    - The author of the comment. Supports MODE_ALL and MODE_NONE. By
+ *               default, links to the author details page for comments made by
+ *               site authors. Non-site author comments are not linked.
+ * - link      - The web address of the comment. Supports MODE_ALL and MODE_NONE.
+ *               By default, links to the web address entered in the comment.
+ * - permalink - Permalink (and publish date) of the comment. Supports MODE_ALL
+ *               and MODE_NONE. Links to the comment on the comment's post page
  *               by default.
- * - bodytext  - The reply bodytext. Supports MODE_ALL, MODE_SUMMARY and
+ * - bodytext  - The comment bodytext. Supports MODE_ALL, MODE_SUMMARY and
  *               MODE_NONE. The summary mode displays a condensed, ellipsized
  *               version of the bodytext. Does not link anywhere.
  *
@@ -23,7 +23,7 @@ require_once 'Blorg/views/BlorgView.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgReplyView extends BlorgView
+class BlorgCommentView extends BlorgView
 {
 	// {{{ protected function define()
 
@@ -40,21 +40,21 @@ class BlorgReplyView extends BlorgView
 	// general display methods
 	// {{{ public function display()
 
-	public function display($reply)
+	public function display($comment)
 	{
-		if (!($reply instanceof BlorgReply)) {
+		if (!($comment instanceof BlorgComment)) {
 			throw new InvalidArgumentException(sprintf('The view "%s" can '.
-				'only display BlorgReply objects.',
+				'only display BlorgComment objects.',
 				get_class($this)));
 		}
 
 		$div_tag = new SwatHtmlTag('div');
-		$div_tag->id = 'reply'.$reply->id;
-		$div_tag->class = 'reply';
+		$div_tag->id = 'comment'.$comment->id;
+		$div_tag->class = 'comment';
 		$div_tag->open();
 
-		$this->displayHeader($reply);
-		$this->displayBody($reply);
+		$this->displayHeader($comment);
+		$this->displayBody($comment);
 
 		$div_tag->close();
 	}
@@ -62,15 +62,15 @@ class BlorgReplyView extends BlorgView
 	// }}}
 	// {{{ protected function displayHeader()
 
-	protected function displayHeader(BlorgReply $reply)
+	protected function displayHeader(BlorgComment $comment)
 	{
 		$heading_tag = new SwatHtmlTag('h4');
-		$heading_tag->class = 'reply-title';
+		$heading_tag->class = 'comment-title';
 
 		$heading_tag->open();
 
 		ob_start();
-		$this->displayAuthor($reply);
+		$this->displayAuthor($comment);
 		$author = ob_get_clean();
 
 		if (strlen($author) > 0) {
@@ -78,7 +78,7 @@ class BlorgReplyView extends BlorgView
 		}
 
 		ob_start();
-		$this->displayPermalink($reply);
+		$this->displayPermalink($comment);
 		$permalink = ob_get_clean();
 
 		if (strlen($permalink) > 0) {
@@ -89,15 +89,15 @@ class BlorgReplyView extends BlorgView
 
 		$heading_tag->close();
 
-		$this->displayLink($reply);
+		$this->displayLink($comment);
 	}
 
 	// }}}
 	// {{{ protected function displayBody()
 
-	protected function displayBody(BlorgReply $reply)
+	protected function displayBody(BlorgComment $comment)
 	{
-		$this->displayBodytext($reply);
+		$this->displayBodytext($comment);
 	}
 
 	// }}}
@@ -105,42 +105,42 @@ class BlorgReplyView extends BlorgView
 	// part display methods
 	// {{{ protected function displayAuthor()
 
-	protected function displayAuthor(BlorgReply $reply)
+	protected function displayAuthor(BlorgComment $comment)
 	{
 		if ($this->getMode('author') > BlorgView::MODE_NONE) {
 			$link = $this->getLink('author');
-			if ($reply->author === null) {
+			if ($comment->author === null) {
 				// anonymous author
 				$span_tag = new SwatHtmlTag('span');
-				$span_tag->class = 'reply-author';
-				$span_tag->setContent($reply->fullname);
+				$span_tag->class = 'comment-author';
+				$span_tag->setContent($comment->fullname);
 				$span_tag->display();
 			} else {
 				// system author
-				if ($reply->author->show && $link !== false) {
+				if ($comment->author->show && $link !== false) {
 					$span_tag = new SwatHtmlTag('span');
 					$span_tag->class = 'vcard author';
 					$span_tag->open();
 
 					$anchor_tag = new SwatHtmlTag('a');
-					$anchor_tag->class = 'reply-author system-reply-author '.
-						'fn url';
+					$anchor_tag->class =
+						'comment-author system-comment-author fn url';
 
 					if (is_string($link)) {
 						$anchor_tag->href = $link;
 					} else {
 						$anchor_tag->href =
-							$this->getAuthorRelativeUri($reply->author);
+							$this->getAuthorRelativeUri($comment->author);
 					}
 
-					$anchor_tag->setContent($reply->author->name);
+					$anchor_tag->setContent($comment->author->name);
 					$anchor_tag->display();
 
 					$span_tag->close();
 				} else {
 					$span_tag = new SwatHtmlTag('span');
-					$span_tag->class = 'reply-author system-reply-author';
-					$span_tag->setContent($this->reply->author->name);
+					$span_tag->class = 'comment-author system-comment-author';
+					$span_tag->setContent($this->comment->author->name);
 					$span_tag->display();
 				}
 			}
@@ -150,14 +150,14 @@ class BlorgReplyView extends BlorgView
 	// }}}
 	// {{{ protected function displayLink()
 
-	protected function displayLink(BlorgReply $reply)
+	protected function displayLink(BlorgComment $comment)
 	{
 		if ($this->getMode('link') > BlorgView::MODE_NONE) {
-			if (strlen($reply->link) > 0) {
+			if (strlen($comment->link) > 0) {
 				$link = $this->getLink('link');
 
 				$div_tag = new SwatHtmlTag('div');
-				$div_tag->class = 'reply-link';
+				$div_tag->class = 'comment-link';
 				$div_tag->open();
 
 				if ($link !== false) {
@@ -165,15 +165,15 @@ class BlorgReplyView extends BlorgView
 					if (is_string($link)) {
 						$anchor_tag->href = $link;
 					} else {
-						$anchor_tag->href = $reply->link;
+						$anchor_tag->href = $comment->link;
 					}
-					$anchor_tag->class = 'reply-link';
-					$anchor_tag->setContent($reply->link);
+					$anchor_tag->class = 'comment-link';
+					$anchor_tag->setContent($comment->link);
 					$anchor_tag->display();
 				} else {
 					$span_tag = new SwatHtmlTag('span');
-					$span_tag->class = 'reply-link';
-					$span_tag->setContent($reply->link);
+					$span_tag->class = 'comment-link';
+					$span_tag->setContent($comment->link);
 					$span_tag->display();
 				}
 
@@ -185,7 +185,7 @@ class BlorgReplyView extends BlorgView
 	// }}}
 	// {{{ protected function displayPermalink()
 
-	protected function displayPermalink(BlorgReply $reply)
+	protected function displayPermalink(BlorgComment $comment)
 	{
 		if ($this->getMode('permalink') > BlorgView::MODE_NONE) {
 			$link = $this->getLink('permalink');
@@ -194,7 +194,8 @@ class BlorgReplyView extends BlorgView
 			} else {
 				$permalink_tag = new SwatHtmlTag('a');
 				if ($link === true) {
-					$permalink_tag->href = $this->getReplyRelativeUri($reply);
+					$permalink_tag->href =
+						$this->getCommentRelativeUri($comment);
 				} else {
 					$permalink_tag->href = $link;
 				}
@@ -204,12 +205,12 @@ class BlorgReplyView extends BlorgView
 
 			// display machine-readable date in UTC
 			$abbr_tag = new SwatHtmlTag('abbr');
-			$abbr_tag->class = 'reply-published';
+			$abbr_tag->class = 'comment-published';
 			$abbr_tag->title =
-				$reply->createdate->getDate(DATE_FORMAT_ISO_EXTENDED);
+				$comment->createdate->getDate(DATE_FORMAT_ISO_EXTENDED);
 
 			// display human-readable date in local time
-			$date = clone $reply->createdate;
+			$date = clone $comment->createdate;
 			$date->convertTZ($this->app->default_time_zone);
 			$abbr_tag->setContent($date->format(SwatDate::DF_DATE_TIME));
 			$abbr_tag->display();
@@ -221,23 +222,23 @@ class BlorgReplyView extends BlorgView
 	// }}}
 	// {{{ protected function displayBodytext()
 
-	protected function displayBodytext(BlorgReply $reply)
+	protected function displayBodytext(BlorgComment $comment)
 	{
 		switch ($this->getMode('bodytext')) {
 		case BlorgView::MODE_ALL:
 			$div_tag = new SwatHtmlTag('div');
-			$div_tag->class = 'reply-content';
+			$div_tag->class = 'comment-content';
 			$div_tag->setContent(
-				BlorgReply::getBodyTextXhtml($reply->bodytext), 'text/xml');
+				BlorgComment::getBodyTextXhtml($comment->bodytext), 'text/xml');
 
 			$div_tag->display();
 			break;
 		case BlorgView::MODE_SUMMARY:
 			$div_tag = new SwatHtmlTag('div');
-			$div_tag->class = 'reply-content';
+			$div_tag->class = 'comment-content';
 			$div_tag->setContent(SwatString::ellipsizeRight(
-				SwatString::condense(BlorgReply::getBodyTextXhtml(
-					$reply->bodytext))), 'text/xml');
+				SwatString::condense(BlorgComment::getBodyTextXhtml(
+					$comment->bodytext))), 'text/xml');
 
 			$div_tag->display();
 			break;

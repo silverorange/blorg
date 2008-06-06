@@ -194,12 +194,12 @@ class BlorgAtomPage extends SitePage
 			$entry->addAuthor($post->author->name, $author_uri,
 				$post->author->email);
 
-			$visible_reply_count = count($post->getVisibleReplies());
-			if ($post->reply_status == BlorgPost::REPLY_STATUS_OPEN ||
-				$post->reply_status == BlorgPost::REPLY_STATUS_MODERATED ||
-				($post->reply_status == BlorgPost::REPLY_STATUS_LOCKED &&
-				$visible_reply_count > 0)) {
-				$entry->addLink($post_uri.'#replies', 'replies', 'text/html');
+			$visible_comment_count = count($post->getVisibleComments());
+			if ($post->comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
+				$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED ||
+				($post->comment_status == BlorgPost::COMMENT_STATUS_LOCKED &&
+				$visible_comment_count > 0)) {
+				$entry->addLink($post_uri.'#comments', 'comments', 'text/html');
 			}
 
 			$this->feed->addEntry($entry);

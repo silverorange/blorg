@@ -100,10 +100,10 @@ class Blorg
 			// Optional Wordpress API key for Akismet spam filtering.
 			'blorg.akismet_key'          => null,
 
-			// Default post reply status. Valid config values are 'open',
+			// Default post comment status. Valid config values are 'open',
 			// 'moderated', 'locked' and 'closed'. Any other values are
 			// interpreted as 'closed'.
-			'blorg.default_reply_status' => 'closed',
+			'blorg.default_comment_status' => 'closed',
 		);
 	}
 
@@ -127,12 +127,12 @@ class Blorg
 			$blorg_base_href.'feed', 'alternate',
 			'application/atom+xml', Blorg::_('Recent Posts'));
 
-		$recent_replies = new SwatLinkHtmlHeadEntry(
-			$blorg_base_href.'feed/replies', 'alternate',
-			'application/atom+xml', Blorg::_('Recent Replies'));
+		$recent_comments = new SwatLinkHtmlHeadEntry(
+			$blorg_base_href.'feed/comments', 'alternate',
+			'application/atom+xml', Blorg::_('Recent Comments'));
 
 		$set->addEntry($recent_posts);
-		$set->addEntry($recent_replies);
+		$set->addEntry($recent_comments);
 
 		return $set;
 	}
@@ -156,8 +156,8 @@ SwatUI::mapClassPrefixToPath('Blorg', 'Blorg');
 SwatDBClassMap::addPath('Blorg/dataobjects');
 
 BlorgViewFactory::addPath('Blorg/views');
-BlorgViewFactory::registerView('post',   'BlorgPostView');
-BlorgViewFactory::registerView('reply',  'BlorgReplyView');
+BlorgViewFactory::registerView('post',    'BlorgPostView');
+BlorgViewFactory::registerView('comment', 'BlorgCommentView');
 BlorgViewFactory::registerView('author', 'BlorgAuthorView');
 
 ?>

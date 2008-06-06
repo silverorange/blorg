@@ -7,13 +7,13 @@ require_once 'Admin/AdminListDependency.php';
 require_once 'NateGoSearch/NateGoSearch.php';
 
 /**
- * Delete confirmation page for Replies
+ * Delete confirmation page for comments
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostReplyDelete extends AdminDBDelete
+class BlorgPostCommentDelete extends AdminDBDelete
 {
 	// {{{ private properties
 
@@ -40,12 +40,12 @@ class BlorgPostReplyDelete extends AdminDBDelete
 
 		$this->addToSearchQueue($item_list);
 
-		$sql = sprintf('delete from BlorgReply where id in (%s)', $item_list);
+		$sql = sprintf('delete from BlorgComment where id in (%s)', $item_list);
 		$num = SwatDB::exec($this->app->db, $sql);
 
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
-			'One reply has been deleted.',
-			'%d replies have been deleted.', $num),
+			'One comment has been deleted.',
+			'%d comments have been deleted.', $num),
 			SwatString::numberFormat($num)),
 			SwatMessage::NOTIFICATION);
 
@@ -64,9 +64,11 @@ class BlorgPostReplyDelete extends AdminDBDelete
 		if ($type === null)
 			return;
 
-		$sql = sprintf('delete from NateGoSearchQueue where
-				document_id in (select distinct BlorgReply.post from BlorgReply
-					where BlorgReply.id in (%s))
+		$sql = sprintf('delete from NateGoSearchQueue
+			where
+				document_id in
+					(select distinct BlorgComment.post from BlorgComment
+						where BlorgComment.id in (%s))
 				and document_type = %s',
 			$ids,
 			$this->app->db->quote($type, 'integer'));
@@ -75,8 +77,8 @@ class BlorgPostReplyDelete extends AdminDBDelete
 
 		$sql = sprintf('insert into NateGoSearchQueue
 			(document_id, document_type)
-			select distinct BlorgReply.post, %s from
-				BlorgReply where BlorgReply.id in (%s)',
+			select distinct BlorgComment.post, %s from
+				BlorgComment where BlorgComment.id in (%s)',
 			$this->app->db->quote($type, 'integer'),
 			$ids);
 
@@ -95,10 +97,10 @@ class BlorgPostReplyDelete extends AdminDBDelete
 		$item_list = $this->getItemList('integer');
 
 		$dep = new AdminListDependency();
-		$dep->setTitle(Blorg::_('reply'), Blorg::_('replies'));
+		$dep->setTitle(Blorg::_('comment'), Blorg::_('comments'));
 		//TODO: ellipsize bodytext
 		$dep->entries = AdminListDependency::queryEntries($this->app->db,
-			'BlorgReply', 'integer:id', null, 'text:bodytext', 'id',
+			'BlorgComment', 'integer:id', null, 'text:bodytext', 'id',
 			'id in ('.$item_list.')', AdminDependency::DELETE);
 
 		$message = $this->ui->getWidget('confirmation_message');
@@ -121,7 +123,7 @@ class BlorgPostReplyDelete extends AdminDBDelete
 			sprintf('Post/Details?id=%s', $this->post->id)));
 
 		$this->navbar->addEntry(new SwatNavBarEntry(
-			Blorg::_('Delete Replies')));
+			Blorg::_('Delete Comments')));
 	}
 
 	// }}}

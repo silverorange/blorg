@@ -1,31 +1,31 @@
 <?php
 
 require_once 'Site/pages/SitePage.php';
-require_once 'Blorg/dataobjects/BlorgReplyWrapper.php';
+require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 require_once 'XML/Atom/Feed.php';
 require_once 'XML/Atom/Entry.php';
 
 /**
- * Displays an Atom feed of all recent replies in reverse chronological order
+ * Displays an Atom feed of all recent comments in reverse chronological order
  *
- * The number of replies is always at least $min_entries, but if a recently
- * published set of replies (within the time of $recent_period) exceeds
- * $min_entries, up to $max_entries replies will be displayed. This makes it
- * easier to ensure that a subscriber won't miss any replies while
+ * The number of comments is always at least $min_entries, but if a recently
+ * published set of comments (within the time of $recent_period) exceeds
+ * $min_entries, up to $max_entries comments will be displayed. This makes it
+ * easier to ensure that a subscriber won't miss any comments while
  * limiting server load for the feed.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgAtomRepliesPage extends SitePage
+class BlorgCommentsAtomPage extends SitePage
 {
 	// {{{ protected properties
 
 	/**
-	 * @var BlorgReplyWrapper
+	 * @var BlorgCommentWrapper
 	 */
-	protected $replies;
+	protected $comments;
 
 	/**
 	 * @var XML_Atom_Feed
@@ -47,7 +47,7 @@ class BlorgAtomRepliesPage extends SitePage
 	protected $max_entries = 100;
 
 	/**
-	 * Period for recently added replies (in seconds)
+	 * Period for recently added comments (in seconds)
 	 *
 	 * Default value is two days.
 	 *
@@ -64,33 +64,33 @@ class BlorgAtomRepliesPage extends SitePage
 
 		parent::__construct($app, $layout);
 
-		$this->initReplies();
+		$this->initComments();
 	}
 
 	// }}}
-	// {{{ protected function initReplies()
+	// {{{ protected function initComments()
 
-	protected function initReplies()
+	protected function initComments()
 	{
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select BlorgReply.* from BlorgReply
-			inner join BlorgPost on BlorgReply.post = BlorgPost.id and
+		$sql = sprintf('select BlorgComment.* from BlorgComment
+			inner join BlorgPost on BlorgComment.post = BlorgPost.id and
 				BlorgPost.enabled = %s and BlorgPost.instance %s %s and
-				BlorgPost.reply_status != %s
-			where BlorgReply.status = %s and BlorgReply.spam = %s
-			order by BlorgReply.createdate desc',
+				BlorgPost.comment_status != %s
+			where BlorgComment.status = %s and BlorgComment.spam = %s
+			order by BlorgComment.createdate desc',
 			$this->app->db->quote(true, 'boolean'),
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(BlorgPost::REPLY_STATUS_CLOSED, 'integer'),
-			$this->app->db->quote(BlorgReply::STATUS_PUBLISHED, 'integer'),
+			$this->app->db->quote(BlorgPost::COMMENT_STATUS_CLOSED, 'integer'),
+			$this->app->db->quote(BlorgComment::STATUS_PUBLISHED, 'integer'),
 			$this->app->db->quote(false, 'boolean'));
 
 		$this->app->db->setLimit($this->max_entries);
 
-		$wrapper = SwatDBClassMap::get('BlorgReplyWrapper');
-		$this->replies = SwatDB::query($this->app->db, $sql, $wrapper);
+		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
+		$this->comments = SwatDB::query($this->app->db, $sql, $wrapper);
 	}
 
 	// }}}
@@ -116,10 +116,10 @@ class BlorgAtomRepliesPage extends SitePage
 		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
 
 		$this->feed = new XML_Atom_Feed($blorg_base_href,
-			sprintf(Blorg::_('%s - Recent Replies'),
+			sprintf(Blorg::_('%s - Recent Comments'),
 				$this->app->config->site->title));
 
-		$this->feed->setSubTitle(Blorg::_('Recent Replies'));
+		$this->feed->setSubTitle(Blorg::_('Recent Comments'));
 
 		$this->feed->addLink($site_base_href.$this->source, 'self',
 			'application/atom+xml');
@@ -133,15 +133,15 @@ class BlorgAtomRepliesPage extends SitePage
 
 		$count = 0;
 
-		foreach ($this->replies as $reply) {
+		foreach ($this->comments as $comment) {
 			$count++;
 
 			if ($count > $this->max_entries ||
 				($count > $this->min_entries) &&
-					$reply->createdate->before($threshold))
+					$comment->createdate->before($threshold))
 				break;
 
-			$post = $reply->post;
+			$post = $comment->post;
 
 			$path = $blorg_base_href.'archive';
 
@@ -156,11 +156,11 @@ class BlorgAtomRepliesPage extends SitePage
 				$month_name,
 				$post->shortname);
 
-			$reply_uri = $post_uri.'#'.$reply->id;
+			$comment_uri = $post_uri.'#comment'.$comment->id;
 
-			if ($reply->author !== null) {
-				$author_name = $reply->author->name;
-				if ($reply->author->show) {
+			if ($comment->author !== null) {
+				$author_name = $comment->author->name;
+				if ($comment->author->show) {
 					$author_uri = $blorg_base_href.'author/'.
 						$post->author->shortname;
 
@@ -170,21 +170,21 @@ class BlorgAtomRepliesPage extends SitePage
 					$author_email = '';
 				}
 			} else {
-				$author_name  = $reply->fullname;
-				$author_uri   = $reply->link;
+				$author_name  = $comment->fullname;
+				$author_uri   = $comment->link;
 				// don't show anonymous author email
 				$author_email = '';
 			}
 
-			$entry = new XML_Atom_Entry($reply_uri,
+			$entry = new XML_Atom_Entry($comment_uri,
 				sprintf(Blorg::_('%s on “%s”'), $author_name, $post->title),
-				$reply->createdate);
+				$comment->createdate);
 
-			$entry->setContent(BlorgReply::getBodytextXhtml($reply->bodytext),
-				'html');
+			$entry->setContent(BlorgComment::getBodytextXhtml(
+				$comment->bodytext), 'html');
 
 			$entry->addAuthor($author_name, $author_uri, $author_email);
-			$entry->addLink($reply_uri, 'alternate', 'text/html');
+			$entry->addLink($comment_uri, 'alternate', 'text/html');
 
 			$this->feed->addEntry($entry);
 		}
