@@ -249,7 +249,7 @@ class BlorgPageFactory extends SitePageFactory
 			'^archive/(\d{4})/('.$months.')/([\w-]+)/feed$' => 'BlorgPostAtomPage',
 			'^feed$'                                        => 'BlorgAtomPage',
 			'^file/(.*)$'                                   => 'BlorgFileLoaderPage',
-			'^feed/replies$'                                => 'BlorgAtomRepliesPage',
+			'^feed/comments$'                               => 'BlorgCommentsAtomPage',
 			'^tag/([\w-]+)(?:/page(\d+))?$'                 => 'BlorgTagPage',
 			'^tag/([\w-]+)/feed$'                           => 'BlorgTagAtomPage',
 			'^ajax/(.+)$'                                   => 'BlorgAjaxProxyPage',

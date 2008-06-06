@@ -3,7 +3,7 @@
 <swatml>
 	<widget class="SwatMessageDisplay" id="message_display" />
 	<widget class="SwatFrame" id="search_frame">
-		<property name="title" translatable="yes">Filter Replies</property>
+		<property name="title" translatable="yes">Filter Comments</property>
 		<widget class="SwatForm" id="search_form">
 			<widget class="SwatFormField">
 				<property name="title" translatable="yes">Keywords</property>
@@ -31,19 +31,19 @@
 		</widget>
 	</widget>
 	<widget class="SwatFrame" id="results_frame">
-		<property name="title" translatable="yes">Replies</property>
+		<property name="title" translatable="yes">Comments</property>
 		<widget class="SwatContentBlock" id="results_message" />
-		<widget class="SwatForm" id="replies_form">
-			<widget class="SwatTableView" id="replies_view">
+		<widget class="SwatForm" id="comments_form">
+			<widget class="SwatTableView" id="comments_view">
 				<object class="SwatTableViewGroup">
-					<property name="group_by">reply_date_day</property>
+					<property name="group_by">comment_date_day</property>
 					<object class="SwatDateCellRenderer">
-						<property name="date" type="data">reply_date_day</property>
+						<property name="date" type="data">comment_date_day</property>
 						<property name="format" translatable="yes">%d %B, %Y</property>
 					</object>
 				</object>
 				<object class="SwatTableViewCheckboxColumn" id="checkbox">
-					<object class="SwatCheckboxCellRenderer" id="replies">
+					<object class="SwatCheckboxCellRenderer" id="comments">
 						<property name="value" type="data">id</property>
 					</object>
 				</object>
@@ -51,7 +51,7 @@
 					<property name="title" translatable="yes">Posted By</property>
 					<object class="AdminTitleLinkCellRenderer">
 						<property name="text" type="data">fullname</property>
-						<property name="link">Post/ReplyEdit?id=%s</property>
+						<property name="link">Post/CommentEdit?id=%s</property>
 						<property name="link_value" type="data">id</property>
 						<property name="stock_id">edit</property>
 					</object>
@@ -66,7 +66,7 @@
 				</object>
 				<object class="SwatTableViewColumn" id="visibility">
 					<property name="title" translatable="yes">Visiblility</property>
-					<object class="BlorgReplyVisibilityCellRenderer">
+					<object class="BlorgCommentVisibilityCellRenderer">
 						<property name="status" type="data">status</property>
 						<property name="spam" type="data">spam</property>
 					</object>
@@ -79,9 +79,9 @@
 				</object>
 			</widget>
 			<widget class="AdminPagination" id="pager">
-				<property name="link">Post/Replies</property>
+				<property name="link">Post/Comments</property>
 			</widget>
-			<widget class="SwatActions" id="reply_actions">
+			<widget class="SwatActions" id="comment_actions">
 				<widget class="SwatActionItem" id="approve">
 					<property name="title" translatable="yes">publish</property>
 				</widget>

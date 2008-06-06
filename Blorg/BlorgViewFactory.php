@@ -64,7 +64,7 @@ class BlorgViewFactory extends SwatObject
 	 * @param SiteApplication $app the application in which to get the view.
 	 * @param string $type the type of view to get. There must be a view class
 	 *                      registered for this type. Default types are 'post',
-	 *                      'author' and 'reply'.
+	 *                      'author' and 'comment'.
 	 *
 	 * @return BlorgView the view of the specified type. The view will be an
 	 *                    instance of whatever class was registered for the

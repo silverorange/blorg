@@ -7,7 +7,7 @@ require_once 'Swat/SwatHtmlTag.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
 
 /**
- * Displays active convestaions (a.k.a. posts that have recent reply activity)
+ * Displays active convestaions (a.k.a. posts that have recent comment activity)
  *
  * Available settings are:
  *
@@ -65,13 +65,15 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 			foreach ($conversations as $conversation) {
 				$post = new $class_name($conversation);
 
-				$last_reply_date = new SwatDate($conversation->last_reply_date);
-				$last_reply_date->setTZ('UTC');
+				$last_comment_date = new SwatDate(
+					$conversation->last_comment_date);
+
+				$last_comment_date->setTZ('UTC');
 
 				$li_tag = new SwatHtmlTag('li');
 
-				// is last reply is later than last visit date, mark as new
-				if (Date::compare($last_reply_date, $last_visit_date) > 0) {
+				// is last comment is later than last visit date, mark as new
+				if (Date::compare($last_comment_date, $last_visit_date) > 0) {
 					$li_tag->class = 'new';
 				}
 
@@ -83,8 +85,9 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 
 				$span_tag =  new SwatHtmlTag('span');
 				$span_tag->setContent(sprintf(Blorg::ngettext(
-					'(%s reply)', '(%s replies)', $conversation->reply_count),
-					$locale->formatNumber($conversation->reply_count)));
+					'(%s comment)', '(%s comments)',
+						$conversation->comment_count),
+					$locale->formatNumber($conversation->comment_count)));
 
 				$anchor_tag->display();
 				echo ' ';
@@ -114,12 +117,12 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 	protected function getActiveConversations()
 	{
 		$sql = sprintf('select title, bodytext, publish_date, shortname,
-				reply_count, last_reply_date
+				comment_count, last_comment_date
 			from BlorgPost
-				inner join BlorgPostReplyCountView
-					on BlorgPost.id = BlorgPostReplyCountView.post
-			where enabled = %s and reply_status != %s and instance %s %s
-			order by last_reply_date desc',
+				inner join BlorgPostCommentCountView
+					on BlorgPost.id = BlorgPostCommentCountView.post
+			where enabled = %s and comment_status != %s and instance %s %s
+			order by last_comment_date desc',
 			$this->app->db->quote(true, 'boolean'),
 			$this->app->db->quote(BlorgPost::REPLY_STATUS_CLOSED, 'integer'),
 			SwatDB::equalityOperator($this->app->getInstanceId()),

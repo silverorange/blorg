@@ -37,9 +37,9 @@
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Reply Status</property>
-				<object class="BlorgReplyStatusCellRenderer">
-					<property name="status" type="data">reply_status</property>
+				<property name="title" translatable="yes">Comment Status</property>
+				<object class="BlorgCommentStatusCellRenderer">
+					<property name="status" type="data">comment_status</property>
 				</object>
 			</object>
 			<object class="SwatDetailsViewField" id="createdate">
@@ -63,20 +63,20 @@
 			</object>
 		</widget>
 		<widget class="SwatContentBlock" id="post_preview"/>
-		<!-- {{{ Replies -->
-		<widget class="SwatFrame" id="replies_frame">
-			<property name="title" translatable="yes">Replies</property>
-			<widget class="SwatToolbar" id="replies_toolbar">
+		<!-- {{{ Comments -->
+		<widget class="SwatFrame" id="comments_frame">
+			<property name="title" translatable="yes">Comments</property>
+			<widget class="SwatToolbar" id="comments_toolbar">
 				<widget class="SwatToolLink">
-					<property name="title" translatable="yes">New Reply</property>
-					<property name="link">Post/ReplyEdit?post=%s</property>
+					<property name="title" translatable="yes">New Comment</property>
+					<property name="link">Post/CommentEdit?post=%s</property>
 					<property name="stock_id">create</property>
 				</widget>
 			</widget>
-			<widget class="SwatForm" id="replies_form">
-				<widget class="SwatTableView" id="replies_view">
+			<widget class="SwatForm" id="comments_form">
+				<widget class="SwatTableView" id="comments_view">
 					<object class="SwatTableViewCheckboxColumn" id="checkbox">
-						<object class="SwatCheckboxCellRenderer" id="replies">
+						<object class="SwatCheckboxCellRenderer" id="comments">
 							<property name="value" type="data">id</property>
 						</object>
 					</object>
@@ -84,7 +84,7 @@
 						<property name="title" translatable="yes">Posted By</property>
 						<object class="AdminTitleLinkCellRenderer">
 							<property name="text" type="data">fullname</property>
-							<property name="link">Post/ReplyEdit?id=%s</property>
+							<property name="link">Post/CommentEdit?id=%s</property>
 							<property name="link_value" type="data">id</property>
 							<property name="stock_id">edit</property>
 						</object>
@@ -98,7 +98,7 @@
 					</object>
 					<object class="SwatTableViewColumn" id="visibility">
 						<property name="title" translatable="yes">Visiblility</property>
-						<object class="BlorgReplyVisibilityCellRenderer">
+						<object class="BlorgCommentVisibilityCellRenderer">
 							<property name="status" type="data">status</property>
 							<property name="spam" type="data">spam</property>
 						</object>
@@ -113,7 +113,7 @@
 				<widget class="AdminPagination" id="pager">
 					<property name="link">Post/Details</property>
 				</widget>
-				<widget class="SwatActions" id="reply_actions">
+				<widget class="SwatActions" id="comment_actions">
 					<widget class="SwatActionItem" id="approve">
 						<property name="title" translatable="yes">publish</property>
 					</widget>

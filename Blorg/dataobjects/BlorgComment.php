@@ -6,13 +6,13 @@ require_once 'Blorg/dataobjects/BlorgAuthor.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 
 /**
- * A reply to a Blörg Post
+ * A comment on a Blörg Post
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgReply extends SwatDBDataObject
+class BlorgComment extends SwatDBDataObject
 {
 	// {{{ constants
 
@@ -31,28 +31,28 @@ class BlorgReply extends SwatDBDataObject
 	public $id;
 
 	/**
-	 * Fullname of person replying.
+	 * Fullname of person commenting
 	 *
 	 * @var string
 	 */
 	public $fullname;
 
 	/**
-	 * Link to display with the reply.
+	 * Link to display with the comment
 	 *
 	 * @var string
 	 */
 	public $link;
 
 	/**
-	 * Email address of the person replying.
+	 * Email address of the person commenting
 	 *
 	 * @var string
 	 */
 	public $email;
 
 	/**
-	 * The body of the reply.
+	 * The body of this comment
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,7 @@ class BlorgReply extends SwatDBDataObject
 	 *
 	 * Set using class contstants:
 	 * STATUS_PENDING - waiting on moderation
-	 * STATUS_PUBLISHED - reply published on site
+	 * STATUS_PUBLISHED - comment published on site
 	 * STATUS_UNPUBLISHED - not shown on the site
 	 *
 	 * @var integer
@@ -71,28 +71,28 @@ class BlorgReply extends SwatDBDataObject
 	public $status;
 
 	/**
-	 * Whether or not this reply is spam
+	 * Whether or not this comment is spam
 	 *
 	 * @var boolean
 	 */
 	public $spam = false;
 
 	/**
-	 * IP Address of the person replying.
+	 * IP Address of the person commenting
 	 *
 	 * @var string
 	 */
 	public $ip_address;
 
 	/**
-	 * User Agent of the Browser used to reply.
+	 * User agent of the HTTP client used to comment
 	 *
 	 * @var string
 	 */
 	public $user_agent;
 
 	/**
-	 * Date of the reply
+	 * Date this comment was created
 	 *
 	 * @var Date
 	 */
@@ -156,7 +156,7 @@ class BlorgReply extends SwatDBDataObject
 		$this->registerInternalProperty('author',
 			SwatDBClassMap::get('BlorgAuthor'));
 
-		$this->table = 'BlorgReply';
+		$this->table = 'BlorgComment';
 		$this->id_field = 'integer:id';
 	}
 

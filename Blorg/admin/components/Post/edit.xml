@@ -15,8 +15,8 @@
 					<widget class="BlorgPublishRadioTable" id="publish" />
 				</widget>
 				<widget class="SwatGroupingFormField">
-					<property name="title" translatable="yes">Reply Status</property>
-					<widget class="BlorgReplyStatusSlider" id="reply_status" />
+					<property name="title" translatable="yes">Comment Status</property>
+					<widget class="BlorgCommentStatusSlider" id="comment_status" />
 				</widget>
 				<widget class="SwatGroupingFormField">
 					<property name="title" translatable="yes">Tags</property>

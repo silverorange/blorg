@@ -5,23 +5,23 @@ require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'NateGoSearch/NateGoSearch.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/dataobjects/BlorgReply.php';
+require_once 'Blorg/dataobjects/BlorgComment.php';
 
 /**
- * Page for editing replies
+ * Page for editing comments
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostReplyEdit extends AdminDBEdit
+class BlorgPostCommentEdit extends AdminDBEdit
 {
 	// {{{ protected properties
 
 	/**
-	 * @var BlorgReply
+	 * @var BlorgComment
 	 */
-	protected $reply;
+	protected $comment;
 
 	// }}}
 
@@ -32,10 +32,10 @@ class BlorgPostReplyEdit extends AdminDBEdit
 	{
 		parent::initInternal();
 
-		$this->ui->loadFromXML(dirname(__FILE__).'/reply-edit.xml');
-		$this->initBlorgReply();
+		$this->ui->loadFromXML(dirname(__FILE__).'/comment-edit.xml');
+		$this->initBlorgComment();
 
-		if ($this->id === null || $this->reply->author !== null) {
+		if ($this->id === null || $this->comment->author !== null) {
 			$this->ui->getWidget('fullname_field')->visible = false;
 			$this->ui->getWidget('link_field')->visible     = false;
 			$this->ui->getWidget('email_field')->visible    = false;
@@ -44,13 +44,13 @@ class BlorgPostReplyEdit extends AdminDBEdit
 	}
 
 	// }}}
-	// {{{ protected function initBlorgReply()
+	// {{{ protected function initBlorgComment()
 
-	protected function initBlorgReply()
+	protected function initBlorgComment()
 	{
-		$class_name = SwatDBClassMap::get('BlorgReply');
-		$this->reply = new $class_name();
-		$this->reply->setDatabase($this->app->db);
+		$class_name = SwatDBClassMap::get('BlorgComment');
+		$this->comment = new $class_name();
+		$this->comment->setDatabase($this->app->db);
 
 		if ($this->id === null) {
 			$post_id = $this->app->initVar('post');
@@ -62,11 +62,11 @@ class BlorgPostReplyEdit extends AdminDBEdit
 				throw new AdminNotFoundException(
 					sprintf('Post with id ‘%s’ not found.', $post_id));
 			else
-				$this->reply->post = $post;
+				$this->comment->post = $post;
 
-		} elseif (!$this->reply->load($this->id)) {
+		} elseif (!$this->comment->load($this->id)) {
 			throw new AdminNotFoundException(
-				sprintf('Reply with id ‘%s’ not found.', $this->id));
+				sprintf('Comment with id ‘%s’ not found.', $this->id));
 		}
 	}
 
@@ -85,23 +85,23 @@ class BlorgPostReplyEdit extends AdminDBEdit
 			'status',
 		));
 
-		$this->reply->fullname = $values['fullname'];
-		$this->reply->link     = $values['link'];
-		$this->reply->email    = $values['email'];
-		$this->reply->bodytext = $values['bodytext'];
-		$this->reply->status   = $values['status'];
+		$this->comment->fullname = $values['fullname'];
+		$this->comment->link     = $values['link'];
+		$this->comment->email    = $values['email'];
+		$this->comment->bodytext = $values['bodytext'];
+		$this->comment->status   = $values['status'];
 
-		if ($this->reply->id === null) {
+		if ($this->comment->id === null) {
 			$now = new SwatDate();
 			$now->toUTC();
-			$this->reply->createdate = $now;
-			$this->reply->author     = $this->app->session->getUserID();
+			$this->comment->createdate = $now;
+			$this->comment->author     = $this->app->session->getUserID();
 		}
 
-		$this->reply->save();
+		$this->comment->save();
 		$this->addToSearchQueue();
 
-		$message = new SwatMessage(Blorg::_('Reply has been saved.'));
+		$message = new SwatMessage(Blorg::_('Comment has been saved.'));
 
 		$this->app->messages->add($message);
 	}
@@ -120,14 +120,14 @@ class BlorgPostReplyEdit extends AdminDBEdit
 
 		$sql = sprintf('delete from NateGoSearchQueue
 			where document_id = %s and document_type = %s',
-			$this->app->db->quote($this->reply->post->id, 'integer'),
+			$this->app->db->quote($this->comment->post->id, 'integer'),
 			$this->app->db->quote($type, 'integer'));
 
 		SwatDB::exec($this->app->db, $sql);
 
 		$sql = sprintf('insert into NateGoSearchQueue
 			(document_id, document_type) values (%s, %s)',
-			$this->app->db->quote($this->reply->post->id, 'integer'),
+			$this->app->db->quote($this->comment->post->id, 'integer'),
 			$this->app->db->quote($type, 'integer'));
 
 		SwatDB::exec($this->app->db, $sql);
@@ -142,9 +142,9 @@ class BlorgPostReplyEdit extends AdminDBEdit
 	{
 		parent::buildInternal();
 
-		if ($this->id === null || $this->reply->author !== null) {
+		if ($this->id === null || $this->comment->author !== null) {
 			$this->ui->getWidget('edit_form')->action = sprintf('%s?post=%d',
-				$this->source, $this->reply->post->id);
+				$this->source, $this->comment->post->id);
 
 			$this->ui->getWidget('author_field')->visible = true;
 			$this->ui->getWidget('author')->content =
@@ -158,7 +158,7 @@ class BlorgPostReplyEdit extends AdminDBEdit
 
 	protected function loadDBData()
 	{
-		$this->ui->setValues(get_object_vars($this->reply));
+		$this->ui->setValues(get_object_vars($this->comment));
 	}
 
 	// }}}
@@ -167,14 +167,15 @@ class BlorgPostReplyEdit extends AdminDBEdit
 	protected function buildNavBar()
 	{
 		$this->navbar->addEntry(new SwatNavBarEntry(
-			$this->reply->post->getTitle(),
-			sprintf('Post/Details?id=%s', $this->reply->post->id)));
+			$this->comment->post->getTitle(),
+			sprintf('Post/Details?id=%s', $this->comment->post->id)));
 
 		if ($this->id === null)
-			$this->navbar->addEntry(new SwatNavBarEntry(Blorg::_('New Reply')));
+			$this->navbar->addEntry(new SwatNavBarEntry(
+				Blorg::_('New Comment')));
 		else
 			$this->navbar->addEntry(new SwatNavBarEntry(
-				Blorg::_('Edit Reply')));
+				Blorg::_('Edit Comment')));
 	}
 
 	// }}}

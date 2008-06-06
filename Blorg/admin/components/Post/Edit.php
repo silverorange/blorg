@@ -10,7 +10,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgFile.php';
 require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgFileImage.php';
-require_once 'Blorg/admin/BlorgReplyStatusSlider.php';
+require_once 'Blorg/admin/BlorgCommentStatusSlider.php';
 require_once 'Blorg/admin/BlorgTagEntry.php';
 require_once dirname(__FILE__).'/include/BlorgFileAttachControl.php';
 require_once dirname(__FILE__).'/include/BlorgFileDeleteControl.php';
@@ -46,7 +46,7 @@ class BlorgPostEdit extends AdminDBEdit
 
 		$this->ui->loadFromXML($this->ui_xml);
 		$this->initPost();
-		$this->initReplyStatuses();
+		$this->initCommentStatuses();
 
 		if ($this->post->publish_date === null)
 			$this->ui->getWidget('shortname_field')->visible = false;
@@ -86,50 +86,51 @@ class BlorgPostEdit extends AdminDBEdit
 	}
 
 	// }}}
-	// {{{ protected function initReplyStatuses()
+	// {{{ protected function initCommentStatuses()
 
-	protected function initReplyStatuses()
+	protected function initCommentStatuses()
 	{
-		$status = $this->ui->getWidget('reply_status');
+		$status = $this->ui->getWidget('comment_status');
 
 		// open
 		$option = new SwatOption(BlorgPost::REPLY_STATUS_OPEN,
-			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_OPEN));
+			BlorgPost::getCommentStatusTitle(BlorgPost::REPLY_STATUS_OPEN));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
-			'Replies can be added by anyone and are immediately visible on '.
+			'Comments can be added by anyone and are immediately visible on '.
 			'this post.'));
 
 		// moderated
 		$option = new SwatOption(BlorgPost::REPLY_STATUS_MODERATED,
-			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_MODERATED));
+			BlorgPost::getCommentStatusTitle(
+				BlorgPost::REPLY_STATUS_MODERATED));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
-			'Replies can be added by anyone but must be approved by a site '.
+			'Comments can be added by anyone but must be approved by a site '.
 			'author before being visible on this post.'));
 
 		// locked
 		$option = new SwatOption(BlorgPost::REPLY_STATUS_LOCKED,
-			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_LOCKED));
+			BlorgPost::getCommentStatusTitle(BlorgPost::REPLY_STATUS_LOCKED));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
-			'Replies can only be added by an author. Existing replies are '.
+			'Comments can only be added by an author. Existing comments are '.
 			'still visible on this post.'));
 
 		// closed
 		$option = new SwatOption(BlorgPost::REPLY_STATUS_CLOSED,
-			BlorgPost::getReplyStatusTitle(BlorgPost::REPLY_STATUS_CLOSED));
+			BlorgPost::getCommentStatusTitle(BlorgPost::REPLY_STATUS_CLOSED));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
-			'Replies can only be added by an author. No replies are visible '.
+			'Comments can only be added by an author. No comments are visible '.
 			'on this post.'));
 
 		if ($this->id === null) {
-			switch ($this->app->config->blorg->default_reply_status) {
+			switch ($this->app->config->blorg->default_comment_status) {
 			case 'open':
 				$status->value = BlorgPost::REPLY_STATUS_OPEN;
 				break;
@@ -344,14 +345,14 @@ class BlorgPostEdit extends AdminDBEdit
 			'shortname',
 			'bodytext',
 			'extended_bodytext',
-			'reply_status',
+			'comment_status',
 		));
 
 		$this->post->title             = $values['title'];
 		$this->post->shortname         = $values['shortname'];
 		$this->post->bodytext          = $values['bodytext'];
 		$this->post->extended_bodytext = $values['extended_bodytext'];
-		$this->post->reply_status      = $values['reply_status'];
+		$this->post->comment_status    = $values['comment_status'];
 
 		$this->post->publish_date =
 			$this->ui->getWidget('publish')->getPublishDate();

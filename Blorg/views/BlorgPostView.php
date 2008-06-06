@@ -20,9 +20,9 @@ require_once 'Blorg/views/BlorgView.php';
  * - permalink         - The permalink (and publish date) of the post. Supports
  *                       MODE_ALL and MODE_NONE. Links to the post page by
  *                       default.
- * - reply_count       - The number of visible replies of this post. Supports
+ * - comment_count     - The number of visible comments of this post. Supports
  *                       MODE_ALL and MODE_NONE. Links to the post page with
- *                       a URI fragment of '#replies' appended.
+ *                       a URI fragment of '#comments' appended.
  * - tags              - Tags attached to this post. Supports MODE_ALL,
  *                       MODE_SUMMARY and MODE_NONE. Links to tag archive pages
  *                       by default.
@@ -64,7 +64,7 @@ class BlorgPostView extends BlorgView
 		$this->definePart('title');
 		$this->definePart('author');
 		$this->definePart('permalink');
-		$this->definePart('reply_count');
+		$this->definePart('comment_count');
 		$this->definePart('tags');
 		$this->definePart('files');
 		$this->definePart('bodytext');
@@ -150,35 +150,35 @@ class BlorgPostView extends BlorgView
 		$permalink = ob_get_clean();
 
 		ob_start();
-		$this->displayReplyCount($post);
-		$reply_count = ob_get_clean();
+		$this->displayCommentCount($post);
+		$comment_count = ob_get_clean();
 
 		echo '<div class="entry-subtitle">';
 
 		/*
-		 * Reply count is shown if and only if reply_count element is shown AND
-		 * the following:
-		 * - replies are locked AND there is one or more visible reply OR
-		 * - replies are open OR
-		 * - replies are moderated.
+		 * Comment count is shown if and only if comment_count element is shown
+		 * AND the following:
+		 * - comments are locked AND there is one or more visible comment OR
+		 * - comments are open OR
+		 * - comments are moderated.
 		 */
-		$show_reply_count =
-			(strlen($reply_count) > 0 &&
-				(($post->reply_status == BlorgPost::REPLY_STATUS_LOCKED &&
-					count($post->getVisibleReplies()) > 0) ||
-				$post->reply_status == BlorgPost::REPLY_STATUS_OPEN ||
-				$post->reply_status == BlorgPost::REPLY_STATUS_MODERATED));
+		$show_comment_count =
+			(strlen($comment_count) > 0 &&
+				(($post->comment_status == BlorgPost::COMMENT_STATUS_LOCKED &&
+					count($post->getVisibleComments()) > 0) ||
+				$post->comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
+				$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED));
 
 		if (strlen($author) > 0) {
-			if ($show_reply_count) {
+			if ($show_comment_count) {
 				printf(Blorg::_('Posted by %s on %s - %s'),
-					$author, $permalink, $reply_count);
+					$author, $permalink, $comment_count);
 			} else {
 				printf(Blorg::_('Posted by %s on %s'), $author, $permalink);
 			}
 		} else {
-			if ($show_reply_count) {
-				printf('%s - %s', $permalink, $reply_count);
+			if ($show_comment_count) {
+				printf('%s - %s', $permalink, $comment_count);
 			} else {
 				echo $permalink;
 			}
@@ -349,41 +349,41 @@ class BlorgPostView extends BlorgView
 	}
 
 	// }}}
-	// {{{ protected function displayReplyCount()
+	// {{{ protected function displayCommentCount()
 
 	/**
-	 * Displays the number of replies for a weblog post
+	 * Displays the number of comments for a weblog post
 	 */
-	protected function displayReplyCount(BlorgPost $post)
+	protected function displayCommentCount(BlorgPost $post)
 	{
-		if ($this->getMode('reply_count') > BlorgView::MODE_NONE) {
-			$link = $this->getLink('reply_count');
-			$count = count($post->getVisibleReplies());
+		if ($this->getMode('comment_count') > BlorgView::MODE_NONE) {
+			$link = $this->getLink('comment_count');
+			$count = count($post->getVisibleComments());
 
 			if ($link === false) {
-				$reply_count_tag = new SwatHtmlTag('span');
+				$comment_count_tag = new SwatHtmlTag('span');
 			} else {
-				$reply_count_tag = new SwatHtmlTag('a');
+				$comment_count_tag = new SwatHtmlTag('a');
 				if (is_string($link)) {
-					$reply_count_tag->href = $link;
+					$comment_count_tag->href = $link;
 				} else {
-					$reply_count_tag->href =
-						$this->getPostRelativeUri($post).'#replies';
+					$comment_count_tag->href =
+						$this->getPostRelativeUri($post).'#comments';
 				}
 			}
 
-			$reply_count_tag->class = 'reply-count';
+			$comment_count_tag->class = 'comment-count';
 
 			if ($count == 0) {
-				$reply_count_tag->setContent(Blorg::_('reply'));
+				$comment_count_tag->setContent(Blorg::_('leave a comment'));
 			} else {
 				$locale = SwatI18NLocale::get();
-				$reply_count_tag->setContent(sprintf(
-					Blorg::ngettext('%s reply', '%s replies', $count),
+				$comment_count_tag->setContent(sprintf(
+					Blorg::ngettext('%s comment', '%s comments', $count),
 					$locale->formatNumber($count)));
 			}
 
-			$reply_count_tag->display();
+			$comment_count_tag->display();
 		}
 	}
 
@@ -511,7 +511,7 @@ class BlorgPostView extends BlorgView
 	protected function isVisible(BlorgPost $post)
 	{
 		// make sure we have post content
-		$keys = array('reply_count', 'permalink', 'author', 'tags');
+		$keys = array('comment_count', 'permalink', 'author', 'tags');
 		$content_properties = array('title', 'bodytext', 'extended_bodytext');
 		foreach ($content_properties as $property) {
 			if (strlen($post->$property) > 0) {
@@ -548,7 +548,7 @@ class BlorgPostView extends BlorgView
 	protected function isHeaderVisible(BlorgPost $post)
 	{
 		// make sure we have post content for the header
-		$keys = array('reply_count', 'permalink', 'author');
+		$keys = array('comment_count', 'permalink', 'author');
 		$content_properties = array('title');
 		foreach ($content_properties as $property) {
 			if (strlen($post->$property) > 0) {

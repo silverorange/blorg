@@ -7,14 +7,14 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgViewFactory.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/dataobjects/BlorgReply.php';
+require_once 'Blorg/dataobjects/BlorgComment.php';
 require_once 'Services/Akismet.php';
 require_once 'NateGoSearch/NateGoSearch.php';
 
 /**
  * Post page for Blörg
  *
- * Loads and displays a post and handles adding replies to a post.
+ * Loads and displays a post and handles adding comments to a post.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -30,19 +30,19 @@ class BlorgPostPage extends SitePage
 	protected $post;
 
 	/**
-	 * @var BlorgReply
+	 * @var BlorgComment
 	 */
-	protected $reply;
+	protected $comment;
 
 	/**
 	 * @var SwatUI
 	 */
-	protected $reply_ui;
+	protected $comment_ui;
 
 	/**
 	 * @var string
 	 */
-	protected $reply_ui_xml = 'Blorg/pages/reply-edit.xml';
+	protected $comment_ui_xml = 'Blorg/pages/comment-edit.xml';
 
 	// }}}
 	// {{{ public function __construct()
@@ -103,16 +103,16 @@ class BlorgPostPage extends SitePage
 	public function init()
 	{
 		parent::init();
-		$this->initReplyUi();
+		$this->initCommentUi();
 	}
 
 	// }}}
-	// {{{ protected function initReplyUi()
+	// {{{ protected function initCommentUi()
 
-	protected function initReplyUi()
+	protected function initCommentUi()
 	{
-		$this->reply_ui = new SwatUI();
-		$this->reply_ui->loadFromXml($this->reply_ui_xml);
+		$this->comment_ui = new SwatUI();
+		$this->comment_ui->loadFromXml($this->comment_ui_xml);
 	}
 
 	// }}}
@@ -123,119 +123,120 @@ class BlorgPostPage extends SitePage
 	public function process()
 	{
 		parent::process();
-		$this->processReplyUi();
+		$this->processCommentUi();
 	}
 
 	// }}}
-	// {{{ protected function processReplyUi()
+	// {{{ protected function processCommentUi()
 
-	protected function processReplyUi()
+	protected function processCommentUi()
 	{
-		$form = $this->reply_ui->getWidget('reply_edit_form');
+		$form = $this->comment_ui->getWidget('comment_edit_form');
 		$form->process();
 
-		if (($this->post->reply_status == BlorgPost::REPLY_STATUS_OPEN ||
-			$this->post->reply_status == BlorgPost::REPLY_STATUS_MODERATED) &&
+		$comment_status = $this->post->comment_status;
+		if (($comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
+			$comment_status == BlorgPost::COMMENT_STATUS_MODERATED) &&
 			$form->isProcessed() && !$form->hasMessage()) {
 
-			$this->processReply();
+			$this->processComment();
 
-			if ($this->reply_ui->getWidget('post_button')->hasBeenClicked()) {
-				$this->saveReply();
+			if ($this->comment_ui->getWidget('post_button')->hasBeenClicked()) {
+				$this->saveComment();
 			}
 		}
 	}
 
 	// }}}
-	// {{{ protected function processReply()
+	// {{{ protected function processComment()
 
-	protected function processReply()
+	protected function processComment()
 	{
 		$now = new SwatDate();
 		$now->toUTC();
 
-		$fullname   = $this->reply_ui->getWidget('fullname');
-		$link       = $this->reply_ui->getWidget('link');
-		$email      = $this->reply_ui->getWidget('email');
-		$bodytext   = $this->reply_ui->getWidget('bodytext');
+		$fullname   = $this->comment_ui->getWidget('fullname');
+		$link       = $this->comment_ui->getWidget('link');
+		$email      = $this->comment_ui->getWidget('email');
+		$bodytext   = $this->comment_ui->getWidget('bodytext');
 		// TODO: http clients may not include these headers
 		$ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
 		$user_agent = substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
 
-		$class_name = SwatDBClassMap::get('BlorgReply');
-		$this->reply = new $class_name();
+		$class_name = SwatDBClassMap::get('BlorgComment');
+		$this->comment = new $class_name();
 
-		$this->reply->fullname   = $fullname->value;
-		$this->reply->link       = $link->value;
-		$this->reply->email      = $email->value;
-		$this->reply->bodytext   = $bodytext->value;
-		$this->reply->createdate = $now;
-		$this->reply->ip_address = $ip_address;
-		$this->reply->user_agent = $user_agent;
-		$this->reply->spam       = $this->isReplySpam($this->reply);
+		$this->comment->fullname   = $fullname->value;
+		$this->comment->link       = $link->value;
+		$this->comment->email      = $email->value;
+		$this->comment->bodytext   = $bodytext->value;
+		$this->comment->createdate = $now;
+		$this->comment->ip_address = $ip_address;
+		$this->comment->user_agent = $user_agent;
+		$this->comment->spam       = $this->isCommentSpam($this->comment);
 
-		switch ($this->post->reply_status) {
-		case BlorgPost::REPLY_STATUS_OPEN:
-			$this->reply->status = BlorgReply::STATUS_PUBLISHED;
+		switch ($this->post->comment_status) {
+		case BlorgPost::COMMENT_STATUS_OPEN:
+			$this->comment->status = BlorgComment::STATUS_PUBLISHED;
 			break;
 
-		case BlorgPost::REPLY_STATUS_MODERATED:
-			$this->reply->status = BlorgReply::STATUS_PENDING;
+		case BlorgPost::COMMENT_STATUS_MODERATED:
+			$this->comment->status = BlorgComment::STATUS_PENDING;
 			break;
 		}
 
-		$this->reply->post = $this->post;
+		$this->comment->post = $this->post;
 	}
 
 	// }}}
-	// {{{ protected function saveReply()
+	// {{{ protected function saveComment()
 
-	protected function saveReply()
+	protected function saveComment()
 	{
-		if ($this->reply_ui->getWidget('remember_me')->value) {
-			$this->saveReplyCookie();
+		if ($this->comment_ui->getWidget('remember_me')->value) {
+			$this->saveCommentCookie();
 		} else {
-			$this->deleteReplyCookie();
+			$this->deleteCommentCookie();
 		}
 
-		switch ($this->post->reply_status) {
-		case BlorgPost::REPLY_STATUS_OPEN:
+		switch ($this->post->comment_status) {
+		case BlorgPost::COMMENT_STATUS_OPEN:
 			$message = new SwatMessage(
-				Blorg::_('Your reply has been published.'));
+				Blorg::_('Your comment has been published.'));
 
-			$this->reply_ui->getWidget('message_display')->add($message,
+			$this->comment_ui->getWidget('message_display')->add($message,
 				SwatMessageDisplay::DISMISS_OFF);
 
 			break;
 
-		case BlorgPost::REPLY_STATUS_MODERATED:
+		case BlorgPost::COMMENT_STATUS_MODERATED:
 			$message = new SwatMessage(
-				Blorg::_('Your reply has been submitted.'));
+				Blorg::_('Your comment has been submitted.'));
 
 			$message->secondary_content =
-				Blorg::_('Your reply will be published after being '.
+				Blorg::_('Your comment will be published after being '.
 					'approved by the site moderator.');
 
-			$this->reply_ui->getWidget('message_display')->add($message,
+			$this->comment_ui->getWidget('message_display')->add($message,
 				SwatMessageDisplay::DISMISS_OFF);
 
 			break;
 		}
 
-		$this->clearReplyUi();
-		$this->post->replies->add($this->reply);
+		$this->clearCommentUi();
+		$this->post->comments->add($this->comment);
 		$this->post->save();
 		$this->addToSearchQueue();
 	}
 
 	// }}}
-	// {{{ protected function saveReplyCookie()
+	// {{{ protected function saveCommentCookie()
 
-	protected function saveReplyCookie()
+	protected function saveCommentCookie()
 	{
-		$fullname = $this->reply_ui->getWidget('fullname')->value;
-		$link     = $this->reply_ui->getWidget('link')->value;
-		$email    = $this->reply_ui->getWidget('email')->value;
+		$fullname = $this->comment_ui->getWidget('fullname')->value;
+		$link     = $this->comment_ui->getWidget('link')->value;
+		$email    = $this->comment_ui->getWidget('email')->value;
 
 		$value = array(
 			'fullname' => $fullname,
@@ -243,32 +244,32 @@ class BlorgPostPage extends SitePage
 			'email'    => $email,
 		);
 
-		$this->app->cookie->setCookie('reply_credentials', $value);
+		$this->app->cookie->setCookie('comment_credentials', $value);
 	}
 
 	// }}}
-	// {{{ protected function deleteReplyCookie()
+	// {{{ protected function deleteCommentCookie()
 
-	protected function deleteReplyCookie()
+	protected function deleteCommentCookie()
 	{
-		$this->app->cookie->removeCookie('reply_credentials');
+		$this->app->cookie->removeCookie('comment_credentials');
 	}
 
 	// }}}
-	// {{{ protected function clearReplyUi()
+	// {{{ protected function clearCommentUi()
 
-	protected function clearReplyUi()
+	protected function clearCommentUi()
 	{
-		$this->reply_ui->getWidget('fullname')->value = null;
-		$this->reply_ui->getWidget('link')->value     = null;
-		$this->reply_ui->getWidget('email')->value    = null;
-		$this->reply_ui->getWidget('bodytext')->value = null;
+		$this->comment_ui->getWidget('fullname')->value = null;
+		$this->comment_ui->getWidget('link')->value     = null;
+		$this->comment_ui->getWidget('email')->value    = null;
+		$this->comment_ui->getWidget('bodytext')->value = null;
 	}
 
 	// }}}
-	// {{{ protected function isReplySpam()
+	// {{{ protected function isCommentSpam()
 
-	protected function isReplySpam(BlorgReply $reply)
+	protected function isCommentSpam(BlorgComment $comment)
 	{
 		$is_spam = false;
 
@@ -287,14 +288,14 @@ class BlorgPostPage extends SitePage
 				$akismet = new Services_Akismet($uri,
 					$this->app->config->blorg->akismet_key);
 
-				$comment = new Services_Akismet_Comment();
-				$comment->setAuthor($reply->fullname);
-				$comment->setAuthorEmail($reply->email);
-				$comment->setAuthorUri($reply->link);
-				$comment->setContent($reply->bodytext);
-				$comment->setPostPermalink($permalink);
+				$akismet_comment = new Services_Akismet_Comment();
+				$akismet_comment->setAuthor($comment->fullname);
+				$akismet_comment->setAuthorEmail($comment->email);
+				$akismet_comment->setAuthorUri($comment->link);
+				$akismet_comment->setContent($comment->bodytext);
+				$akismet_comment->setPostPermalink($permalink);
 
-				$is_spam = $akismet->isSpam($comment);
+				$is_spam = $akismet->isSpam($akismet_comment);
 			} catch (Exception $e) {
 			}
 		}
@@ -336,13 +337,13 @@ class BlorgPostPage extends SitePage
 	{
 		$this->buildTitle();
 		$this->buildNavBar();
-		$this->buildReplyUi();
+		$this->buildCommentUi();
 		$this->buildAtomLinks();
 
 		$this->layout->startCapture('content');
 		$this->displayPost();
-		$this->displayReplies();
-		$this->displayReplyUi();
+		$this->displayComments();
+		$this->displayCommentUi();
 		$this->layout->endCapture();
 	}
 
@@ -382,21 +383,21 @@ class BlorgPostPage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function buildReplyUi()
+	// {{{ protected function buildCommentUi()
 
-	protected function buildReplyUi()
+	protected function buildCommentUi()
 	{
-		$ui              = $this->reply_ui;
-		$form            = $ui->getWidget('reply_edit_form');
-		$frame           = $ui->getWidget('reply_edit_frame');
+		$ui              = $this->comment_ui;
+		$form            = $ui->getWidget('comment_edit_form');
+		$frame           = $ui->getWidget('comment_edit_frame');
 		$frame->subtitle = $this->post->getTitle();
 
-		switch ($this->post->reply_status) {
-		case BlorgPost::REPLY_STATUS_OPEN:
-		case BlorgPost::REPLY_STATUS_MODERATED:
-			$form->action = $this->source.'#submit_reply';
-			if (isset($this->app->cookie->reply_credentials)) {
-				$values = $this->app->cookie->reply_credentials;
+		switch ($this->post->comment_status) {
+		case BlorgPost::COMMENT_STATUS_OPEN:
+		case BlorgPost::COMMENT_STATUS_MODERATED:
+			$form->action = $this->source.'#submit_comment';
+			if (isset($this->app->cookie->comment_credentials)) {
+				$values = $this->app->cookie->comment_credentials;
 				$ui->getWidget('fullname')->value    = $values['fullname'];
 				$ui->getWidget('link')->value        = $values['link'];
 				$ui->getWidget('email')->value       = $values['email'];
@@ -404,61 +405,65 @@ class BlorgPostPage extends SitePage
 			}
 			break;
 
-		case BlorgPost::REPLY_STATUS_LOCKED:
+		case BlorgPost::COMMENT_STATUS_LOCKED:
 			$form->visible = false;
-			$message = new SwatMessage(Blorg::_('Replies are Locked'));
+			$message = new SwatMessage(Blorg::_('Comments are Locked'));
 			$message->secondary_content =
-				Blorg::_('No new replies may be posted for this article.');
+				Blorg::_('No new comments may be posted for this article.');
 
 			$ui->getWidget('message_display')->add($message,
 				SwatMessageDisplay::DISMISS_OFF);
 
 			break;
 
-		case BlorgPost::REPLY_STATUS_CLOSED:
+		case BlorgPost::COMMENT_STATUS_CLOSED:
 			$ui->getRoot()->visible = false;
 			break;
 		}
 
-		$this->buildReplyPreview();
+		$this->buildCommentPreview();
 	}
 
 	// }}}
-	// {{{ protected function buildReplyPreview()
+	// {{{ protected function buildCommentPreview()
 
-	protected function buildReplyPreview()
+	protected function buildCommentPreview()
 	{
-		if ($this->reply instanceof BlorgReply &&
-			$this->reply_ui->getWidget('preview_button')->hasBeenClicked()) {
+		if ($this->comment instanceof BlorgComment &&
+			$this->comment_ui->getWidget('preview_button')->hasBeenClicked()) {
 
 			$button_tag = new SwatHtmlTag('input');
 			$button_tag->type = 'submit';
 			$button_tag->name = 'post_button';
 			$button_tag->value = Blorg::_('Post');
 
-			$message = new SwatMessage(Blorg::_('Your reply has not yet been '.
-				'published.'));
-			$message->secondary_content = sprintf(Blorg::_('Review your reply '.
-				'and press the Post button when it’s ready to publish. %s'),
+			$message = new SwatMessage(Blorg::_(
+				'Your comment has not yet been published.'));
+
+			$message->secondary_content = sprintf(Blorg::_(
+				'Review your comment and press the <em>Post</em> button when '.
+				'it’s ready to publish. %s'),
 				$button_tag);
 
 			$message->content_type = 'text/xml';
 
 			$message_display =
-				$this->reply_ui->getWidget('preview_message_display');
+				$this->comment_ui->getWidget('preview_message_display');
 
 			$message_display->add($message, SwatMessageDisplay::DISMISS_OFF);
 
 			ob_start();
 
-			$view = BlorgViewFactory::get($this->app, 'reply');
-			$view->display($this->reply);
+			$view = BlorgViewFactory::get($this->app, 'comment');
+			$view->display($this->comment);
 
-			$reply_preview = $this->reply_ui->getWidget('reply_preview');
-			$reply_preview->content = ob_get_clean();
-			$reply_preview->content_type = 'text/xml';
+			$comment_preview = $this->comment_ui->getWidget('comment_preview');
+			$comment_preview->content = ob_get_clean();
+			$comment_preview->content_type = 'text/xml';
 
-			$container = $this->reply_ui->getWidget('reply_preview_container');
+			$container = $this->comment_ui->getWidget(
+				'comment_preview_container');
+
 			$container->visible = true;
 		}
 	}
@@ -468,10 +473,10 @@ class BlorgPostPage extends SitePage
 
 	protected function buildAtomLinks()
 	{
-		if ($this->post->hasVisibleReplyStatus()) {
+		if ($this->post->hasVisibleCommentStatus()) {
 			$this->layout->addHtmlHeadEntry(new SwatLinkHtmlHeadEntry(
 				$this->source.'/feed', 'alternate', 'application/atom+xml',
-				sprintf(Blorg::_('Recent Replies to “%s”'),
+				sprintf(Blorg::_('Recent Comments on “%s”'),
 					$this->post->title)));
 		}
 	}
@@ -487,44 +492,47 @@ class BlorgPostPage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function displayReplies()
+	// {{{ protected function displayComments()
 
-	protected function displayReplies()
+	protected function displayComments()
 	{
-		if ($this->post->reply_status != BlorgPost::REPLY_STATUS_CLOSED) {
+		if ($this->post->comment_status != BlorgPost::COMMENT_STATUS_CLOSED) {
 
 			$div_tag = new SwatHtmlTag('div');
-			$div_tag->id = 'replies';
-			$div_tag->class = 'entry-replies';
+			$div_tag->id = 'comments';
+			$div_tag->class = 'entry-comments';
 			$div_tag->open();
 
-			$replies = $this->post->getVisibleReplies();
+			$comments = $this->post->getVisibleComments();
 
-			$view = BlorgViewFactory::get($this->app, 'reply');
-			$count = count($replies);
+			$view = BlorgViewFactory::get($this->app, 'comment');
+			$count = count($comments);
 
-			if ($count > 0) echo '<h3 class="replies-title">Replies</h3>';
+			if ($count > 0) {
+				echo '<h3 class="comments-title">',
+					Blorg::_('Comments'), '</h3>';
+			}
 
-			foreach ($replies as $i => $reply) {
+			foreach ($comments as $i => $comment) {
 				if ($i == $count - 1) {
-					// Reply form submits to the top of the new reply if a new
-					// reply was just submitted and it is immediately visible.
-					// Otherwise the form submites to the reply preview or to
-					// the top of the form.
-					$form = $this->reply_ui->getWidget('reply_edit_form');
-					$post_button = $this->reply_ui->getWidget('post_button');
-					if (!$form->hasMessage() && $this->post->reply_status !=
-						BlorgPost::REPLY_STATUS_MODERATED &&
+					// Comment form submits to the top of the new comment if a
+					// new comment was just submitted and it is immediately
+					// visible. Otherwise the form submits to the comment
+					// preview or to the top of the comment form.
+					$form = $this->comment_ui->getWidget('comment_edit_form');
+					$post_button = $this->comment_ui->getWidget('post_button');
+					if (!$form->hasMessage() && $this->post->comment_status !=
+						BlorgPost::COMMENT_STATUS_MODERATED &&
 						$post_button->hasBeenClicked()) {
-						$this->displaySubmitReply();
+						$this->displaySubmitComment();
 					}
 					$div_tag = new SwatHtmlTag('div');
-					$div_tag->id = 'last_reply';
+					$div_tag->id = 'last_comment';
 					$div_tag->open();
-					$view->display($reply);
+					$view->display($comment);
 					$div_tag->close();
 				} else {
-					$view->display($reply);
+					$view->display($comment);
 				}
 			}
 
@@ -533,29 +541,30 @@ class BlorgPostPage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function displayReplyUi()
+	// {{{ protected function displayCommentUi()
 
-	protected function displayReplyUi()
+	protected function displayCommentUi()
 	{
-		// Reply form submits to the top of the reply form if there are error
-		// messages or if the new post is not immediately visible. Otherwise
-		// the reply form submits to the new reply.
-		if ($this->reply_ui->getWidget('reply_edit_form')->hasMessage() ||
-			$this->post->reply_status == BlorgPost::REPLY_STATUS_MODERATED ||
-			$this->post->reply_status == BlorgPost::REPLY_STATUS_LOCKED ||
-			$this->reply_ui->getWidget('preview_button')->hasBeenClicked()) {
-			$this->displaySubmitReply();
+		// Comment form submits to the top of the comment form if there are
+		// error messages or if the new comment is not immediately visible.
+		// Otherwise the comment form submits to the new comment.
+		$comment_status = $this->post->comment_status;
+		if ($this->comment_ui->getWidget('comment_edit_form')->hasMessage() ||
+			$comment_status == BlorgPost::COMMENT_STATUS_MODERATED ||
+			$comment_status == BlorgPost::COMMENT_STATUS_LOCKED ||
+			$this->comment_ui->getWidget('preview_button')->hasBeenClicked()) {
+			$this->displaySubmitComment();
 		}
 
-		$this->reply_ui->display();
+		$this->comment_ui->display();
 	}
 
 	// }}}
-	// {{{ protected function displaySubmitReply()
+	// {{{ protected function displaySubmitComment()
 
-	protected function displaySubmitReply()
+	protected function displaySubmitComment()
 	{
-		echo '<div id="submit_reply"></div>';
+		echo '<div id="submit_comment"></div>';
 	}
 
 	// }}}
@@ -567,7 +576,7 @@ class BlorgPostPage extends SitePage
 	{
 		parent::finalize();
 		$this->layout->addHtmlHeadEntrySet(
-			$this->reply_ui->getRoot()->getHtmlHeadEntrySet());
+			$this->comment_ui->getRoot()->getHtmlHeadEntrySet());
 	}
 
 	// }}}

@@ -7,7 +7,7 @@ require_once 'XML/Atom/Feed.php';
 require_once 'XML/Atom/Entry.php';
 
 /**
- * Displays an Atom feed of all replies for a particular post in reverse
+ * Displays an Atom feed of all comments for a particular post in reverse
  * chronological order
  *
  * @package   Blörg
@@ -116,8 +116,8 @@ class BlorgPostAtomPage extends SitePage
 			$month_name,
 			$this->post->shortname);
 
-		$this->feed = new XML_Atom_Feed($post_uri.'#replies',
-			sprintf(Blorg::_('Replies to “%s”'),
+		$this->feed = new XML_Atom_Feed($post_uri.'#comments',
+			sprintf(Blorg::_('Comments on “%s”'),
 				$this->post->title));
 
 		$this->feed->addLink($site_base_href.$this->source, 'self',
@@ -136,19 +136,19 @@ class BlorgPostAtomPage extends SitePage
 		$this->feed->addAuthor($this->post->author->name, $author_uri,
 			$this->post->author->email);
 
-		$replies = array();
-		foreach ($this->post->getVisibleReplies() as $reply) {
-			$replies[] = $reply;
+		$comments = array();
+		foreach ($this->post->getVisibleComments() as $comment) {
+			$comments[] = $comment;
 		}
 
-		$replies = array_reverse($replies);
+		$comments = array_reverse($comments);
 
-		foreach ($replies as $reply) {
-			$reply_uri = $post_uri.'#'.$reply->id;
+		foreach ($comments as $comment) {
+			$comment_uri = $post_uri.'#comment'.$comment->id;
 
-			if ($reply->author !== null) {
-				$author_name = $reply->author->name;
-				if ($reply->author->show) {
+			if ($comment->author !== null) {
+				$author_name = $comment->author->name;
+				if ($comment->author->show) {
 					$author_uri = $blorg_base_href.'author/'.
 						$post->author->shortname;
 
@@ -158,21 +158,21 @@ class BlorgPostAtomPage extends SitePage
 					$author_email = '';
 				}
 			} else {
-				$author_name  = $reply->fullname;
-				$author_uri   = $reply->link;
+				$author_name  = $comment->fullname;
+				$author_uri   = $comment->link;
 				// don't show anonymous author email
 				$author_email = '';
 			}
 
-			$entry = new XML_Atom_Entry($reply_uri,
+			$entry = new XML_Atom_Entry($comment_uri,
 				sprintf(Blorg::_('By: %s'), $author_name),
-				$reply->createdate);
+				$comment->createdate);
 
-			$entry->setContent(BlorgReply::getBodytextXhtml($reply->bodytext),
-				'html');
+			$entry->setContent(BlorgComment::getBodytextXhtml(
+				$comment->bodytext), 'html');
 
 			$entry->addAuthor($author_name, $author_uri, $author_email);
-			$entry->addLink($reply_uri, 'alternate', 'text/html');
+			$entry->addLink($comment_uri, 'alternate', 'text/html');
 
 			$this->feed->addEntry($entry);
 		}
