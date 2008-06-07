@@ -79,21 +79,21 @@ class BlorgPostDetails extends AdminIndex
 	protected function processActions(SwatTableView $view, SwatActions $actions)
 	{
 		switch ($view->id) {
-		case 'replies_view':
-			$this->processRepliesActions($view, $actions);
+		case 'comments_view':
+			$this->processCommentsActions($view, $actions);
 			break;
 		}
 	}
 
 	// }}}
-	// {{{ protected function processRepliesActions()
+	// {{{ protected function processCommentsActions()
 
-	protected function processRepliesActions(SwatTableView $view,
+	protected function processCommentsActions(SwatTableView $view,
 		SwatActions $actions)
 	{
 		switch ($actions->selected->id) {
 		case 'delete':
-			$this->app->replacePage('Post/ReplyDelete');
+			$this->app->replacePage('Post/CommentDelete');
 			$this->app->getPage()->setItems($view->getSelection());
 			$this->app->getPage()->setPost($this->post);
 			break;
@@ -110,7 +110,7 @@ class BlorgPostDetails extends AdminIndex
 		parent::buildInternal();
 		$this->buildNavBar();
 		$this->buildPost();
-		$this->buildReplies();
+		$this->buildComments();
 
 		$toolbar = $this->ui->getWidget('details_toolbar');
 		$toolbar->setToolLinkValues($this->post->id);
@@ -122,8 +122,8 @@ class BlorgPostDetails extends AdminIndex
 	protected function getTableModel(SwatView $view)
 	{
 		switch ($view->id) {
-			case 'replies_view':
-				return $this->getRepliesTableModel($view);
+			case 'comments_view':
+				return $this->getCommentsTableModel($view);
 		}
 	}
 
@@ -149,7 +149,7 @@ class BlorgPostDetails extends AdminIndex
 		$view->setPartMode('author', BlorgView::MODE_ALL, false);
 		$view->setPartMode('title', BlorgView::MODE_ALL, false);
 		$view->setPartMode('permalink', BlorgView::MODE_ALL, false);
-		$view->setPartMode('reply_count', BlorgView::MODE_ALL, false);
+		$view->setPartMode('comment_count', BlorgView::MODE_ALL, false);
 		$view->setPartMode('extended_bodytext', BlorgView::MODE_ALL, false);
 		$view->display($this->post);
 		$content_block->content = ob_get_clean();
@@ -173,17 +173,17 @@ class BlorgPostDetails extends AdminIndex
 
 	// }}}
 
-	// build phase - reply details
-	// {{{ protected function buildReplies()
+	// build phase - comment details
+	// {{{ protected function buildComments()
 
-	protected function buildReplies()
+	protected function buildComments()
 	{
-		$toolbar = $this->ui->getWidget('replies_toolbar');
+		$toolbar = $this->ui->getWidget('comments_toolbar');
 		$toolbar->setToolLinkValues($this->post->id);
 
 		// set default time zone
 		$date_column =
-			$this->ui->getWidget('replies_view')->getColumn('createdate');
+			$this->ui->getWidget('comments_view')->getColumn('createdate');
 
 		$date_renderer = $date_column->getRendererByPosition();
 		$date_renderer->display_time_zone = $this->app->default_time_zone;
@@ -192,9 +192,9 @@ class BlorgPostDetails extends AdminIndex
 	// }}}
 	// {{{ protected function getReviewsTableModel()
 
-	protected function getRepliesTableModel(SwatTableView $view)
+	protected function getCommentsTableModel(SwatTableView $view)
 	{
-		$sql = sprintf('select count(id) from BlorgReply
+		$sql = sprintf('select count(id) from BlorgComment
 			where post = %s and spam = %s',
 			$this->app->db->quote($this->post->id, 'integer'),
 			$this->app->db->quote(false, 'boolean'));
@@ -204,7 +204,7 @@ class BlorgPostDetails extends AdminIndex
 
 		$sql = sprintf(
 			'select id, fullname, author, bodytext, createdate, status
-			from BlorgReply
+			from BlorgComment
 			where post = %s and spam = %s
 			order by %s',
 			$this->app->db->quote($this->post->id, 'integer'),
@@ -212,18 +212,18 @@ class BlorgPostDetails extends AdminIndex
 			$this->getOrderByClause($view, 'createdate desc'));
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
-		$replies = SwatDB::query($this->app->db, $sql, 'BlorgReplyWrapper');
+		$comments = SwatDB::query($this->app->db, $sql, 'BlorgCommentWrapper');
 
 		$store = new SwatTableStore();
 
-		foreach ($replies as $reply) {
-			$ds = new SwatDetailsStore($reply);
+		foreach ($comments as $comment) {
+			$ds = new SwatDetailsStore($comment);
 			//TODO: distinguish authors somehow
-			if ($reply->author !== null)
-				$ds->fullname = $reply->author->name;
+			if ($comment->author !== null)
+				$ds->fullname = $comment->author->name;
 
 			$ds->bodytext = SwatString::condense(
-				SwatString::ellipsizeRight($reply->bodytext, 500));
+				SwatString::ellipsizeRight($comment->bodytext, 500));
 
 			$store->add($ds);
 		}
