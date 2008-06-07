@@ -2,6 +2,7 @@
 <!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
 <swatml>
 	<widget class="SwatMessageDisplay" id="message_display" />
+	<!-- {{{ Search -->
 	<widget class="SwatFrameDisclosure" id="search_frame">
 		<property name="title" translatable="yes">Search Posts</property>
 		<property name="open" type="boolean">false</property>
@@ -20,6 +21,17 @@
 				<property name="title" translatable="yes">Shown on Site</property>
 				<widget class="SwatYesNoFlydown" id="search_enabled" />
 			</widget>
+			<widget class="SwatDisclosure" id="date_range">
+				<property name="title" translatable="yes">Publish Date</property>
+				<widget class="SwatFormField" id="date_after">
+					<property name="title" translatable="yes">Published On or After</property>
+					<widget class="SwatDateEntry" id="search_publish_date_gt" />
+				</widget>
+				<widget class="SwatFormField" id="date_before">
+					<property name="title" translatable="yes">Published Before</property>
+					<widget class="SwatDateEntry" id="search_publish_date_lt" />
+				</widget>
+			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button">
 					<property name="title" translatable="yes">Search</property>
@@ -27,6 +39,7 @@
 			</widget>
 		</widget>
 	</widget>
+	<!-- }}} -->
 	<widget class="SwatFrame" id="results_frame">
 		<property name="title" translatable="yes">Posts</property>
 		<widget class="SwatToolbar" id="index_toolbar">
