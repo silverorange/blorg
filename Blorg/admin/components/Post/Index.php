@@ -171,12 +171,17 @@ class BlorgPostIndex extends AdminSearch
 	{
 		parent::buildInternal();
 
+		$instance_id = $this->app->getInstanceId();
+		$where_clause = sprintf('show = %s and instance %s %s',
+			$this->app->db->quote(true, 'boolean'),
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'));
+
 		$author_flydown = $this->ui->getWidget('search_author');
 		$author_flydown->show_blank = true;
 		$author_flydown->addOptionsByArray(SwatDB::getOptionArray(
 			$this->app->db, 'BlorgAuthor', 'name', 'id', 'name',
-			sprintf('show = %s', $this->app->db->quote(true, 'boolean'))));
-
+			$where_clause));
 	}
 
 	// }}}
