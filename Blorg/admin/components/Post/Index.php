@@ -296,6 +296,7 @@ class BlorgPostIndex extends AdminSearch
 		if ($this->where_clause === null) {
 			$instance_id = $this->app->getInstanceId();
 
+			// default where clause
 			$where = sprintf('instance %s %s ',
 				SwatDB::equalityOperator($instance_id),
 				$this->app->db->quote($instance_id, 'integer'));
@@ -321,14 +322,47 @@ class BlorgPostIndex extends AdminSearch
 				$where.= ') ';
 			}
 
+			// author
 			$author_clause = new AdminSearchClause('integer:author',
 				$this->ui->getWidget('search_author')->value);
 
+			$where.= $author_clause->getClause($this->app->db);
+
+			// enabled
 			$enabled_clause = new AdminSearchClause('boolean:enabled',
 				$this->ui->getWidget('search_enabled')->value);
 
-			$where.= $author_clause->getClause($this->app->db);
 			$where.= $enabled_clause->getClause($this->app->db);
+
+			// date range gt
+			$search_date_gt = $this->ui->getWidget('search_publish_date_gt');
+			if ($search_date_gt->value !== null) {
+				// clone so the date displayed will stay the same
+				$date_gt = clone $search_date_gt->value;
+				$date_gt->setTZ($this->app->default_time_zone);
+				$date_gt->toUTC();
+
+				$clause = new AdminSearchClause('date:publish_date');
+				$clause->table = 'BlorgPost';
+				$clause->value = $date_gt->getDate();
+				$clause->operator = AdminSearchClause::OP_GT;
+				$where.= $clause->getClause($this->app->db);
+			}
+
+			// date range lt
+			$search_date_lt = $this->ui->getWidget('search_publish_date_lt');
+			if ($search_date_lt->value !== null) {
+				// clone so the date displayed will stay the same
+				$date_lt = clone $search_date_lt->value;
+				$date_lt->setTZ($this->app->default_time_zone);
+				$date_lt->toUTC();
+
+				$clause = new AdminSearchClause('date:publish_date');
+				$clause->table = 'BlorgPost';
+				$clause->value = $date_lt->getDate();
+				$clause->operator = AdminSearchClause::OP_LT;
+				$where.= $clause->getClause($this->app->db);
+			}
 
 			$this->where_clause = $where;
 		}
