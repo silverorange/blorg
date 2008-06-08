@@ -58,13 +58,19 @@ class BlorgPostCommentEdit extends AdminDBEdit
 			$post = new $class_name();
 			$post->setDatabase($this->app->db);
 
-			if ($post_id === null || !$post->load($post_id))
+			if ($post_id === null) {
+				throw new AdminNotFoundException(
+					'Post must be specified when creating a new comment.');
+			}
+
+			if (!$post->load($post_id, $this->app->getInstance())) {
 				throw new AdminNotFoundException(
 					sprintf('Post with id ‘%s’ not found.', $post_id));
-			else
-				$this->comment->post = $post;
+			}
 
-		} elseif (!$this->comment->load($this->id)) {
+			$this->comment->post = $post;
+
+		} elseif (!$this->comment->load($this->id, $this->app->getInstance())) {
 			throw new AdminNotFoundException(
 				sprintf('Comment with id ‘%s’ not found.', $this->id));
 		}
