@@ -72,15 +72,9 @@ class BlorgPostEdit extends AdminDBEdit
 		$this->post->setDatabase($this->app->db);
 
 		if ($this->id !== null) {
-			if (!$this->post->load($this->id)) {
+			if (!$this->post->load($this->id, $this->app->getInstance())) {
 				throw new AdminNotFoundException(sprintf(
 					Blorg::_('Post with id ‘%s’ not found.'), $this->id));
-			}
-
-			$instance_id = $this->post->getInternalValue('instance');
-			if ($instance_id !== $this->app->getInstanceId()) {
-				throw new AdminNotFoundException(sprintf(
-					Blorg::_('Post with id ‘%d’ not found.'), $this->id));
 			}
 		}
 	}
