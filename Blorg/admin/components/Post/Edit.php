@@ -68,7 +68,8 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function initPost()
 	{
-		$this->post = new BlorgPost();
+		$class_name = SwatDBClassMap::get('BlorgPost');
+		$this->post = new $class_name();
 		$this->post->setDatabase($this->app->db);
 
 		if ($this->id !== null) {
