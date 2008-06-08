@@ -45,7 +45,7 @@ class BlorgPostCommentDelete extends AdminDBDelete
 
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
 			'One comment has been deleted.',
-			'%d comments have been deleted.', $num),
+			'%s comments have been deleted.', $num),
 			SwatString::numberFormat($num)),
 			SwatMessage::NOTIFICATION);
 
