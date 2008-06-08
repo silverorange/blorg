@@ -196,7 +196,7 @@ class BlorgPostComments extends AdminSearch
 
 			$ds = new SwatDetailsStore($comment);
 			$ds->comment_date_day = $current_date;
-			$ds->title = $commet->post->getTitle();
+			$ds->title = $comment->post->getTitle();
 
 			//TODO: distinguish authors somehow
 			if ($comment->author !== null)
