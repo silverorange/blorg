@@ -37,10 +37,19 @@ class BlorgPostCommentDelete extends AdminDBDelete
 		parent::processDBData();
 
 		$item_list = $this->getItemList('integer');
+		$instance_id = $this->app->getInstanceId();
 
 		$this->addToSearchQueue($item_list);
 
-		$sql = sprintf('delete from BlorgComment where id in (%s)', $item_list);
+		$sql = sprintf('delete from BlorgComment
+			where id in
+				(select BlorgComment.id from BlorgComment
+					inner join BlorgPost on BlorgPost.id = BlorgComment.post
+				where instance %s %s and BlorgComment.id in (%s))',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$item_list);
+
 		$num = SwatDB::exec($this->app->db, $sql);
 
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
@@ -95,13 +104,38 @@ class BlorgPostCommentDelete extends AdminDBDelete
 		parent::buildInternal();
 
 		$item_list = $this->getItemList('integer');
+		$instance_id = $this->app->getInstanceId();
 
 		$dep = new AdminListDependency();
 		$dep->setTitle(Blorg::_('comment'), Blorg::_('comments'));
-		//TODO: ellipsize bodytext
-		$dep->entries = AdminListDependency::queryEntries($this->app->db,
-			'BlorgComment', 'integer:id', null, 'text:bodytext', 'id',
-			'id in ('.$item_list.')', AdminDependency::DELETE);
+
+		$sql = sprintf(
+			'select BlorgComment.id, BlorgComment.bodytext from BlorgComment
+				inner join BlorgPost on BlorgPost.id = BlorgComment.post
+			where instance %s %s and BlorgComment.id in (%s)
+			order by BlorgComment.createdate desc, BlorgComment.id',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$item_list);
+
+		$comments = SwatDB::query($this->app->db, $sql);
+		$entries = array();
+
+		foreach ($comments as $comment) {
+			$entry = new AdminDependencyEntry();
+
+			$entry->id           = $comment->id;
+			$entry->title        = SwatString::ellipsizeRight(
+				SwatString::condense(BlorgComment::getBodytextXhtml(
+					$comment->bodytext)), 100);
+
+			$entry->status_level = AdminDependency::DELETE;
+			$entry->parent       = null;
+
+			$entries[] = $entry;
+		}
+
+		$dep->entries = $entries;
 
 		$message = $this->ui->getWidget('confirmation_message');
 		$message->content = $dep->getMessage();
