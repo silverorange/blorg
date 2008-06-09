@@ -6,6 +6,7 @@ require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'NateGoSearch/NateGoSearch.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgComment.php';
+require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
 
 /**
  * Page for editing comments
@@ -39,7 +40,7 @@ class BlorgPostCommentEdit extends AdminDBEdit
 			$this->ui->getWidget('fullname_field')->visible = false;
 			$this->ui->getWidget('link_field')->visible     = false;
 			$this->ui->getWidget('email_field')->visible    = false;
-			$this->ui->getWidget('status')->visible         = false;
+			$this->ui->getWidget('status_field')->visible   = false;
 		}
 	}
 
@@ -89,21 +90,38 @@ class BlorgPostCommentEdit extends AdminDBEdit
 			'email',
 			'bodytext',
 			'status',
+			'author',
 		));
-
-		$this->comment->fullname = $values['fullname'];
-		$this->comment->link     = $values['link'];
-		$this->comment->email    = $values['email'];
-		$this->comment->bodytext = $values['bodytext'];
-		$this->comment->status   = $values['status'];
 
 		if ($this->comment->id === null) {
 			$now = new SwatDate();
 			$now->toUTC();
 			$this->comment->createdate = $now;
-			$this->comment->author     = $this->app->session->getUserID();
+			$this->comment->author     = $values['author'];
+
+			$instance_id = $this->app->getInstanceId();
+			if ($instance_id !== null) {
+				$sql = sprintf('update AdminUserInstanceBinding
+					set default_author = %s
+					where usernum = %s and instance = %s',
+					$this->app->db->quote($values['author'], 'integer'),
+					$this->app->db->quote($this->app->session->user->id,
+						'integer'),
+					$this->app->db->quote($instance_id, 'integer'));
+
+				SwatDB::exec($this->app->db, $sql);
+			}
+		} else {
+			$this->comment->fullname = $values['fullname'];
+			$this->comment->link     = $values['link'];
+			$this->comment->email    = $values['email'];
+			$this->comment->status   = $values['status'];
 		}
 
+		if ($this->comment->status === null)
+			$this->comment->status = BlorgComment::STATUS_PUBLISHED;
+
+		$this->comment->bodytext = $values['bodytext'];
 		$this->comment->save();
 		$this->addToSearchQueue();
 
@@ -153,10 +171,44 @@ class BlorgPostCommentEdit extends AdminDBEdit
 				$this->source, $this->comment->post->id);
 
 			$this->ui->getWidget('author_field')->visible = true;
-			$this->ui->getWidget('author')->content =
-				$this->app->session->getName();
+
+			$instance_id = $this->app->getInstanceId();
+			$sql = sprintf('select BlorgAuthor.*,
+					AdminUserInstanceBinding.usernum
+				from BlorgAuthor
+				left outer join AdminUserInstanceBinding on
+					AdminUserInstanceBinding.default_author = BlorgAuthor.id
+				where BlorgAuthor.instance %s %s and BlorgAuthor.show = %s
+				order by displayorder',
+				SwatDB::equalityOperator($instance_id),
+				$this->app->db->quote($instance_id, 'integer'),
+				$this->app->db->quote(true, 'boolean'));
+
+			$rs = SwatDB::query($this->app->db, $sql);
+
+			$default_author = null;
+			$authors = array();
+			foreach ($rs as $row) {
+				$authors[$row->id] = $row->name;
+
+				if ($this->id === null &&
+					$row->usernum == $this->app->session->user->id)
+					$this->ui->getWidget('author')->value = $row->id;
+			}
+
+			$this->ui->getWidget('author')->addOptionsByArray($authors);
 		}
 
+		$statuses = array(
+			BlorgComment::STATUS_PUBLISHED =>
+				BlorgComment::getStatusTitle(BlorgComment::STATUS_PUBLISHED),
+			BlorgComment::STATUS_PENDING =>
+				BlorgComment::getStatusTitle(BlorgComment::STATUS_PENDING),
+			BlorgComment::STATUS_UNPUBLISHED =>
+				BlorgComment::getStatusTitle(BlorgComment::STATUS_UNPUBLISHED),
+		);
+
+		$this->ui->getWidget('status')->addOptionsByArray($statuses);
 	}
 
 	// }}}
@@ -165,6 +217,9 @@ class BlorgPostCommentEdit extends AdminDBEdit
 	protected function loadDBData()
 	{
 		$this->ui->setValues(get_object_vars($this->comment));
+
+		if ($this->comment->author !== null)
+			$this->ui->getWidget('author')->value = $this->comment->author->id;
 	}
 
 	// }}}

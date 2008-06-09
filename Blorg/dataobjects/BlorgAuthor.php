@@ -223,27 +223,6 @@ class BlorgAuthor extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ protected function loadAdminUsers()
-
-	/**
-	 * Gets all the admin users that can post as this author
-	 *
-	 *
-	 * @return AdminUserWrapper the admin users that can post as this author.
-	 */
-	protected function loadAdminUsers()
-	{
-		$sql = sprintf('select * from AdminUser
-			inner join BlorgAuthorAdminUserBinding on
-				BlorgAuthorAdminUserBinding.usernum = AdminUser.id and
-				BlorgAuthorAdminUserBinding.author = %s',
-			$this->db->quote($this->id, 'integer'));
-
-		$wrapper_class = SwatDBClassMap::get('AdminUserWrapper');
-		return SwatDB::query($this->db, $sql, $wrapper_class);
-	}
-
-	// }}}
 }
 
 ?>

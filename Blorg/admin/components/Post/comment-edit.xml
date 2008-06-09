@@ -8,7 +8,9 @@
 			<widget class="SwatFormField" id="author_field">
 				<property name="title" translatable="yes">Author</property>
 				<property name="visible" type="boolean">false</property>
-				<widget class="SwatContentBlock" id="author" />
+				<widget class="SwatFlydown" id="author">
+					<property name="show_blank" type="boolean">false</property>
+				</widget>
 			</widget>
 			<widget class="SwatFormField" id="fullname_field">
 				<property name="title" translatable="yes">Name</property>
@@ -29,16 +31,16 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Comment</property>
 				<widget class="SwatTextarea" id="bodytext">
 					<property name="required" type="boolean">true</property>
 					<property name="rows" type="integer">8</property>
 				</widget>
 			</widget>
-			<widget class="SwatFormField">
-				<!-- TODO: actually make this a proper status control -->
+			<widget class="SwatFormField" id="status_field">
 				<property name="title" translatable="yes">Status</property>
-				<widget class="SwatCheckbox" id="status">
-					<property name="value" type="boolean">true</property>
+				<widget class="SwatFlydown" id="status">
+					<property name="show_blank" type="boolean">false</property>
 				</widget>
 			</widget>
 			<widget class="SwatFooterFormField">
