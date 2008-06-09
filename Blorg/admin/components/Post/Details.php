@@ -209,7 +209,7 @@ class BlorgPostDetails extends AdminIndex
 			order by %s',
 			$this->app->db->quote($this->post->id, 'integer'),
 			$this->app->db->quote(false, 'boolean'),
-			$this->getOrderByClause($view, 'createdate desc'));
+			$this->getOrderByClause($view, 'createdate'));
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 		$comments = SwatDB::query($this->app->db, $sql, 'BlorgCommentWrapper');
