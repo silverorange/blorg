@@ -1,0 +1,47 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<property name="title" translatable="yes">Author</property>
+		<widget class="SwatForm" id="edit_form">
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Name</property>
+				<widget class="SwatEntry" id="name">
+					<property name="required" type="boolean">true</property>
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Show on Front-end?</property>
+				<widget class="SwatCheckbox" id="show" />
+			</widget>
+			<widget class="SwatFormField" id="shortname_field">
+				<property name="title" translatable="yes">Shortname</property>
+				<widget class="AdminUniqueEntry" id="shortname">
+					<property name="required" type="boolean">true</property>
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Email</property>
+				<widget class="SwatEmailEntry" id="email" />
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Short Description</property>
+				<widget class="SwatTextarea" id="description">
+					<property name="rows" type="integer">5</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Biography</property>
+				<widget class="SwatTextarea" id="bodytext">
+					<property name="rows" type="integer">15</property>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button" />
+			</widget>
+		</widget>
+	</widget>
+</swatml>
