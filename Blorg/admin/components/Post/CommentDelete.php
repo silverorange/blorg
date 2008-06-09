@@ -95,6 +95,16 @@ class BlorgPostCommentDelete extends AdminDBDelete
 	}
 
 	// }}}
+	// {{{ protected function relocate()
+
+	protected function relocate()
+	{
+		$form = $this->ui->getWidget('confirmation_form');
+		$url = $form->getHiddenField(self::RELOCATE_URL_FIELD);
+		$this->app->relocate($url);
+	}
+
+	// }}}
 
 	// build phase
 	// {{{ protected function buildInternal()
