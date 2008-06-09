@@ -338,16 +338,31 @@ class BlorgPostEdit extends AdminDBEdit
 		$values = $this->ui->getValues(array(
 			'title',
 			'shortname',
+			'author',
 			'bodytext',
 			'extended_bodytext',
 			'comment_status',
 		));
 
+		$this->post->author            = $values['author'];
 		$this->post->title             = $values['title'];
 		$this->post->shortname         = $values['shortname'];
 		$this->post->bodytext          = $values['bodytext'];
 		$this->post->extended_bodytext = $values['extended_bodytext'];
 		$this->post->comment_status    = $values['comment_status'];
+
+		$instance_id = $this->app->getInstanceId();
+		if ($instance_id !== null) {
+			$sql = sprintf('update AdminUserInstanceBinding
+				set default_author = %s
+				where usernum = %s and instance = %s',
+				$this->app->db->quote($values['author'], 'integer'),
+				$this->app->db->quote($this->app->session->user->id,
+					'integer'),
+				$this->app->db->quote($instance_id, 'integer'));
+
+			SwatDB::exec($this->app->db, $sql);
+		}
 
 		$this->post->publish_date =
 			$this->ui->getWidget('publish')->getPublishDate();
@@ -457,6 +472,32 @@ class BlorgPostEdit extends AdminDBEdit
 	{
 		parent::buildInternal();
 		$this->buildFiles();
+
+		$instance_id = $this->app->getInstanceId();
+		$sql = sprintf('select BlorgAuthor.*,
+				AdminUserInstanceBinding.usernum
+			from BlorgAuthor
+			left outer join AdminUserInstanceBinding on
+				AdminUserInstanceBinding.default_author = BlorgAuthor.id
+			where BlorgAuthor.instance %s %s and BlorgAuthor.show = %s
+			order by displayorder',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->app->db->quote(true, 'boolean'));
+
+		$rs = SwatDB::query($this->app->db, $sql);
+
+		$default_author = null;
+		$authors = array();
+		foreach ($rs as $row) {
+			$authors[$row->id] = $row->name;
+
+			if ($this->id === null &&
+				$row->usernum == $this->app->session->user->id)
+				$this->ui->getWidget('author')->value = $row->id;
+		}
+
+		$this->ui->getWidget('author')->addOptionsByArray($authors);
 	}
 
 	// }}}
@@ -472,6 +513,8 @@ class BlorgPostEdit extends AdminDBEdit
 			$this->ui->getWidget('publish')->setPublishDate(
 				$publish_date, ($this->post->enabled === false));
 		}
+
+		$this->ui->getWidget('author')->value = $this->post->author->id;
 
 		$tags = array();
 		foreach ($this->post->tags as $tag)

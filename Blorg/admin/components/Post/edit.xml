@@ -14,6 +14,12 @@
 					<property name="title" translatable="yes">Publish Post</property>
 					<widget class="BlorgPublishRadioTable" id="publish" />
 				</widget>
+				<widget class="SwatGroupingFormField" id="author_field">
+					<property name="title" translatable="yes">Author</property>
+					<widget class="SwatFlydown" id="author">
+						<property name="show_blank" type="boolean">false</property>
+					</widget>
+				</widget>
 				<widget class="SwatGroupingFormField">
 					<property name="title" translatable="yes">Comment Status</property>
 					<widget class="BlorgCommentStatusSlider" id="comment_status" />
