@@ -352,7 +352,7 @@ class BlorgPostEdit extends AdminDBEdit
 		$this->post->comment_status    = $values['comment_status'];
 
 		$instance_id = $this->app->getInstanceId();
-		if ($instance_id !== null) {
+		if ($this->id === null && $instance_id !== null) {
 			$sql = sprintf('update AdminUserInstanceBinding
 				set default_author = %s
 				where usernum = %s and instance = %s',
