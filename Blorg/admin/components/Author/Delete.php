@@ -4,6 +4,7 @@ require_once 'Swat/SwatString.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Admin/pages/AdminDBDelete.php';
 require_once 'Admin/AdminListDependency.php';
+require_once 'Admin/AdminSummaryDependency.php';
 
 /**
  * Delete confirmation page for Authors
@@ -63,6 +64,17 @@ class BlorgAuthorDelete extends AdminDBDelete
 		$dep->entries = AdminListDependency::queryEntries($this->app->db,
 			'BlorgAuthor', 'integer:id', null, 'text:name', 'id',
 			$where_clause, AdminDependency::DELETE);
+
+		$dep_posts = new AdminSummaryDependency();
+		$dep_posts->setTitle(
+			Blorg::_('post'), Blorg::_('posts'));
+
+		$dep_posts->summaries = AdminSummaryDependency::querySummaries(
+			$this->app->db, 'BlorgPost', 'integer:id',
+			'integer:author', 'author in ('.$item_list.')',
+			AdminDependency::NODELETE);
+
+		$dep->addDependency($dep_posts);
 
 		$message = $this->ui->getWidget('confirmation_message');
 		$message->content = $dep->getMessage();
