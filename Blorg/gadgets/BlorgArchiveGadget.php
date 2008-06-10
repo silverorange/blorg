@@ -8,6 +8,10 @@ require_once 'SwatI18N/SwatI18NLocale.php';
 /**
  * Displays a link to the weblog archive
  *
+ * - boolean display_full if true, a expanded list of years with post counts is
+ *                        displayed. The years link to year archive pages. True
+ *                        by default.
+ *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
