@@ -14,12 +14,10 @@ require_once 'SwatI18N/SwatI18NLocale.php';
  */
 class BlorgTagGadget extends BlorgGadget
 {
-	// {{{ public function display()
+	// {{{ protected function displayContent()
 
-	public function display()
+	protected function displayContent()
 	{
-		parent::display();
-
 		$path = $this->app->config->blorg->path.'tag';
 
 		$tags = $this->getTags();
