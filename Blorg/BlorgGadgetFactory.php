@@ -11,7 +11,26 @@ require_once 'Blorg/BlorgGadget.php';
  * Handles creation of gadget objects
  *
  * A gadget object is created by specifying the gadget instance and application
- * in the {@link BlorgGadgetFactory::get()} method.
+ * in the {@link BlorgGadgetFactory::get()} method. For example:
+ *
+ * <code>
+ * $gadget_instance = ... ; // load a BlorgGadgetInstance from the db
+ * $gadget = BlorgGadgetFactory::get($app, $gadget_instance);
+ * $gadget->display();
+ * </code>
+ *
+ * The factory can also be used inside an iteration of a
+ * {@link BlorgGadgetInstanceWrapper} object to quickly instantiate a set of
+ * gadgets. For example:
+ *
+ * <code>
+ * // load a set of BlorgGadgetInstance objects from the db
+ * $gadget_instances = ... ;
+ * $gadgets = array(); // a place to keep the instantiated gadgets
+ * foreach ($gadget_instances as $gadget_instance) {
+ *     $gadgets[] = BlorgGadgetFactory::get($app, $gadget_instance);
+ * }
+ * </code>
  *
  * A list of available gadgets may be retrieved for an application using the
  * {@link BlorgGadgetFactory::getAvailable()} method.
@@ -19,7 +38,7 @@ require_once 'Blorg/BlorgGadget.php';
  * All gadget classes are loaded automatically from the gadget search path,
  * which is controlled by the {@link BlorgGadgetFactory::addPath()} and
  * {@link BlorgGadgetFactory::removePath()} methods. The relative search
- * path 'Blorg/gadgets' is included by default.
+ * path <code>'Blorg/gadgets'</code> is included by default.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
