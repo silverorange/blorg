@@ -105,13 +105,30 @@ class BlorgPostView extends BlorgView
 		}
 
 		if ($this->isVisible($post)) {
-			echo '<div class="entry hentry">';
+			$div_tag = new SwatHtmlTag('div');
+			$div_tag->class = 'entry hentry';
 
-			$this->displayHeader($post);
-			$this->displayBody($post);
-			$this->displayFooter($post);
+			// special class for title-less posts.
+			if ($post->title === null)
+				$div_tag->class.= ' entry-no-title';
 
-			echo '</div>';
+			$div_tag->open();
+
+			if (strlen($post->title) === 0 &&
+				$this->getMode('title') !== BlorgView::MODE_SUMMARY) {
+				// When displaying a full view of a title-less post, put the
+				// sub-header at the bottom.
+				$this->displayBody($post);
+				$this->displayFooter($post);
+				$this->displaySubHeader($post);
+			} else {
+				// Normal view
+				$this->displayHeader($post);
+				$this->displayBody($post);
+				$this->displayFooter($post);
+			}
+
+			$div_tag->close();
 		}
 	}
 
