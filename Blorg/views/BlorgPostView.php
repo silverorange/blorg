@@ -180,13 +180,13 @@ class BlorgPostView extends BlorgView
 		 * - comments are moderated.
 		 */
 		$show_comment_count =
-			(strlen($comment_count) > 0 &&
+			($comment_count != '' &&
 				(($post->comment_status == BlorgPost::COMMENT_STATUS_LOCKED &&
 					count($post->getVisibleComments()) > 0) ||
 				$post->comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
 				$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED));
 
-		if (strlen($author) > 0) {
+		if ($author != '') {
 			if ($show_comment_count) {
 				printf(Blorg::_('Posted by %s on %s - %s'),
 					$author, $permalink, $comment_count);
@@ -228,63 +228,41 @@ class BlorgPostView extends BlorgView
 
 	protected function displayTitle(BlorgPost $post)
 	{
+		$title = '';
+
 		switch ($this->getMode('title')) {
 		case BlorgView::MODE_ALL:
-			if (strlen($post->title) > 0) {
-				$link = $this->getLink('title');
-
-				$header_tag = new SwatHtmlTag('h3');
-				$header_tag->class = 'entry-title';
-				$header_tag->id = sprintf('post_%s', $post->shortname);
-
-				if ($link === false) {
-					$header_tag->setContent($post->title);
-					$header_tag->display();
-				} else {
-					$header_tag->open();
-
-					$anchor_tag = new SwatHtmlTag('a');
-					if (is_string($link)) {
-						$anchor_tag->href = $link;
-					} else {
-						$anchor_tag->href = $this->getPostRelativeUri($post);
-					}
-					$anchor_tag->setContent($post->title);
-					$anchor_tag->display();
-
-					$header_tag->close();
-				}
-			}
+			$title = $post->title;
 			break;
 		case BlorgView::MODE_SUMMARY:
 			$title = $post->getTitle();
-			if (strlen($title) > 0) {
-				$link = $this->getLink('title');
-
-				$header_tag = new SwatHtmlTag('h3');
-				$header_tag->class = 'entry-title';
-				$header_tag->id = sprintf('post_%s', $post->shortname);
-
-				if ($link === false) {
-					$header_tag->setContent($title);
-					$header_tag->display();
-				} else {
-					$header_tag->open();
-
-					$anchor_tag = new SwatHtmlTag('a');
-					if (is_string($link)) {
-						$anchor_tag->href = $link;
-					} else {
-						$anchor_tag->href = $this->getPostRelativeUri($post);
-					}
-					$anchor_tag->setContent($title);
-					$anchor_tag->display();
-
-					$header_tag->close();
-				}
-			}
-
 			break;
+		}
+
+		if ($title != '') {
+			$link = $this->getLink('title');
+
+			$header_tag = new SwatHtmlTag('h3');
+			$header_tag->class = 'entry-title';
+			$header_tag->id = sprintf('post_%s', $post->shortname);
+
+			if ($link === false) {
+				$header_tag->setContent($title);
+				$header_tag->display();
+			} else {
+				$header_tag->open();
+
+				$anchor_tag = new SwatHtmlTag('a');
+				if (is_string($link)) {
+					$anchor_tag->href = $link;
+				} else {
+					$anchor_tag->href = $this->getPostRelativeUri($post);
+				}
+				$anchor_tag->setContent($title);
+				$anchor_tag->display();
+
+				$header_tag->close();
+			}
 		}
 	}
 
@@ -434,7 +412,7 @@ class BlorgPostView extends BlorgView
 
 	protected function displayExtendedBodytext(BlorgPost $post)
 	{
-		if (strlen($post->extended_bodytext) > 0) {
+		if ($post->extended_bodytext != '') {
 			switch ($this->getMode('extended_bodytext')) {
 			case BlorgView::MODE_ALL:
 				$div_tag = new SwatHtmlTag('div');
@@ -531,7 +509,7 @@ class BlorgPostView extends BlorgView
 		$keys = array('comment_count', 'permalink', 'author', 'tags');
 		$content_properties = array('title', 'bodytext', 'extended_bodytext');
 		foreach ($content_properties as $property) {
-			if (strlen($post->$property) > 0) {
+			if ($post->$property != '') {
 				$keys[] = $property;
 			}
 		}
@@ -568,7 +546,7 @@ class BlorgPostView extends BlorgView
 		$keys = array('comment_count', 'permalink', 'author');
 		$content_properties = array('title');
 		foreach ($content_properties as $property) {
-			if (strlen($post->$property) > 0) {
+			if ($post->$property != '') {
 				$keys[] = $property;
 			}
 		}
@@ -608,7 +586,7 @@ class BlorgPostView extends BlorgView
 		$keys = array();
 		$content_properties = array('bodytext', 'extended_bodytext');
 		foreach ($content_properties as $property) {
-			if (strlen($post->$property) > 0) {
+			if ($post->$property != '') {
 				$keys[] = $property;
 			}
 		}

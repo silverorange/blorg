@@ -73,7 +73,7 @@ class BlorgCommentView extends BlorgView
 		$this->displayAuthor($comment);
 		$author = ob_get_clean();
 
-		if (strlen($author) > 0) {
+		if ($author != '') {
 			$elements[] = $author;
 		}
 
@@ -81,7 +81,7 @@ class BlorgCommentView extends BlorgView
 		$this->displayPermalink($comment);
 		$permalink = ob_get_clean();
 
-		if (strlen($permalink) > 0) {
+		if ($permalink != '') {
 			$elements[] = $permalink;
 		}
 
@@ -153,7 +153,7 @@ class BlorgCommentView extends BlorgView
 	protected function displayLink(BlorgComment $comment)
 	{
 		if ($this->getMode('link') > BlorgView::MODE_NONE) {
-			if (strlen($comment->link) > 0) {
+			if ($comment->link != '') {
 				$link = $this->getLink('link');
 
 				$div_tag = new SwatHtmlTag('div');

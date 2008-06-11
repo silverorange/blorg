@@ -230,7 +230,7 @@ class BlorgPostComments extends AdminSearch
 				$this->app->db->quote($instance_id, 'integer'));
 
 			$keywords = $this->ui->getWidget('search_keywords')->value;
-			if (strlen(trim($keywords)) > 0) {
+			if (trim($keywords) != '') {
 				$clause = new AdminSearchClause('bodytext', $keywords);
 				$clause->table = 'BlorgComment';
 				$clause->operator = AdminSearchClause::OP_CONTAINS;
@@ -241,7 +241,7 @@ class BlorgPostComments extends AdminSearch
 				$this->ui->getWidget('search_author')->value);
 
 			$fullname = $this->ui->getWidget('search_fullname')->value;
-			if (strlen(trim($fullname)) > 0) {
+			if (trim($fullname) != '') {
 				$fullname_clause = new AdminSearchClause('fullname', $fullname);
 				$fullname_clause->table = 'BlorgComment';
 				$fullname_clause->operator = AdminSearchClause::OP_CONTAINS;

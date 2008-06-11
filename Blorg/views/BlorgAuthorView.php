@@ -134,7 +134,7 @@ class BlorgAuthorView extends BlorgView
 		$this->displayEmail($author);
 		$email = ob_get_clean();
 
-		if (strlen($email) > 0) {
+		if ($email != '') {
 			$parts[] = $email;
 		}
 
@@ -142,7 +142,7 @@ class BlorgAuthorView extends BlorgView
 		$this->displayPostCount($author);
 		$post_count = ob_get_clean();
 
-		if (strlen($post_count) > 0) {
+		if ($post_count != '') {
 			$parts[] = $post_count;
 		}
 
@@ -169,14 +169,14 @@ class BlorgAuthorView extends BlorgView
 	{
 		if ($this->getMode('name') > BlorgView::MODE_NONE) {
 			$link = $this->getLink('name');
-			if (strlen($author->name) > 0) {
+			if ($author->name != '') {
 				if ($this->getMode('name') > BlorgView::MODE_SUMMARY)
 					$header_tag = new SwatHtmlTag('h3');
 				else
 					$header_tag = new SwatHtmlTag('h4');
 
 				$header_tag->class = 'author-name';
-				if (strlen($author->shortname) > 0) {
+				if ($author->shortname != '') {
 					$header_tag->id = sprintf('author_%s', $author->shortname);
 				}
 
@@ -209,7 +209,7 @@ class BlorgAuthorView extends BlorgView
 	{
 		if ($this->getMode('email') > BlorgView::MODE_NONE) {
 			$link = $this->getLink('email');
-			if (strlen($author->email) > 0) {
+			if ($author->email != '') {
 				$div_tag = new SwatHtmlTag('div');
 				$div_tag->class = 'author-email';
 
@@ -335,7 +335,7 @@ class BlorgAuthorView extends BlorgView
 	{
 		if ($this->getMode('description') > BlorgView::MODE_NONE) {
 			$link = $this->getLink('description');
-			if (strlen($author->description) > 0) {
+			if ($author->description != '') {
 				$div_tag = new SwatHtmlTag('div');
 				$div_tag->class = 'author-description';
 				$div_tag->setContent($author->description, 'text/xml');
@@ -387,7 +387,7 @@ class BlorgAuthorView extends BlorgView
 		// parts that are visible depending on dataobject content
 		$content_properties = array('name', 'email', 'description', 'bodytext');
 		foreach ($content_properties as $property) {
-			if (strlen($author->$property) > 0) {
+			if ($author->$property != '') {
 				$keys[] = $property;
 			}
 		}
@@ -419,7 +419,7 @@ class BlorgAuthorView extends BlorgView
 	 *                 the header of this view is not visible (nothing will be
 	 *                 displayed if displayHeader() is called).
 	 */
-	protected function isHeaderVisible(BlorgAuthor $post)
+	protected function isHeaderVisible(BlorgAuthor $author)
 	{
 		// parts where visibility is not dependent on dataobject content
 		$keys = array('post_count');
@@ -427,7 +427,7 @@ class BlorgAuthorView extends BlorgView
 		// parts that are visible depending on dataobject content
 		$content_properties = array('name', 'email');
 		foreach ($content_properties as $property) {
-			if (strlen($post->$property) > 0) {
+			if ($author->$property != '') {
 				$keys[] = $property;
 			}
 		}
@@ -468,7 +468,7 @@ class BlorgAuthorView extends BlorgView
 		// parts that are visible depending on dataobject content
 		$content_properties = array('bodytext', 'description');
 		foreach ($content_properties as $property) {
-			if (strlen($post->$property) > 0) {
+			if ($author->$property != '') {
 				$keys[] = $property;
 			}
 		}
