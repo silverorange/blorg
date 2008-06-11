@@ -109,12 +109,12 @@ class BlorgPostView extends BlorgView
 			$div_tag->class = 'entry hentry';
 
 			// special class for title-less posts.
-			if ($post->title === null)
+			if ($post->title == '')
 				$div_tag->class.= ' entry-no-title';
 
 			$div_tag->open();
 
-			if (strlen($post->title) === 0 &&
+			if ($post->title == '' &&
 				$this->getMode('title') !== BlorgView::MODE_SUMMARY) {
 				// When displaying a full view of a title-less post, put the
 				// sub-header at the bottom.
