@@ -24,8 +24,8 @@ require_once 'Blorg/dataobjects/BlorgGadgetInstance.php';
  *                               this title using the
  *                               {@link BlorgGadget::displayTitle()} method.
  *                               The default title as specified by the
- *                               {@link BlorgGadget::defineDefaultTitle} method
- *                               is used by default.
+ *                               {@link BlorgGadget::defineDefaultTitle()}
+ *                               method is used by default.
  *
  * Creating a gadget involves two main tasks:
  *
@@ -196,13 +196,17 @@ abstract class BlorgGadget extends SwatUIObject
 	 * Provides a hook into the {@link SwatWidget::display()} step of the
 	 * Swat UI tree.
 	 *
-	 * By default, the title of this gadget is displayed in this method.
-	 * Subclasses may optionally omit displaying the title from implementations
-	 * of the display method.
+	 * In the default implementation, the gadget title is displayed, followed
+	 * by the gadget content wrapped in a div.
+	 *
+	 * @see BlorgGadget::displayTitle()
+	 * @see BlorgGadget::displayContent()
+	 * @see BlorgGadget::displayWrappedContent()
 	 */
 	public function display()
 	{
 		$this->displayTitle();
+		$this->displayWrappedContent();
 	}
 
 	// }}}
@@ -211,8 +215,8 @@ abstract class BlorgGadget extends SwatUIObject
 	/**
 	 * Gets the title of this gadget
 	 *
-	 * If the setting 'title' does not have a value, the default title is
-	 * returned.
+	 * If the setting <code>title</code> does not have a value, the default
+	 * title is returned.
 	 *
 	 * @return string the title of this gadget.
 	 */
@@ -284,6 +288,47 @@ abstract class BlorgGadget extends SwatUIObject
 		$header->class = 'blorg-gadget-title';
 		$header->setContent($this->getTitle());
 		$header->display();
+	}
+
+	// }}}
+	// {{{ protected function displayContent()
+
+	/**
+	 * Displays content for this gadget
+	 *
+	 * This method is provided for gadget authors. The default implementation
+	 * is empty.
+	 */
+	protected function displayContent()
+	{
+	}
+
+	// }}}
+	// {{{ protected function displayWrappedContent()
+
+	/**
+	 * Wraps the content of this gadget in a div for final display
+	 *
+	 * If the {@link BlorgGadget::displayContent()} method displays any content,
+	 * the content is wrapped in a div with the CSS class 'blorg-gadget-content'
+	 * by this method.
+	 *
+	 * The default implementation frees gadget authors from having to remember
+	 * to wrap their content in a special div for themes to work properly.
+	 */
+	protected function displayWrappedContent()
+	{
+		ob_start();
+		$this->displayContent();
+		$content = ob_get_clean();
+
+		if ($content != '') {
+			$div_tag = new SwatHtmlTag('div');
+			$div_tag->class = 'blorg-gadget-content';
+			$div_tag->open();
+			echo $content;
+			$div_tag->close();
+		}
 	}
 
 	// }}}
