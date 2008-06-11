@@ -95,8 +95,9 @@ class BlorgSearchGadget extends BlorgGadget
 			$this->form = new SiteSearchForm();
 			$this->form->action = $base.'search';
 			$this->form->setMethod(SiteSearchForm::METHOD_GET);
+
+			$field->add($button);
 			$this->form->add($field);
-			$this->form->add($button);
 		}
 	}
 
