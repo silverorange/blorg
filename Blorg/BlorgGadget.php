@@ -12,20 +12,20 @@ require_once 'Blorg/dataobjects/BlorgGadgetInstance.php';
  * which binds setting values to the gadget; and with a reference to the
  * application.
  *
- * Sidebar gadgets are instances of SwatUIObject and may be added to a
+ * Sidebar gadgets are instances of {@link SwatUIObject} and may be added to a
  * {@link BlorgSidebar} parent widget.
  *
  * Gadgets have settings. Settings consist of a name, title, type and default
- * value. Setting values come from the {@link BlorgGadgetInstance}. Note:
- * Setting values can not exceed 255 characters.
+ * value. Setting values come from the {@link BlorgGadgetInstance}.
  *
  * The settings available to all gadgets are:
  *
- * - string title the title of this gadget. Gadgets may display this title
- *                using the {@link BlorgGadget::displayTitle()} method. The
- *                default title as specified by the
- *                {@link BlorgGadget::defineDefaultTitle} method is used by
- *                default.
+ * - <code>string title</code> - the title of this gadget. Gadgets may display
+ *                               this title using the
+ *                               {@link BlorgGadget::displayTitle()} method.
+ *                               The default title as specified by the
+ *                               {@link BlorgGadget::defineDefaultTitle} method
+ *                               is used by default.
  *
  * Creating a gadget involves two main tasks:
  *
@@ -35,9 +35,9 @@ require_once 'Blorg/dataobjects/BlorgGadgetInstance.php';
  *
  * 2. Implement the {@link BlorgGadget::init()}, {@link BlorgGadget::process()}
  *    and {@link BlorgGadget::display()} methods where necessary. Most gadgets
- *    will only have to implement the display() method. The init() and process()
- *    methods are hooks into the Swat UI tree initilization and processing
- *    methods.
+ *    will only have to implement one or more of the <code>display()</code>
+ *    methods. The <code>init()</code> and <code>process()</code> methods are
+ *    hooks into the Swat UI tree initilization and processing methods.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -163,7 +163,8 @@ abstract class BlorgGadget extends SwatUIObject
 	/**
 	 * Initializes this gadget
 	 *
-	 * Provides a hook into the init() step of the Swat UI tree.
+	 * Provides a hook into the {@link SwatWidget::init()} step of the Swat UI
+	 * tree.
 	 *
 	 * @see SwatWidget::init()
 	 */
@@ -177,7 +178,8 @@ abstract class BlorgGadget extends SwatUIObject
 	/**
 	 * Processes this gadget
 	 *
-	 * Provides a hook into the process() step of the Swat UI tree.
+	 * Provides a hook into the {@link SwatWidget::process()} step of the Swat
+	 * UI tree.
 	 *
 	 * @see SwatWidget::process()
 	 */
@@ -191,10 +193,11 @@ abstract class BlorgGadget extends SwatUIObject
 	/**
 	 * Displays this gadget
 	 *
-	 * Provides a hook into the display() step of the Swat UI tree.
+	 * Provides a hook into the {@link SwatWidget::display()} step of the
+	 * Swat UI tree.
 	 *
 	 * By default, the title of this gadget is displayed in this method.
-	 * Subclasses may optinoally omit displaying the title from implementations
+	 * Subclasses may optionally omit displaying the title from implementations
 	 * of the display method.
 	 */
 	public function display()
@@ -354,8 +357,9 @@ abstract class BlorgGadget extends SwatUIObject
 	 *
 	 * @return mixed the default value of the specified setting.
 	 *
-	 * @throw InvalidArgumentException if the specified <i>$name</i> is not a
-	 *                                 valid setting name for this gadget.
+	 * @throw InvalidArgumentException if the specified <code>$name</code> is
+	 *                                 not a valid setting name for this
+	 *                                 gadget.
 	 */
 	protected function getDefaultValue($name)
 	{
@@ -372,8 +376,8 @@ abstract class BlorgGadget extends SwatUIObject
 
 	/**
 	 * Provides a location for gadget subclasses to define settings; define the
-	 * default title; and add external style-sheet and JavaScript resources to
-	 * this gadget
+	 * default title; and to add external style-sheet and JavaScript resources
+	 * to this gadget
 	 *
 	 * @see BlorgGadget::defineDefaultTitle()
 	 * @see BlorgGadget::defineSetting()
@@ -409,7 +413,7 @@ abstract class BlorgGadget extends SwatUIObject
 	 * The description is used on the gadget selection page in the admin and
 	 * provides a short description of this gadget above and beyond the title.
 	 *
-	 * For example, an 'Arbitrary Content' gadget may have the following
+	 * For example, an <em>Arbitrary Content</em> gadget may have the following
 	 * description:
 	 *
 	 *   Provides a place to place arbitrary content in the sidebar. Content
