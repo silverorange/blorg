@@ -37,16 +37,6 @@ class BlorgSearchGadget extends BlorgGadget
 	}
 
 	// }}}
-	// {{{ public function display()
-
-	public function display()
-	{
-		parent::display();
-		$this->createForm();
-		$this->form->display();
-	}
-
-	// }}}
 	// {{{ public function getHtmlHeadEntrySet()
 
 	public function getHtmlHeadEntrySet()
@@ -55,6 +45,15 @@ class BlorgSearchGadget extends BlorgGadget
 		$set = parent::getHtmlHeadEntrySet();
 		$set->addEntrySet($this->form->getHtmlHeadEntrySet());
 		return $set;
+	}
+
+	// }}}
+	// {{{ protected function displayContent()
+
+	protected function displayContent()
+	{
+		$this->createForm();
+		$this->form->display();
 	}
 
 	// }}}

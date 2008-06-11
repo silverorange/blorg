@@ -17,12 +17,10 @@ require_once 'Swat/SwatString.php';
  */
 class BlorgDiggGadget extends BlorgGadget
 {
-	// {{{ public function display()
+	// {{{ protected function displayContent()
 
-	public function display()
+	protected function displayContent()
 	{
-		parent::display();
-
 		$username = $this->getValue('username');
 		if ($username == '') {
 			$what = 'front/all';

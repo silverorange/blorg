@@ -36,12 +36,10 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 	}
 
 	// }}}
-	// {{{ public function display()
+	// {{{ protected function displayContent()
 
-	public function display()
+	protected function displayContent()
 	{
-		parent::display();
-
 		$conversations = $this->getActiveConversations();
 
 		if (count($conversations) > 0) {

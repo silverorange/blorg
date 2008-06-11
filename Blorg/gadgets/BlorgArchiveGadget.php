@@ -18,11 +18,10 @@ require_once 'SwatI18N/SwatI18NLocale.php';
  */
 class BlorgArchiveGadget extends BlorgGadget
 {
-	// {{{ public function display()
+	// {{{ protected function displayContent()
 
-	public function display()
+	protected function displayContent()
 	{
-		parent::display();
 		if ($this->getValue('display_full')) {
 			$this->displayArchive();
 		}

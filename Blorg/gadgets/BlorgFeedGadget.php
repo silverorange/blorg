@@ -12,12 +12,10 @@ require_once 'Swat/SwatHtmlTag.php';
  */
 class BlorgFeedGadget extends BlorgGadget
 {
-	// {{{ public function display()
+	// {{{ protected function displayContent()
 
-	public function display()
+	protected function displayContent()
 	{
-		parent::display();
-
 		$base_href = $this->app->config->blorg->path;
 
 		echo '<ul class="blorg-syndication"><li>';

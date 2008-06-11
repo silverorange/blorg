@@ -17,12 +17,10 @@ require_once 'Swat/SwatHtmlTag.php';
  */
 class BlorgAuthorsGadget extends BlorgGadget
 {
-	// {{{ public function display()
+	// {{{ protected function displayContent()
 
-	public function display()
+	protected function displayContent()
 	{
-		parent::display();
-
 		$authors = $this->getAuthors();
 
 		if (count($authors) == 1) {
