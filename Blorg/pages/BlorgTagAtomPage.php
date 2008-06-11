@@ -179,7 +179,7 @@ class BlorgTagAtomPage extends SitePage
 			$entry = new XML_Atom_Entry($post_uri, $post->title,
 				$post->publish_date);
 
-			if (strlen($post->extended_bodytext) > 0) {
+			if ($post->extended_bodytext != '') {
 				$full_bodytext = $post->bodytext.$post->extended_bodytext;
 				$entry->setSummary($post->bodytext, 'html');
 				$entry->setContent($full_bodytext, 'html');

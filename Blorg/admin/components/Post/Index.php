@@ -243,7 +243,7 @@ class BlorgPostIndex extends AdminSearch
 	protected function searchPosts()
 	{
 		$keywords = $this->ui->getWidget('search_keywords')->value;
-		if (strlen(trim($keywords)) == 0 || $this->getSearchType() === null) {
+		if (trim($keywords) == '' || $this->getSearchType() === null) {
 			$this->fulltext_result = null;
 		} else {
 			$fulltext_engine = new SiteNateGoFulltextSearchEngine(
@@ -304,9 +304,7 @@ class BlorgPostIndex extends AdminSearch
 			// keywords are included in the where clause if fulltext searching
 			// is turned off
 			$keywords = $this->ui->getWidget('search_keywords')->value;
-			if (strlen(trim($keywords)) > 0 &&
-				$this->getSearchType() === null) {
-
+			if (trim($keywords) != '' && $this->getSearchType() === null) {
 				$where.= ' and ( ';
 
 				$clause = new AdminSearchClause('title', $keywords);
@@ -400,8 +398,7 @@ class BlorgPostIndex extends AdminSearch
 		$author   = $this->ui->getWidget('search_author')->value;
 		$enabled  = $this->ui->getWidget('search_enabled')->value;
 
-		return (strlen($keywords) > 0 || $author != null || $enabled != null) ?
-			true : false;
+		return ($keywords != '' || $author != null || $enabled != null);
 	}
 
 	// }}}

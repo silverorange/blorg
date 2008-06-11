@@ -24,7 +24,7 @@ class BlorgDiggGadget extends BlorgGadget
 		parent::display();
 
 		$username = $this->getValue('username');
-		if (strlen($username) === 0) {
+		if ($username == '') {
 			$what = 'front/all';
 		} else {
 			$username = SwatString::minimizeEntities(urlencode($username));

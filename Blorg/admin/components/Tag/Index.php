@@ -130,7 +130,7 @@ class BlorgTagIndex extends AdminSearch
 				$this->app->db->quote($instance_id, 'integer'));
 
 			$title = $this->ui->getWidget('search_title')->value;
-			if (strlen(trim($title)) > 0) {
+			if (trim($title) != '') {
 				$clause = new AdminSearchClause('title', $title);
 				$clause->table = 'BlorgTag';
 				$clause->operator =
