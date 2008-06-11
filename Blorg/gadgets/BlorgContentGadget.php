@@ -19,9 +19,16 @@ require_once 'Swat/SwatString.php';
  */
 class BlorgContentGadget extends BlorgGadget
 {
-	// {{{ public function display()
+	// {{{ protected function displayTitle()
 
-	public function display()
+	public function displayTitle()
+	{
+	}
+
+	// }}}
+	// {{{ public function displayContent()
+
+	public function displayContent()
 	{
 		$content = $this->getValue('content');
 		if ($this->getValue('content_type') != 'text/xml') {
