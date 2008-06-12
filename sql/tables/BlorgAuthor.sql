@@ -7,6 +7,6 @@ create table BlorgAuthor (
 	displayorder integer not null default 0,
 	description text null,
 	bodytext text null,
-	show boolean not null default true,
+	visible boolean not null default true,
 	primary key (id)
 );

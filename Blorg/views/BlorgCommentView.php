@@ -117,7 +117,7 @@ class BlorgCommentView extends BlorgView
 				$span_tag->display();
 			} else {
 				// system author
-				if ($comment->author->show && $link !== false) {
+				if ($comment->author->visible && $link !== false) {
 					$span_tag = new SwatHtmlTag('span');
 					$span_tag->class = 'vcard author';
 					$span_tag->open();

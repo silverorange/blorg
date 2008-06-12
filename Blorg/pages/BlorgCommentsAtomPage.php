@@ -160,7 +160,7 @@ class BlorgCommentsAtomPage extends SitePage
 
 			if ($comment->author !== null) {
 				$author_name = $comment->author->name;
-				if ($comment->author->show) {
+				if ($comment->author->visible) {
 					$author_uri = $blorg_base_href.'author/'.
 						$post->author->shortname;
 

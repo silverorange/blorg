@@ -184,7 +184,7 @@ class BlorgAtomPage extends SitePage
 				$entry->addLink($link);
 			}
 
-			if ($post->author->show) {
+			if ($post->author->visible) {
 				$author_uri = $blorg_base_href.'author/'.
 					$post->author->shortname;
 			} else {

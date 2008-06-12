@@ -59,7 +59,7 @@ class BlorgAuthorsGadget extends BlorgGadget
 	{
 		$sql = sprintf('select id, name, shortname, email, description
 			from BlorgAuthor
-			where show = %s and instance %s %s
+			where visible = %s and instance %s %s
 			order by displayorder',
 			$this->app->db->quote(true, 'boolean'),
 			SwatDB::equalityOperator($this->app->getInstanceId()),
