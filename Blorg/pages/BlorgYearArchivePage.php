@@ -92,11 +92,15 @@ class BlorgYearArchivePage extends SitePathPage
 		$view->setPartMode('files', BlorgView::MODE_NONE);
 
 		$ul_tag = new SwatHtmlTag('ul');
-		$ul_tag->class = 'months';
+		$ul_tag->class = 'blorg-archive-months';
 		$ul_tag->open();
 		foreach ($this->months as $month => $posts) {
 			$li_tag = new SwatHtmlTag('li');
 			$li_tag->open();
+
+			$heading_tag = new SwatHtmlTag('h4');
+			$heading_tag->class = 'blorg-archive-month-title';
+			$heading_tag->open();
 
 			$date = new SwatDate();
 			$date->setMonth($month);
@@ -109,6 +113,8 @@ class BlorgYearArchivePage extends SitePathPage
 
 			$anchor_tag->setContent($date->getMonthName());
 			$anchor_tag->display();
+
+			$heading_tag->close();
 
 			$post_ul_tag = new SwatHtmlTag('ul');
 			$post_ul_tag->class = 'entries';
