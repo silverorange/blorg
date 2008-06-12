@@ -95,15 +95,18 @@ class Blorg
 			// Optional path prefix for all Blörg content. If specified, this
 			// must have a trailing slash. This is used to integrate Blörg
 			// content into another site.
-			'blorg.path'                 => '',
+			'blorg.path'                   => '',
 
 			// Optional Wordpress API key for Akismet spam filtering.
-			'blorg.akismet_key'          => null,
+			'blorg.akismet_key'            => null,
 
 			// Default post comment status. Valid config values are 'open',
 			// 'moderated', 'locked' and 'closed'. Any other values are
 			// interpreted as 'closed'.
 			'blorg.default_comment_status' => 'closed',
+
+			// Optional tagline.
+			'site.tagline'                 => null,
 		);
 	}
 
