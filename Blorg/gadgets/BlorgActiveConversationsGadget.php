@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Blorg/BlorgGadget.php';
+require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Swat/SwatString.php';
 require_once 'Swat/SwatHtmlTag.php';
