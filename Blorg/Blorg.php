@@ -105,6 +105,10 @@ class Blorg
 			// interpreted as 'closed'.
 			'blorg.default_comment_status' => 'closed',
 
+			// Whether or not to show a list of recent posts by the author on
+			// the author details page.
+			'blorg.show_author_posts'      => false,
+
 			// Optional tagline.
 			'site.tagline'                 => null,
 		);
