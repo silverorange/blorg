@@ -83,6 +83,27 @@ BlorgLastFmGadget.prototype.handleSuccessfulUpdate = function(o)
 {
 	var doc = o.responseXML;
 
+	while (this.output_div.firstChild) {
+		this.output_div.removeChild(this.output_div.firstChild);
+	}
+
+	if (!doc) {
+		var message = document.createElement('div');
+		var message_div = document.createElement('div');
+		var error_div = document.createElement('div');
+
+		message.className = 'swat-message swat-message-error';
+		message_div.className = 'swat-form-field-messages';
+		error_div.className = 'swat-form-field-with-messages';
+
+		message.appendChild(document.createTextNode(o.responseText));
+		message_div.appendChild(message);
+		error_div.appendChild(message_div);
+
+		this.output_div.appendChild(error_div);
+		return;
+	}
+
 	var tracks = doc.getElementsByTagName('track');
 
 	if (tracks.length == 0) {
@@ -139,10 +160,6 @@ BlorgLastFmGadget.prototype.handleSuccessfulUpdate = function(o)
 			li.appendChild(span);
 
 			ul.appendChild(li);
-		}
-
-		while (this.output_div.firstChild) {
-			this.output_div.removeChild(this.output_div.firstChild);
 		}
 
 		this.output_div.appendChild(ul);
