@@ -366,22 +366,7 @@ abstract class BlorgGadget extends SwatUIObject
 				'" does not have a setting named "'.$name.'".');
 		}
 
-		// lazily load all instance setting values for this gadget
-		if ($this->values === null) {
-			$this->values = array();
-			try {
-				foreach ($this->gadget_instance->setting_values as $setting) {
-					$setting_name = $setting->name;
-					if (array_key_exists($setting_name, $this->settings)) {
-						$type = $this->settings[$setting_name]->getType();
-						$setting_value = $setting->getValue($type);
-						$this->values[$setting_name] = $setting_value;
-					}
-				}
-			} catch (SwatDBNoDatabaseException $e) {
-				// don't try to load settings if we don't have a database
-			}
-		}
+		$this->lazyLoadValues();
 
 		if (array_key_exists($name, $this->values)) {
 			$value = $this->values[$name];
@@ -390,6 +375,29 @@ abstract class BlorgGadget extends SwatUIObject
 		}
 
 		return $value;
+	}
+
+	// }}}
+	// {{{ protected function hasValue()
+
+	/**
+	 * Gets whether or not a setting value exists for a setting of this gadget
+	 *
+	 * @param string $name the name of the setting.
+	 *
+	 * @return boolean true if a value (other than the default) exists for the
+	 *                 specified setting. Otherwise, false.
+	 */
+	protected function hasValue($name)
+	{
+		if (!$this->hasSetting($name)) {
+			throw new InvalidArgumentException('Gadget "'.get_class($this).
+				'" does not have a setting named "'.$name.'".');
+		}
+
+		$this->lazyLoadValues();
+
+		return (array_key_exists($name, $this->values));
 	}
 
 	// }}}
@@ -517,6 +525,34 @@ abstract class BlorgGadget extends SwatUIObject
 	{
 		$this->settings[$name] = new BlorgGadgetSetting($name, $title, $type,
 			$default);
+	}
+
+	// }}}
+	// {{{ private function lazyLoadValues()
+
+	/**
+	 * Lazily loads all instance setting values for this gadget
+	 *
+	 * @see BlorgGadget::hasValue()
+	 * @see BlorgGadget::getValue()
+	 */
+	private function lazyLoadValues()
+	{
+		if ($this->values === null) {
+			$this->values = array();
+			try {
+				foreach ($this->gadget_instance->setting_values as $setting) {
+					$setting_name = $setting->name;
+					if (array_key_exists($setting_name, $this->settings)) {
+						$type = $this->settings[$setting_name]->getType();
+						$setting_value = $setting->getValue($type);
+						$this->values[$setting_name] = $setting_value;
+					}
+				}
+			} catch (SwatDBNoDatabaseException $e) {
+				// don't try to load settings if we don't have a database
+			}
+		}
 	}
 
 	// }}}
