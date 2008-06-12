@@ -271,7 +271,7 @@ class BlorgPost extends SwatDBDataObject
 	{
 		$sql = 'select BlorgFile.*
 			from BlorgFile
-			where BlorgFile.post = %s and BlorgFile.show = %s
+			where BlorgFile.post = %s and BlorgFile.visible = %s
 			order by BlorgFile.createdate';
 
 		$sql = sprintf($sql,

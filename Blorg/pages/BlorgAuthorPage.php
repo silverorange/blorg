@@ -58,7 +58,7 @@ class BlorgAuthorPage extends SitePage
 			throw new SiteNotFoundException('Author not found.');
 		}
 
-		if (!$this->author->show) {
+		if (!$this->author->visible) {
 			throw new SiteNotFoundException('Author not found.');
 		}
 	}

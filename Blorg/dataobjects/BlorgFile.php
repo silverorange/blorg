@@ -55,7 +55,7 @@ class BlorgFile extends SwatDBDataObject
 	 *
 	 * @var boolean
 	 */
-	public $show;
+	public $visible;
 
 	/**
 	 * Date the file entry was added.

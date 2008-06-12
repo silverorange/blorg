@@ -272,7 +272,7 @@ class BlorgPostView extends BlorgView
 	protected function displayAuthor(BlorgPost $post)
 	{
 		if ($this->getMode('author') > BlorgView::MODE_NONE) {
-			if ($post->author->show) {
+			if ($post->author->visible) {
 				$link = $this->getLink('author');
 				if ($link === false) {
 					$span_tag = new SwatHtmlTag('span');

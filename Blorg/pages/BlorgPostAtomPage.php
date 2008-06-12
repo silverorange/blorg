@@ -126,7 +126,7 @@ class BlorgPostAtomPage extends SitePage
 		$this->feed->setGenerator('Blörg');
 		$this->feed->setBase($site_base_href);
 
-		if ($this->post->author->show) {
+		if ($this->post->author->visible) {
 			$author_uri = $blorg_base_href.'author/'.
 				$this->post->author->shortname;
 		} else {
@@ -148,7 +148,7 @@ class BlorgPostAtomPage extends SitePage
 
 			if ($comment->author !== null) {
 				$author_name = $comment->author->name;
-				if ($comment->author->show) {
+				if ($comment->author->visible) {
 					$author_uri = $blorg_base_href.'author/'.
 						$post->author->shortname;
 

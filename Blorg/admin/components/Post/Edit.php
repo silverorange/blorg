@@ -206,7 +206,7 @@ class BlorgPostEdit extends AdminDBEdit
 				$blorg_file->post = $this->id;
 
 			$blorg_file->description = $description->value;
-			$blorg_file->show = $attachment->value;
+			$blorg_file->visible = $attachment->value;
 			$blorg_file->filename = $file->getUniqueFileName(
 				'../../files');
 
@@ -225,7 +225,7 @@ class BlorgPostEdit extends AdminDBEdit
 			$file->saveFile('../../files', $blorg_file->filename);
 
 			// add message
-			if ($blorg_file->show) {
+			if ($blorg_file->visible) {
 				$message = new SwatMessage(Blorg::_('The following file '.
 					'has been attached to this post:'));
 			} else {

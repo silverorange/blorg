@@ -27,7 +27,7 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 	{
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('update BlorgFile set show = %s
+		$sql = sprintf('update BlorgFile set visible = %s
 			where instance %s %s and id = %s',
 			$this->app->db->quote(true, 'boolean'),
 			SwatDB::equalityOperator($instance_id),
@@ -53,7 +53,7 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 	{
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('update BlorgFile set show = %s
+		$sql = sprintf('update BlorgFile set visible = %s
 			where instance %s %s and id = %s',
 			$this->app->db->quote(false, 'boolean'),
 			SwatDB::equalityOperator($instance_id),

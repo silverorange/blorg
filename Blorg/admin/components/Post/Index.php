@@ -172,7 +172,7 @@ class BlorgPostIndex extends AdminSearch
 		parent::buildInternal();
 
 		$instance_id = $this->app->getInstanceId();
-		$where_clause = sprintf('show = %s and instance %s %s',
+		$where_clause = sprintf('visible = %s and instance %s %s',
 			$this->app->db->quote(true, 'boolean'),
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'));

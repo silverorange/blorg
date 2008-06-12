@@ -7,7 +7,7 @@ require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 /**
  * Author for a Blörg site
  *
- * The <i>show</i> flag on authors determines whether or not an author is
+ * The <i>visible</i> flag on authors determines whether or not an author is
  * visible on the front-end of a Blörg site.
  *
  * @package   Blörg
@@ -55,7 +55,7 @@ class BlorgAuthor extends SwatDBDataObject
 	 *
 	 * @var boolean
 	 */
-	public $show;
+	public $visible;
 
 	/**
 	 * Short description of this author, for sidebars and lists

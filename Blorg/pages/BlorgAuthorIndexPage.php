@@ -38,7 +38,7 @@ class BlorgAuthorIndexPage extends SitePage
 		$instance_id = $this->app->geInstanceId();
 
 		$sql = sprintf('select * from BlorgAuthor
-			where instance %s %s and show = %s',
+			where instance %s %s and visible = %s',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote(true, 'boolean'));
