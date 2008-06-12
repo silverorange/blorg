@@ -89,9 +89,11 @@ class BlorgSearchGadget extends BlorgGadget
 			$field->add($keywords);
 
 			$button = new SiteUnnamedButton();
+			$button->id = 'search_button';
 			$button->title = 'Search';
 
 			$this->form = new SiteSearchForm();
+			$this->form->id = 'search_form';
 			$this->form->action = $base.'search';
 			$this->form->setMethod(SiteSearchForm::METHOD_GET);
 
