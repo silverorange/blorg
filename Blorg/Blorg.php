@@ -161,6 +161,6 @@ SwatDBClassMap::addPath('Blorg/dataobjects');
 BlorgViewFactory::addPath('Blorg/views');
 BlorgViewFactory::registerView('post',    'BlorgPostView');
 BlorgViewFactory::registerView('comment', 'BlorgCommentView');
-BlorgViewFactory::registerView('author', 'BlorgAuthorView');
+BlorgViewFactory::registerView('author',  'BlorgAuthorView');
 
 ?>
