@@ -75,7 +75,11 @@ class BlorgAuthorPage extends SitePage
 
 		$this->layout->startCapture('content');
 		$this->displayAuthor();
-		$this->displayPosts();
+
+		if ($this->app->config->blorg->show_author_posts) {
+			$this->displayPosts();
+		}
+
 		$this->layout->endCapture();
 	}
 
