@@ -99,30 +99,34 @@ class BlorgPostCommentEdit extends AdminDBEdit
 			$this->comment->createdate = $now;
 			$this->comment->author     = $values['author'];
 
-			$instance_id = $this->app->getInstanceId();
-			if ($instance_id !== null) {
-				$sql = sprintf('update AdminUserInstanceBinding
-					set default_author = %s
-					where usernum = %s and instance = %s',
-					$this->app->db->quote($values['author'], 'integer'),
-					$this->app->db->quote($this->app->session->user->id,
-						'integer'),
-					$this->app->db->quote($instance_id, 'integer'));
-
-				SwatDB::exec($this->app->db, $sql);
-			}
+			// update user's default author to selected author when creating a
+			// new comment
+			$this->updateDefaultAuthor($values['author']);
 		} else {
-			$this->comment->fullname = $values['fullname'];
-			$this->comment->link     = $values['link'];
-			$this->comment->email    = $values['email'];
-			$this->comment->status   = $values['status'];
+			if ($this->comment->getInternalValue('author') === null) {
+				$this->comment->fullname = $values['fullname'];
+				$this->comment->link     = $values['link'];
+				$this->comment->email    = $values['email'];
+				$this->comment->status   = $values['status'];
+			} else {
+				$author_id  = $values['author'];
+				$class_name = SwatDBClassMap::get('BlorgAuthor');
+				$author     = new $class_name();
+				$author->setDatabase($this->app->db);
+				if ($author->load($author_id, $this->app->getInstance())) {
+					$this->comment->author = $author;
+				}
+			}
 		}
 
-		if ($this->comment->status === null)
+		if ($this->comment->status === null) {
 			$this->comment->status = BlorgComment::STATUS_PUBLISHED;
+		}
 
 		$this->comment->bodytext = $values['bodytext'];
+
 		$this->comment->save();
+
 		$this->addToSearchQueue();
 
 		$message = new SwatMessage(Blorg::_('Comment has been saved.'));
@@ -155,6 +159,26 @@ class BlorgPostCommentEdit extends AdminDBEdit
 			$this->app->db->quote($type, 'integer'));
 
 		SwatDB::exec($this->app->db, $sql);
+	}
+
+	// }}}
+	// {{{ protected function updateDefaultAuthor()
+
+	protected function updateDefaultAuthor($author_id)
+	{
+		$instance_id = $this->app->getInstanceId();
+		$user_id     = $this->app->session->getUserId();
+
+		if ($instance_id !== null) {
+			$sql = sprintf('update AdminUserInstanceBinding
+				set default_author = %s
+				where usernum = %s and instance = %s',
+				$this->app->db->quote($author_id, 'integer'),
+				$this->app->db->quote($user_id, 'integer'),
+				$this->app->db->quote($instance_id, 'integer'));
+
+			SwatDB::exec($this->app->db, $sql);
+		}
 	}
 
 	// }}}
