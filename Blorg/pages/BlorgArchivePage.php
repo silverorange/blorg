@@ -100,7 +100,6 @@ class BlorgArchivePage extends SitePage
 				$year);
 
 			$year_anchor_tag->setContent($year);
-			$year_anchor_tag->display();
 
 			$post_count_span = new SwatHtmlTag('span');
 			$post_count_span->setContent(sprintf(
@@ -108,7 +107,15 @@ class BlorgArchivePage extends SitePage
 				$values['post_count']),
 				$locale->formatNumber($values['post_count'])));
 
+
+			$year_heading_tag = new SwatHtmlTag('h4');
+			$year_heading_tag->class = 'blorg-archive-year-title';
+			$year_heading_tag->open();
+
+			$year_anchor_tag->display();
 			$post_count_span->display();
+			$year_heading_tag->close();
+
 
 			$month_ul_tag = new SwatHtmlTag('ul');
 			$month_ul_tag->open();
