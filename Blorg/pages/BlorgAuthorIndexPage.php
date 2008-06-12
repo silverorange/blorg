@@ -35,7 +35,7 @@ class BlorgAuthorIndexPage extends SitePage
 	{
 		parent::__construct($app, $layout);
 
-		$instance_id = $this->app->geInstanceId();
+		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select * from BlorgAuthor
 			where instance %s %s and visible = %s',
