@@ -25,6 +25,9 @@ class BlorgContentGadget extends BlorgGadget
 
 	public function displayTitle()
 	{
+		if ($this->hasValue('title')) {
+			parent::displayTitle();
+		}
 	}
 
 	// }}}
