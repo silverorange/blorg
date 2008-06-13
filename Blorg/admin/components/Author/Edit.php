@@ -113,7 +113,7 @@ class BlorgAuthorEdit extends AdminDBEdit
 		$values = $this->ui->getValues(array(
 			'name',
 			'shortname',
-			'show',
+			'visible',
 			'description',
 			'bodytext',
 			'email',
@@ -121,7 +121,7 @@ class BlorgAuthorEdit extends AdminDBEdit
 
 		$this->author->name     = $values['name'];
 		$this->author->shortname = $values['shortname'];
-		$this->author->show = $values['show'];
+		$this->author->visible = $values['visible'];
 		$this->author->description = $values['description'];
 		$this->author->bodytext = $values['bodytext'];
 		$this->author->email = $values['email'];
