@@ -50,8 +50,10 @@ class BlorgConfigEdit extends AdminDBEdit
 		foreach ($values as $key => $value) {
 			$name = substr_replace($key, '.', strpos($key, '_'), 1);
 
-			$sql = sprintf('delete from InstanceConfigSetting where name = %s',
-				$this->app->db->quote($name, 'text'));
+			$sql = sprintf('delete from InstanceConfigSetting where name = %s
+				and instance = %s',
+				$this->app->db->quote($name, 'text'),
+				$this->app->db->quote($this->app->getInstanceId(), 'integer'));
 
 			SwatDB::exec($this->app->db, $sql);
 
