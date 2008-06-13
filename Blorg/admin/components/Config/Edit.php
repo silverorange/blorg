@@ -102,7 +102,8 @@ class BlorgConfigEdit extends AdminDBEdit
 
 		$values = array();
 		foreach ($rs as $row)
-			$values[str_replace('.', '_', $row->name)] = $row->value;
+			$values[str_replace('.', '_', $row->name)] =
+				is_numeric($row->value) ? intval($row->value) : $row->value;
 
 		$this->ui->setValues($values);
 	}
