@@ -51,7 +51,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 	/**
 	 * Repopulates the posts queue
 	 */
-	protected function queuePhotos()
+	protected function queuePosts()
 	{
 		$this->output(Blorg::_('Repopulating post search queue ... '),
 			self::VERBOSITY_ALL);
