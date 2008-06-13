@@ -89,7 +89,7 @@ class BlorgAuthorIndex extends AdminSearch
 	{
 		$instance_id = $this->app->getInstanceId();
 		$sql = sprintf(
-			'select id, name, show, email, shortname
+			'select id, name, visible, email, shortname
 			from BlorgAuthor
 			where instance %s %s
 			order by %s',
