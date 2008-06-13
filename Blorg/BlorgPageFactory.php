@@ -17,6 +17,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * - /author
  * - /author/<author-shortname>
  * - /feed
+ * - /feed/comments
  * - /file/<filename>
  * - /tag/<tag-shortname>
  * - /tag/<tag-shortname>/feed
