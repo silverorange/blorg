@@ -1,0 +1,45 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="site_frame">
+		<property name="title" translatable="yes">Site Settings</property>
+		<widget class="SwatToolbar" id="site_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Edit Site Settings</property>
+				<property name="link">Config/Edit</property>
+				<property name="stock_id">edit</property>
+			</widget>
+		</widget>
+		<widget class="SwatDetailsView" id="site_view">
+			<object class="SwatDetailsViewField" id="site_title">
+				<property name="title" translatable="yes">Site Title</property>
+				<object class="SwatNullTextCellRenderer" />
+			</object>
+			<object class="SwatDetailsViewField" id="site_banner_image">
+				<property name="title" translatable="yes">Banner Image</property>
+				<object class="SwatImageCellRenderer" />
+			</object>
+			<object class="SwatDetailsViewField" id="site_meta_description">
+				<property name="title" translatable="yes">Meta Description</property>
+				<object class="SwatNullTextCellRenderer" />
+			</object>
+			<object class="SwatDetailsViewField" id="blorg_default_comment_status">
+				<property name="title" translatable="yes">Default Reply Status</property>
+				<object class="SwatNullTextCellRenderer" />
+			</object>
+			<object class="SwatDetailsViewField" id="date_time_zone">
+				<property name="title" translatable="yes">Time Zone</property>
+				<object class="SwatNullTextCellRenderer" />
+			</object>
+			<object class="SwatDetailsViewField" id="analytics_google_account">
+				<property name="title" translatable="yes">Google Analytics Account</property>
+				<object class="SwatNullTextCellRenderer" />
+			</object>
+			<object class="SwatDetailsViewField" id="blorg_akismet_key">
+				<property name="title" translatable="yes">Akismet Key</property>
+				<object class="SwatNullTextCellRenderer" />
+			</object>
+		</widget>
+	</widget>
+</swatml>
