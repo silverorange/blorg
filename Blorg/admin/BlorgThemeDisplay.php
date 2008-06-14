@@ -54,13 +54,13 @@ class BlorgThemeDisplay extends SwatControl
 
 	public function display()
 	{
-		parent::display();
-
 		if (!$this->visible)
 			return;
 
 		if (!($this->theme instanceof SiteTheme))
 			return;
+
+		parent::display();
 
 		$button = $this->getCompositeWidget('button');
 		$button->sensitive = $this->isSensitive();
