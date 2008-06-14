@@ -110,13 +110,16 @@ class BlorgCommentView extends BlorgView
 		if ($this->getMode('author') > BlorgView::MODE_NONE) {
 			$link = $this->getLink('author');
 			if ($comment->author === null) {
-				// anonymous author
+				// Anonymous author
 				$span_tag = new SwatHtmlTag('span');
 				$span_tag->class = 'comment-author';
 				$span_tag->setContent($comment->fullname);
 				$span_tag->display();
 			} else {
-				// system author
+				// System author
+				//
+				// Don't link to non-visible system authors but still show
+				// their name on the comment.
 				if ($comment->author->visible && $link !== false) {
 					$span_tag = new SwatHtmlTag('span');
 					$span_tag->class = 'vcard author';

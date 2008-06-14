@@ -274,18 +274,9 @@ class BlorgPostView extends BlorgView
 		if ($this->getMode('author') > BlorgView::MODE_NONE) {
 			$link = $this->getLink('author');
 
-			// Don't link to non visible authors but still show their name on
+			// Don't link to non-visible authors but still show their name on
 			// the post.
-			if (!$post->author->visible) {
-				$link = false;
-			}
-
-			if ($link === false) {
-				$span_tag = new SwatHtmlTag('span');
-				$span_tag->class = 'vcard author';
-				$span_tag->setContent($post->author->name);
-				$span_tag->display();
-			} else {
+			if ($post->author->visible && $link !== false) {
 				$span_tag = new SwatHtmlTag('span');
 				$span_tag->class = 'vcard author';
 				$span_tag->open();
@@ -303,6 +294,11 @@ class BlorgPostView extends BlorgView
 				$anchor_tag->display();
 
 				$span_tag->close();
+			} else {
+				$span_tag = new SwatHtmlTag('span');
+				$span_tag->class = 'vcard author';
+				$span_tag->setContent($post->author->name);
+				$span_tag->display();
 			}
 		}
 	}
