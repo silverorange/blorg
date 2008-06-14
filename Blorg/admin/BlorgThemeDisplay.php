@@ -83,17 +83,13 @@ class BlorgThemeDisplay extends SwatControl
 			$img_tag->display();
 		}
 
-		$controls_div = new SwatHtmlTag('div');
-		$controls_div->class = 'blorg-theme-display-controls';
-		$controls_div->open();
-
-		if ($this->selected) {
-			echo Blorg::_('Selected');
-		} else {
+		if (!$this->selected) {
+			$controls_div = new SwatHtmlTag('div');
+			$controls_div->class = 'blorg-theme-display-controls';
+			$controls_div->open();
 			$button->display();
+			$controls_div->close();
 		}
-
-		$controls_div->close();
 
 		$content_div = new SwatHtmlTag('div');
 		$content_div->class = 'blorg-theme-display-content';
