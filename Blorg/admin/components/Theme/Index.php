@@ -148,8 +148,6 @@ class BlorgThemeIndex extends AdminPage
 			$theme_display->setTheme($this->themes[$shortname]);
 			$theme_display->selected = ($shortname == $current_theme);
 		}
-
-		$theme_display->classes[] = 'blorg-theme-display-last';
 	}
 
 	// }}}
