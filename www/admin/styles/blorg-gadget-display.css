@@ -1,0 +1,20 @@
+.blorg-gadget-display {
+	border-top: 1px solid #ccc;
+	padding: 0.5em;
+}
+
+.blorg-gadget-display-first {
+	border-top: none;
+}
+
+.blorg-gadget-display .blorg-gadget-display-controls {
+	float: right;
+}
+
+.blorg-gadget-display .blorg-gadget-display-title {
+	margin: 0.5em 0;
+}
+
+.blorg-gadget-display .blorg-gadget-display-description {
+	margin-bottom: 0.5em;
+}
