@@ -272,32 +272,37 @@ class BlorgPostView extends BlorgView
 	protected function displayAuthor(BlorgPost $post)
 	{
 		if ($this->getMode('author') > BlorgView::MODE_NONE) {
-			if ($post->author->visible) {
-				$link = $this->getLink('author');
-				if ($link === false) {
-					$span_tag = new SwatHtmlTag('span');
-					$span_tag->class = 'vcard author';
-					$span_tag->setContent($post->author->name);
-					$span_tag->display();
+			$link = $this->getLink('author');
+
+			// Don't link to non visible authors but still show their name on
+			// the post.
+			if (!$post->author->visible) {
+				$link = false;
+			}
+
+			if ($link === false) {
+				$span_tag = new SwatHtmlTag('span');
+				$span_tag->class = 'vcard author';
+				$span_tag->setContent($post->author->name);
+				$span_tag->display();
+			} else {
+				$span_tag = new SwatHtmlTag('span');
+				$span_tag->class = 'vcard author';
+				$span_tag->open();
+
+				$anchor_tag = new SwatHtmlTag('a');
+				$anchor_tag->class = 'fn url';
+				if (is_string($link)) {
+					$anchor_tag->href = $link;
 				} else {
-					$span_tag = new SwatHtmlTag('span');
-					$span_tag->class = 'vcard author';
-					$span_tag->open();
-
-					$anchor_tag = new SwatHtmlTag('a');
-					$anchor_tag->class = 'fn url';
-					if (is_string($link)) {
-						$anchor_tag->href = $link;
-					} else {
-						$anchor_tag->href =
-							$this->getAuthorRelativeUri($post->author);
-					}
-
-					$anchor_tag->setContent($post->author->name);
-					$anchor_tag->display();
-
-					$span_tag->close();
+					$anchor_tag->href =
+						$this->getAuthorRelativeUri($post->author);
 				}
+
+				$anchor_tag->setContent($post->author->name);
+				$anchor_tag->display();
+
+				$span_tag->close();
 			}
 		}
 	}
