@@ -10,6 +10,7 @@
 
 .blorg-theme-display-selected {
 	background: #fff url(../images/blorg-theme-display-selected.png) repeat-x;
+	border-top: 1px solid #ccc;
 }
 
 .blorg-theme-display .blorg-theme-display-thumbnail {
