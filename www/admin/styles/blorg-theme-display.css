@@ -1,0 +1,54 @@
+.blorg-theme-display {
+	border-bottom: 1px solid #ccc;
+	min-height: 154px;
+	padding: 1em;
+}
+
+.blorg-theme-display-last {
+	border-bottom: none;
+}
+
+.blorg-theme-display-selected {
+	background: #fff url(../images/blorg-theme-display-selected.png) repeat-x;
+}
+
+.blorg-theme-display .blorg-theme-display-thumbnail {
+	float: left;
+	border: 1px solid #ccc;
+	padding: 2px;
+	background: #fff;
+}
+
+.blorg-theme-display .blorg-theme-display-content {
+	margin-left: 164px;
+}
+
+.blorg-theme-display .blorg-theme-display-controls {
+	float: right;
+}
+
+.blorg-theme-display-selected .blorg-theme-display-controls {
+	color: #999;
+	font-size: 144%;
+	font-weight: normal;
+}
+
+.blorg-theme-display .blorg-theme-display-title {
+	margin: 0.5em 0;
+}
+
+.blorg-theme-display .blorg-theme-display-description {
+	margin-bottom: 0.5em;
+}
+
+.blorg-theme-display .blorg-theme-display-author {
+	color: #999;
+}
+
+.blorg-theme-display .blorg-theme-display-author a {
+	color: #999;
+}
+
+.blorg-theme-display .blorg-theme-display-author a:hover {
+	color: #666;
+}
