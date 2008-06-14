@@ -87,8 +87,8 @@ class BlorgThemeIndex extends AdminPage
 
 		$form = $this->ui->getWidget('form');
 
-		$theme_replicator = $this->ui->getWidget('theme_replicator');
 		if ($form->isProcessed()) {
+			$theme_replicator = $this->ui->getWidget('theme_replicator');
 			foreach ($theme_replicator->replication_ids as $shortname) {
 				$theme_display = $theme_replicator->getWidget('theme',
 					$shortname);
