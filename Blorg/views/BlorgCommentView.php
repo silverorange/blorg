@@ -140,7 +140,7 @@ class BlorgCommentView extends BlorgView
 				} else {
 					$span_tag = new SwatHtmlTag('span');
 					$span_tag->class = 'comment-author system-comment-author';
-					$span_tag->setContent($this->comment->author->name);
+					$span_tag->setContent($comment->author->name);
 					$span_tag->display();
 				}
 			}
