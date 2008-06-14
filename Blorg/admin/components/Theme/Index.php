@@ -43,7 +43,7 @@ class BlorgThemeIndex extends AdminPage
 	protected function initThemes()
 	{
 		$current_theme = $this->app->config->site->theme;
-		$themes = $this->app->theme->getThemes();
+		$themes = $this->app->theme->getAvailable();
 
 		// sorts themes by title according to locale
 		foreach ($themes as $theme) {
