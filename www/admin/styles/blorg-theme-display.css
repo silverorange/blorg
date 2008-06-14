@@ -1,16 +1,11 @@
 .blorg-theme-display {
-	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
 	min-height: 154px;
 	padding: 1em;
 }
 
-.blorg-theme-display-last {
-	border-bottom: none;
-}
-
 .blorg-theme-display-selected {
 	background: #fff url(../images/blorg-theme-display-selected.png) repeat-x;
-	border-top: 1px solid #ccc;
 }
 
 .blorg-theme-display .blorg-theme-display-thumbnail {
