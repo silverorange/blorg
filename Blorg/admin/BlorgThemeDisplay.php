@@ -169,10 +169,7 @@ class BlorgThemeDisplay extends SwatControl
 	protected function getDescription()
 	{
 		$description = trim($this->theme->getDescription());
-
-		$description = SwatString::minimizeEntities(
-			$this->theme->getDescription());
-
+		$description = SwatString::minimizeEntities($description);
 		$description = SwatString::linkify($description);
 
 		// normalize whitespace
