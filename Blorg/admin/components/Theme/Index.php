@@ -2,6 +2,9 @@
 
 require_once 'Admin/pages/AdminPage.php';
 require_once 'Blorg/admin/BlorgThemeDisplay.php';
+require_once 'SwatDB/exceptions/SwatDBException.php';
+require_once 'SwatDB/SwatDB.php';
+require_once 'SwatDB/SwatDBTransaction.php';
 
 /**
  * Page for selecting a theme
@@ -55,10 +58,12 @@ class BlorgThemeIndex extends AdminPage
 		asort($titles, SORT_LOCALE_STRING);
 
 		// current theme is always placed at the top
-		$this->themes = array($themes[$current_theme]);
+		$this->themes = array(
+			$current_theme => $themes[$current_theme]
+		);
 
 		foreach ($titles as $shortname => $title) {
-			$this->themes[] = $themes[$shortname];
+			$this->themes[$shortname] = $themes[$shortname];
 		}
 	}
 
@@ -103,7 +108,28 @@ class BlorgThemeIndex extends AdminPage
 	{
 		$theme = $this->themes[$shortname];
 
-		// TODO: update theme
+		$transaction = new SwatDBTransaction($this->app->db);
+		try {
+			$sql = sprintf('delete from InstanceConfigSetting where name = %s
+				and instance = %s',
+				$this->app->db->quote('site.theme', 'text'),
+				$this->app->db->quote($this->app->getInstanceId(), 'integer'));
+
+			SwatDB::exec($this->app->db, $sql);
+
+			$sql = sprintf('insert into InstanceConfigSetting
+				(name, value, instance) values (%s, %s, %s)',
+				$this->app->db->quote('site.theme', 'text'),
+				$this->app->db->quote($shortname, 'text'),
+				$this->app->db->quote($this->app->getInstanceId(), 'integer'));
+
+			SwatDB::exec($this->app->db, $sql);
+
+			$transaction->commit();
+		} catch (SwatDBException $e) {
+			$transaction->rollback();
+			throw $e;
+		}
 
 		$message = new SwatMessage(sprintf(
 			Blorg::_('The theme “%s” has been selected.'),
