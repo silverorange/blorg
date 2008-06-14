@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swat/SwatWidget.php';
+require_once 'Swat/SwatControl.php';
 require_once 'Swat/SwatString.php';
 require_once 'Blorg/Blorg.php';
 require_once 'Site/SiteTheme.php';
