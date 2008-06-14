@@ -53,7 +53,7 @@ class BlorgThemeImageLoader extends AdminPage
 	{
 		parent::buildInternal();
 
-		$themes = $this->app->theme->getThemes();
+		$themes = $this->app->theme->getAvailable();
 
 		if (!array_key_exists($this->theme, $themes)) {
 			throw new AdminNotFoundException(sprintf(
