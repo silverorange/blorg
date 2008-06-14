@@ -80,7 +80,7 @@ class BlorgThemeIndex extends AdminPage
 	{
 		parent::processInternal();
 
-		$form = $this->ui->getWidget('edit_form');
+		$form = $this->ui->getWidget('form');
 
 		$theme_replicator = $this->ui->getWidget('theme_replicator');
 		if ($form->isProcessed()) {
@@ -157,7 +157,7 @@ class BlorgThemeIndex extends AdminPage
 
 	protected function buildForm()
 	{
-		$form = $this->ui->getWidget('edit_form');
+		$form = $this->ui->getWidget('form');
 		$form->action = $this->source;
 	}
 
