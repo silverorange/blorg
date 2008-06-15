@@ -79,7 +79,7 @@ class BlorgThemeDisplay extends SwatControl
 
 			$img_tag->alt = Blorg::_('Theme thumbnail image');
 			$img_tag->width = 150;
-			$img_tag->height = 150;
+			$img_tag->height = 100;
 			$img_tag->display();
 		}
 
