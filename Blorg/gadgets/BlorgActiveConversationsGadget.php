@@ -48,9 +48,14 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 			// get last visited date based on cookie value
 			if ($this->app->hasModule('SiteCookieModule')) {
 				$cookie = $this->app->getModule('SiteCookieModule');
-				if (isset($cookie->last_visit_date)) {
-					$last_visit_date = new SwatDate($cookie->last_visit_date);
-				} else {
+				try {
+					if (isset($cookie->last_visit_date)) {
+						$last_visit_date = new SwatDate(
+							$cookie->last_visit_date);
+					} else {
+						$last_visit_date = new SwatDate();
+					}
+				} catch (SiteCookieException $e) {
 					$last_visit_date = new SwatDate();
 				}
 			} else {
