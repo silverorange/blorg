@@ -8,11 +8,15 @@
 	background: #fff url(../images/blorg-theme-display-selected.png) repeat-x;
 }
 
-.blorg-theme-display .blorg-theme-display-thumbnail {
+.blorg-theme-display .blorg-theme-display-image {
 	float: left;
 	border: 1px solid #ccc;
 	padding: 2px;
 	background: #fff;
+}
+
+.blorg-theme-display a:hover .blorg-theme-display-image {
+	border: 1px solid #3F5ACE;
 }
 
 .blorg-theme-display .blorg-theme-display-content {

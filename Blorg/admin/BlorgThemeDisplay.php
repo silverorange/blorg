@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swat/SwatImageDisplay.php';
 require_once 'Swat/SwatControl.php';
 require_once 'Swat/SwatString.php';
 require_once 'Blorg/Blorg.php';
@@ -71,16 +72,35 @@ class BlorgThemeDisplay extends SwatControl
 		$container_div->open();
 
 		if ($this->theme->fileExists('thumbnail.png')) {
-			$img_tag = new SwatHtmlTag('img');
-			$img_tag->class = 'blorg-theme-display-thumbnail';
+			if ($this->theme->fileExists('screenshot.png')) {
+				$has_screenshot = true;
+				$anchor_tag = new SwatHtmlTag('a');
+				// TODO: This part is not portable to Site
+				$anchor_tag->href = sprintf('Theme/ImageLoader?screenshot=%s',
+					$this->theme->getShortname());
+
+				$anchor_tag->title = Blorg::_('View Screenshot');
+				$anchor_tag->open();
+			} else {
+				$has_screenshot = false;
+			}
+
+			$image = $this->getCompositeWidget('image');
+			$image->alt = sprintf(Blorg::_('Thumbnail image for %s'),
+				$this->theme->getTitle());
+
+			$image->width = 150;
+			$image->height = 100;
+
 			// TODO: This part is not portable to Site
-			$img_tag->src = sprintf('Theme/ImageLoader?theme=%s',
+			$image->image = sprintf('Theme/ImageLoader?thumbnail=%s',
 				$this->theme->getShortname());
 
-			$img_tag->alt = Blorg::_('Theme thumbnail image');
-			$img_tag->width = 150;
-			$img_tag->height = 100;
-			$img_tag->display();
+			$image->display();
+
+			if ($has_screenshot) {
+				$anchor_tag->close();
+			}
 		}
 
 		if (!$this->selected) {
@@ -195,6 +215,11 @@ class BlorgThemeDisplay extends SwatControl
 		$button->title = Blorg::_('Select Theme');
 		$button->classes[] = 'blorg-theme-display-button';
 		$this->addCompositeWidget($button, 'button');
+
+		$image = new SwatImageDisplay();
+		$image->id = $this->id.'_image';
+		$image->classes[] = 'blorg-theme-display-image';
+		$this->addCompositeWidget($image, 'image');
 	}
 
 	// }}}
