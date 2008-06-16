@@ -1,5 +1,5 @@
 .blorg-theme-display {
-	border-top: 1px solid #ccc;
+	border-top: 1px solid #e7ddc8;
 	min-height: 104px;
 	padding: 1em;
 }
@@ -10,7 +10,9 @@
 }
 
 .blorg-theme-display-selected {
-	background: #fff url(../images/blorg-theme-display-selected.png) repeat-x;
+	background: #f8f6f0;
+	border: 1px solid #e7ddc8;
+	margin-bottom: 10px;
 }
 
 .blorg-theme-display .blorg-theme-display-image {
