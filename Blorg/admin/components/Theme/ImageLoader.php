@@ -20,6 +20,11 @@ class BlorgThemeImageLoader extends AdminPage
 	 */
 	protected $theme;
 
+	/**
+	 * @var string
+	 */
+	protected $type;
+
 	// }}}
 	// {{{ protected function createLayout()
 
@@ -37,7 +42,19 @@ class BlorgThemeImageLoader extends AdminPage
 	{
 		parent::initInternal();
 
-		$this->theme = SiteApplication::initVar('theme');
+		$thumbnail = SiteApplication::initVar('thumbnail', null,
+			SiteApplication::VAR_GET);
+
+		$screenshot = SiteApplication::initVar('screenshot', null,
+			SiteApplication::VAR_GET);
+
+		if ($screenshot !== null) {
+			$this->theme = $screenshot;
+			$this->type  = 'screenshot';
+		} elseif ($thumbnail !== null) {
+			$this->theme = $thumbnail;
+			$this->type  = 'thumbnail';
+		}
 
 		if ($this->theme == '') {
 			throw new AdminNotFoundException('No theme specified.');
@@ -61,15 +78,16 @@ class BlorgThemeImageLoader extends AdminPage
 		}
 
 		$theme = $themes[$this->theme];
+		$filename = $this->type.'.png';
 
-		if (!$theme->fileExists('thumbnail.png')) {
+		if (!$theme->fileExists($filename)) {
 			throw new AdminNotFoundException(sprintf(
-				'Theme image not found: ‘%s’.', $this->theme));
+				'Theme %s not found: ‘%s’.', $this->type, $this->theme));
 		}
 
 		header('Content-Type: image/png');
 
-		readfile($theme->getPath().'/thumbnail.png', true);
+		readfile($theme->getPath().'/'.$filename, true);
 
 		ob_flush();
 
