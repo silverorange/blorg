@@ -479,7 +479,7 @@ class BlorgPostEdit extends AdminDBEdit
 			from BlorgAuthor
 			left outer join AdminUserInstanceBinding on
 				AdminUserInstanceBinding.default_author = BlorgAuthor.id
-			where BlorgAuthor.instance %s %s and BlorgAuthor.show = %s
+			where BlorgAuthor.instance %s %s and BlorgAuthor.visible = %s
 			order by displayorder',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
@@ -575,7 +575,7 @@ class BlorgPostEdit extends AdminDBEdit
 
 			// attachment status
 			$file_attach = $replicator->getWidget('file_attach_control', $key);
-			$file_attach->show = $file->show;
+			$file_attach->visible = $file->visible;
 			$file_attach->file = $file;
 
 			// delete
