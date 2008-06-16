@@ -4,6 +4,11 @@
 	padding: 1em;
 }
 
+/* IE min-height hack */
+* html .blorg-theme-display {
+	height: 104px;
+}
+
 .blorg-theme-display-selected {
 	background: #fff url(../images/blorg-theme-display-selected.png) repeat-x;
 }
