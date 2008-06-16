@@ -67,7 +67,7 @@ class BlorgArticleGadget extends BlorgGadget
 	{
 		$sql = sprintf('select title, shortname, description from Article
 			where enabled = %s and visible = %s and parent is null
-			--	and instance %s %s
+				and instance %s %s
 			order by title asc',
 			$this->app->db->quote(true, 'boolean'),
 			$this->app->db->quote(true, 'boolean'),
