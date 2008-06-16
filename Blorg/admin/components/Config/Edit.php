@@ -39,7 +39,7 @@ class BlorgConfigEdit extends AdminDBEdit
 	{
 		$values = $this->ui->getValues(array(
 			'site_title',
-			//'site_banner_image',
+//			'site_banner_image',
 			'site_meta_description',
 			'blorg_default_comment_status',
 			'date_time_zone',
@@ -49,27 +49,11 @@ class BlorgConfigEdit extends AdminDBEdit
 
 		foreach ($values as $key => $value) {
 			$name = substr_replace($key, '.', strpos($key, '_'), 1);
-
-			$sql = sprintf('delete from InstanceConfigSetting where name = %s
-				and instance = %s',
-				$this->app->db->quote($name, 'text'),
-				$this->app->db->quote($this->app->getInstanceId(), 'integer'));
-
-			SwatDB::exec($this->app->db, $sql);
-
-			if ($value === null)
-				continue;
-
-			$sql = sprintf('insert into InstanceConfigSetting
-				(name, value, instance) values (%s, %s, %s)',
-				$this->app->db->quote($name, 'text'),
-				$this->app->db->quote($value, 'text'),
-				$this->app->db->quote($this->app->getInstanceId(), 'integer'));
-
-			SwatDB::exec($this->app->db, $sql);
-
+			list($section, $title) = explode('.', $name, 2);
+			$this->app->config->$section->$title = (string)$value;
 		}
 
+		$this->app->config->save();
 		$message = new SwatMessage(
 			Blorg::_('Your config settings have been saved.'));
 
@@ -88,7 +72,6 @@ class BlorgConfigEdit extends AdminDBEdit
 		$this->ui->getWidget(
 			'blorg_default_comment_status')->addOptionsByArray(
 				BlorgPost::getCommentStatuses());
-
 	}
 
 	// }}}
