@@ -55,7 +55,7 @@ class BlorgArticleGadget extends BlorgGadget
 
 	protected function define()
 	{
-		$this->defineDefaultTitle(Blorg::_('Top-Level Articles'));
+		$this->defineDefaultTitle(Blorg::_('Articles'));
 		$this->defineDescription(Blorg::_(
 			'Displays a list of top-level article links.'));
 	}
