@@ -56,6 +56,9 @@ class BlorgSidebarAdd extends AdminDBEdit
 	{
 		$radio_list = $this->ui->getWidget('gadget');
 		$available = BlorgGadgetFactory::getAvailable($this->app);
+
+		$options = array();
+
 		foreach ($available as $gadget_class => $gadget) {
 			$option_title = SwatString::minimizeEntities($gadget->title);
 			if ($gadget->description !== null) {
@@ -64,9 +67,15 @@ class BlorgSidebarAdd extends AdminDBEdit
 				$span_tag->setContent($gadget->description);
 				$option_title.='<br />'.$span_tag;
 			}
+
+			$options[$gadget_class] = $option_title;
+		}
+
+		asort($options);
+
+		foreach ($options as $gadget_class => $option_title)
 			$radio_list->addOption($gadget_class, $option_title,
 				'text/xml');
-		}
 	}
 
 	// }}}
