@@ -56,6 +56,16 @@ class BlorgPostView extends BlorgView
 	 */
 	protected $bodytext_summary_length = 300;
 
+	/**
+	 * Length of bodytext in visible characters to be considered a microblog
+	 * post
+	 *
+	 * Default length of 140 borrowed from a popular microblogging service.
+	 *
+	 * @var integer
+	 */
+	protected $microblog_length = 140;
+
 	// }}}
 	// {{{ protected function define()
 
@@ -397,8 +407,23 @@ class BlorgPostView extends BlorgView
 			break;
 
 		case BlorgView::MODE_SUMMARY:
-			$bodytext = SwatString::ellipsizeRight(SwatString::condense(
-				$post->bodytext), $this->bodytext_summary_length);
+			$bodytext = null;
+
+			// don't summarize microblogs
+			if ($post->title == '') {
+				$stripped_bodytext = strip_tags($post->bodytext);
+				$stripped_bodytext = html_entity_decode($stripped_bodytext,
+					ENT_COMPAT, 'UTF-8');
+
+				if (strlen($stripped_bodytext) <= $this->microblog_length) {
+					$bodytext = $post->bodytext;
+				}
+			}
+
+			if ($bodytext === null) {
+				$bodytext = SwatString::ellipsizeRight(SwatString::condense(
+					$post->bodytext), $this->bodytext_summary_length);
+			}
 
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'entry-content';
