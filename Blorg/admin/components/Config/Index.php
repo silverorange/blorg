@@ -14,7 +14,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgConfigIndex extends AdminPage
+class BlorgConfigIndex extends AdminIndex
 {
 	// {{{ protected properties
 
@@ -61,6 +61,19 @@ class BlorgConfigIndex extends AdminPage
 			$renderer->text = $values['site.title'];
 		}
 
+		if (array_key_exists('blorg.header_image', $values)) {
+			$renderer = $view->getField(
+				'blorg_header_image')->getFirstRenderer();
+
+			$class = SwatDBClassMap::get('BlorgFile');
+			$file = new $class();
+			$file->setDatabase($this->app->db);
+			$file->load(intval($values['blorg.header_image']));
+
+			$path = $file->image->getUri('header', '../');
+			$renderer->image = $path;
+		}
+
 		if (array_key_exists('site.meta_description', $values)) {
 			$renderer = $view->getField(
 				'site_meta_description')->getFirstRenderer();
@@ -96,6 +109,14 @@ class BlorgConfigIndex extends AdminPage
 
 			$renderer->text = $values['analytics.google_account'];
 		}
+	}
+
+	// }}}
+	// {{{ protected function getTableModel()
+
+	protected function getTableModel(SwatView $view)
+	{
+		return null;
 	}
 
 	// }}}
