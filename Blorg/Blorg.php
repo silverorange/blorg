@@ -109,6 +109,9 @@ class Blorg
 			// the author details page.
 			'blorg.show_author_posts'      => false,
 
+			// A header image for this blorg
+			'blorg.header_image'            => null,
+
 			// Optional tagline.
 			'site.tagline'                 => null,
 		);
