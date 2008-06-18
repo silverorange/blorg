@@ -55,6 +55,44 @@
 					<property name="maxlength" type="integer">255</property>
 				</widget>
 			</widget>
+			<widget class="SwatFieldset">
+				<property name="title" translatable="yes">Ad Placements</property>
+				<widget class="SwatContentBlock">
+					<property name="content" translatable="yes">Include the  markup for embedding the ad in the selected position.</property>
+				</widget>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Top of Page</property>
+					<widget class="SwatTextarea" id="blorg_ad_top">
+						<property name="maxlength" type="integer">1024</property>
+						<property name="rows" type="integer">5</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Bottom of Page</property>
+					<widget class="SwatTextarea" id="blorg_ad_bottom">
+						<property name="maxlength" type="integer">1024</property>
+						<property name="rows" type="integer">5</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">After Post Bodytext</property>
+					<widget class="SwatTextarea" id="blorg_ad_post_content">
+						<property name="maxlength" type="integer">1024</property>
+						<property name="rows" type="integer">5</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Before Post Comments</property>
+					<widget class="SwatTextarea" id="blorg_ad_post_comments">
+						<property name="maxlength" type="integer">1024</property>
+						<property name="rows" type="integer">5</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Only display ads to visitors who have arrived via another website</property>
+					<widget class="SwatCheckbox" id="blorg_ad_referers_only" />
+				</widget>
+			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button" />
 			</widget>

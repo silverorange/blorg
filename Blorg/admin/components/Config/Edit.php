@@ -121,6 +121,11 @@ class BlorgConfigEdit extends AdminDBEdit
 			'date_time_zone',
 			'analytics_google_account',
 			'blorg_akismet_key',
+			'blorg_ad_top',
+			'blorg_ad_bottom',
+			'blorg_ad_post_content',
+			'blorg_ad_post_comments',
+			'blorg_ad_referers_only',
 		));
 
 		foreach ($values as $key => $value) {

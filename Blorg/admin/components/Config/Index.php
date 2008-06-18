@@ -110,6 +110,41 @@ class BlorgConfigIndex extends AdminIndex
 
 			$renderer->text = $values['analytics.google_account'];
 		}
+
+		if (array_key_exists('blorg.ad_top', $values)) {
+			$renderer = $view->getField(
+				'blorg_ad_top')->getFirstRenderer();
+
+			$renderer->value = $values['blorg.ad_top'] != '';
+		}
+
+		if (array_key_exists('blorg.ad_bottom', $values)) {
+			$renderer = $view->getField(
+				'blorg_ad_bottom')->getFirstRenderer();
+
+			$renderer->value = $values['blorg.ad_bottom'] != '';
+		}
+
+		if (array_key_exists('blorg.ad_post_content', $values)) {
+			$renderer = $view->getField(
+				'blorg_ad_post_content')->getFirstRenderer();
+
+			$renderer->value = $values['blorg.ad_post_content'] != '';
+		}
+
+		if (array_key_exists('blorg.ad_post_comments', $values)) {
+			$renderer = $view->getField(
+				'blorg_ad_post_comments')->getFirstRenderer();
+
+			$renderer->value = $values['blorg.ad_post_comments'] != '';
+		}
+
+		if (array_key_exists('blorg.ad_ad_referers_only', $values)) {
+			$renderer = $view->getField(
+				'blorg_ad_ad_referers_only')->getFirstRenderer();
+
+			$renderer->value = $values['blorg.ad_ad_referers_only'];
+		}
 	}
 
 	// }}}

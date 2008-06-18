@@ -86,7 +86,9 @@ class BlorgFrontPage extends SitePage
 	public function build()
 	{
 		$this->layout->startCapture('content');
+		Blorg::displayAd($this->app, 'top');
 		$this->displayPosts();
+		Blorg::displayAd($this->app, 'bottom');
 		$this->displayFooter();
 		$this->layout->endCapture();
 	}

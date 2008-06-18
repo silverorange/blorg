@@ -114,6 +114,17 @@ class Blorg
 
 			// Optional tagline.
 			'site.tagline'                 => null,
+
+			// Optional ad placements. Values should contain the markup for
+			// embedding the ad in the position.
+			'blorg.ad_top'                 => null,
+			'blorg.ad_bottom'              => null,
+			'blorg.ad_post_content'        => null,
+			'blorg.ad_post_comments'       => null,
+
+			// Whether ads should only displayed when the page is linked to by
+			// another website.
+			'blorg.ad_referers_only'       => false,
 		);
 	}
 
@@ -145,6 +156,33 @@ class Blorg
 		$set->addEntry($recent_comments);
 
 		return $set;
+	}
+
+	// }}}
+	// {{{ public static function displayAd()
+
+	/**
+	 * Display an ad
+	 *
+	 * If $config->blorg->ad_referers_only is true, the referer's domain is
+	 * checked against the site's domain to ensure the page has been arrived at
+	 * via another site.
+	 *
+	 * @param SiteApplication $app The current application
+	 * @param string $ad_type The type of ad to display
+	 */
+	public static function displayAd(SiteApplication $app, $type)
+	{
+		$type_name = 'ad_'.$type;
+
+		if ($app->config->blorg->$type_name != '' && (
+			!$app->config->blorg->ad_referers_only ||
+			substr($_SERVER['HTTP_REFERER'], 0,
+				strlen($app->getBaseHref())) !=
+					$app->getBaseHref())) {
+
+				echo $app->config->blorg->$type_name;
+		}
 	}
 
 	// }}}

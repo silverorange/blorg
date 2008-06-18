@@ -58,7 +58,9 @@ class BlorgYearArchivePage extends SitePathPage
 		$this->buildNavBar();
 
 		$this->layout->startCapture('content');
+		Blorg::displayAd($this->app, 'top');
 		$this->displayMonths();
+		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
 
 		$this->layout->data->title = $this->year;

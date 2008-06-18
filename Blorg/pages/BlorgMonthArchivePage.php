@@ -62,7 +62,9 @@ class BlorgMonthArchivePage extends SitePage
 		$this->buildNavBar();
 
 		$this->layout->startCapture('content');
+		Blorg::displayAd($this->app, 'top');
 		$this->displayPosts();
+		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
 
 		$date = new SwatDate();
