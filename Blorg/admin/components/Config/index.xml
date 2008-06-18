@@ -16,8 +16,8 @@
 				<property name="title" translatable="yes">Site Title</property>
 				<object class="SwatNullTextCellRenderer" />
 			</object>
-			<object class="SwatDetailsViewField" id="site_banner_image">
-				<property name="title" translatable="yes">Banner Image</property>
+			<object class="SwatDetailsViewField" id="blorg_header_image">
+				<property name="title" translatable="yes">Header Image</property>
 				<object class="SwatImageCellRenderer" />
 			</object>
 			<object class="SwatDetailsViewField" id="site_meta_description">
