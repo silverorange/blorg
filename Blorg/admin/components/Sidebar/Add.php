@@ -71,7 +71,7 @@ class BlorgSidebarAdd extends AdminDBEdit
 			$options[$gadget_class] = $option_title;
 		}
 
-		asort($options);
+		asort($options, SORT_LOCALE_STRING);
 
 		foreach ($options as $gadget_class => $option_title)
 			$radio_list->addOption($gadget_class, $option_title,
