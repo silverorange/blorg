@@ -294,6 +294,9 @@ class BlorgPostView extends BlorgView
 
 				$anchor_tag = new SwatHtmlTag('a');
 				$anchor_tag->class = 'fn url';
+				$anchor_tag->title = sprintf(Blorg::_('View details for %s'),
+					$post->author->name);
+
 				if (is_string($link)) {
 					$anchor_tag->href = $link;
 				} else {
