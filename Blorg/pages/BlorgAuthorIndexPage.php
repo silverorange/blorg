@@ -58,7 +58,9 @@ class BlorgAuthorIndexPage extends SitePage
 		$this->buildTitle();
 
 		$this->layout->startCapture('content');
+		Blorg::displayAd($this->app, 'top');
 		$this->displayAuthors();
+		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
 
 		$this->layout->data->title = Blorg::_('Authors');

@@ -74,12 +74,14 @@ class BlorgAuthorPage extends SitePage
 		$this->buildTitle();
 
 		$this->layout->startCapture('content');
+		Blorg::displayAd($this->app, 'top');
 		$this->displayAuthor();
 
 		if ($this->app->config->blorg->show_author_posts) {
 			$this->displayPosts();
 		}
 
+		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
 	}
 

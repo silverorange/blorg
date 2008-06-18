@@ -75,8 +75,10 @@ class BlorgTagPage extends SitePage
 		$this->buildAtomLinks();
 
 		$this->layout->startCapture('content');
+		Blorg::displayAd($this->app, 'top');
 		$this->displayPosts();
 		$this->displayFooter();
+		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
 
 		$this->layout->data->title = sprintf(

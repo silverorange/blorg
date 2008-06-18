@@ -341,9 +341,11 @@ class BlorgPostPage extends SitePage
 		$this->buildAtomLinks();
 
 		$this->layout->startCapture('content');
+		Blorg::displayAd($this->app, 'top');
 		$this->displayPost();
 		$this->displayComments();
 		$this->displayCommentUi();
+		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
 	}
 
@@ -497,6 +499,7 @@ class BlorgPostPage extends SitePage
 	protected function displayComments()
 	{
 		if ($this->post->comment_status != BlorgPost::COMMENT_STATUS_CLOSED) {
+			Blorg::displayAd($this->app, 'post_comments');
 
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->id = 'comments';

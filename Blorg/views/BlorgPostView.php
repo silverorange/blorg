@@ -222,6 +222,11 @@ class BlorgPostView extends BlorgView
 	protected function displayBody(BlorgPost $post)
 	{
 		$this->displayBodytext($post);
+
+		if ($post->extended_bodytext != '' ||
+			$this->app->config->blorg->ad_post_comments == '')
+			Blorg::displayAd($this->app, 'post_content');
+
 		$this->displayExtendedBodytext($post);
 	}
 

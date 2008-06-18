@@ -40,6 +40,41 @@
 				<property name="title" translatable="yes">Akismet Key</property>
 				<object class="SwatNullTextCellRenderer" />
 			</object>
+			<object class="SwatDetailsViewField" id="blorg_ad_top">
+				<property name="title" translatable="yes">Display Ad at Top of Page</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="true_content" translatable="yes">Yes</property>
+					<property name="false_content" translatable="yes">No</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="blorg_ad_bottom">
+				<property name="title" translatable="yes">Display Ad at Bottom of Page</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="true_content" translatable="yes">Yes</property>
+					<property name="false_content" translatable="yes">No</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="blorg_ad_post_content">
+				<property name="title" translatable="yes">Display Ad in Post Content</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="true_content" translatable="yes">Yes</property>
+					<property name="false_content" translatable="yes">No</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="blorg_ad_post_comments">
+				<property name="title" translatable="yes">Display Ad Before Post Comments</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="true_content" translatable="yes">Yes</property>
+					<property name="false_content" translatable="yes">No</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="blorg_ad_referers_only">
+				<property name="title" translatable="yes">Only Display Ads to Visitors From Other Websites</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="true_content" translatable="yes">Yes</property>
+					<property name="false_content" translatable="yes">No</property>
+				</object>
+			</object>
 		</widget>
 	</widget>
 </swatml>
