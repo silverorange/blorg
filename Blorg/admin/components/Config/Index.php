@@ -70,7 +70,8 @@ class BlorgConfigIndex extends AdminIndex
 			$file->setDatabase($this->app->db);
 			$file->load(intval($values['blorg.header_image']));
 
-			$path = $file->image->getUri('header', '../');
+			$shortname = BlorgFileImage::getHeaderDirectory($file->mime_type);
+			$path = $file->image->getUri($shortname, '../');
 			$renderer->image = $path;
 		}
 

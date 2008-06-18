@@ -91,13 +91,15 @@ class BlorgConfigEdit extends AdminDBEdit
 
 	protected function createImage(SwatFileEntry $file)
 	{
+		$shortname = BlorgFileImage::getHeaderDirectory($file->getMimeType());
+
 		$class_name = SwatDBClassMap::get('BlorgFileImage');
 		$image = new $class_name();
 		$image->setDatabase($this->app->db);
 		$image->setFileBase('../images');
 
 		try {
-			$image->process($file->getTempFileName());
+			$image->processManual($file->getTempFileName(), $shortname);
 		} catch (SiteInvalidImageException $e) {
 			$image = null;
 		}
@@ -172,7 +174,8 @@ class BlorgConfigEdit extends AdminDBEdit
 			$file->setDatabase($this->app->db);
 			$file->load(intval($values['blorg_header_image']));
 
-			$path = $file->image->getUri('header', '../');
+			$shortname = BlorgFileImage::getHeaderDirectory($file->mime_type);
+			$path = $file->image->getUri($shortname, '../');
 			$this->ui->getWidget('image_preview')->image = $path;
 		} else {
 			$this->ui->getWidget('current_image')->visible = false;
