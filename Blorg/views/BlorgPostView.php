@@ -377,6 +377,22 @@ class BlorgPostView extends BlorgView
 					$comment_count_tag->href =
 						$this->getPostRelativeUri($post).'#comments';
 				}
+
+				switch ($post->comment_status) {
+				case BlorgPost::COMMENT_STATUS_LOCKED:
+					$comment_count_tag->title = sprintf(
+						Blorg::_('View comments for %s'),
+						$post->getTitle());
+
+					break;
+				case BlorgPost::COMMENT_STATUS_OPEN:
+				case BlorgPost::COMMENT_STATUS_MODERATED:
+					$comment_count_tag->title = sprintf(
+						Blorg::_('Comment on %s'),
+						$post->getTitle());
+
+					break;
+				}
 			}
 
 			$comment_count_tag->class = 'comment-count';
