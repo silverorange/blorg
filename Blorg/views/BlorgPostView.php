@@ -117,7 +117,8 @@ class BlorgPostView extends BlorgView
 		if ($this->isVisible($post)) {
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->id = sprintf('post_%s', $post->shortname);
-			$div_tag->class = 'entry hentry';
+			$div_tag->class = 'entry hentry entry-author-'.
+				$post->author->shortname;
 
 			// special class for title-less posts.
 			if ($post->title == '')
