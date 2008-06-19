@@ -125,6 +125,9 @@ class Blorg
 			// Whether ads should only displayed when the page is linked to by
 			// another website.
 			'blorg.ad_referers_only'       => false,
+
+			// whether or not the password can be reset in the admin
+			'admin.allow_reset_password'   => true,
 		);
 	}
 
