@@ -1,20 +1,17 @@
 <?php
 
 require_once 'Swat/SwatDetailsStore.php';
-require_once 'Swat/SwatNavBar.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Admin/pages/AdminIndex.php';
-require_once 'Blorg/dataobjects/BlorgTag.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
+require_once 'Admin/pages/AdminPage.php';
+require_once 'Blorg/dataobjects/BlorgFile.php';
 
 /**
- * Details page for tags
+ * Shows editable configuration values for a Blörg site
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgConfigIndex extends AdminIndex
+class BlorgConfigIndex extends AdminPage
 {
 	// {{{ protected properties
 
@@ -28,7 +25,6 @@ class BlorgConfigIndex extends AdminIndex
 	protected function initInternal()
 	{
 		parent::initInternal();
-
 		$this->ui->loadFromXML($this->ui_xml);
 	}
 
@@ -41,117 +37,104 @@ class BlorgConfigIndex extends AdminIndex
 	{
 		parent::buildInternal();
 
-		$sql = sprintf('select * from InstanceConfigSetting
-			where instance = %s',
-			$this->app->db->quote($this->app->getInstanceId(), 'integer'));
+		$setting_keys = array(
+			'site' => array(
+				'title',
+				'tagline',
+				'meta_description',
+			),
+			'blorg' => array(
+				'header_image',
+				'default_comment_status',
+				'akismet_key',
+				'ad_bottom',
+				'ad_top',
+				'ad_post_content',
+				'ad_post_comments',
+				'ad_referers_only',
+			),
+			'date' => array(
+				'time_zone',
+			),
+			'analytics' => array(
+				'google_account',
+			),
+		);
 
-		$rs = SwatDB::query($this->app->db, $sql);
+		$ds = new SwatDetailsStore();
 
-		$values = array();
+		foreach ($setting_keys as $section => $keys) {
+			foreach ($keys as $name) {
+				$field_name = $section.'_'.$name;
 
-		foreach ($rs as $row)
-			$values[$row->name] = $row->value;
+				$details_method = 'buildDetails'.str_replace(' ', '',
+					ucwords(str_replace('_', ' ', $field_name)));
 
-		$view = $this->ui->getWidget('site_view');
-
-		if (array_key_exists('site.title', $values)) {
-			$renderer = $view->getField(
-				'site_title')->getFirstRenderer();
-
-			$renderer->text = $values['site.title'];
+				if (method_exists($this, $details_method)) {
+					$this->$details_method($ds);
+				} else {
+					$ds->$field_name = $this->app->config->$section->$name;
+				}
+			}
 		}
 
-		if (array_key_exists('blorg.header_image', $values)) {
-			$renderer = $view->getField(
-				'blorg_header_image')->getFirstRenderer();
+		$view = $this->ui->getWidget('config_settings_view');
+		$view->data = $ds;
+	}
 
+	// }}}
+	// {{{ protected function buildDetailsBlorgHeaderImage()
+
+	protected function buildDetailsBlorgHeaderImage(SwatDetailsStore $ds)
+	{
+		$ds->blorg_header_image = '';
+		$ds->has_blorg_header_image = false;
+
+		$header_image = $this->app->config->blorg->header_image;
+		if ($header_image != '') {
 			$class = SwatDBClassMap::get('BlorgFile');
 			$file = new $class();
 			$file->setDatabase($this->app->db);
-			$file->load(intval($values['blorg.header_image']));
-
-			$path = $file->getRelativeUri('../');
-			$renderer->image = $path;
-		}
-
-		if (array_key_exists('site.meta_description', $values)) {
-			$renderer = $view->getField(
-				'site_meta_description')->getFirstRenderer();
-
-			$renderer->text = $values['site.meta_description'];
-		}
-
-		if (array_key_exists('blorg.akismet_key', $values)) {
-			$renderer = $view->getField(
-				'blorg_akismet_key')->getFirstRenderer();
-
-			$renderer->text = $values['blorg.akismet_key'];
-		}
-
-		if (array_key_exists('blorg.default_comment_status', $values)) {
-			$renderer = $view->getField(
-				'blorg_default_comment_status')->getFirstRenderer();
-
-			$renderer->text = BlorgPost::getCommentStatusTitle(
-				$values['blorg.default_comment_status']);
-		}
-
-		if (array_key_exists('date.time_zone', $values)) {
-			$renderer = $view->getField(
-				'date_time_zone')->getFirstRenderer();
-
-			$renderer->text = $values['date.time_zone'];
-		}
-
-		if (array_key_exists('analytics.google_account', $values)) {
-			$renderer = $view->getField(
-				'analytics_google_account')->getFirstRenderer();
-
-			$renderer->text = $values['analytics.google_account'];
-		}
-
-		if (array_key_exists('blorg.ad_top', $values)) {
-			$renderer = $view->getField(
-				'blorg_ad_top')->getFirstRenderer();
-
-			$renderer->value = $values['blorg.ad_top'] != '';
-		}
-
-		if (array_key_exists('blorg.ad_bottom', $values)) {
-			$renderer = $view->getField(
-				'blorg_ad_bottom')->getFirstRenderer();
-
-			$renderer->value = $values['blorg.ad_bottom'] != '';
-		}
-
-		if (array_key_exists('blorg.ad_post_content', $values)) {
-			$renderer = $view->getField(
-				'blorg_ad_post_content')->getFirstRenderer();
-
-			$renderer->value = $values['blorg.ad_post_content'] != '';
-		}
-
-		if (array_key_exists('blorg.ad_post_comments', $values)) {
-			$renderer = $view->getField(
-				'blorg_ad_post_comments')->getFirstRenderer();
-
-			$renderer->value = $values['blorg.ad_post_comments'] != '';
-		}
-
-		if (array_key_exists('blorg.ad_ad_referers_only', $values)) {
-			$renderer = $view->getField(
-				'blorg_ad_ad_referers_only')->getFirstRenderer();
-
-			$renderer->value = $values['blorg.ad_ad_referers_only'];
+			if ($file->load(intval($header_image))) {
+				$path = $file->getRelativeUri('../');
+				$ds->blorg_header_image = $path;
+				$ds->has_blorg_header_image = true;
+			}
 		}
 	}
 
 	// }}}
-	// {{{ protected function getTableModel()
+	// {{{ protected function buildDetailsBlorgAdTop()
 
-	protected function getTableModel(SwatView $view)
+	protected function buildDetailsBlorgAdTop(SwatDetailsStore $ds)
 	{
-		return null;
+		$ds->blorg_ad_top = ($this->app->config->blorg->ad_top != '');
+	}
+
+	// }}}
+	// {{{ protected function buildDetailsBlorgAdBottom()
+
+	protected function buildDetailsBlorgAdBottom(SwatDetailsStore $ds)
+	{
+		$ds->blorg_ad_bottom = ($this->app->config->blorg->ad_bottom != '');
+	}
+
+	// }}}
+	// {{{ protected function buildDetailsBlorgAdPostContent()
+
+	protected function buildDetailsBlorgAdPostContent(SwatDetailsStore $ds)
+	{
+		$ds->blorg_ad_post_content =
+			($this->app->config->blorg->ad_post_content != '');
+	}
+
+	// }}}
+	// {{{ protected function buildDetailsBlorgAdPostComments()
+
+	protected function buildDetailsBlorgAdPostComments(SwatDetailsStore $ds)
+	{
+		$ds->blorg_ad_post_comments =
+			($this->app->config->blorg->ad_post_comments != '');
 	}
 
 	// }}}
