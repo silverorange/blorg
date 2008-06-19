@@ -1,12 +1,12 @@
-function BlorgFileAttachControl(id, file_id, show)
+function BlorgFileAttachControl(id, file_id, visible)
 {
 	this.id = id;
 	this.file_id = file_id;
-	this.show = show;
+	this.visible = visible;
 	this.xml_rpc_client = new XML_RPC_Client('Post/FileAjaxServer');
 
 	this.span = document.createElement('span');
-	var text = (this.show) ?
+	var text = (this.visible) ?
 		BlorgFileAttachControl.attached_text :
 		BlorgFileAttachControl.detached_text;
 
@@ -18,7 +18,7 @@ function BlorgFileAttachControl(id, file_id, show)
 	this.anchor = document.createElement('a');
 	this.anchor.href = '#';
 
-	var text = (this.show) ?
+	var text = (this.visible) ?
 		BlorgFileAttachControl.detach_text :
 		BlorgFileAttachControl.attach_text;
 
@@ -56,7 +56,7 @@ BlorgFileAttachControl.prototype.handleClick = function(e)
 
 BlorgFileAttachControl.prototype.toggle = function()
 {
-	if (this.show) {
+	if (this.visible) {
 		this.detach();
 	} else {
 		this.attach();
@@ -82,10 +82,10 @@ BlorgFileAttachControl.prototype.attach = function()
 			that.span.innerText = BlorgFileAttachControl.attached_text;
 		} else {
 			that.anchor.textContent = BlorgFileAttachControl.detach_text;
-			that.span.innerText = BlorgFileAttachControl.attached_text;
+			that.span.textContent = BlorgFileAttachControl.attached_text;
 		}
 
-		that.show = true;
+		that.visible = true;
 		YAHOO.util.Event.removeListener(that.anchor, 'click',
 			BlorgFileAttachControl.voidClickHandler);
 
@@ -113,7 +113,7 @@ BlorgFileAttachControl.prototype.detach = function()
 			that.span.textContent = BlorgFileAttachControl.detached_text;
 		}
 
-		that.show = false;
+		that.visible = false;
 		YAHOO.util.Event.removeListener(that.anchor, 'click',
 			BlorgFileAttachControl.voidClickHandler);
 
