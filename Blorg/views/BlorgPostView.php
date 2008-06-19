@@ -222,11 +222,6 @@ class BlorgPostView extends BlorgView
 	protected function displayBody(BlorgPost $post)
 	{
 		$this->displayBodytext($post);
-
-		if ($post->extended_bodytext != '' ||
-			$this->app->config->blorg->ad_post_comments == '')
-			Blorg::displayAd($this->app, 'post_content');
-
 		$this->displayExtendedBodytext($post);
 	}
 
@@ -429,6 +424,12 @@ class BlorgPostView extends BlorgView
 			$div_tag->class = 'entry-content';
 			$div_tag->setContent($post->bodytext, 'text/xml');
 			$div_tag->display();
+
+			if ($this->getMode('extended_bodytext') == BlorgView::MODE_ALL && (
+				$post->extended_bodytext != '' ||
+				$this->app->config->blorg->ad_post_comments == ''))
+				Blorg::displayAd($this->app, 'post_content');
+
 			break;
 
 		case BlorgView::MODE_SUMMARY:
