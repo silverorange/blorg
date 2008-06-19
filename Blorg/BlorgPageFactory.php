@@ -242,7 +242,7 @@ class BlorgPageFactory extends SitePageFactory
 			'^(?:page(\d+)|)$'                              => 'BlorgFrontPage',
 			'^search$'                                      => 'BlorgSearchResultsPage',
 			'^author$'                                      => 'BlorgAuthorIndexPage',
-			'^author/([\w-]+)$'                             => 'BlorgAuthorPage',
+			'^author/([\w-]+)(?:/page(\d+))?$'              => 'BlorgAuthorPage',
 			'^archive$'                                     => 'BlorgArchivePage',
 			'^archive/(\d{4})$'                             => 'BlorgYearArchivePage',
 			'^archive/(\d{4})/('.$months.')$'               => 'BlorgMonthArchivePage',
