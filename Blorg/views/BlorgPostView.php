@@ -476,7 +476,7 @@ class BlorgPostView extends BlorgView
 				$link = $this->getLink('extended_bodytext');
 
 				$div_tag = new SwatHtmlTag('div');
-				$div_tag->class = 'entry-content entry-content-extended';
+				$div_tag->class = 'entry-read-more';
 				$div_tag->open();
 
 				if ($link === false) {
