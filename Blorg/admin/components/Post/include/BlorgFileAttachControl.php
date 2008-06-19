@@ -20,7 +20,7 @@ class BlorgFileAttachControl extends SwatControl
 	/**
 	 * @var boolean
 	 */
-	public $show = true;
+	public $visible = true;
 
 	/**
 	 * @var BlorgFile
@@ -88,11 +88,11 @@ class BlorgFileAttachControl extends SwatControl
 		$file_id = ($this->file instanceof BlorgFile) ?
 			$this->file->id : intval($this->file);
 
-		$show = ($this->show) ? 'true' : 'false';
+		$visible = ($this->visible) ? 'true' : 'false';
 
 		$javascript .= sprintf(
 			"var %s_obj = new BlorgFileAttachControl('%s', %s, %s);",
-			$this->id, $this->id, $file_id, $show);
+			$this->id, $this->id, $file_id, $visible);
 
 		return $javascript;
 	}
