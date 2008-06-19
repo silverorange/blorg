@@ -133,8 +133,18 @@ class BlorgAuthorPage extends SitePage
 		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
 
 		$posts = $this->author->getVisiblePosts(self::MAX_POSTS);
+		$first = true;
 		foreach ($posts as $post) {
-			$view->display($post);
+			if ($first) {
+				$first_div = new SwatHtmlTag('div');
+				$first_div->class = 'entry-first';
+				$first_div->open();
+				$view->display($post);
+				$first_div->close();
+				$first = false;
+			} else {
+				$view->display($post);
+			}
 		}
 
 		$div_tag->close();
