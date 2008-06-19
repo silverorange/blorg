@@ -11,68 +11,91 @@
 				<property name="stock_id">edit</property>
 			</widget>
 		</widget>
-		<widget class="SwatDetailsView" id="site_view">
-			<object class="SwatDetailsViewField" id="site_title">
+		<widget class="SwatDetailsView" id="config_settings_view">
+			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Site Title</property>
-				<object class="SwatNullTextCellRenderer" />
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">site_title</property>
+				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="site_meta_description">
-				<property name="title" translatable="yes">Meta Description</property>
-				<object class="SwatNullTextCellRenderer" />
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Site Tagline</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">site_tagline</property>
+				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="date_time_zone">
-				<property name="title" translatable="yes">Time Zone</property>
-				<object class="SwatNullTextCellRenderer" />
-			</object>
-			<object class="SwatDetailsViewField" id="analytics_google_account">
-				<property name="title" translatable="yes">Google Analytics Account</property>
-				<object class="SwatNullTextCellRenderer" />
-			</object>
-			<object class="SwatDetailsViewField" id="blorg_header_image">
+			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Header Image</property>
-				<object class="SwatImageCellRenderer" />
+				<object class="SwatImageCellRenderer">
+					<property name="image" type="data">blorg_header_image</property>
+				</object>
+				<object class="SwatNullTextCellRenderer">
+					<property name="visible" type="data">!has_blorg_header_image</property>
+				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="blorg_default_comment_status">
-				<property name="title" translatable="yes">Default Reply Status</property>
-				<object class="SwatNullTextCellRenderer" />
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Default Meta Description</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">site_meta_description</property>
+				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="blorg_akismet_key">
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Default Comment Status</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">blorg_default_comment_status</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Time Zone</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">date_time_zone</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Google Analytics Account</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">analytics_google_account</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Akismet Key</property>
-				<object class="SwatNullTextCellRenderer" />
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">blorg_akismet_key</property>
+				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="blorg_ad_top">
+			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Display Ad at Top of Page</property>
 				<object class="SwatBooleanCellRenderer">
-					<property name="true_content" translatable="yes">Yes</property>
-					<property name="false_content" translatable="yes">No</property>
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">blorg_ad_top</property>
 				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="blorg_ad_bottom">
+			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Display Ad at Bottom of Page</property>
 				<object class="SwatBooleanCellRenderer">
-					<property name="true_content" translatable="yes">Yes</property>
-					<property name="false_content" translatable="yes">No</property>
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">blorg_ad_bottom</property>
 				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="blorg_ad_post_content">
+			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Display Ad in Post Content</property>
 				<object class="SwatBooleanCellRenderer">
-					<property name="true_content" translatable="yes">Yes</property>
-					<property name="false_content" translatable="yes">No</property>
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">blorg_ad_post_content</property>
 				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="blorg_ad_post_comments">
+			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Display Ad Before Post Comments</property>
 				<object class="SwatBooleanCellRenderer">
-					<property name="true_content" translatable="yes">Yes</property>
-					<property name="false_content" translatable="yes">No</property>
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">blorg_ad_post_comments</property>
 				</object>
 			</object>
-			<object class="SwatDetailsViewField" id="blorg_ad_referers_only">
+			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Only Display Ads to Visitors From Other Websites</property>
 				<object class="SwatBooleanCellRenderer">
-					<property name="true_content" translatable="yes">Yes</property>
-					<property name="false_content" translatable="yes">No</property>
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">blorg_ad_referers_only</property>
 				</object>
 			</object>
 		</widget>
