@@ -101,8 +101,18 @@ class BlorgMonthArchivePage extends SitePage
 		$view = BlorgViewFactory::get($this->app, 'post');
 		$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
 		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
+		$first = true;
 		foreach ($this->posts as $post) {
-			$view->display($post);
+			if ($first) {
+				$first_div = new SwatHtmlTag('div');
+				$first_div->class = 'entry-first';
+				$first_div->open();
+				$view->display($post);
+				$first_div->close();
+				$first = false;
+			} else {
+				$view->display($post);
+			}
 		}
 	}
 
