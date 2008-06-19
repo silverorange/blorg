@@ -23,24 +23,4 @@ class BlorgFileImage extends SiteImage
 	}
 
 	// }}}
-	// {{{ public static function getHeaderDirectory()
-
-	public static function getHeaderDirectory($mime_type)
-	{
-		switch ($mime_type) {
-			case 'image/jpeg':
-				$shortname = 'header_jpg';
-				break;
-			case 'image/png':
-				$shortname = 'header_png';
-				break;
-			case 'image/gif':
-				$shortname = 'header_gif';
-				break;
-		}
-
-		return $shortname;
-	}
-
-	// }}}
 }
