@@ -1,6 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBClassMap.php';
+require_once 'Swat/SwatPagination.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/dataobjects/BlorgAuthor.php';
@@ -28,6 +29,16 @@ class BlorgAuthorPage extends SitePage
 	 */
 	protected $author;
 
+	/**
+	 * @var integer
+	 */
+	protected $current_page = 1;
+
+	/**
+	 * @var SwatPagination
+	 */
+	protected $pager;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -39,10 +50,11 @@ class BlorgAuthorPage extends SitePage
 	 * @param string $shortname
 	 */
 	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$shortname)
+		$shortname, $current_page = 1)
 	{
 		parent::__construct($app, $layout);
 		$this->initAuthor($shortname);
+		$this->current_page = $current_page;
 	}
 
 	// }}}
@@ -79,6 +91,7 @@ class BlorgAuthorPage extends SitePage
 
 		if ($this->app->config->blorg->show_author_posts) {
 			$this->displayPosts();
+			$this->displayFooter();
 		}
 
 		Blorg::displayAd($this->app, 'bottom');
@@ -132,7 +145,8 @@ class BlorgAuthorPage extends SitePage
 		$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
 		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
 
-		$posts = $this->author->getVisiblePosts(self::MAX_POSTS);
+		$offset = ($this->current_page - 1) * self::MAX_POSTS;
+		$posts = $this->author->getVisiblePosts(self::MAX_POSTS, $offset);
 		$first = true;
 		foreach ($posts as $post) {
 			if ($first) {
@@ -147,6 +161,50 @@ class BlorgAuthorPage extends SitePage
 			}
 		}
 
+		$div_tag->close();
+	}
+
+	// }}}
+	// {{{ protected function displayFooter()
+
+	protected function displayFooter()
+	{
+		$div_tag = new SwatHtmlTag('div');
+		$div_tag->class = 'footer';
+		$div_tag->open();
+
+		$path = $this->app->config->blorg->path.'author/'.
+			$this->author->shortname;
+
+		$instance_id = $this->app->getInstanceId();
+
+		$sql = sprintf('select count(id) from BlorgPost
+			where instance %s %s
+				and enabled = %s
+				and author = %s',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->app->db->quote(true, 'boolean'),
+			$this->app->db->quote($this->author->id, 'integer'));
+
+		$post_count = SwatDB::queryOne($this->app->db, $sql, 'integer');
+
+		$this->pager = new SwatPagination();
+		$this->pager->display_parts ^= SwatPagination::POSITION;
+		$this->pager->total_records = $post_count;
+		$this->pager->page_size = self::MAX_POSTS;
+		$this->pager->setCurrentPage($this->current_page);
+		$this->pager->link = $path.'/page%s';
+
+		$this->pager->display();
+
+		$div_tag->class = 'results-message';
+		$div_tag->open();
+
+		echo $this->pager->getResultsMessage(
+			Blorg::_('post'), Blorg::_('posts'));
+
+		$div_tag->close();
 		$div_tag->close();
 	}
 
