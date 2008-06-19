@@ -48,7 +48,7 @@ class BlorgConfigEdit extends AdminDBEdit
 			$blorg_file = new $class_name();
 			$blorg_file->setDatabase($this->app->db);
 
-			$blorg_file->description = Blorg::_('Site Header Image');
+			$blorg_file->description = Blorg::_('This Blorgs Header Image');
 			$blorg_file->visible = true;
 			$blorg_file->filename = $file->getUniqueFileName(
 				'../../files');
@@ -57,31 +57,26 @@ class BlorgConfigEdit extends AdminDBEdit
 			$blorg_file->filesize   = $file->getSize();
 			$blorg_file->createdate = $now;
 			$blorg_file->instance   = $this->app->getInstanceId();
-			$blorg_file->image      = $this->createImage($file);
 			$blorg_file->save();
 
 			$file->saveFile('../../files', $blorg_file->filename);
-
-			// Delete the old file
-			if ($this->app->config->blorg->header_image !== null) {
-				$old_file = new $class_name();
-				$old_file->setDatabase($this->app->db);
-				$old_file->load(intval(
-					$this->app->config->blorg->header_image));
-
-				$old_file->setFileBase('../../');
-
-				/* We have to delete this image here since BlorgFile's delete
-				 * uses $this->getFileBase() to set the images fileBase and they
-				 * aren't the same.
-				 */
-				$old_file->image->setFileBase('../images');
-				$old_file->image->delete();
-				$old_file->delete();
-			}
-
-			$id = $blorg_file->id;
+			$new_id = $blorg_file->id;
 		}
+
+		// Delete the old file
+		if ($id !== null && $this->ui->getWidget('remove_image')->value) {
+			$class_name = SwatDBClassMap::get('BlorgFile');
+			$old_file = new $class_name();
+			$old_file->setDatabase($this->app->db);
+			$old_file->load(intval($id));
+
+			$old_file->setFileBase('../../');
+			$old_file->delete();
+			$id = null;
+		}
+
+		if (isset($new_id))
+			$id = $new_id;
 
 		return $id;
 	}
@@ -91,15 +86,13 @@ class BlorgConfigEdit extends AdminDBEdit
 
 	protected function createImage(SwatFileEntry $file)
 	{
-		$shortname = BlorgFileImage::getHeaderDirectory($file->getMimeType());
-
 		$class_name = SwatDBClassMap::get('BlorgFileImage');
 		$image = new $class_name();
 		$image->setDatabase($this->app->db);
 		$image->setFileBase('../images');
 
 		try {
-			$image->processManual($file->getTempFileName(), $shortname);
+			$image->process($file->getTempFileName());
 		} catch (SiteInvalidImageException $e) {
 			$image = null;
 		}
@@ -130,7 +123,7 @@ class BlorgConfigEdit extends AdminDBEdit
 
 		foreach ($values as $key => $value) {
 			$name = substr_replace($key, '.', strpos($key, '_'), 1);
-			list($section, $title) = explode('.', $name, 2);
+		list($section, $title) = explode('.', $name, 2);
 			$this->app->config->$section->$title = (string)$value;
 		}
 
@@ -151,17 +144,18 @@ class BlorgConfigEdit extends AdminDBEdit
 	protected function buildInternal()
 	{
 		parent::buildInternal();
-
-		$this->ui->getWidget(
-			'blorg_default_comment_status')->addOptionsByArray(
-				BlorgPost::getCommentStatuses());
+		$this->buildConfigValues();
+		$this->buildPreviewImage();
 	}
 
 	// }}}
-	// {{{ protected function loadDBData()
+	// {{{ protected function buildConfigValues()
 
-	protected function loadDBData()
+	protected function buildConfigValues()
 	{
+		$this->ui->getWidget('blorg_default_comment_status')->addOptionsByArray(
+			BlorgPost::getCommentStatuses());
+
 		$sql = sprintf('select * from InstanceConfigSetting
 			where instance = %s',
 			$this->app->db->quote($this->app->getInstanceId(), 'integer'));
@@ -173,22 +167,37 @@ class BlorgConfigEdit extends AdminDBEdit
 			$values[str_replace('.', '_', $row->name)] =
 				is_numeric($row->value) ? intval($row->value) : $row->value;
 
-		if (isset($values['blorg_header_image'])) {
+		$this->ui->setValues($values);
+	}
+
+	// }}}
+	// {{{ protected function buildPreviewImage()
+
+	protected function buildPreviewImage()
+	{
+		$header_id = $this->app->config->blorg->header_image;
+
+		if ($header_id != '') {
 			$class = SwatDBClassMap::get('BlorgFile');
 			$file = new $class();
 			$file->setDatabase($this->app->db);
-			$file->load(intval($values['blorg_header_image']));
+			$file->load(intval($header_id));
 
-			$shortname = BlorgFileImage::getHeaderDirectory($file->mime_type);
-			$path = $file->image->getUri($shortname, '../');
+			$path = $file->getRelativeUri('../');
 			$this->ui->getWidget('image_preview')->image = $path;
 		} else {
 			$this->ui->getWidget('current_image')->visible = false;
+			$this->ui->getWidget('remove_image')->parent->visible = false;
 			$this->ui->getWidget('change_image')->title = Blorg::_('Add Image');
 			$this->ui->getWidget('change_image')->open = true;
 		}
+	}
 
-		$this->ui->setValues($values);
+	// }}}
+	// {{{ protected function loadDBData()
+
+	protected function loadDBData()
+	{
 	}
 
 	// }}}

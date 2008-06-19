@@ -16,16 +16,8 @@
 				<property name="title" translatable="yes">Site Title</property>
 				<object class="SwatNullTextCellRenderer" />
 			</object>
-			<object class="SwatDetailsViewField" id="blorg_header_image">
-				<property name="title" translatable="yes">Header Image</property>
-				<object class="SwatImageCellRenderer" />
-			</object>
 			<object class="SwatDetailsViewField" id="site_meta_description">
 				<property name="title" translatable="yes">Meta Description</property>
-				<object class="SwatNullTextCellRenderer" />
-			</object>
-			<object class="SwatDetailsViewField" id="blorg_default_comment_status">
-				<property name="title" translatable="yes">Default Reply Status</property>
 				<object class="SwatNullTextCellRenderer" />
 			</object>
 			<object class="SwatDetailsViewField" id="date_time_zone">
@@ -34,6 +26,14 @@
 			</object>
 			<object class="SwatDetailsViewField" id="analytics_google_account">
 				<property name="title" translatable="yes">Google Analytics Account</property>
+				<object class="SwatNullTextCellRenderer" />
+			</object>
+			<object class="SwatDetailsViewField" id="blorg_header_image">
+				<property name="title" translatable="yes">Header Image</property>
+				<object class="SwatImageCellRenderer" />
+			</object>
+			<object class="SwatDetailsViewField" id="blorg_default_comment_status">
+				<property name="title" translatable="yes">Default Reply Status</property>
 				<object class="SwatNullTextCellRenderer" />
 			</object>
 			<object class="SwatDetailsViewField" id="blorg_akismet_key">
