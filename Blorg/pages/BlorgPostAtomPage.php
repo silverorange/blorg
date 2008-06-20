@@ -16,6 +16,11 @@ require_once 'XML/Atom/Entry.php';
  */
 class BlorgPostAtomPage extends SitePage
 {
+	// {{{ class constants
+
+	const MAX_COMMENTS = 50;
+
+	// }}}
 	// {{{ protected properties
 
 	/**
@@ -137,7 +142,8 @@ class BlorgPostAtomPage extends SitePage
 			$this->post->author->email);
 
 		$comments = array();
-		foreach ($this->post->getVisibleComments() as $comment) {
+		$visible_comments = $this->post->getVisibleComments(self::MAX_COMMENTS);
+		foreach ($visible_comments as $comment) {
 			$comments[] = $comment;
 		}
 
