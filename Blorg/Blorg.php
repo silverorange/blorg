@@ -110,7 +110,7 @@ class Blorg
 			'blorg.show_author_posts'      => false,
 
 			// A header image for this blorg
-			'blorg.header_image'            => null,
+			'blorg.header_image'           => null,
 
 			// Optional tagline.
 			'site.tagline'                 => null,
@@ -178,13 +178,17 @@ class Blorg
 	{
 		$type_name = 'ad_'.$type;
 
-		if ($app->config->blorg->$type_name != '' && (
-			!$app->config->blorg->ad_referers_only ||
-			substr($_SERVER['HTTP_REFERER'], 0,
-				strlen($app->getBaseHref())) !=
-					$app->getBaseHref())) {
+		if ($app->config->blorg->$type_name != '') {
+			$base_href = $app->getBaseHref();
+			$referer   = SiteApplication::initVar('HTTP_REFERER',
+				null, SiteApplication::VAR_SERVER);
 
+			// Display ad if referers only is off OR if there is a referer and
+			// it does not start with the app base href.
+			if (!$app->config->blorg->ad_referers_only || ($referer !== null &&
+				strncmp($referer, $base_href, strlen($base_href)) != 0)) {
 				echo $app->config->blorg->$type_name;
+			}
 		}
 	}
 
