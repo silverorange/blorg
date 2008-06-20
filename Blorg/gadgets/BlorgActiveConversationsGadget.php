@@ -90,8 +90,8 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 				$span_tag =  new SwatHtmlTag('span');
 				$span_tag->setContent(sprintf(Blorg::ngettext(
 					'(%s comment)', '(%s comments)',
-						$conversation->comment_count),
-					$locale->formatNumber($conversation->comment_count)));
+						$post->getVisibleCommentCount()),
+					$locale->formatNumber($post->getVisibleCommentCount())));
 
 				$anchor_tag->display();
 				echo ' ';
@@ -121,10 +121,11 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 	protected function getActiveConversations()
 	{
 		$sql = sprintf('select title, bodytext, publish_date, shortname,
-				comment_count, last_comment_date
+				comment_count as visible_comment_count, last_comment_date
 			from BlorgPost
-				inner join BlorgPostCommentCountView
-					on BlorgPost.id = BlorgPostCommentCountView.post
+				inner join BlorgPostVisibleCommentCountView
+					on BlorgPost.id = BlorgPostVisibleCommentCountView.post and
+						BlorgPostVisibleCommentCountView.comment_count > 0
 			where enabled = %s and comment_status != %s and instance %s %s
 			order by last_comment_date desc',
 			$this->app->db->quote(true, 'boolean'),
