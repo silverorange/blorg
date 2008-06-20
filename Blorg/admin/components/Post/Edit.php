@@ -200,20 +200,25 @@ class BlorgPostEdit extends AdminDBEdit
 			$blorg_file->setDatabase($this->app->db);
 			$unique_id = $form->getHiddenField('unique_id');
 
-			if ($this->id === null)
+			if ($this->id === null) {
 				$blorg_file->form_unique_id = $unique_id;
-			else
+			} else {
 				$blorg_file->post = $this->id;
+			}
+
+			if ($this->app->getInstance() === null) {
+				$path = '../../files';
+			} else {
+				$path = '../../files/'.$this->app->getInstance()->shortname;
+			}
 
 			$blorg_file->description = $description->value;
-			$blorg_file->visible = $attachment->value;
-			$blorg_file->filename = $file->getUniqueFileName(
-				'../../files');
-
-			$blorg_file->mime_type = $file->getMimeType();
-			$blorg_file->filesize = $file->getSize();
-			$blorg_file->createdate = $now;
-			$blorg_file->instance   = $this->app->getInstanceId();
+			$blorg_file->visible     = $attachment->value;
+			$blorg_file->filename    = $file->getUniqueFileName($path);
+			$blorg_file->mime_type   = $file->getMimeType();
+			$blorg_file->filesize    = $file->getSize();
+			$blorg_file->createdate  = $now;
+			$blorg_file->instance    = $this->app->getInstanceId();
 
 			// automatically create an image object for image files
 			if (strncmp('image', $blorg_file->mime_type, 5) == 0) {
@@ -222,7 +227,7 @@ class BlorgPostEdit extends AdminDBEdit
 
 			$blorg_file->save();
 
-			$file->saveFile('../../files', $blorg_file->filename);
+			$file->saveFile($path, $blorg_file->filename);
 
 			// add message
 			if ($blorg_file->visible) {

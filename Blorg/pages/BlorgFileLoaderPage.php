@@ -24,7 +24,6 @@ class BlorgFileLoaderPage extends SitePage
 	{
 		$layout = new SiteLayout($app, 'Site/layouts/xhtml/fileloader.php');
 		parent::__construct($app, $layout);
-
 		$this->initFile($filename);
 	}
 
@@ -53,7 +52,13 @@ class BlorgFileLoaderPage extends SitePage
 		header(sprintf('Content-Disposition: filename="%s"',
 			$this->file->filename));
 
-		$this->file->setFileBase('../');
+		if ($this->app->getInstance() === null) {
+			$path = '../files/';
+		} else {
+			$path = '../files/'.$this->app->getInstance()->shortname.'/';
+		}
+
+		$this->file->setFileBase($path);
 		readfile($this->file->getFilePath());
 	}
 
