@@ -233,19 +233,24 @@ class BlorgPost extends SwatDBDataObject
 	// }}}
 	// {{{ public function getVisibleComments()
 
-	public function getVisibleComments()
+	public function getVisibleComments($limit = null, $offset = 0)
 	{
-		$comments = array();
+		$this->checkDB();
 
-		foreach ($this->comments as $comment) {
-			if ($comment->status == BlorgComment::STATUS_PUBLISHED &&
-				!$comment->spam) {
+		$sql = sprintf('select * from BlorgComment
+			where post = %s and status = %s and spam = %s
+			order by createdate',
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote(BlorgComment::STATUS_PUBLISHED, 'integer'),
+			$this->db->quote(false, 'boolean'));
 
-				$comments[] = $comment;
-			}
+		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
+
+		if ($limit !== null) {
+			$this->db->setLimit($limit, $offset);
 		}
 
-		return $comments;
+		return SwatDB::query($this->db, $sql, $wrapper);
 	}
 
 	// }}}
