@@ -48,18 +48,22 @@ class BlorgConfigEdit extends AdminDBEdit
 			$blorg_file = new $class_name();
 			$blorg_file->setDatabase($this->app->db);
 
-			$blorg_file->description = Blorg::_('This Blorgs Header Image');
-			$blorg_file->visible = true;
-			$blorg_file->filename = $file->getUniqueFileName(
-				'../../files');
+			if ($this->app->getInstance() === null) {
+				$path = '../../files';
+			} else {
+				$path = '../../files/'.$this->app->getInstance()->shortname;
+			}
 
+			$blorg_file->description = Blorg::_('This Blorgs Header Image');
+			$blorg_file->visible    = true;
+			$blorg_file->filename   = $file->getUniqueFileName($path);
 			$blorg_file->mime_type  = $file->getMimeType();
 			$blorg_file->filesize   = $file->getSize();
 			$blorg_file->createdate = $now;
 			$blorg_file->instance   = $this->app->getInstanceId();
 			$blorg_file->save();
 
-			$file->saveFile('../../files', $blorg_file->filename);
+			$file->saveFile($path, $blorg_file->filename);
 			$new_id = $blorg_file->id;
 		}
 
@@ -70,7 +74,7 @@ class BlorgConfigEdit extends AdminDBEdit
 			$old_file->setDatabase($this->app->db);
 			$old_file->load(intval($id));
 
-			$old_file->setFileBase('../../');
+			$old_file->setFileBase($path);
 			$old_file->delete();
 			$id = null;
 		}
