@@ -209,6 +209,26 @@ class BlorgAuthorPage extends SitePage
 	}
 
 	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+
+		if ($this->author->openid_server != '') {
+			$this->layout->addHtmlHeadEntry(new SwatLinkHtmlHeadEntry(
+				$this->author->openid_server, 'openid.server'));
+		}
+
+		if ($this->author->openid_delegate != '') {
+			$this->layout->addHtmlHeadEntry(new SwatLinkHtmlHeadEntry(
+				$this->author->openid_deletage, 'openid.delegate'));
+		}
+	}
+
+	// }}}
 }
 
 ?>
