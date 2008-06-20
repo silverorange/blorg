@@ -73,6 +73,7 @@
 							<property name="title" translatable="yes">Choose File</property>
 							<widget class="SwatFileEntry" id="upload_file">
 								<property name="size" type="integer">20</property>
+								<property name="display_maximum_upload_size" type="boolean">true</property>
 							</widget>
 						</widget>
 						<widget class="SwatFormField" id="upload_description_field">
