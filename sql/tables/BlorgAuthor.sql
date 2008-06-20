@@ -7,6 +7,9 @@ create table BlorgAuthor (
 	displayorder integer not null default 0,
 	description text null,
 	bodytext text null,
+	openid_server varchar(255) null,
+	openid_delegate varchar(255) null,
+	email varchar(255) null,
 	visible boolean not null default true,
 	primary key (id)
 );

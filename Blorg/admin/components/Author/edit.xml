@@ -39,6 +39,21 @@
 					<property name="rows" type="integer">15</property>
 				</widget>
 			</widget>
+			<widget class="SwatFieldset">
+				<property name="title" translatable="yes">OpenID Delegation</property>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">OpenID Server</property>
+					<property name="note" translatable="yes"><![CDATA[Example: <em>http://openidprovider.com/server</em>]]></property>
+					<property name="note_content_type">text/xml</property>
+					<widget class="SwatEntry" id="openid_server" />
+				</widget>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">OpenID Delegate</property>
+					<property name="note" translatable="yes"><![CDATA[Example: <em>http://name.openidprovider.com/</em>]]></property>
+					<property name="note_content_type">text/xml</property>
+					<widget class="SwatEntry" id="openid_delegate" />
+				</widget>
+			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button" />
 			</widget>

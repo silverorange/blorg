@@ -71,6 +71,20 @@ class BlorgAuthor extends SwatDBDataObject
 	 */
 	public $bodytext;
 
+	/**
+	 * URL for an OpenID delegate server for the author
+	 *
+	 * @var string
+	 */
+	public $openid_server;
+
+	/**
+	 * OpenID URL to delegate for the author
+	 *
+	 * @var string
+	 */
+	public $openid_delegate;
+
 	// }}}
 	// {{{ public function loadByShortname()
 

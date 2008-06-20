@@ -116,6 +116,8 @@ class BlorgAuthorEdit extends AdminDBEdit
 			'visible',
 			'description',
 			'bodytext',
+			'openid_server',
+			'openid_delegate',
 			'email',
 		));
 
@@ -124,6 +126,8 @@ class BlorgAuthorEdit extends AdminDBEdit
 		$this->author->visible = $values['visible'];
 		$this->author->description = $values['description'];
 		$this->author->bodytext = $values['bodytext'];
+		$this->author->openid_server = $values['openid_server'];
+		$this->author->openid_delegate = $values['openid_delegate'];
 		$this->author->email = $values['email'];
 
 		if ($this->id === null)
