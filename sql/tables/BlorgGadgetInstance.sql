@@ -5,3 +5,6 @@ create table BlorgGadgetInstance (
 	displayorder integer not null default 0,
 	primary key (id)
 );
+
+create index BlorgGadgetInstance_instance_index on
+	BlorgGadgetInstance(instance);

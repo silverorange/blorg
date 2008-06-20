@@ -14,3 +14,6 @@ create table BlorgPost (
 	instance integer references Instance(id),
 	primary key (id)
 );
+
+create index BlorgPost_instance_index on BlorgPost(instance);
+create index BlorgPost_enabled_index on BlorgPost(enabled);

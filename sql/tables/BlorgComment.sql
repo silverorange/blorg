@@ -13,3 +13,7 @@ create table BlorgComment (
 	createdate timestamp not null,
 	primary key (id)
 );
+
+create index BlorgComment_spam_index on BlorgComment(spam);
+create index BlorgComment_post_index on BlorgComment(post);
+create index BlorgComment_status_index on BlorgComment(status);

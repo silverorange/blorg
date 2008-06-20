@@ -10,3 +10,6 @@ create table BlorgAuthor (
 	visible boolean not null default true,
 	primary key (id)
 );
+
+create index BlorgAuthor_instance_index on BlorgAuthor(instance);
+create index BlorgAuthor_visible_index on BlorgAuthor(visible);
