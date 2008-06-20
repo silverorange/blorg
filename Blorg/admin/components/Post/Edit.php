@@ -212,6 +212,9 @@ class BlorgPostEdit extends AdminDBEdit
 				$path = '../../files/'.$this->app->getInstance()->shortname;
 			}
 
+			$blorg_file->setFileBase($path);
+			$blorg_file->createFileBase($path);
+
 			$blorg_file->description = $description->value;
 			$blorg_file->visible     = $attachment->value;
 			$blorg_file->filename    = $file->getUniqueFileName($path);

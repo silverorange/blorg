@@ -118,9 +118,7 @@ class BlorgFile extends SwatDBDataObject
 
 	public function getFilePath()
 	{
-		return sprintf('%s/files/%s',
-			$this->getFileBase(),
-			$this->filename);
+		return $this->getFileBase().$this->filename;
 	}
 
 	// }}}
@@ -211,6 +209,26 @@ class BlorgFile extends SwatDBDataObject
 		}
 
 		return $loaded;
+	}
+
+	// }}}
+	// {{{ public function createFileBase()
+
+	public function createFileBase()
+	{
+		$path = $this->getFileBase();
+
+		$create_parts = array();
+		while (!file_exists($path) && strpos($path, '/') !== false) {
+			$directory = substr($path, strrpos($path, '/') + 1);
+			$path      = substr($path, 0, strrpos($path, '/'));
+			array_unshift($create_parts, $directory);
+		}
+
+		foreach ($create_parts as $directory) {
+			$path = $path.'/'.$directory;
+			mkdir($path);
+		}
 	}
 
 	// }}}
