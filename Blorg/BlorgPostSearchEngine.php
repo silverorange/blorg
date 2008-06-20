@@ -25,7 +25,10 @@ class BlorgPostSearchEngine extends SiteSearchEngine
 
 	protected function getSelectClause()
 	{
-		$clause = 'select BlorgPost.*';
+		$clause = 'select BlorgPost.*,
+			BlorgPostVisibleCommentCountView.comment_count as
+				visible_comment_count ';
+
 		return $clause;
 	}
 
@@ -34,7 +37,9 @@ class BlorgPostSearchEngine extends SiteSearchEngine
 
 	protected function getFromClause()
 	{
-		$clause = 'from BlorgPost';
+		$clause = 'from BlorgPost
+			inner join BlorgPostVisibleCommentCountView on
+				BlorgPost.id = BlorgPostVisibleCommentCountView.post ';
 
 		if ($this->fulltext_result !== null)
 			$clause.= ' '.

@@ -231,6 +231,28 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getCommentCount()
+
+	public function getCommentCount()
+	{
+		if ($this->hasInternalValue('comment_count') &&
+			$this->getInternalValue('comment_count') !== null) {
+			$comment_count = $this->getInternalValue('comment_count');
+		} else {
+			$this->checkDB();
+
+			$sql = sprintf('select comment_count
+				from BlorgPostCommentCountView
+				where post = %s',
+				$this->db->quote($this->id, 'integer'));
+
+			$comment_count = SwatDB::queryOne($this->db, $sql);
+		}
+
+		return $comment_count;
+	}
+
+	// }}}
 	// {{{ public function getVisibleComments()
 
 	public function getVisibleComments($limit = null, $offset = 0)
@@ -254,6 +276,28 @@ class BlorgPost extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getVisibleCommentCount()
+
+	public function getVisibleCommentCount()
+	{
+		if ($this->hasInternalValue('visible_comment_count') &&
+			$this->getInternalValue('visible_comment_count') !== null) {
+			$comment_count = $this->getInternalValue('visible_comment_count');
+		} else {
+			$this->checkDB();
+
+			$sql = sprintf('select comment_count
+				from BlorgPostVisibleCommentCountView
+				where post = %s',
+				$this->db->quote($this->id, 'integer'));
+
+			$comment_count = SwatDB::queryOne($this->db, $sql);
+		}
+
+		return $comment_count;
+	}
+
+	// }}}
 	// {{{ public function hasVisibleCommentStatus()
 
 	public function hasVisibleCommentStatus()
@@ -261,7 +305,7 @@ class BlorgPost extends SwatDBDataObject
 		return ($this->comment_status == self::COMMENT_STATUS_OPEN ||
 			$this->comment_status == self::COMMENT_STATUS_MODERATED ||
 			($this->comment_status == self::COMMENT_STATUS_LOCKED &&
-			count($this->getVisibleComments()) > 0));
+			$this->getVisibleCommentCount() > 0));
 	}
 
 	// }}}
@@ -382,6 +426,9 @@ class BlorgPost extends SwatDBDataObject
 
 		$this->registerInternalProperty('instance',
 			SwatDBClassMap::get('SiteInstance'));
+
+		$this->registerInternalProperty('visible_comment_count');
+		$this->registerInternalProperty('comment_count');
 
 		$this->table = 'BlorgPost';
 		$this->id_field = 'integer:id';

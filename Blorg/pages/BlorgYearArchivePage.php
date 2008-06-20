@@ -156,8 +156,12 @@ class BlorgYearArchivePage extends SitePathPage
 		$instance_id = $this->app->getInstanceId();
 
 		$sql = sprintf('select id, title, bodytext, shortname, publish_date,
-				author, comment_status
+				author, comment_status,
+			BlorgPostVisibleCommentCountView.comment_count as
+				visible_comment_count
 			from BlorgPost
+				inner join BlorgPostVisibleCommentCountView on
+					BlorgPost.id = BlorgPostVisibleCommentCountView.post
 			where date_trunc(\'year\', convertTZ(publish_date, %s)) =
 				date_trunc(\'year\', timestamp %s) and
 				instance %s %s and enabled = %s

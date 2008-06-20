@@ -75,7 +75,12 @@ class BlorgAtomPage extends SitePage
 	{
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select * from BlorgPost
+		$sql = sprintf('select BlorgPost.*,
+			BlorgPostVisibleCommentCountView.comment_count as
+				visible_comment_count
+			from BlorgPost
+				inner join BlorgPostVisibleCommentCountView on
+					BlorgPost.id = BlorgPostVisibleCommentCountView.post
 			where instance %s %s
 				and enabled = %s
 			order by publish_date desc',
@@ -194,7 +199,7 @@ class BlorgAtomPage extends SitePage
 			$entry->addAuthor($post->author->name, $author_uri,
 				$post->author->email);
 
-			$visible_comment_count = count($post->getVisibleComments());
+			$visible_comment_count = $post->getVisibleCommentCount();
 			if ($post->comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
 				$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED ||
 				($post->comment_status == BlorgPost::COMMENT_STATUS_LOCKED &&

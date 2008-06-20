@@ -198,7 +198,12 @@ class BlorgTagPage extends SitePage
 
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select * from BlorgPost
+		$sql = sprintf('select BlorgPost.*,
+			BlorgPostVisibleCommentCountView.comment_count as
+				visible_comment_count
+			from BlorgPost
+				inner join BlorgPostVisibleCommentCountView on
+					BlorgPost.id = BlorgPostVisibleCommentCountView.post
 			where
 				id in (select post from BlorgPostTagBinding where tag = %s) and
 				instance %s %s and enabled = %s
