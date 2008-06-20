@@ -137,7 +137,12 @@ class BlorgMonthArchivePage extends SitePage
 
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select * from BlorgPost
+		$sql = sprintf('select BlorgPost.*,
+			BlorgPostVisibleCommentCountView.comment_count as
+				visible_comment_count
+			from BlorgPost
+				inner join BlorgPostVisibleCommentCountView on
+					BlorgPost.id = BlorgPostVisibleCommentCountView.post
 			where date_trunc(\'month\', convertTZ(publish_date, %s)) =
 				date_trunc(\'month\', timestamp %s) and
 				instance %s %s and enabled = %s

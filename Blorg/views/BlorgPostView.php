@@ -194,7 +194,7 @@ class BlorgPostView extends BlorgView
 		$show_comment_count =
 			($comment_count != '' &&
 				(($post->comment_status == BlorgPost::COMMENT_STATUS_LOCKED &&
-					count($post->getVisibleComments()) > 0) ||
+					$post->getVisibleCommentCount() > 0) ||
 				$post->comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
 				$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED));
 
@@ -368,7 +368,7 @@ class BlorgPostView extends BlorgView
 	{
 		if ($this->getMode('comment_count') > BlorgView::MODE_NONE) {
 			$link = $this->getLink('comment_count');
-			$count = count($post->getVisibleComments());
+			$count = $post->getVisibleCommentCount();
 
 			if ($link === false) {
 				$comment_count_tag = new SwatHtmlTag('span');

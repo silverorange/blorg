@@ -57,7 +57,12 @@ class BlorgFrontPage extends SitePage
 	{
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select * from BlorgPost
+		$sql = sprintf('select BlorgPost.*,
+			BlorgPostVisibleCommentCountView.comment_count as
+				visible_comment_count
+			from BlorgPost
+				inner join BlorgPostVisibleCommentCountView on
+					BlorgPost.id = BlorgPostVisibleCommentCountView.post
 			where instance %s %s
 				and enabled = %s
 			order by publish_date desc',
