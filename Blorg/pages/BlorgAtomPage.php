@@ -159,7 +159,7 @@ class BlorgAtomPage extends SitePage
 				$month_name,
 				$post->shortname);
 
-			$entry = new XML_Atom_Entry($post_uri, $post->title,
+			$entry = new XML_Atom_Entry($post_uri, $post->getTitle(),
 				$post->publish_date);
 
 			if ($post->extended_bodytext != '') {

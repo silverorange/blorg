@@ -177,7 +177,8 @@ class BlorgCommentsAtomPage extends SitePage
 			}
 
 			$entry = new XML_Atom_Entry($comment_uri,
-				sprintf(Blorg::_('%s on “%s”'), $author_name, $post->title),
+				sprintf(Blorg::_('%s on “%s”'),
+					$author_name, $post->getTitle()),
 				$comment->createdate);
 
 			$entry->setContent(BlorgComment::getBodytextXhtml(
