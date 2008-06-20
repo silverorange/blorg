@@ -118,7 +118,7 @@ class BlorgFile extends SwatDBDataObject
 
 	public function getFilePath()
 	{
-		return $this->getFileBase().$this->filename;
+		return $this->getFileBase().'/'.$this->filename;
 	}
 
 	// }}}
