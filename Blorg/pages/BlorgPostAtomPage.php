@@ -150,9 +150,9 @@ class BlorgPostAtomPage extends SitePage
 				$author_name = $comment->author->name;
 				if ($comment->author->visible) {
 					$author_uri = $blorg_base_href.'author/'.
-						$post->author->shortname;
+						$this->post->author->shortname;
 
-					$author_email = $post->author->email;
+					$author_email = $this->post->author->email;
 				} else {
 					$author_uri   = '';
 					$author_email = '';
