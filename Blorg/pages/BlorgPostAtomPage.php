@@ -123,7 +123,7 @@ class BlorgPostAtomPage extends SitePage
 
 		$this->feed = new XML_Atom_Feed($post_uri.'#comments',
 			sprintf(Blorg::_('Comments on “%s”'),
-				$this->post->title));
+				$this->post->getTitle()));
 
 		$this->feed->addLink($site_base_href.$this->source, 'self',
 			'application/atom+xml');
