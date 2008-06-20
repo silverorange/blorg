@@ -21,7 +21,9 @@ class BlorgAdGadget extends BlorgGadget
 	public function displayContent()
 	{
 		$ad_markup = $this->getValue('ad_markup');
+		echo '<div class="ad">';
 		echo $ad_markup;
+		echo '</div>';
 	}
 
 	// }}}

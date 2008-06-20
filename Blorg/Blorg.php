@@ -187,7 +187,9 @@ class Blorg
 			// it does not start with the app base href.
 			if (!$app->config->blorg->ad_referers_only || ($referer !== null &&
 				strncmp($referer, $base_href, strlen($base_href)) != 0)) {
+				echo '<div class="ad">';
 				echo $app->config->blorg->$type_name;
+				echo '</div>';
 			}
 		}
 	}
