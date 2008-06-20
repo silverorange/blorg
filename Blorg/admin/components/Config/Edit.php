@@ -37,41 +37,62 @@ class BlorgConfigEdit extends AdminDBEdit
 
 	protected function processUploadFile()
 	{
-		$id = $this->app->config->blorg->header_image;
+		$id   = $this->app->config->blorg->header_image;
 		$file = $this->ui->getWidget('header_image');
 
-		if ($file->isUploaded()) {
-			$now = new SwatDate();
-			$now->toUTC();
-
-			$class_name = SwatDBClassMap::get('BlorgFile');
-			$blorg_file = new $class_name();
-			$blorg_file->setDatabase($this->app->db);
-
-			if ($this->app->getInstance() === null) {
-				$path = '../../files';
-			} else {
-				$path = '../../files/'.$this->app->getInstance()->shortname;
-			}
-
-			$blorg_file->setFileBase($path);
-			$blorg_file->createFileBase($path);
-
-			$blorg_file->description = Blorg::_('This Blorgs Header Image');
-			$blorg_file->visible    = true;
-			$blorg_file->filename   = $file->getUniqueFileName($path);
-			$blorg_file->mime_type  = $file->getMimeType();
-			$blorg_file->filesize   = $file->getSize();
-			$blorg_file->createdate = $now;
-			$blorg_file->instance   = $this->app->getInstanceId();
-			$blorg_file->save();
-
-			$file->saveFile($path, $blorg_file->filename);
-			$new_id = $blorg_file->id;
+		if ($this->app->getInstance() === null) {
+			$path = '../../files';
+		} else {
+			$path = '../../files/'.$this->app->getInstance()->shortname;
 		}
 
-		// Delete the old file
-		if ($id !== null && $this->ui->getWidget('remove_image')->value) {
+		if ($file->isUploaded()) {
+			$new_file_id = $this->createFile($file, $path);
+			$this->removeOldFile($id, $path);
+		} elseif ($this->ui->getWidget('remove_image')->value) {
+			$this->removeOldFile($id, $path);
+			$new_file_id = null;
+		} else {
+			$new_file_id = $id;
+		}
+
+		return $new_file_id;
+	}
+
+	// }}}
+	// {{{ protected function createFile()
+
+	protected function createFile(SwatFileEntry $file, $path)
+	{
+		$now = new SwatDate();
+		$now->toUTC();
+
+		$class_name = SwatDBClassMap::get('BlorgFile');
+		$blorg_file = new $class_name();
+		$blorg_file->setDatabase($this->app->db);
+		$blorg_file->setFileBase($path);
+		$blorg_file->createFileBase($path);
+
+		$blorg_file->description = Blorg::_('This Blorgs Header Image');
+		$blorg_file->visible    = true;
+		$blorg_file->filename   = $file->getUniqueFileName($path);
+		$blorg_file->mime_type  = $file->getMimeType();
+		$blorg_file->filesize   = $file->getSize();
+		$blorg_file->createdate = $now;
+		$blorg_file->instance   = $this->app->getInstanceId();
+		$blorg_file->save();
+
+		$file->saveFile($path, $blorg_file->filename);
+
+		return $blorg_file->id;
+	}
+
+	// }}}
+	// {{{ protected function removeOldFile()
+
+	protected function removeOldFile($id, $path)
+	{
+		if ($id != '') {
 			$class_name = SwatDBClassMap::get('BlorgFile');
 			$old_file = new $class_name();
 			$old_file->setDatabase($this->app->db);
@@ -79,32 +100,7 @@ class BlorgConfigEdit extends AdminDBEdit
 
 			$old_file->setFileBase($path);
 			$old_file->delete();
-			$id = null;
 		}
-
-		if (isset($new_id))
-			$id = $new_id;
-
-		return $id;
-	}
-
-	// }}}
-	// {{{ protected function createImage()
-
-	protected function createImage(SwatFileEntry $file)
-	{
-		$class_name = SwatDBClassMap::get('BlorgFileImage');
-		$image = new $class_name();
-		$image->setDatabase($this->app->db);
-		$image->setFileBase('../images');
-
-		try {
-			$image->process($file->getTempFileName());
-		} catch (SiteInvalidImageException $e) {
-			$image = null;
-		}
-
-		return $image;
 	}
 
 	// }}}
@@ -112,8 +108,6 @@ class BlorgConfigEdit extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		$file_id = $this->processUploadFile();
-
 		$values = $this->ui->getValues(array(
 			'site_title',
 			'site_meta_description',
@@ -128,13 +122,13 @@ class BlorgConfigEdit extends AdminDBEdit
 			'blorg_ad_referers_only',
 		));
 
+		$values['blorg_header_image'] = $this->processUploadFile();
+
 		foreach ($values as $key => $value) {
 			$name = substr_replace($key, '.', strpos($key, '_'), 1);
-		list($section, $title) = explode('.', $name, 2);
+			list($section, $title) = explode('.', $name, 2);
 			$this->app->config->$section->$title = (string)$value;
 		}
-
-		$this->app->config->blorg->header_image = $file_id;
 
 		$this->app->config->save();
 		$message = new SwatMessage(
