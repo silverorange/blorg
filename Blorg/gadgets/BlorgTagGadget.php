@@ -37,19 +37,42 @@ class BlorgTagGadget extends BlorgGadget
 
 				$li_tag = new SwatHtmlTag('li');
 				$li_tag->open();
+
 				$anchor_tag = new SwatHtmlTag('a');
 				$anchor_tag->href = $path.'/'.$tag->shortname;
 				$anchor_tag->class = $this->getTagClass($popularity);
 				$anchor_tag->setContent($tag->title);
-
-				$span_tag = new SwatHtmlTag('span');
-				$span_tag->setContent(sprintf(Blorg::ngettext(
-					'(%s post)', '(%s posts)', $tag->post_count),
-					$locale->formatNumber($tag->post_count)));
-
 				$anchor_tag->display();
-				echo ' ';
-				$span_tag->display();
+
+
+				if ($this->getValue('show_post_counts')) {
+					echo ' ';
+					$span_tag = new SwatHtmlTag('span');
+					$span_tag->setContent(sprintf(Blorg::ngettext(
+						'(%s post)', '(%s posts)', $tag->post_count),
+						$locale->formatNumber($tag->post_count)));
+
+					$span_tag->display();
+				}
+
+				if ($this->getValue('show_feed_links')) {
+					echo ' ';
+					$span_tag = new SwatHtmlTag('span');
+					$span_tag->class = 'feed';
+					$span_tag->open();
+
+					echo '(';
+
+					$anchor_tag = new SwatHtmlTag('a');
+					$anchor_tag->class = 'feed';
+					$anchor_tag->href = $path.'/'.$tag->shortname.'/feed';
+					$anchor_tag->setContent('Feed');
+					$anchor_tag->display();
+
+					echo ')';
+
+					$span_tag->close();
+				}
 
 				$li_tag->close();
 			}
@@ -65,6 +88,13 @@ class BlorgTagGadget extends BlorgGadget
 	{
 		$this->defineDefaultTitle(Blorg::_('Tags'));
 		$this->defineSetting('show_empty', 'Show Empty Tags', 'boolean', false);
+
+		$this->defineSetting('show_feed_links', 'Show Feed Links',
+			'boolean', false);
+
+		$this->defineSetting('show_post_counts', 'Show Post Counts',
+			'boolean', true);
+
 		$this->defineDescription(Blorg::_(
 			'Displays a list of tags and a post count for each tag. This can '.
 			'easily be styled to be a “cloud view”.'));
