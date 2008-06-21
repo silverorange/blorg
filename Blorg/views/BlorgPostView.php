@@ -513,6 +513,7 @@ class BlorgPostView extends BlorgView
 				echo '<ul class="attachments">';
 				foreach ($files as $file) {
 					$li_tag = new SwatHtmlTag('li');
+					$li_tag->class = 'type-'.$file->mime_type;
 					$li_tag->open();
 
 					if ($link === false) {
