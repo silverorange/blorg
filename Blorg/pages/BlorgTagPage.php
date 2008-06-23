@@ -82,7 +82,7 @@ class BlorgTagPage extends SitePage
 		$this->layout->endCapture();
 
 		$this->layout->data->title = sprintf(
-			Blorg::_('Posts Tagged: %s'),
+			Blorg::_('Posts Tagged: <em>%s</em>'),
 			$this->tag->title);
 	}
 
