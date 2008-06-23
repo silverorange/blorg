@@ -3,6 +3,7 @@
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
+require_once dirname(__FILE__).'/include/BlorgHeaderImageDisplay.php';
 
 /**
  * Page for editing site instance settings
@@ -26,8 +27,6 @@ class BlorgConfigEdit extends AdminDBEdit
 	{
 		parent::initInternal();
 		$this->ui->loadFromXML($this->ui_xml);
-
-		$this->id = $this->app->getInstanceId();
 	}
 
 	// }}}
@@ -49,9 +48,6 @@ class BlorgConfigEdit extends AdminDBEdit
 		if ($file->isUploaded()) {
 			$new_file_id = $this->createFile($file, $path);
 			$this->removeOldFile($id, $path);
-		} elseif ($this->ui->getWidget('remove_image')->value) {
-			$this->removeOldFile($id, $path);
-			$new_file_id = null;
 		} else {
 			$new_file_id = $id;
 		}
@@ -185,11 +181,12 @@ class BlorgConfigEdit extends AdminDBEdit
 			$file->load(intval($header_id));
 
 			$path = $file->getRelativeUri('../');
-			$this->ui->getWidget('image_preview')->image = $path;
+			$this->ui->getWidget('image_preview')->file = $file;
 		} else {
-			$this->ui->getWidget('current_image')->visible = false;
-			$this->ui->getWidget('remove_image')->parent->visible = false;
-			$this->ui->getWidget('change_image')->title = Blorg::_('Add Image');
+			$this->ui->getWidget('image_container')->visible = false;
+			$this->ui->getWidget('change_image')->title =
+				Blorg::_('Add Header Image');
+
 			$this->ui->getWidget('change_image')->open = true;
 		}
 	}
