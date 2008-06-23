@@ -12,24 +12,18 @@
 					<property name="maxlength" type="integer">255</property>
 				</widget>
 			</widget>
-			<widget class="SwatFieldset">
+			<widget class="SwatFormField" id="image_container">
 				<property name="title" translatable="yes">Header Image</property>
-				<widget class="SwatFormField" id="current_image">
-					<widget class="SwatImageDisplay" id="image_preview" />
-				</widget>
+				<widget class="BlorgHeaderImageDisplay" id="image_preview" />
+			</widget>
+			<widget class="SwatDisclosure" id="change_image">
+				<property name="title" translatable="yes">Replace Header Image</property>
+				<property name="open" type="boolean">false</property>
 				<widget class="SwatFormField">
-					<property name="title" translatable="yes">Remove Image?</property>
-					<widget class="SwatCheckbox" id="remove_image" />
-				</widget>
-				<widget class="SwatDisclosure" id="change_image">
-					<property name="title" translatable="yes">Change Image</property>
-					<property name="open" type="boolean">false</property>
-					<widget class="SwatFormField">
-						<widget class="SwatFileEntry" id="header_image">
-							<property name="accept_mime_types[]">image/jpeg</property>
-							<property name="accept_mime_types[]">image/png</property>
-							<property name="accept_mime_types[]">image/gif</property>
-						</widget>
+					<widget class="SwatFileEntry" id="header_image">
+						<property name="accept_mime_types[]">image/jpeg</property>
+						<property name="accept_mime_types[]">image/png</property>
+						<property name="accept_mime_types[]">image/gif</property>
 					</widget>
 				</widget>
 			</widget>
