@@ -138,6 +138,18 @@ class BlorgConfigIndex extends AdminPage
 	}
 
 	// }}}
+	// {{{ protected function buildDetailsBlorgDefaultCommentStatus()
+
+	protected function buildDetailsBlorgDefaultCommentStatus(
+		SwatDetailsStore $ds)
+	{
+		$title = BlorgPost::getCommentStatusTitle(
+			$this->app->config->blorg->default_comment_status);
+
+		$ds->blorg_default_comment_status = $title;
+	}
+
+	// }}}
 }
 
 ?>
