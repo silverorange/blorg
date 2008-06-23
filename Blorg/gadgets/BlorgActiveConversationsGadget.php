@@ -121,12 +121,15 @@ class BlorgActiveConversationsGadget extends BlorgGadget
 	protected function getActiveConversations()
 	{
 		$sql = sprintf('select title, bodytext, publish_date, shortname,
-				comment_count as visible_comment_count, last_comment_date
+				visible_comment_count, last_comment_date
 			from BlorgPost
 				inner join BlorgPostVisibleCommentCountView
 					on BlorgPost.id = BlorgPostVisibleCommentCountView.post and
-						BlorgPostVisibleCommentCountView.comment_count > 0
-			where enabled = %s and comment_status != %s and instance %s %s
+						BlorgPostVisibleCommentCountView.visible_comment_count > 0 and
+						BlorgPostVisibleCommentCountView.instance =
+							BlorgPost.instance
+			where enabled = %s and comment_status != %s and
+				BlorgPost.instance %s %s
 			order by last_comment_date desc',
 			$this->app->db->quote(true, 'boolean'),
 			$this->app->db->quote(BlorgPost::COMMENT_STATUS_CLOSED, 'integer'),
