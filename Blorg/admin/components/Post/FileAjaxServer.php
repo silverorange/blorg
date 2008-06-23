@@ -79,10 +79,16 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 	{
 		$instance_id = $this->app->getInstanceId();
 
+		if ($this->app->getInstance() === null) {
+			$path = '../../files';
+		} else {
+			$path = '../../files/'.$this->app->getInstance()->shortname;
+		}
+
 		$class_name = SwatDBClassMap::get('BlorgFile');
 		$file = new $class_name();
 		$file->setDatabase($this->app->db);
-		$file->setFileBase('../');
+		$file->setFileBase($path);
 		if ($file->load(intval($file_id))) {
 			if ($file->getInternalValue('instance') === $instance_id) {
 				$file->delete();
