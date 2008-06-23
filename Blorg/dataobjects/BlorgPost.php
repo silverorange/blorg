@@ -286,7 +286,7 @@ class BlorgPost extends SwatDBDataObject
 		} else {
 			$this->checkDB();
 
-			$sql = sprintf('select comment_count
+			$sql = sprintf('select visible_comment_count
 				from BlorgPostVisibleCommentCountView
 				where post = %s',
 				$this->db->quote($this->id, 'integer'));
