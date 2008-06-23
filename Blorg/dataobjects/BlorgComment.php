@@ -131,10 +131,13 @@ class BlorgComment extends SwatDBDataObject
 	{
 		$bodytext = str_replace('%', '%%', $bodytext);
 
-		$allowed_tags = '/(<a href="http[^"]+?">|<\/a>|<\/?strong>|<\/?em>)/ui';
-		$matches = array();
-		preg_match_all($allowed_tags, $bodytext, $matches);
-		$bodytext = preg_replace($allowed_tags, '%s', $bodytext);
+		$title        = '(?: title="[^"]+?")?';
+		$href         = ' href="http[^"]+?"';
+		$allowed_tags = '<a'.$title.$href.$title.'>|<\/a>|<\/?strong>|<\/?em>';
+		$expression   = '/('.$allowed_tags.')/ui';
+		$matches      = array();
+		preg_match_all($expression, $bodytext, $matches);
+		$bodytext = preg_replace($expression, '%s', $bodytext);
 
 		$bodytext = SwatString::minimizeEntities($bodytext);
 		$bodytext = vsprintf($bodytext, $matches[0]);
