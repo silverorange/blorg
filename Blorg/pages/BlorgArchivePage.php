@@ -158,20 +158,25 @@ class BlorgArchivePage extends SitePage
 	{
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select convertTZ(publish_date, %s)
-				from BlorgPost
-				where instance %s %s and enabled = %s
-				order by publish_date desc',
+		$sql = sprintf('select count(id) as count,
+				date_part(\'year\', convertTZ(publish_date, %s)) as year,
+				date_part(\'month\', convertTZ(publish_date, %s)) as month
+			from BlorgPost
+			where instance %s %s and enabled = %s
+			group by year, month
+			order by year desc, month desc',
+			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
 			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote(true, 'boolean'));
 
-		$rs = SwatDB::query($this->app->db, $sql, null);
-		while ($date = $rs->fetchOne()) {
-			$date = new SwatDate($date);
-			$year = $date->getYear();
-			$month = $date->getMonth();
+		$rs = SwatDB::query($this->app->db, $sql, null,
+			array('integer', 'integer', 'integer'));
+
+		while ($row = $rs->fetchRow(MDB2_FETCHMODE_OBJECT)) {
+			$year  = $row->year;
+			$month = $row->month;
 
 			if (!array_key_exists($year, $this->years)) {
 				$this->years[$year] = array(
@@ -181,11 +186,10 @@ class BlorgArchivePage extends SitePage
 			}
 
 			if (!array_key_exists($month, $this->years[$year]['months'])) {
-				$this->years[$year]['months'][$month] = 0;
+				$this->years[$year]['months'][$month] = $row->count;
 			}
 
-			$this->years[$year]['post_count']++;
-			$this->years[$year]['months'][$month]++;
+			$this->years[$year]['post_count'] += $row->count;
 		}
 
 		if (count($this->years) == 0) {
