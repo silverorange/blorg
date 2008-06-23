@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Site/pages/SitePage.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
+require_once 'Blorg/BlorgPostLoader.php';
 require_once 'XML/Atom/Feed.php';
 require_once 'XML/Atom/Entry.php';
 require_once 'XML/Atom/Link.php';
@@ -74,25 +74,25 @@ class BlorgAtomPage extends SitePage
 
 	protected function initPosts()
 	{
-		$instance_id = $this->app->getInstanceId();
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance());
 
-		$sql = sprintf('select BlorgPost.*,
-			BlorgPostVisibleCommentCountView.comment_count as
-				visible_comment_count
-			from BlorgPost
-				inner join BlorgPostVisibleCommentCountView on
-					BlorgPost.id = BlorgPostVisibleCommentCountView.post
-			where instance %s %s
-				and enabled = %s
-			order by publish_date desc',
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('extended_bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('comment_status');
+		$loader->addSelectField('visible_comment_count');
 
-		$this->app->db->setLimit($this->max_entries);
+		$loader->setWhereClause(sprintf('enabled = %s',
+			$this->app->db->quote(true, 'boolean')));
 
-		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
-		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
+		$loader->setOrderByClause('publish_date desc');
+		$loader->setRange($this->max_entries);
+
+		$this->posts = $loader->getPosts();
 	}
 
 	// }}}

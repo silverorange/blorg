@@ -6,7 +6,7 @@ require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgViewFactory.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
+require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/dataobjects/BlorgTag.php';
 require_once 'Blorg/Blorg.php';
 
@@ -196,30 +196,28 @@ class BlorgTagPage extends SitePage
 
 		$this->tag = $tag;
 
-		$instance_id = $this->app->getInstanceId();
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance());
 
-		$sql = sprintf('select BlorgPost.*,
-			BlorgPostVisibleCommentCountView.comment_count as
-				visible_comment_count
-			from BlorgPost
-				inner join BlorgPostVisibleCommentCountView on
-					BlorgPost.id = BlorgPostVisibleCommentCountView.post
-			where
-				id in (select post from BlorgPostTagBinding where tag = %s) and
-				instance %s %s and enabled = %s
-			order by publish_date desc',
-			$this->app->db->quote($tag->id, 'integer'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('comment_status');
+		$loader->addSelectField('visible_comment_count');
+
+		$loader->setWhereClause(sprintf('enabled = %s and
+			id in (select post from BlorgPostTagBinding where tag = %s)',
+			$this->app->db->quote(true, 'boolean'),
+			$this->app->db->quote($tag->id, 'integer')));
+
+		$loader->setOrderByClause('publish_date desc');
 
 		$offset = ($current_page - 1) * self::MAX_POSTS;
-		$this->app->db->setLimit(self::MAX_POSTS, $offset);
+		$loader->setRange(self::MAX_POSTS, $offset);
 
-		$this->current_page = $current_page;
-
-		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
-		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
+		$this->posts = $loader->getPosts();
 	}
 
 	// }}}

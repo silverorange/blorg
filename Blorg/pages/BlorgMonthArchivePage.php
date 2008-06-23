@@ -5,8 +5,8 @@ require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgViewFactory.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 require_once 'Blorg/Blorg.php';
+require_once 'Blorg/BlorgPostLoader.php';
 
 /**
  * Displays an index of all posts in a given month
@@ -55,6 +55,54 @@ class BlorgMonthArchivePage extends SitePage
 	}
 
 	// }}}
+	// {{{ protected function initPosts()
+
+	protected function initPosts($year, $month_name)
+	{
+		if (!array_key_exists($month_name, BlorgPageFactory::$months_by_name)) {
+			throw new SiteNotFoundException('Page not found.');
+		}
+
+		// Date parsed from URL is in locale time.
+		$date = new SwatDate();
+		$date->setTZ($this->app->default_time_zone);
+		$date->setYear($year);
+		$date->setMonth(BlorgPageFactory::$months_by_name[$month_name]);
+		$date->setDay(1);
+		$date->setHour(0);
+		$date->setMinute(0);
+		$date->setSecond(0);
+
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance());
+
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('comment_status');
+		$loader->addSelectField('visible_comment_count');
+
+		$loader->setWhereClause(sprintf('enabled = %s and
+			date_trunc(\'month\', convertTZ(publish_date, %s)) =
+				date_trunc(\'month\', timestamp %s)',
+			$this->app->db->quote(true, 'boolean'),
+			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+			$this->app->db->quote($date->getDate(), 'date')));
+
+		$loader->setOrderByClause('publish_date desc');
+
+		$this->posts = $loader->getPosts();
+
+		if (count($this->posts) == 0) {
+			throw new SiteNotFoundException('Page not found.');
+		}
+	}
+
+	// }}}
+
+	// build phase
 	// {{{ public function build()
 
 	public function build()
@@ -113,51 +161,6 @@ class BlorgMonthArchivePage extends SitePage
 			} else {
 				$view->display($post);
 			}
-		}
-	}
-
-	// }}}
-	// {{{ protected function initPosts()
-
-	protected function initPosts($year, $month_name)
-	{
-		if (!array_key_exists($month_name, BlorgPageFactory::$months_by_name)) {
-			throw new SiteNotFoundException('Page not found.');
-		}
-
-		// Date parsed from URL is in locale time.
-		$date = new SwatDate();
-		$date->setTZ($this->app->default_time_zone);
-		$date->setYear($year);
-		$date->setMonth(BlorgPageFactory::$months_by_name[$month_name]);
-		$date->setDay(1);
-		$date->setHour(0);
-		$date->setMinute(0);
-		$date->setSecond(0);
-
-		$instance_id = $this->app->getInstanceId();
-
-		$sql = sprintf('select BlorgPost.*,
-			BlorgPostVisibleCommentCountView.comment_count as
-				visible_comment_count
-			from BlorgPost
-				inner join BlorgPostVisibleCommentCountView on
-					BlorgPost.id = BlorgPostVisibleCommentCountView.post
-			where date_trunc(\'month\', convertTZ(publish_date, %s)) =
-				date_trunc(\'month\', timestamp %s) and
-				instance %s %s and enabled = %s
-			order by publish_date desc',
-			$this->app->db->quote($date->tz->getId(), 'text'),
-			$this->app->db->quote($date->getDate(), 'date'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
-
-		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
-		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
-
-		if (count($this->posts) == 0) {
-			throw new SiteNotFoundException('Page not found.');
 		}
 	}
 

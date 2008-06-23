@@ -5,7 +5,7 @@ require_once 'Site/pages/SitePathPage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/Blorg.php';
 require_once 'Blorg/BlorgViewFactory.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
+require_once 'Blorg/BlorgPostLoader.php';
 
 /**
  * Displays an index of all months with posts in a given year
@@ -153,27 +153,28 @@ class BlorgYearArchivePage extends SitePathPage
 		$date->setMinute(0);
 		$date->setSecond(0);
 
-		$instance_id = $this->app->getInstanceId();
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance());
 
-		$sql = sprintf('select id, title, bodytext, shortname, publish_date,
-				author, comment_status,
-			BlorgPostVisibleCommentCountView.comment_count as
-				visible_comment_count
-			from BlorgPost
-				inner join BlorgPostVisibleCommentCountView on
-					BlorgPost.id = BlorgPostVisibleCommentCountView.post
-			where date_trunc(\'year\', convertTZ(publish_date, %s)) =
-				date_trunc(\'year\', timestamp %s) and
-				instance %s %s and enabled = %s
-			order by publish_date desc',
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('comment_status');
+		$loader->addSelectField('visible_comment_count');
+
+		$loader->setWhereClause(sprintf('enabled = %s and
+			date_trunc(\'year\', convertTZ(publish_date, %s)) =
+				date_trunc(\'year\', timestamp %s)',
+			$this->app->db->quote(true, 'boolean'),
 			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
-			$this->app->db->quote($date->getDate(), 'date'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
+			$this->app->db->quote($date->getDate(), 'date')));
 
-		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
-		$posts = SwatDB::query($this->app->db, $sql, $wrapper);
+		$loader->setOrderByClause('publish_date desc');
+
+		$posts = $loader->getPosts();
+
 		foreach ($posts as $post) {
 			$publish_date = clone $post->publish_date;
 			$publish_date->convertTZ($this->app->default_time_zone);

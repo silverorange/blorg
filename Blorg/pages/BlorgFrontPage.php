@@ -5,7 +5,7 @@ require_once 'Swat/SwatPagination.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgViewFactory.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
+require_once 'Blorg/BlorgPostLoader.php';
 
 /**
  * Displays all recent posts in reverse chronological order
@@ -55,26 +55,27 @@ class BlorgFrontPage extends SitePage
 
 	protected function initPosts($current_page)
 	{
-		$instance_id = $this->app->getInstanceId();
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance());
 
-		$sql = sprintf('select BlorgPost.*,
-			BlorgPostVisibleCommentCountView.comment_count as
-				visible_comment_count
-			from BlorgPost
-				inner join BlorgPostVisibleCommentCountView on
-					BlorgPost.id = BlorgPostVisibleCommentCountView.post
-			where instance %s %s
-				and enabled = %s
-			order by publish_date desc',
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('extended_bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('comment_status');
+		$loader->addSelectField('visible_comment_count');
+
+		$loader->setWhereClause(sprintf('enabled = %s',
+			$this->app->db->quote(true, 'boolean')));
+
+		$loader->setOrderByClause('publish_date desc');
 
 		$offset = ($current_page - 1) * self::MAX_POSTS;
-		$this->app->db->setLimit(self::MAX_POSTS, $offset);
+		$loader->setRange(self::MAX_POSTS, $offset);
 
-		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
-		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
+		$this->posts = $loader->getPosts();
 
 		if (count($this->posts) == 0) {
 			throw new SiteNotFoundException('Page not found.');
