@@ -6,7 +6,6 @@ require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/Blorg.php';
-require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
 
 /**
  * Displays an index of all tags with post counts
@@ -19,10 +18,7 @@ class BlorgTagArchivePage extends SitePage
 {
 	// {{{ protected properties
 
-	/**
-	 * @var BlorgTagWrapper
-	 */
-	 protected $tags;
+	protected $tags;
 
 	// }}}
 	// {{{ public function __construct()
@@ -46,16 +42,20 @@ class BlorgTagArchivePage extends SitePage
 	{
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select BlorgTag.*
+		$sql = sprintf('select BlorgTag.title, BlorgTag.shortname,
+					count(BlorgPost.id) as post_count
 				from BlorgTag
-				inner join Instance on BlorgTag.instance = Instance.id
-				where instance %s %s',
+					inner join BlorgPostTagBinding on BlorgTag.id = BlorgPostTagBinding.tag
+					inner join BlorgPost on BlorgPostTagBinding.post = BlorgPost.id
+					inner join Instance on BlorgTag.instance = Instance.id
+				where BlorgTag.instance %s %s and BlorgPost.enabled = %s
+					group by BlorgTag.title, BlorgTag.shortname
+					order by BlorgTag.title',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote(true, 'boolean'));
 
-		$wrapper = SwatDBClassMap::get('BlorgTagWrapper');
-		$this->tags = SwatDB::query($this->app->db, $sql, $wrapper);
+		$this->tags = SwatDB::query($this->app->db, $sql);
 	}
 
 	// }}}
@@ -102,12 +102,11 @@ class BlorgTagArchivePage extends SitePage
 			$anchor_tag->href = sprintf('%s/%s', $path, $tag->shortname);
 			$anchor_tag->setContent($tag->title);
 
-			$post_count = $tag->getPostCount();
 			$post_count_span = new SwatHtmlTag('span');
 			$post_count_span->setContent(sprintf(
 				Blorg::ngettext(' (%s post)', ' (%s posts)',
-				$post_count),
-				$locale->formatNumber($post_count)));
+				$tag->post_count),
+				$locale->formatNumber($tag->post_count)));
 
 			$heading_tag = new SwatHtmlTag('h4');
 			$heading_tag->class = 'blorg-archive-tag-title';
