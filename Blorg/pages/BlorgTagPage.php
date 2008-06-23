@@ -101,10 +101,12 @@ class BlorgTagPage extends SitePage
 
 	protected function buildNavBar()
 	{
-		$path = $this->app->config->blorg->path.'tag/'.$this->tag->shortname;
+		$path = $this->app->config->blorg->path.'tag';
+		$this->layout->navbar->createEntry(Blorg::_('Tags'), $path);
+
 		$this->layout->navbar->createEntry(
 			sprintf(Blorg::_('Posts Tagged: %s'), $this->tag->title),
-			$path);
+			$path.'/'.$this->tag->shortname);
 	}
 
 	// }}}

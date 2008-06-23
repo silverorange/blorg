@@ -45,8 +45,10 @@ class BlorgTagArchivePage extends SitePage
 		$sql = sprintf('select BlorgTag.title, BlorgTag.shortname,
 					count(BlorgPost.id) as post_count
 				from BlorgTag
-					inner join BlorgPostTagBinding on BlorgTag.id = BlorgPostTagBinding.tag
-					inner join BlorgPost on BlorgPostTagBinding.post = BlorgPost.id
+					inner join BlorgPostTagBinding on
+						BlorgTag.id = BlorgPostTagBinding.tag
+					inner join BlorgPost on
+						BlorgPostTagBinding.post = BlorgPost.id
 					inner join Instance on BlorgTag.instance = Instance.id
 				where BlorgTag.instance %s %s and BlorgPost.enabled = %s
 					group by BlorgTag.title, BlorgTag.shortname
