@@ -9,10 +9,11 @@ require_once 'XML/Atom/Link.php';
 /**
  * Displays an Atom feed of all recent posts in reverse chronological order
  *
- * The number of posts is always at least $min_entries, but if a recently
- * published set of posts (within the time of $recent_period) exceeds
- * $min_entries, up to $max_entries posts will be displayed. This makes it
- * easier to ensure that a subscriber won't miss any posts, while
+ * The number of posts is always at least {@link BlorgAtomPage::$min_entries},
+ * but if a recently published set of posts (within the time of
+ * {@link BlorgAtomPage::$recent_period}) exceeds <code>$min_entries</code>,
+ * up to, {@link BlorgAtomPage::$max_entries} posts will be displayed. This
+ * makes it easier to ensure that a subscriber won't miss any posts, while
  * limiting server load for the feed.
  *
  * @package   Blörg
