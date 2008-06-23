@@ -226,6 +226,11 @@ class BlorgAuthorPage extends SitePage
 			$this->layout->addHtmlHeadEntry(new SwatLinkHtmlHeadEntry(
 				$this->author->openid_delegate, 'openid.delegate'));
 		}
+
+		if ($this->pager !== null) {
+			$this->layout->addHtmlHeadEntrySet(
+				$this->pager->getHtmlHeadEntrySet());
+		}
 	}
 
 	// }}}
