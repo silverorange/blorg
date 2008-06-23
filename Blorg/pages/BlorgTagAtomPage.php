@@ -2,7 +2,7 @@
 
 require_once 'Site/pages/SitePage.php';
 require_once 'Blorg/dataobjects/BlorgTag.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
+require_once 'Blorg/BlorgPostLoader.php';
 require_once 'XML/Atom/Feed.php';
 require_once 'XML/Atom/Entry.php';
 require_once 'XML/Atom/Link.php';
@@ -11,11 +11,12 @@ require_once 'XML/Atom/Link.php';
  * Displays an Atom feed of all recent posts in reverse chronological order for
  * a specified tag
  *
- * The number of posts is always at least $min_entries, but if a recently
- * published set of posts (within the time of $recent_period) exceeds
- * $min_entries, up to $max_entries posts will be displayed. This makes it
- * easier to ensure that a subscriber won't miss any posts, while
- * limiting server load for the feed.
+ * The number of posts is always at least
+ * {@link BlorgTagAtomPage::$min_entries}, but if a recently published set of
+ * posts (within the time of {@link BlorgTagAtomPage::$recent_period}) exceeds
+ * <code>$min_entries</code>, up to, {@link BlorgTagAtomPage::$max_entries}
+ * posts will be displayed. This makes it easier to ensure that a subscriber
+ * won't miss any posts, while limiting server load for the feed.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -88,27 +89,27 @@ class BlorgTagAtomPage extends SitePage
 
 		$this->tag = $tag;
 
-		$instance_id = $this->app->getInstanceId();
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance());
 
-		$sql = sprintf('select BlorgPost.*,
-			BlorgPostVisibleCommentCountView.comment_count as
-				visible_comment_count
-			from BlorgPost
-				inner join BlorgPostVisibleCommentCountView on
-					BlorgPost.id = BlorgPostVisibleCommentCountView.post
-			where
-				id in (select post from BlorgPostTagBinding where tag = %s) and
-				instance %s %s and enabled = %s
-			order by publish_date desc',
-			$this->app->db->quote($tag->id, 'integer'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('extended_bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('comment_status');
+		$loader->addSelectField('visible_comment_count');
 
-		$this->app->db->setLimit($this->max_entries);
+		$loader->setWhereClause(sprintf('enabled = %s and
+			id in (select post from BlorgPostTagBinding where tag = %s)',
+			$this->app->db->quote(true, 'boolean'),
+			$this->app->db->quote($tag->id, 'integer')));
 
-		$wrapper = SwatDBClassMap::get('BlorgPostWrapper');
-		$this->posts = SwatDB::query($this->app->db, $sql, $wrapper);
+		$loader->setOrderByClause('publish_date desc');
+		$loader->setRange($this->max_entries);
+
+		$this->posts = $loader->getPosts();
 	}
 
 	// }}}

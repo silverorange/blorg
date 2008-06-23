@@ -4,6 +4,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatPagination.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
+require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/dataobjects/BlorgAuthor.php';
 
 /**
@@ -145,8 +146,7 @@ class BlorgAuthorPage extends SitePage
 		$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
 		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
 
-		$offset = ($this->current_page - 1) * self::MAX_POSTS;
-		$posts = $this->author->getVisiblePosts(self::MAX_POSTS, $offset);
+		$posts = $this->getAuthorPosts();
 		$first = true;
 		foreach ($posts as $post) {
 			if ($first) {
@@ -206,6 +206,34 @@ class BlorgAuthorPage extends SitePage
 
 		$div_tag->close();
 		$div_tag->close();
+	}
+
+	// }}}
+	// {{{ protected function getAuthorPosts()
+
+	protected function getAuthorPosts()
+	{
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance());
+
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('comment_status');
+		$loader->addSelectField('visible_comment_count');
+
+		$loader->setWhereClause(sprintf('enabled = %s and author = %s',
+			$this->app->db->quote(true, 'boolean'),
+			$this->app->db->quote($this->author->id, 'integer')));
+
+		$loader->setOrderByClause('publish_date desc');
+
+		$offset = ($this->current_page - 1) * self::MAX_POSTS;
+		$loader->setRange(self::MAX_POSTS, $offset);
+
+		return $loader->getPosts();
 	}
 
 	// }}}
