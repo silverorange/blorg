@@ -53,8 +53,9 @@
 					<property name="maxlength" type="integer">255</property>
 				</widget>
 			</widget>
-			<widget class="SwatFieldset">
+			<widget class="SwatDisclosure">
 				<property name="title" translatable="yes">Ad Placements</property>
+				<property name="open" type="boolean">no</property>
 				<widget class="SwatContentBlock">
 					<property name="content" translatable="yes">Include the  markup for embedding the ad in the selected position.</property>
 				</widget>
