@@ -36,7 +36,16 @@ class BlorgConfigIndex extends AdminPage
 	protected function buildInternal()
 	{
 		parent::buildInternal();
+		$this->buildMessages();
+		$this->buildSiteSettingsView();
+		$this->buildAdSettingsView();
+	}
 
+	// }}}
+	// {{{ protected function buildSiteSettingsView()
+
+	protected function buildSiteSettingsView()
+	{
 		$setting_keys = array(
 			'site' => array(
 				'title',
@@ -47,11 +56,6 @@ class BlorgConfigIndex extends AdminPage
 				'header_image',
 				'default_comment_status',
 				'akismet_key',
-				'ad_bottom',
-				'ad_top',
-				'ad_post_content',
-				'ad_post_comments',
-				'ad_referers_only',
 			),
 			'date' => array(
 				'time_zone',
@@ -79,6 +83,42 @@ class BlorgConfigIndex extends AdminPage
 		}
 
 		$view = $this->ui->getWidget('config_settings_view');
+		$view->data = $ds;
+	}
+
+	// }}}
+	// {{{ protected function buildAdSettingsView()
+
+	protected function buildAdSettingsView()
+	{
+		$setting_keys = array(
+			'blorg' => array(
+				'ad_bottom',
+				'ad_top',
+				'ad_post_content',
+				'ad_post_comments',
+				'ad_referers_only',
+			),
+		);
+
+		$ds = new SwatDetailsStore();
+
+		foreach ($setting_keys as $section => $keys) {
+			foreach ($keys as $name) {
+				$field_name = $section.'_'.$name;
+
+				$details_method = 'buildDetails'.str_replace(' ', '',
+					ucwords(str_replace('_', ' ', $field_name)));
+
+				if (method_exists($this, $details_method)) {
+					$this->$details_method($ds);
+				} else {
+					$ds->$field_name = $this->app->config->$section->$name;
+				}
+			}
+		}
+
+		$view = $this->ui->getWidget('ad_settings_view');
 		$view->data = $ds;
 	}
 
