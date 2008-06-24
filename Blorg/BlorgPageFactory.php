@@ -14,14 +14,20 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * - /archive/<year>/<month>
  * - /archive/<year>/<month>/<post-shortname>
  * - /archive/<year>/<month>/<post-shortname>/feed
+ *   - /comment<comment-id>
+ *   - /page<number>
+ *   - /page<number>/length<number>
  * - /author
  * - /author/<author-shortname>
+ *   - /page<number>
  * - /feed
  * - /feed/comments
  * - /file/<filename>
  * - /tag/<tag-shortname>
+ *   - /page<number>
  * - /tag/<tag-shortname>/feed
- * - /
+ * - <root>
+ *   - /page<number>
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -209,52 +215,48 @@ class BlorgPageFactory extends SitePageFactory
 	 *
 	 * The page mappings are an array of the form:
 	 *
-	 *   source expression => page class
+	 * <pre>
+	 * source expression => page class
+	 * </pre>
 	 *
-	 * The <i>source expression</i> is an regular expression using PREG syntax
-	 * sans-delimiters. The <i>page class</i> is the class name of the page to
-	 * be resolved.
+	 * The <code>source expression</code> is an regular expression using
+	 * PCRE syntax sans-delimiters. The <code>page class</code> is the class
+	 * name of the page to be resolved.
 	 *
 	 * For example, the following mapping array will match the source
 	 * 'about/content' to the class 'ContactPage':
 	 *
 	 * <code>
+	 * <?php
 	 * array('^(about/contact)$' => 'ContactPage');
+	 * ?>
 	 * </code>
-	 *
-	 * Mappings for the following URL types are defined in Blorg:
-	 *
-	 * - /archive
-	 * - /archive/<year>
-	 * - /archive/<year>/<month>
-	 * - /archive/<year>/<month>/<post-shortname>
-	 * - /author
-	 * - /author/<author-shortname>
-	 * - /atom
 	 *
 	 * @return array the page mappings of this factory.
 	 */
 	protected function getPageMap()
 	{
 		$months = implode('|', self::$month_names);
+		$post = 'archive/(\d{4})/('.$months.')/([\w-]+)';
+		$post_feed_sub_page = '(?:/page(\d+)(?:/length(\d+))?|/comment(\d+))?';
 
 		return array(
-			'^(?:page(\d+)|)$'                              => 'BlorgFrontPage',
-			'^search$'                                      => 'BlorgSearchResultsPage',
-			'^author$'                                      => 'BlorgAuthorIndexPage',
-			'^author/([\w-]+)(?:/page(\d+))?$'              => 'BlorgAuthorPage',
-			'^archive$'                                     => 'BlorgArchivePage',
-			'^archive/(\d{4})$'                             => 'BlorgYearArchivePage',
-			'^archive/(\d{4})/('.$months.')$'               => 'BlorgMonthArchivePage',
-			'^archive/(\d{4})/('.$months.')/([\w-]+)$'      => 'BlorgPostPage',
-			'^archive/(\d{4})/('.$months.')/([\w-]+)/feed$' => 'BlorgPostAtomPage',
-			'^feed$'                                        => 'BlorgAtomPage',
-			'^file/(.*)$'                                   => 'BlorgFileLoaderPage',
-			'^feed/comments$'                               => 'BlorgCommentsAtomPage',
-			'^tag$'                                         => 'BlorgTagArchivePage',
-			'^tag/([\w-]+)(?:/page(\d+))?$'                 => 'BlorgTagPage',
-			'^tag/([\w-]+)/feed$'                           => 'BlorgTagAtomPage',
-			'^ajax/(.+)$'                                   => 'BlorgAjaxProxyPage',
+			'^(?:page(\d+))?$'                        => 'BlorgFrontPage',
+			'^search$'                                => 'BlorgSearchResultsPage',
+			'^author$'                                => 'BlorgAuthorIndexPage',
+			'^author/([\w-]+)(?:/page(\d+))?$'        => 'BlorgAuthorPage',
+			'^archive$'                               => 'BlorgArchivePage',
+			'^archive/(\d{4})$'                       => 'BlorgYearArchivePage',
+			'^archive/(\d{4})/('.$months.')$'         => 'BlorgMonthArchivePage',
+			'^'.$post.'$'                             => 'BlorgPostPage',
+			'^'.$post.'/feed'.$post_feed_sub_page.'$' => 'BlorgPostAtomPage',
+			'^feed$'                                  => 'BlorgAtomPage',
+			'^file/(.*)$'                             => 'BlorgFileLoaderPage',
+			'^feed/comments$'                         => 'BlorgCommentsAtomPage',
+			'^tag$'                                   => 'BlorgTagArchivePage',
+			'^tag/([\w-]+)(?:/page(\d+))?$'           => 'BlorgTagPage',
+			'^tag/([\w-]+)/feed$'                     => 'BlorgTagAtomPage',
+			'^ajax/(.+)$'                             => 'BlorgAjaxProxyPage',
 		);
 	}
 

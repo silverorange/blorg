@@ -33,6 +33,21 @@ class BlorgPostAtomPage extends SitePage
 	 */
 	protected $feed;
 
+	/**
+	 * @var integer
+	 */
+	protected $page;
+
+	/**
+	 * @var integer
+	 */
+	protected $length;
+
+	/**
+	 * @var integer
+	 */
+	protected $comment_id;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -46,13 +61,18 @@ class BlorgPostAtomPage extends SitePage
 	 * @param string $shortname
 	 */
 	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$year, $month_name, $shortname)
+		$year, $month_name, $shortname, $page = null, $length = null,
+		$comment_id = null)
 	{
 		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
 
 		parent::__construct($app, $layout);
 
 		$this->initPost($year, $month_name, $shortname);
+
+		$this->page       = $page;
+		$this->length     = $length;
+		$this->comment_id = $comment_id;
 	}
 
 	// }}}
@@ -128,6 +148,31 @@ class BlorgPostAtomPage extends SitePage
 		$this->feed->addLink($site_base_href.$this->source, 'self',
 			'application/atom+xml');
 
+		// Feed paging. See IETF RFC 5005.
+		if ($this->comment_id == '') {
+			$length = ($this->length === null) ?
+				self::MAX_POSTS : $this->length;
+
+			$page = ($this->page === null) ? 1 : $this->page;
+			$this->feed->addLink($post_uri.'/feed',
+				'first', 'application/atom+xml');
+
+			$total_comments = $this->post->getVisibleCommentCount();
+			$last = '/page'.ceil($total_comments / $length);
+			$this->feed->addLink($post_uri.'/feed'.$last,
+				'last', 'application/atom+xml');
+
+			if ($this->page > 1) {
+				$previous = '/page'.($this->page - 1);
+				$this->feed->addLink($post_uri.'/feed'.$previous,
+					'previous', 'application/atom+xml');
+			}
+
+			$next = '/page'.($this->page + 1);
+			$this->feed->addLink($post_uri.'/feed'.$next,
+				'next', 'application/atom+xml');
+		}
+
 		$this->feed->setGenerator('Blörg');
 		$this->feed->setBase($site_base_href);
 
@@ -142,7 +187,7 @@ class BlorgPostAtomPage extends SitePage
 			$this->post->author->email);
 
 		$comments = array();
-		$visible_comments = $this->post->getVisibleComments(self::MAX_COMMENTS);
+		$visible_comments = $this->getComments();
 		foreach ($visible_comments as $comment) {
 			$comments[] = $comment;
 		}
@@ -190,6 +235,38 @@ class BlorgPostAtomPage extends SitePage
 	protected function displayAtomFeed()
 	{
 		echo $this->feed;
+	}
+
+	// }}}
+	// {{{ protected function getComments()
+
+	protected function getComments()
+	{
+		if ($this->page != '') {
+			// page of comments
+			$limit = ($this->length == '') ?
+				self::MAX_COMMENTS : $this->length;
+
+			$offset = ($this->page - 1) * $limit;
+			$comments = $this->post->getVisibleComments($limit, $offset);
+		} elseif ($this->comment_id != '') {
+			// single comment
+			$sql = sprintf('select * from BlorgComment
+				where post = %s and status = %s and spam = %s and id = %s',
+				$this->app->db->quote($this->post->id, 'integer'),
+				$this->app->db->quote(BlorgComment::STATUS_PUBLISHED,
+					'integer'),
+				$this->app->db->quote(false, 'boolean'),
+				$this->app->db->quote($this->comment_id, 'integer'));
+
+			$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
+			$comments = SwatDB::query($this->app->db, $sql, $wrapper);
+		} else {
+			// first page, default page length
+			$comments = $this->post->getVisibleComments(self::MAX_COMMENTS);
+		}
+
+		return $comments;
 	}
 
 	// }}}
