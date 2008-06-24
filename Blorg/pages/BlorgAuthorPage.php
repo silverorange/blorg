@@ -130,6 +130,7 @@ class BlorgAuthorPage extends SitePage
 		$view->setPartMode('bodytext', BlorgView::MODE_ALL);
 		$view->setPartMode('description', BlorgView::MODE_NONE);
 		$view->setPartMode('post_count', BlorgView::MODE_NONE);
+		$view->setPartMode('email', BlorgView::MODE_NONE);
 		$view->display($this->author);
 	}
 

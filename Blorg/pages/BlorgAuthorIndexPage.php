@@ -104,6 +104,7 @@ class BlorgAuthorIndexPage extends SitePage
 			$view->setPartMode('bodytext', BlorgView::MODE_NONE);
 			$view->setPartMode('description', BlorgView::MODE_SUMMARY);
 			$view->setPartMode('post_count', BlorgView::MODE_NONE);
+			$view->setPartMode('email', BlorgView::MODE_NONE);
 			$view->display($author);
 		}
 	}
