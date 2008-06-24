@@ -272,7 +272,14 @@ class BlorgPost extends SwatDBDataObject
 			$this->db->setLimit($limit, $offset);
 		}
 
-		return SwatDB::query($this->db, $sql, $wrapper);
+		$comments = SwatDB::query($this->db, $sql, $wrapper);
+
+		// set post on comment objects so they don't have to query it again
+		foreach ($comments as $comment) {
+			$comment->post = $this;
+		}
+
+		return $comments;
 	}
 
 	// }}}
