@@ -14,6 +14,29 @@ require_once 'SwatI18N/SwatI18NLocale.php';
  */
 class BlorgTagGadget extends BlorgGadget
 {
+	// {{{ protected function displayTitle()
+
+	/**
+	 * Displays the title of title of this gadget with a link to the tag page.
+	 *
+	 * The title is displayed in a h3 element with the CSS class
+	 * 'blorg-gadget-title'.
+	 */
+	protected function displayTitle()
+	{
+		$header = new SwatHtmlTag('h3');
+		$header->class = 'blorg-gadget-title';
+
+		$link = new SwatHtmlTag('a');
+		$link->setContent($this->getTitle());
+		$link->href = 'tag';
+
+		$header->open();
+		$link->display();
+		$header->close();
+	}
+
+	// }}}
 	// {{{ protected function displayContent()
 
 	protected function displayContent()
