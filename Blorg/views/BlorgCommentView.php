@@ -51,11 +51,14 @@ class BlorgCommentView extends BlorgView
 		$div_tag = new SwatHtmlTag('div');
 		$div_tag->id = 'comment'.$comment->id;
 		$div_tag->class = 'comment';
-		$div_tag->open();
 
+		if ($comment->author !== null) {
+			$div_tag->class .= ' comment-author-'.$comment->author->shortname;
+		}
+
+		$div_tag->open();
 		$this->displayHeader($comment);
 		$this->displayBody($comment);
-
 		$div_tag->close();
 	}
 
