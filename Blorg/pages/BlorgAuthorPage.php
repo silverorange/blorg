@@ -117,6 +117,7 @@ class BlorgAuthorPage extends SitePage
 	{
 		$path = $this->app->config->blorg->path.'author';
 		$this->layout->navbar->createEntry(Blorg::_('Authors'), $path);
+		$this->layout->navbar->createEntry($this->author->name);
 	}
 
 	// }}}
