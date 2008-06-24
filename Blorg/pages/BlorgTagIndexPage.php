@@ -4,7 +4,6 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/Blorg.php';
 
 /**
@@ -14,7 +13,7 @@ require_once 'Blorg/Blorg.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgTagArchivePage extends SitePage
+class BlorgTagIndexPage extends SitePage
 {
 	// {{{ protected properties
 
@@ -62,6 +61,7 @@ class BlorgTagArchivePage extends SitePage
 
 	// }}}
 
+	// build phase
 	// {{{ public function build()
 
 	public function build()

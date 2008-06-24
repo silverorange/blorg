@@ -253,7 +253,7 @@ class BlorgPageFactory extends SitePageFactory
 			'^feed$'                                  => 'BlorgAtomPage',
 			'^file/(.*)$'                             => 'BlorgFileLoaderPage',
 			'^feed/comments$'                         => 'BlorgCommentsAtomPage',
-			'^tag$'                                   => 'BlorgTagArchivePage',
+			'^tag$'                                   => 'BlorgTagIndexPage',
 			'^tag/([\w-]+)(?:/page(\d+))?$'           => 'BlorgTagPage',
 			'^tag/([\w-]+)/feed$'                     => 'BlorgTagAtomPage',
 			'^ajax/(.+)$'                             => 'BlorgAjaxProxyPage',
