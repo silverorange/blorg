@@ -25,9 +25,7 @@ class BlorgPostSearchEngine extends SiteSearchEngine
 
 	protected function getSelectClause()
 	{
-		$clause = 'select BlorgPost.*,
-			BlorgPostVisibleCommentCountView.comment_count as
-				visible_comment_count ';
+		$clause = 'select BlorgPost.*, visible_comment_count ';
 
 		return $clause;
 	}
@@ -39,7 +37,9 @@ class BlorgPostSearchEngine extends SiteSearchEngine
 	{
 		$clause = 'from BlorgPost
 			inner join BlorgPostVisibleCommentCountView on
-				BlorgPost.id = BlorgPostVisibleCommentCountView.post ';
+				BlorgPostVisibleCommentCountView.instance =
+					BlorgPost.instance and
+				BlorgPost.id = BlorgPostVisibleCommentCountView.post';
 
 		if ($this->fulltext_result !== null)
 			$clause.= ' '.
@@ -56,7 +56,7 @@ class BlorgPostSearchEngine extends SiteSearchEngine
 	{
 		$instance_id = $this->app->getInstanceId();
 
-		$clause = sprintf('where instance %s %s and enabled = %s',
+		$clause = sprintf('where BlorgPost.instance %s %s and enabled = %s',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote(true, 'boolean'));
