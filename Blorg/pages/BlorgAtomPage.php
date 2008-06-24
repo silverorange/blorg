@@ -130,7 +130,6 @@ class BlorgAtomPage extends SitePage
 		$this->feed->setGenerator('Blörg');
 		$this->feed->setBase($site_base_href);
 
-		$this->feed->setLogo($site_base_href.'images/elements/title-atom.png');
 		$this->feed->setIcon($site_base_href.'favicon.ico');
 
 		$threshold = new SwatDate();
