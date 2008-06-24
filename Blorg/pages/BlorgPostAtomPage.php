@@ -151,7 +151,7 @@ class BlorgPostAtomPage extends SitePage
 		// Feed paging. See IETF RFC 5005.
 		if ($this->comment_id == '') {
 			$length = ($this->length === null) ?
-				self::MAX_POSTS : $this->length;
+				self::MAX_COMMENTS: $this->length;
 
 			$page = ($this->page === null) ? 1 : $this->page;
 			$this->feed->addLink($post_uri.'/feed',
