@@ -209,6 +209,8 @@ class BlorgTagPage extends SitePage
 		$loader->addSelectField('comment_status');
 		$loader->addSelectField('visible_comment_count');
 
+		$loader->setLoadFiles(true);
+
 		$loader->setWhereClause(sprintf('enabled = %s and
 			id in (select post from BlorgPostTagBinding where tag = %s)',
 			$this->app->db->quote(true, 'boolean'),
