@@ -32,7 +32,7 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	{
 		parent::build();
 
-		$this->layout->data->title = Blorg::_('Search');
+		$this->layout->data->title = Blorg::_('Search Results');
 
 		ob_start();
 		Blorg::displayAd($this->app, 'top');
