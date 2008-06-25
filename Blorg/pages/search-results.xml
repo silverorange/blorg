@@ -3,7 +3,6 @@
 <swatml>
 	<widget class="SwatMessageDisplay" id="results_message" />
 	<widget class="SwatFrame" id="post_results_frame">
-		<property name="title" translatable="yes">Post Results</property>
 		<property name="visible" type="boolean">false</property>
 		<widget class="SwatContentBlock" id="post_results">
 			<property name="content_type">text/xml</property>
