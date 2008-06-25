@@ -119,6 +119,19 @@ class BlorgPost extends SwatDBDataObject
 	public $enabled;
 
 	// }}}
+	// {{{ protected properties
+
+	/**
+	 * Cache of visible files for this post
+	 *
+	 * @var BlorgFileWrapper
+	 *
+	 * @see BlorgPost::getVisibleFiles()
+	 * @see BlorgPost::setVisibleFiles()
+	 */
+	protected $visible_files;
+
+	// }}}
 	// {{{ public function loadByDateAndShortname()
 
 	/**
@@ -325,17 +338,37 @@ class BlorgPost extends SwatDBDataObject
 	 */
 	public function getVisibleFiles()
 	{
-		$sql = 'select BlorgFile.*
-			from BlorgFile
-			where BlorgFile.post = %s and BlorgFile.visible = %s
-			order by BlorgFile.createdate';
+		if ($this->visible_files === null) {
+			echo 'empty cache, getting files';
+			$sql = 'select BlorgFile.*
+				from BlorgFile
+				where BlorgFile.post = %s and BlorgFile.visible = %s
+				order by BlorgFile.createdate';
 
-		$sql = sprintf($sql,
-			$this->db->quote($this->id, 'integer'),
-			$this->db->quote(true, 'boolean'));
+			$sql = sprintf($sql,
+				$this->db->quote($this->id, 'integer'),
+				$this->db->quote(true, 'boolean'));
 
-		return SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('BlorgFileWrapper'));
+			$this->visible_files = SwatDB::query($this->db, $sql,
+				SwatDBClassMap::get('BlorgFileWrapper'));
+		}
+
+		return $this->visible_files;
+	}
+
+	// }}}
+	// {{{ public function setVisibleFiles()
+
+	/**
+	 * Sets visible files for this post
+	 *
+	 * Allows a single query to set file sets for multiple posts.
+	 *
+	 * @param BlorgFileWrapper $files
+	 */
+	public function setVisibleFiles(BlorgFileWrapper $files)
+	{
+		$this->visible_files = $files;
 	}
 
 	// }}}
