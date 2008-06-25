@@ -339,7 +339,6 @@ class BlorgPost extends SwatDBDataObject
 	public function getVisibleFiles()
 	{
 		if ($this->visible_files === null) {
-			echo 'empty cache, getting files';
 			$sql = 'select BlorgFile.*
 				from BlorgFile
 				where BlorgFile.post = %s and BlorgFile.visible = %s
