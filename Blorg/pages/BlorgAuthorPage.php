@@ -226,6 +226,8 @@ class BlorgAuthorPage extends SitePage
 		$loader->addSelectField('comment_status');
 		$loader->addSelectField('visible_comment_count');
 
+		$loader->setLoadFiles(true);
+
 		$loader->setWhereClause(sprintf('enabled = %s and author = %s',
 			$this->app->db->quote(true, 'boolean'),
 			$this->app->db->quote($this->author->id, 'integer')));

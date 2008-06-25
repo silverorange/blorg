@@ -84,6 +84,8 @@ class BlorgMonthArchivePage extends SitePage
 		$loader->addSelectField('comment_status');
 		$loader->addSelectField('visible_comment_count');
 
+		$loader->setLoadFiles(true);
+
 		$loader->setWhereClause(sprintf('enabled = %s and
 			date_trunc(\'month\', convertTZ(publish_date, %s)) =
 				date_trunc(\'month\', timestamp %s)',
