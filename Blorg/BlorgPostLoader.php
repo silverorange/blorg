@@ -65,7 +65,14 @@ class BlorgPostLoader
 	/**
 	 * @var array
 	 */
-	protected $fields = array('shortname');
+	protected $fields = array('id', 'shortname');
+
+	/**
+	 * @var boolean
+	 *
+	 * @see BlorgPostLoader::setLoadFiles()
+	 */
+	protected $load_files = false;
 
 	// }}}
 	// {{{ public function __construct()
@@ -101,6 +108,10 @@ class BlorgPostLoader
 			$this->loadPostAuthors($posts);
 		}
 
+		if ($this->load_files) {
+			$this->loadPostFiles($posts);
+		}
+
 		return $posts;
 	}
 
@@ -131,6 +142,10 @@ class BlorgPostLoader
 			$this->loadPostAuthors($posts);
 		}
 
+		if ($this->load_files) {
+			$this->loadPostFiles($posts);
+		}
+
 		return $posts->getFirst();
 	}
 
@@ -154,6 +169,23 @@ class BlorgPostLoader
 		if (in_array($field, $this->fields)) {
 			$this->fields = array_diff($this->fields, array($field));
 		}
+	}
+
+	// }}}
+	// {{{ public function setLoadFiles()
+
+	/**
+	 * Sets whether or not to efficiently load the visible files for loaded
+	 * posts
+	 *
+	 * Set this to true if the visible files are to be displayed, false
+	 * otherwise.
+	 *
+	 * @param boolean $load_files
+	 */
+	public function setLoadFiles($load_files)
+	{
+		$this->load_files = (boolean)$load_files;
 	}
 
 	// }}}
@@ -259,6 +291,58 @@ class BlorgPostLoader
 
 		$posts->loadAllSubDataObjects('author', $this->db, $author_sql,
 			$author_wrapper);
+	}
+
+	// }}}
+	// {{{ protected function loadPostFiles()
+
+	/**
+	 * Efficiently loads visible files for a set of posts
+	 *
+	 * @param BlorgPostWrapper $posts the posts for which to efficiently load
+	 *                                 visible files.
+	 */
+	protected function loadPostFiles(BlorgPostWrapper $posts)
+	{
+		$instance_id = ($this->instance === null) ? null : $this->instance->id;
+		$wrapper = SwatDBClassMap::get('BlorgFileWrapper');
+
+		// get post ids
+		$post_ids = array();
+		foreach ($posts as $post) {
+			$post_ids[] = $post->id;
+		}
+		$post_ids = $this->db->implodeArray($post_ids, 'integer');
+
+		// build SQL to select all visible files
+		$sql = sprintf('select BlorgFile.* from BlorgFile
+			where post in (%s) and visible = %s and instance %s %s
+			order by post, createdate desc',
+			$post_ids,
+			$this->db->quote(true, 'boolean'),
+			SwatDB::equalityOperator($instance_id),
+			$this->db->quote($instance_id, 'integer'));
+
+		// get all files
+		$files = SwatDB::query($this->db, $sql, $wrapper);
+
+		// assign empty recordsets for all posts
+		foreach ($posts as $post) {
+			$recordset = new $wrapper();
+			$post->setVisibleFiles($recordset);
+		}
+
+		// assign files to correct posts
+		$current_post_id = null;
+		$current_recordset = null;
+		foreach ($files as $file) {
+			$post_id = $file->getInternalValue('post');
+			if ($post_id !== $current_post_id) {
+				$current_post_id = $post_id;
+				$current_recordset = $posts[$post_id]->getVisibleFiles();
+			}
+			$current_recordset->add($file);
+		}
 	}
 
 	// }}}
