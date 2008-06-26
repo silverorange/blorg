@@ -173,7 +173,6 @@ class BlorgPostPage extends SitePage
 		$this->comment->createdate = $now;
 		$this->comment->ip_address = $ip_address;
 		$this->comment->user_agent = $user_agent;
-		$this->comment->spam       = $this->isCommentSpam($this->comment);
 
 		switch ($this->post->comment_status) {
 		case BlorgPost::COMMENT_STATUS_OPEN:
@@ -198,6 +197,8 @@ class BlorgPostPage extends SitePage
 		} else {
 			$this->deleteCommentCookie();
 		}
+
+		$this->comment->spam = $this->isCommentSpam($this->comment);
 
 		switch ($this->post->comment_status) {
 		case BlorgPost::COMMENT_STATUS_OPEN:
