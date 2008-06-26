@@ -132,7 +132,15 @@ class BlorgPostPage extends SitePage
 	protected function processCommentUi()
 	{
 		$form = $this->comment_ui->getWidget('comment_edit_form');
-		$form->process();
+
+		// wrap form processing in try/catch to catch bad input from spambots
+		try {
+			$form->process();
+		} catch (SwatInvalidSerializedDataException $e) {
+			$this->app->replacePage('httperror');
+			$this->app->getPage()->setStatus(400);
+			return;
+		}
 
 		$comment_status = $this->post->comment_status;
 		if (($comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
