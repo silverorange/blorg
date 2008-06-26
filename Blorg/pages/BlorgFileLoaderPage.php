@@ -48,10 +48,6 @@ class BlorgFileLoaderPage extends SitePage
 
 	public function build()
 	{
-		header(sprintf('Content-type: %s', $this->file->mime_type));
-		header(sprintf('Content-Disposition: filename="%s"',
-			$this->file->filename));
-
 		if ($this->app->getInstance() === null) {
 			$path = '../files/';
 		} else {
@@ -59,7 +55,14 @@ class BlorgFileLoaderPage extends SitePage
 		}
 
 		$this->file->setFileBase($path);
-		readfile($this->file->getFilePath());
+		$full_filename = $this->file->getFilePath();
+
+		header(sprintf('Content-Length: %s', filesize($full_filename)));
+		header(sprintf('Content-Type: %s', $this->file->mime_type));
+		header(sprintf('Content-Disposition: filename="%s"',
+			$this->file->filename));
+
+		readfile($full_filename);
 	}
 
 	// }}}
