@@ -50,7 +50,7 @@ class BlorgCommentDisplay extends SwatControl
 		$this->html_head_entry_set->addEntrySet(
 			XML_RPCAjax::getHtmlHeadEntrySet());
 
-		$yui = new SwatYUI(array('dom', 'event'));
+		$yui = new SwatYUI(array('dom', 'event', 'animation'));
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addStyleSheet(
@@ -99,12 +99,17 @@ class BlorgCommentDisplay extends SwatControl
 		$container_div->id = $this->id;
 		$container_div->open();
 
+		$animation_container = new SwatHtmlTag('div');
+		$animation_container->class = 'blorg-comment-display-content';
+		$animation_container->open();
+
 		$this->displayControls();
 		$this->displayHeader();
 
 		$view = $this->getView();
 		$view->display($this->comment);
 
+		$animation_container->close();
 		$container_div->close();
 
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
@@ -188,6 +193,7 @@ class BlorgCommentDisplay extends SwatControl
 			self::$view = BlorgViewFactory::get($this->app, 'comment');
 			self::$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
 			self::$view->setPartMode('permalink', BlorgView::MODE_ALL, false);
+			self::$view->setPartMode('author', BlorgView::MODE_ALL, false);
 		}
 		return self::$view;
 	}
@@ -257,10 +263,11 @@ class BlorgCommentDisplay extends SwatControl
 
 		$spam = ($this->comment->spam) ? 'true' : 'false';
 		$status = $this->comment->status;
+		$title = SwatString::quoteJavaScriptString($this->getCommentTitle());
 
 		$javascript.= sprintf(
-			"var %s_obj = new BlorgCommentDisplay('%s', %s, %s);",
-			$this->id, $this->id, $status, $spam);
+			"var %s_obj = new BlorgCommentDisplay('%s', %s, %s, %s);",
+			$this->id, $this->id, $title, $status, $spam);
 
 		return $javascript;
 	}
@@ -297,6 +304,9 @@ class BlorgCommentDisplay extends SwatControl
 		$status_unpublished_text  = SwatString::quoteJavaScriptString(
 			Blorg::_('Unpublished'));
 
+		$delete_confirmation_text  = SwatString::quoteJavaScriptString(
+			Blorg::_("Delete Comment?\n\n“%s”"));
+
 		return
 			"BlorgCommentDisplay.approve_text   = {$approve_text};\n".
 			"BlorgCommentDisplay.deny_text      = {$deny_text};\n".
@@ -310,7 +320,26 @@ class BlorgCommentDisplay extends SwatControl
 			"BlorgCommentDisplay.status_pending_text     = ".
 				"{$status_pending_text};\n".
 			"BlorgCommentDisplay.status_unpublished_text = ".
-				"{$status_unpublished_text};\n\n";
+				"{$status_unpublished_text};\n\n".
+			"BlorgCommentDisplay.delete_confirmation_text = ".
+				"{$delete_confirmation_text};\n\n";
+	}
+
+	// }}}
+	// {{{ protected function getCommentTitle()
+
+	protected function getCommentTitle()
+	{
+		$date = clone $this->comment->createdate;
+		$date->convertTZ($this->app->default_time_zone);
+
+		if ($this->comment->author === null) {
+			$fullname = $this->comment->fullname;
+		} else {
+			$fullname = $this->comment->author->name;
+		}
+
+		return $fullname.' - '.$date->format(SwatDate::DF_DATE_TIME_LONG);
 	}
 
 	// }}}
