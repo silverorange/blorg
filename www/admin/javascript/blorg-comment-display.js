@@ -1,7 +1,6 @@
-function BlorgCommentDisplay(id, title, comment_status, spam)
+function BlorgCommentDisplay(id, comment_status, spam)
 {
 	this.id = id;
-	this.comment_title = title;
 	this.comment_status = comment_status;
 	this.comment_spam = spam;
 
@@ -9,6 +8,7 @@ function BlorgCommentDisplay(id, title, comment_status, spam)
 	this.comment_id = (id_split[1]) ? id_split[1] : id_split[0];
 
 	this.initControls();
+	this.initConfirmation();
 	this.container = document.getElementById(this.id);
 	this.status_container = document.getElementById(this.id + '_status');
 }
@@ -20,12 +20,13 @@ BlorgCommentDisplay.unpublish_text = 'Unpublish';
 BlorgCommentDisplay.spam_text      = 'Spam';
 BlorgCommentDisplay.not_spam_text  = 'Not Spam';
 BlorgCommentDisplay.delete_text    = 'Delete';
+BlorgCommentDisplay.cancel_text    = 'Cancel';
 
 BlorgCommentDisplay.status_spam_text        = 'Spam';
 BlorgCommentDisplay.status_pending_text     = 'Pending';
 BlorgCommentDisplay.status_unpublished_text = 'Unpublished';
 
-BlorgCommentDisplay.delete_confirmation_text = 'Delete Comment?\n\n“%s”';
+BlorgCommentDisplay.delete_confirmation_text = 'Delete comment?';
 
 BlorgCommentDisplay.STATUS_PENDING     = 0;
 BlorgCommentDisplay.STATUS_PUBLISHED   = 1;
@@ -68,7 +69,7 @@ BlorgCommentDisplay.prototype.initControls = function()
 	this.delete_button.type = 'button';
 	this.delete_button.value = BlorgCommentDisplay.delete_text;
 	YAHOO.util.Event.on(this.delete_button, 'click',
-		this.deleteComment, this, true);
+		this.confirmDelete, this, true);
 
 	if (this.comment_status == BlorgCommentDisplay.STATUS_PUBLISHED) {
 		this.publish_toggle_button.value = BlorgCommentDisplay.unpublish_text;
@@ -102,6 +103,40 @@ BlorgCommentDisplay.prototype.initControls = function()
 	controls_div.appendChild(this.spam_toggle_button);
 	controls_div.appendChild(document.createTextNode(' '));
 	controls_div.appendChild(this.delete_button);
+}
+
+// }}}
+// {{{ initConfirmation()
+
+BlorgCommentDisplay.prototype.initConfirmation = function()
+{
+	this.confirmation = document.createElement('div');
+	this.confirmation.className = 'blorg-comment-display-confirmation';
+	this.confirmation.style.display = 'none';
+
+	var message_div = document.createElement('div');
+	BlorgCommentDisplay.setTextContent(message_div,
+		BlorgCommentDisplay.delete_confirmation_text);
+
+	this.confirmation.appendChild(message_div);
+
+	this.confirmation_cancel = document.createElement('input');
+	this.confirmation_cancel.type ='button';
+	this.confirmation_cancel.value = 'Cancel'; //TODO
+	this.confirmation.appendChild(this.confirmation_cancel);
+	YAHOO.util.Event.on(this.confirmation_cancel, 'click', this.cancelDelete,
+		this, true);
+
+	this.confirmation.appendChild(document.createTextNode(' '));
+
+	this.confirmation_ok = document.createElement('input');
+	this.confirmation_ok.type ='button';
+	this.confirmation_ok.value = BlorgCommentDisplay.delete_text;
+	this.confirmation.appendChild(this.confirmation_ok);
+	YAHOO.util.Event.on(this.confirmation_ok, 'click', this.deleteComment,
+		this, true);
+
+	this.delete_button.parentNode.appendChild(this.confirmation);
 }
 
 // }}}
@@ -296,14 +331,7 @@ BlorgCommentDisplay.prototype.updateStatus = function()
 
 BlorgCommentDisplay.prototype.deleteComment = function()
 {
-	var confirmation = BlorgCommentDisplay.delete_confirmation_text.replace(
-		/%s/, this.comment_title);
-
-	if (!confirm(confirmation)) {
-		return;
-	}
-
-	this.setSensitivity(false);
+	this.confirmation.style.display = 'none';
 
 	var that = this;
 	function callBack(response)
@@ -340,6 +368,34 @@ BlorgCommentDisplay.prototype.removeContainer = function()
 	YAHOO.util.Event.purgeElement(this.container, true);
 	this.container.parentNode.removeChild(this.container);
 	delete this.container;
+}
+
+// }}}
+// {{{ confirmDelete()
+
+BlorgCommentDisplay.prototype.confirmDelete = function()
+{
+	this.setSensitivity(false);
+
+	var parent_region = YAHOO.util.Dom.getRegion(this.delete_button);
+
+	this.confirmation.style.display = 'block';
+
+	var region = YAHOO.util.Dom.getRegion(this.confirmation);
+	YAHOO.util.Dom.setXY(this.confirmation,
+		[parent_region.right - (region.right - region.left),
+		parent_region.top]);
+
+	this.confirmation_cancel.focus();
+}
+
+// }}}
+// {{{ cancelDelete()
+
+BlorgCommentDisplay.prototype.cancelDelete = function()
+{
+	this.confirmation.style.display = 'none';
+	this.setSensitivity(true);
 }
 
 // }}}
