@@ -1,0 +1,42 @@
+.blorg-comment-display {
+	padding: 0.5em;
+	margin: 1em 0;
+}
+
+.blorg-comment-red {
+	border: 1px solid #dc6e66;
+	background: #ffe3e0;
+}
+
+.blorg-comment-yellow {
+	border: 1px solid #facd00;
+	background: #ff9;
+}
+
+.blorg-comment-green {
+	border-bottom: 1px solid #e7ddc8;
+}
+
+/* TODO: not supported in IE6 */
+.blorg-comment-display.blorg-comment-green {
+	padding-top: 0;
+	padding-bottom: 1em;
+}
+
+.blorg-comment-display .blorg-comment-display-controls {
+	float: right;
+}
+
+.blorg-comment-display .blorg-comment-display-controls input {
+	margin-left: 0.25em;
+	width: 7em;
+	font-size: 85%;
+}
+
+.blorg-comment-display h4 {
+	margin: 0.5em 0;
+}
+
+.blorg-comment-display .comment {
+	margin-left: 0.5em;
+}
