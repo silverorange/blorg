@@ -747,6 +747,15 @@ class BlorgPostEdit extends AdminDBEdit
 			$options[] = new SwatOption($small_markup, 'Small');
 
 			// original
+			$img_tag = $file->image->getImgTag('original');
+			$img_tag->title = $file->description;
+
+			$small_markup = sprintf('<a class="file" href="%s">%s</a>',
+				$uri, $img_tag);
+
+			$options[] = new SwatOption($small_markup, 'Original');
+
+			// link to file
 			$description = ($file->description === null) ?
 				$file->filename : $file->description;
 
