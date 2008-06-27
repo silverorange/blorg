@@ -55,7 +55,7 @@ class BlorgPostComments extends AdminPage
 		$this->ui->loadFromXML($this->ui_xml);
 
 		$visibility_options = array(
-			self::SHOW_UNAPPROVED => Blorg::_('Comments Awaiting Approval'),
+			self::SHOW_UNAPPROVED => Blorg::_('Pending Comments'),
 			self::SHOW_ALL        => Blorg::_('All Comments'),
 			self::SHOW_ALL_SPAM   => Blorg::_('All Comments, Including Spam'),
 			self::SHOW_SPAM       => Blorg::_('Spam Only'),
@@ -94,11 +94,9 @@ class BlorgPostComments extends AdminPage
 		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
 		$comments = SwatDB::query($this->app->db, $sql, $wrapper);
 
-		if (count($comments) > 0) {
-			$this->ui->getWidget('results_message')->content =
-				$pager->getResultsMessage(Blorg::_('result'),
-					Blorg::_('results'));
-		}
+		$this->ui->getWidget('results_message')->content =
+			$pager->getResultsMessage(Blorg::_('comment'),
+				Blorg::_('comments'));
 
 		// efficiently load posts for all comments
 		$instance_id = $this->app->getInstanceId();
