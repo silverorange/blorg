@@ -244,7 +244,7 @@ class BlorgCommentView extends BlorgView
 			$div_tag->class = 'comment-content';
 			$div_tag->setContent(SwatString::ellipsizeRight(
 				SwatString::condense(BlorgComment::getBodyTextXhtml(
-					$comment->bodytext))), 'text/xml');
+					$comment->bodytext)), 400), 'text/xml');
 
 			$div_tag->display();
 			break;
