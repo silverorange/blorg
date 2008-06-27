@@ -288,6 +288,15 @@ class BlorgCommentDisplay extends SwatControl
 		$unpublish_text = SwatString::quoteJavaScriptString(
 			Blorg::_('Unpublish'));
 
+		$status_spam_text = SwatString::quoteJavaScriptString(
+			Blorg::_('Spam'));
+
+		$status_pending_text = SwatString::quoteJavaScriptString(
+			Blorg::_('Pending'));
+
+		$status_unpublished_text  = SwatString::quoteJavaScriptString(
+			Blorg::_('Unpublished'));
+
 		return
 			"BlorgCommentDisplay.approve_text   = {$approve_text};\n".
 			"BlorgCommentDisplay.deny_text      = {$deny_text};\n".
@@ -295,7 +304,13 @@ class BlorgCommentDisplay extends SwatControl
 			"BlorgCommentDisplay.unpublish_text = {$unpublish_text};\n".
 			"BlorgCommentDisplay.spam_text      = {$spam_text};\n".
 			"BlorgCommentDisplay.not_spam_text  = {$not_spam_text};\n".
-			"BlorgCommentDisplay.delete_text    = {$delete_text};\n";
+			"BlorgCommentDisplay.delete_text    = {$delete_text};\n\n".
+			"BlorgCommentDisplay.status_spam_text        = ".
+				"{$status_spam_text};\n".
+			"BlorgCommentDisplay.status_pending_text     = ".
+				"{$status_pending_text};\n".
+			"BlorgCommentDisplay.status_unpublished_text = ".
+				"{$status_unpublished_text};\n\n";
 	}
 
 	// }}}
