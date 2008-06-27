@@ -263,11 +263,10 @@ class BlorgCommentDisplay extends SwatControl
 
 		$spam = ($this->comment->spam) ? 'true' : 'false';
 		$status = $this->comment->status;
-		$title = SwatString::quoteJavaScriptString($this->getCommentTitle());
 
 		$javascript.= sprintf(
-			"var %s_obj = new BlorgCommentDisplay('%s', %s, %s, %s);",
-			$this->id, $this->id, $title, $status, $spam);
+			"var %s_obj = new BlorgCommentDisplay('%s', %s, %s);",
+			$this->id, $this->id, $status, $spam);
 
 		return $javascript;
 	}
@@ -288,6 +287,7 @@ class BlorgCommentDisplay extends SwatControl
 		$publish_text = SwatString::quoteJavaScriptString(Blorg::_('Publish'));
 		$spam_text    = SwatString::quoteJavaScriptString(Blorg::_('Spam'));
 		$delete_text  = SwatString::quoteJavaScriptString(Blorg::_('Delete'));
+		$cancel_text  = SwatString::quoteJavaScriptString(Blorg::_('Cancel'));
 
 		$not_spam_text = SwatString::quoteJavaScriptString(
 			Blorg::_('Not Spam'));
@@ -305,7 +305,7 @@ class BlorgCommentDisplay extends SwatControl
 			Blorg::_('Unpublished'));
 
 		$delete_confirmation_text  = SwatString::quoteJavaScriptString(
-			Blorg::_("Delete Comment?\n\n“%s”"));
+			Blorg::_('Delete comment?'));
 
 		return
 			"BlorgCommentDisplay.approve_text   = {$approve_text};\n".
@@ -314,7 +314,8 @@ class BlorgCommentDisplay extends SwatControl
 			"BlorgCommentDisplay.unpublish_text = {$unpublish_text};\n".
 			"BlorgCommentDisplay.spam_text      = {$spam_text};\n".
 			"BlorgCommentDisplay.not_spam_text  = {$not_spam_text};\n".
-			"BlorgCommentDisplay.delete_text    = {$delete_text};\n\n".
+			"BlorgCommentDisplay.delete_text    = {$delete_text};\n".
+			"BlorgCommentDisplay.cancel_text    = {$cancel_text};\n\n".
 			"BlorgCommentDisplay.status_spam_text        = ".
 				"{$status_spam_text};\n".
 			"BlorgCommentDisplay.status_pending_text     = ".
@@ -323,23 +324,6 @@ class BlorgCommentDisplay extends SwatControl
 				"{$status_unpublished_text};\n\n".
 			"BlorgCommentDisplay.delete_confirmation_text = ".
 				"{$delete_confirmation_text};\n\n";
-	}
-
-	// }}}
-	// {{{ protected function getCommentTitle()
-
-	protected function getCommentTitle()
-	{
-		$date = clone $this->comment->createdate;
-		$date->convertTZ($this->app->default_time_zone);
-
-		if ($this->comment->author === null) {
-			$fullname = $this->comment->fullname;
-		} else {
-			$fullname = $this->comment->author->name;
-		}
-
-		return $fullname.' - '.$date->format(SwatDate::DF_DATE_TIME_LONG);
 	}
 
 	// }}}

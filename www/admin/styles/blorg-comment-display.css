@@ -25,6 +25,17 @@
 	border-bottom: 1px solid #e7ddc8;
 }
 
+.blorg-comment-display-confirmation {
+	position: absolute;
+	border: 1px solid #e7ddc8;
+	background: #fff;
+	padding: 0.5em;
+}
+
+.blorg-comment-display-confirmation div {
+	margin-bottom: 0.25em;
+}
+
 .blorg-comment-display .blorg-comment-display-controls {
 	float: right;
 }
