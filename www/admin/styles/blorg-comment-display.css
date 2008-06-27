@@ -28,9 +28,10 @@
 }
 
 .blorg-comment-display .blorg-comment-display-controls input {
-	margin-left: 0.25em;
 	width: 7em;
 	font-size: 85%;
+	padding: 0.1em;
+	vertical-align: middle;
 }
 
 .blorg-comment-display h4 {
