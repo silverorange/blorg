@@ -45,7 +45,11 @@ class BlorgTagGadget extends BlorgGadget
 
 		$tags = $this->getTags();
 		if (count($tags) > 0) {
-			echo '<ul>';
+			$ul_tag = new SwatHtmlTag('ul');
+			if ($this->getValue('cloud_view')) {
+				$ul_tag->class = 'blorg-tag-cloud';
+			}
+			$ul_tag->open();
 
 			$max = 0;
 			foreach ($tags as $tag) {
@@ -61,12 +65,14 @@ class BlorgTagGadget extends BlorgGadget
 				$li_tag = new SwatHtmlTag('li');
 				$li_tag->open();
 
+				$tag_span_tag = new SwatHtmlTag('span');
+				$tag_span_tag->class = $this->getTagClass($popularity);
+				$tag_span_tag->open();
+
 				$anchor_tag = new SwatHtmlTag('a');
 				$anchor_tag->href = $path.'/'.$tag->shortname;
-				$anchor_tag->class = $this->getTagClass($popularity);
 				$anchor_tag->setContent($tag->title);
 				$anchor_tag->display();
-
 
 				if ($this->getValue('show_post_counts')) {
 					echo ' ';
@@ -97,10 +103,17 @@ class BlorgTagGadget extends BlorgGadget
 					$span_tag->close();
 				}
 
+				$tag_span_tag->close();
+
+				// breaking space for inline list items in cloud view
+				if ($this->getValue('cloud_view')) {
+					echo ' ';
+				}
+
 				$li_tag->close();
 			}
 
-			echo '</ul>';
+			$ul_tag->close();
 		}
 	}
 
@@ -118,9 +131,16 @@ class BlorgTagGadget extends BlorgGadget
 		$this->defineSetting('show_post_counts', 'Show Post Counts',
 			'boolean', true);
 
+		$this->defineSetting('cloud_view', 'Use Cloud View',
+			'boolean', true);
+
 		$this->defineDescription(Blorg::_(
 			'Displays a list of tags and a post count for each tag. This can '.
 			'easily be styled to be a “cloud view”.'));
+
+		$this->addStyleSheet(
+			'packages/blorg/styles/blorg-tag-gadget.css',
+			Blorg::PACKAGE_ID);
 	}
 
 	// }}}
@@ -152,13 +172,13 @@ class BlorgTagGadget extends BlorgGadget
 	protected function getTagClass($popularity)
 	{
 		if ($popularity > 0.75) {
-			$class = 'blorg-tag-popularty-4';
+			$class = 'blorg-tag-popularity-4';
 		} elseif ($popularity > 0.5) {
-			$class = 'blorg-tag-popularty-3';
+			$class = 'blorg-tag-popularity-3';
 		} elseif ($popularity > 0.25) {
-			$class = 'blorg-tag-popularty-2';
+			$class = 'blorg-tag-popularity-2';
 		} else {
-			$class = 'blorg-tag-popularty-1';
+			$class = 'blorg-tag-popularity-1';
 		}
 
 		return $class;
