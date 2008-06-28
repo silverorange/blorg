@@ -194,6 +194,7 @@ class BlorgCommentDisplay extends SwatControl
 			self::$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
 			self::$view->setPartMode('permalink', BlorgView::MODE_ALL, false);
 			self::$view->setPartMode('author', BlorgView::MODE_ALL, false);
+			self::$view->setPartMode('link', BlorgView::MODE_ALL, false);
 		}
 		return self::$view;
 	}
