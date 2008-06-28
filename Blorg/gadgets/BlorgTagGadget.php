@@ -132,7 +132,7 @@ class BlorgTagGadget extends BlorgGadget
 			'boolean', true);
 
 		$this->defineSetting('cloud_view', 'Use Cloud View',
-			'boolean', true);
+			'boolean', false);
 
 		$this->defineDescription(Blorg::_(
 			'Displays a list of tags and a post count for each tag. This can '.
