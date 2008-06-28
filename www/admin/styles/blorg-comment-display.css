@@ -54,3 +54,9 @@
 .blorg-comment-display .comment {
 	margin-left: 0.5em;
 }
+
+.blorg-comment-display .comment-link {
+	font-weight: bold;
+	margin-bottom: 0.5em;
+	color: #666;
+}
