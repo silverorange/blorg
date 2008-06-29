@@ -4,6 +4,7 @@ require_once 'Swat/Swat.php';
 require_once 'Swat/SwatHtmlHeadEntrySet.php';
 require_once 'Swat/SwatLinkHtmlHeadEntry.php';
 require_once 'Site/Site.php';
+require_once 'Site/SiteGadgetFactory.php';
 require_once 'Admin/Admin.php';
 require_once 'Blorg/BlorgViewFactory.php';
 
@@ -213,5 +214,7 @@ BlorgViewFactory::addPath('Blorg/views');
 BlorgViewFactory::registerView('post',    'BlorgPostView');
 BlorgViewFactory::registerView('comment', 'BlorgCommentView');
 BlorgViewFactory::registerView('author',  'BlorgAuthorView');
+
+SiteGadgetFactory::addPath('Blorg/gadgets');
 
 ?>

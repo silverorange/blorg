@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Blorg/BlorgGadget.php';
+require_once 'Site/SiteGadget.php';
 require_once 'Swat/SwatString.php';
 require_once 'Swat/SwatYUI.php';
 
@@ -16,7 +16,7 @@ require_once 'Swat/SwatYUI.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgLastFmGadget extends BlorgGadget
+class BlorgLastFmGadget extends SiteGadget
 {
 	// {{{ protected function displayContent()
 

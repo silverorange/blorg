@@ -4,7 +4,7 @@ require_once 'Swat/SwatHtmlTag.php';
 require_once 'Swat/SwatWidget.php';
 require_once 'Swat/SwatUIParent.php';
 require_once 'SwatDB/SwatDBReadaheadIterator.php';
-require_once 'Blorg/BlorgGadget.php';
+require_once 'Site/SiteGadget.php';
 
 /**
  * Sidebar widget that can contain multiple gadgets
@@ -19,7 +19,7 @@ require_once 'Blorg/BlorgGadget.php';
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
- * @see       BlorgGadget
+ * @see       SiteGadget
  */
 class BlorgSidebar extends SwatWidget implements SwatUIParent
 {
@@ -193,7 +193,7 @@ class BlorgSidebar extends SwatWidget implements SwatUIParent
 	/**
 	 * Gets the first gadget in this sidebar
 	 *
-	 * @return BlorgGadget the first gadget or null if there are no gadgets.
+	 * @return SiteGadget the first gadget or null if there are no gadgets.
 	 */
 	public function getFirst()
 	{
@@ -210,9 +210,9 @@ class BlorgSidebar extends SwatWidget implements SwatUIParent
 	/**
 	 * Adds a gadget to this sidebar
 	 *
-	 * @param BlorgGadget $gadget the gadget to add.
+	 * @param SiteGadget $gadget the gadget to add.
 	 */
-	public function add(BlorgGadget $gadget)
+	public function add(SiteGadget $gadget)
 	{
 		$this->gadgets[] = $gadget;
 	}
@@ -223,18 +223,18 @@ class BlorgSidebar extends SwatWidget implements SwatUIParent
 	/**
 	 * Add a child object to this object
 	 *
-	 * @param BlorgGadget $child the reference to the child object to add.
+	 * @param SiteGadget $child the reference to the child object to add.
 	 *
 	 * @throws SwatInvalidClassException if the given <i>$child</i> is not an
-	 *                                    instance of {@link BlorgGadget}.
+	 *                                    instance of {@link SiteGadget}.
 	 *
 	 * @see SwatUIParent::addChild()
 	 */
 	public function addChild(SwatObject $child)
 	{
-		if (!($child instanceof BlorgGadget))
+		if (!($child instanceof SiteGadget))
 			throw new SwatInvalidClassException(
-				'Only BlorgGadget objects may be nested within '.
+				'Only SiteGadget objects may be nested within '.
 				get_class($this).' objects.', 0, $child);
 
 		$this->add($child);
@@ -402,17 +402,17 @@ class BlorgSidebar extends SwatWidget implements SwatUIParent
 	// {{{ protected function getGadgetCSSClassName()
 
 	/**
-	 * @param BlorgGadget $gadget
+	 * @param SiteGadget $gadget
 	 *
 	 * @return string
 	 */
-	protected function getGadgetCSSClassName(BlorgGadget $gadget)
+	protected function getGadgetCSSClassName(SiteGadget $gadget)
 	{
 		$php_class_name = get_class($gadget);
 		$css_class_names = array();
 
 		// get the ancestors that are swat classes
-		while (strcmp($php_class_name, 'BlorgGadget') !== 0) {
+		while (strcmp($php_class_name, 'SiteGadget') !== 0) {
 			if (strncmp($php_class_name, 'Blorg', 5) === 0) {
 				$css_class_name = strtolower(preg_replace('/([A-Z])/u',
 					'-\1', $php_class_name));

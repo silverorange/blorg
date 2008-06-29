@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Blorg/BlorgGadget.php';
+require_once 'Site/SiteGadget.php';
 require_once 'Site/SiteSearchForm.php';
 require_once 'Swat/SwatFormField.php';
 require_once 'Site/SiteUnnamedButton.php';
@@ -18,7 +18,7 @@ require_once 'Swat/SwatSearchEntry.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgSearchGadget extends BlorgGadget
+class BlorgSearchGadget extends SiteGadget
 {
 	// {{{ protected properties
 
