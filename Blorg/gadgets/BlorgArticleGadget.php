@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Blorg/BlorgGadget.php';
+require_once 'Site/SiteGadget.php';
 require_once 'Site/dataobjects/SiteArticleWrapper.php';
 require_once 'Swat/SwatString.php';
 require_once 'Swat/SwatHtmlTag.php';
@@ -15,7 +15,7 @@ require_once 'SwatI18N/SwatI18NLocale.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgArticleGadget extends BlorgGadget
+class BlorgArticleGadget extends SiteGadget
 {
 	// {{{ protected function displayContent()
 
