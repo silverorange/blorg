@@ -167,9 +167,18 @@ class BlorgPostPage extends SitePage
 		$link       = $this->comment_ui->getWidget('link');
 		$email      = $this->comment_ui->getWidget('email');
 		$bodytext   = $this->comment_ui->getWidget('bodytext');
-		// TODO: http clients may not include these headers
-		$ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
-		$user_agent = substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
+
+		if (isset($_SERVER['REMOTE_ADDR'])) {
+			$ip_address = substr($_SERVER['REMOTE_ADDR'], 0, 15);
+		} else {
+			$ip_address = null;
+		}
+
+		if (isset($_SERVER['HTTP_USER_AGENT'])) {
+			$user_agent = substr($_SERVER['HTTP_USER_AGENT'], 0, 255);
+		} else {
+			$user_agent = null;
+		}
 
 		$class_name = SwatDBClassMap::get('BlorgComment');
 		$this->comment = new $class_name();
