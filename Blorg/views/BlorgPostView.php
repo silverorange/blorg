@@ -201,35 +201,36 @@ class BlorgPostView extends BlorgView
 				$post->comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
 				$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED));
 
-		if ($author != '') {
-			if ($tags != '') {
-				if ($show_comment_count) {
-					printf(Blorg::_('Posted by %s on %s in %s - %s'),
-						$author, $permalink, $tags, $comment_count);
-				} else {
-					printf(Blorg::_('Posted by %s on %s in %s'),
-						$author, $permalink, $tags);
-				}
-			} else {
-				if ($show_comment_count) {
-					printf(Blorg::_('Posted by %s on %s - %s'),
-						$author, $permalink, $comment_count);
-				} else {
-					printf(Blorg::_('Posted by %s on %s'), $author, $permalink);
-				}
-			}
-		} elseif ($show_comment_count) {
-			if ($tags != '') {
-				printf('%s in %s - %s', $permalink, $tags, $comment_count);
-			} else {
-				printf(Blorg::_('%s - %s'), $permalink, $comment_count);
-			}
+		if (      $author != '' && $tags != '' &&  $show_comment_count) {
+			printf(Blorg::_('Posted by %s on %s in %s - %s'),
+				$author, $permalink, $tags, $comment_count);
+
+		} elseif ($author != '' && $tags != '' && !$show_comment_count) {
+			printf(Blorg::_('Posted by %s on %s in %s'),
+				$author, $permalink, $tags);
+
+		} elseif ($author != '' && $tags == '' &&  $show_comment_count) {
+			printf(Blorg::_('Posted by %s on %s - %s'),
+				$author, $permalink, $comment_count);
+
+		} elseif ($author != '' && $tags == '' && !$show_comment_count) {
+			printf(Blorg::_('Posted by %s on %s'),
+				$author, $permalink);
+
+		} elseif ($author == '' && $tags != '' &&  $show_comment_count) {
+			printf(Blorg::_('%s in %s - %s'),
+				$permalink, $tags, $comment_count);
+
+		} elseif ($author == '' && $tags != '' && !$show_comment_count) {
+			printf(Blorg::_('%s in %s'),
+				$permalink, $tags);
+
+		} elseif ($author == '' && $tags == '' &&  $show_comment_count) {
+			printf(Blorg::_('%s - %s'),
+				$permalink, $comment_count);
+
 		} else {
-			if ($tags != '') {
-				printf(Blorg::_('%s in %s'), $permalink, $tags);
-			} else {
-				echo $permalink;
-			}
+			echo $permalink;
 		}
 
 		echo '</div>';
