@@ -7,10 +7,10 @@ $notes = <<<EOT
 see ChangeLog
 EOT;
 
-$description =<<<EOT
-Blorg, or better yet Blörg is our awesome new blogging package. The equivalent
-to our current blog platform will be called Blörgy — a multitide of Blörgs.
-EOT;
+$description =
+	"Blorg, or better yet Blörg is our awesome new blogging package. Blörgy ".
+	"is a site built using the Blörg package that supports multiple blogs. ".
+	"Currently, several weblogs and other sites are using Blörg."
 
 $package = new PEAR_PackageFileManager2();
 PEAR::setErrorHandling(PEAR_ERROR_DIE);
@@ -30,7 +30,8 @@ $result = $package->setOptions(
 );
 
 $package->setPackage('Blorg');
-$package->setSummary('Blorg!');
+$package->setSummary('A package for creating weblogs.');
+
 $package->setDescription($description);
 $package->setChannel('pear.silverorange.com');
 $package->setPackageType('php');
