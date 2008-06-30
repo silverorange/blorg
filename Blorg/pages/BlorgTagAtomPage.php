@@ -101,6 +101,9 @@ class BlorgTagAtomPage extends SitePage
 		$loader->addSelectField('comment_status');
 		$loader->addSelectField('visible_comment_count');
 
+		$loader->setLoadFiles(true);
+		$loader->setLoadTags(true);
+
 		$loader->setWhereClause(sprintf('enabled = %s and
 			id in (select post from BlorgPostTagBinding where tag = %s)',
 			$this->app->db->quote(true, 'boolean'),
@@ -192,7 +195,7 @@ class BlorgTagAtomPage extends SitePage
 				$entry->setContent($post->bodytext, 'html');
 			}
 
-			foreach ($post->tags as $tag) {
+			foreach ($post->getTags() as $tag) {
 				$entry->addCategory($tag->shortname, $blorg_base_href,
 					$tag->title);
 			}
