@@ -204,20 +204,20 @@ class BlorgPostView extends BlorgView
 
 		if ($author != '') {
 			if ($show_comment_count) {
-				printf(Blorg::_('Posted by %s on %s - %s'),
-					$author, $permalink, $comment_count);
+				printf(Blorg::_('Posted by %s on %s - %s %s'),
+					$author, $permalink, $comment_count, $tags);
 			} else {
-				printf(Blorg::_('Posted by %s on %s'), $author, $permalink);
+				printf(Blorg::_('Posted by %s on %s %s'),
+					$author, $permalink, $tags);
 			}
 		} else {
 			if ($show_comment_count) {
-				printf('%s - %s', $permalink, $comment_count);
+				printf('%s - %s %s', $permalink, $comment_count, $tags);
 			} else {
-				echo $permalink;
+				echo $permalink.' '.$tags;
 			}
 		}
 
-		echo $tags;
 		echo '</div>';
 	}
 
@@ -522,7 +522,7 @@ class BlorgPostView extends BlorgView
 
 				$title_tag = new SwatHtmlTag('span');
 				$title_tag->class = 'entry-tags-title';
-				$title_tag->setContent(Blorg::_(' Tags: '));
+				$title_tag->setContent(Blorg::_('Tags: '));
 				$title_tag->display();
 
 				foreach ($post->tags as $tag) {
