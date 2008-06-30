@@ -74,6 +74,13 @@ class BlorgPostLoader
 	 */
 	protected $load_files = false;
 
+	/**
+	 * @var boolean
+	 *
+	 * @see BlorgPostLoader::setLoadTags()
+	 */
+	protected $load_tags = false;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -112,6 +119,10 @@ class BlorgPostLoader
 			$this->loadPostFiles($posts);
 		}
 
+		if ($this->load_tags) {
+			$this->loadPostTags($posts);
+		}
+
 		return $posts;
 	}
 
@@ -144,6 +155,10 @@ class BlorgPostLoader
 
 		if ($this->load_files) {
 			$this->loadPostFiles($posts);
+		}
+
+		if ($this->load_tags) {
+			$this->loadPostTags($posts);
 		}
 
 		return $posts->getFirst();
@@ -189,7 +204,22 @@ class BlorgPostLoader
 	}
 
 	// }}}
-	// {{{ public setOrderByClause()
+	// {{{ public function setLoadTags()
+
+	/**
+	 * Sets whether or not to efficiently load the tags for loaded posts
+	 *
+	 * Set this to true if the tags are to be displayed, false otherwise.
+	 *
+	 * @param boolean $load_tags
+	 */
+	public function setLoadTags($load_tags)
+	{
+		$this->load_tags = (boolean)$load_tags;
+	}
+
+	// }}}
+	// {{{ public function setOrderByClause()
 
 	public function setOrderByClause($order_by_clause)
 	{
@@ -205,7 +235,7 @@ class BlorgPostLoader
 	}
 
 	// }}}
-	// {{{ setRange()
+	// {{{ public function setRange()
 
 	public function setRange($range = null, $offset = null)
 	{
@@ -342,6 +372,60 @@ class BlorgPostLoader
 				$current_recordset = $posts[$post_id]->getVisibleFiles();
 			}
 			$current_recordset->add($file);
+		}
+	}
+
+	// }}}
+	// {{{ protected function loadPostTags()
+
+	/**
+	 * Efficiently loads tags for a set of posts
+	 *
+	 * @param BlorgPostWrapper $posts the posts for which to efficiently load
+	 *                                 tags.
+	 */
+	protected function loadPostTags(BlorgPostWrapper $posts)
+	{
+		$instance_id = ($this->instance === null) ? null : $this->instance->id;
+		$wrapper = SwatDBClassMap::get('BlorgTagWrapper');
+
+		// get post ids
+		$post_ids = array();
+		foreach ($posts as $post) {
+			$post_ids[] = $post->id;
+		}
+		$post_ids = $this->db->implodeArray($post_ids, 'integer');
+
+		// build SQL to select all tags
+		$sql = sprintf('select BlorgTag.*, BlorgPostTagBinding.post
+			from BlorgTag
+				inner join BlorgPostTagBinding on
+					BlorgTag.id = BlorgPostTagBinding.tag
+			where post in (%s) and BlorgTag.instance %s %s
+			order by post, createdate desc',
+			$post_ids,
+			SwatDB::equalityOperator($instance_id),
+			$this->db->quote($instance_id, 'integer'));
+
+		// get all tags
+		$tags = SwatDB::query($this->db, $sql, $wrapper);
+
+		// assign empty recordsets for all posts
+		foreach ($posts as $post) {
+			$recordset = new $wrapper();
+			$post->setTags($recordset);
+		}
+
+		// assign tags to correct posts
+		$current_post_id = null;
+		$current_recordset = null;
+		foreach ($tags as $tag) {
+			$post_id = $tag->getInternalValue('post');
+			if ($post_id !== $current_post_id) {
+				$current_post_id = $post_id;
+				$current_recordset = $posts[$post_id]->getTags();
+			}
+			$current_recordset->add($tag);
 		}
 	}
 

@@ -131,6 +131,16 @@ class BlorgPost extends SwatDBDataObject
 	 */
 	protected $visible_files;
 
+	/**
+	 * Cache of tags for this post
+	 *
+	 * @var BlorgTagWrapper
+	 *
+	 * @see BlorgPost::getTags()
+	 * @see BlorgPost::setTags()
+	 */
+	protected $tags_cache;
+
 	// }}}
 	// {{{ public function loadByDateAndShortname()
 
@@ -368,6 +378,38 @@ class BlorgPost extends SwatDBDataObject
 	public function setVisibleFiles(BlorgFileWrapper $files)
 	{
 		$this->visible_files = $files;
+	}
+
+	// }}}
+	// {{{ public function getTags()
+
+	/**
+	 * Gets tags for this post
+	 *
+	 * @return BlorgTagWrapper
+	 */
+	public function getTags()
+	{
+		if ($this->tags_cache === null) {
+			$this->tags_cache = $this->tags;
+		}
+
+		return $this->tags_cache;
+	}
+
+	// }}}
+	// {{{ public function setTags()
+
+	/**
+	 * Sets tags files for this post
+	 *
+	 * Allows a single query to set tag sets for multiple posts.
+	 *
+	 * @param BlorgTagWrapper $tags
+	 */
+	public function setTags(BlorgTagWrapper $tags)
+	{
+		$this->tags_cache = $tags;
 	}
 
 	// }}}
