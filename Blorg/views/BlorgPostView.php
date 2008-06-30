@@ -512,15 +512,25 @@ class BlorgPostView extends BlorgView
 			$counter = 1;
 			if ($num_of_tags > 0) {
 				$link = $this->getLink('tags');
-				$p_tag = new SwatHtmlTag('p');
-				$p_tag->class = 'entry-tags';
-				$p_tag->open();
-				echo Blorg::_('Tags: ');
+				$span_tag = new SwatHtmlTag('span');
+				$span_tag->class = 'entry-tags';
+				$span_tag->open();
+
+				$title_tag = new SwatHtmlTag('span');
+				$title_tag->class = 'entry-tags-title';
+				$title_tag->setContent(Blorg::_('Tags: '));
+				$title_tag->display();
+
 				foreach ($post->tags as $tag) {
-					if ($link === false) {
-						echo SwatString::minimizeEntities($tag->title);
+					if ($link === true) {
+						$no_link_tag = new SwatHtmlTag('span');
+						$no_link_tag->setContent(SwatString::minimizeEntities(
+							$tag->title));
+
+						$no_link_tag->display();
 					} else {
 						$a_tag = new SwatHtmlTag('a');
+						$a_tag->rel = 'tag';
 						$a_tag->href = 'tag/'.$tag->shortname;
 						$a_tag->setContent($tag->title);
 						$a_tag->display();
@@ -531,7 +541,8 @@ class BlorgPostView extends BlorgView
 
 					$counter++;
 				}
-				$p_tag->close();
+
+				$span_tag->close();
 			}
 		}
 	}
