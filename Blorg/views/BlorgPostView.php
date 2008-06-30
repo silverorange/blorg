@@ -203,18 +203,33 @@ class BlorgPostView extends BlorgView
 				$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED));
 
 		if ($author != '') {
-			if ($show_comment_count) {
-				printf(Blorg::_('Posted by %s on %s - %s %s'),
-					$author, $permalink, $comment_count, $tags);
+			if ($tags != '') {
+				if ($show_comment_count) {
+					printf(Blorg::_('Posted by %s on %s in %s - %s'),
+						$author, $permalink, $tags, $comment_count);
+				} else {
+					printf(Blorg::_('Posted by %s on %s in %s'),
+						$author, $permalink, $tags);
+				}
 			} else {
-				printf(Blorg::_('Posted by %s on %s %s'),
-					$author, $permalink, $tags);
+				if ($show_comment_count) {
+					printf(Blorg::_('Posted by %s on %s - %s'),
+						$author, $permalink, $comment_count);
+				} else {
+					printf(Blorg::_('Posted by %s on %s'), $author, $permalink);
+				}
+			}
+		} elseif ($show_comment_count) {
+			if ($tags != '') {
+				printf('%s in %s - %s', $permalink, $tags, $comment_count);
+			} else {
+				printf(Blorg::_('%s - %s'), $permalink, $comment_count);
 			}
 		} else {
-			if ($show_comment_count) {
-				printf('%s - %s %s', $permalink, $comment_count, $tags);
+			if ($tags != '') {
+				printf(Blorg::_('%s in %s'), $permalink, $tags);
 			} else {
-				echo $permalink.' '.$tags;
+				echo $permalink;
 			}
 		}
 
@@ -520,11 +535,6 @@ class BlorgPostView extends BlorgView
 				$span_tag = new SwatHtmlTag('span');
 				$span_tag->class = 'entry-tags';
 				$span_tag->open();
-
-				$title_tag = new SwatHtmlTag('span');
-				$title_tag->class = 'entry-tags-title';
-				$title_tag->setContent(Blorg::_('Tags: '));
-				$title_tag->display();
 
 				foreach ($tags as $tag) {
 					if ($link === false) {
