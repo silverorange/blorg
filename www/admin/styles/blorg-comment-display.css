@@ -23,6 +23,7 @@
 .blorg-comment-green .blorg-comment-display-content {
 	border: 1px solid #fff;
 	border-bottom: 1px solid #e7ddc8;
+	zoom: 1; /* IE hack */
 }
 
 .blorg-comment-display-confirmation {
