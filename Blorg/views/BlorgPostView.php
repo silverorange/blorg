@@ -512,7 +512,8 @@ class BlorgPostView extends BlorgView
 	protected function displayTags(BlorgPost $post)
 	{
 		if ($this->getMode('tags') > BlorgView::MODE_NONE) {
-			$num_of_tags = count($post->tags);
+			$tags = $post->getTags();
+			$num_of_tags = count($tags);
 			$counter = 1;
 			if ($num_of_tags > 0) {
 				$link = $this->getLink('tags');
@@ -525,7 +526,7 @@ class BlorgPostView extends BlorgView
 				$title_tag->setContent(Blorg::_('Tags: '));
 				$title_tag->display();
 
-				foreach ($post->tags as $tag) {
+				foreach ($tags as $tag) {
 					if ($link === false) {
 						$no_link_tag = new SwatHtmlTag('span');
 						$no_link_tag->setContent(SwatString::minimizeEntities(

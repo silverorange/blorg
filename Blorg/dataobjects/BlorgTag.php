@@ -185,6 +185,9 @@ class BlorgTag extends SwatDBDataObject
 		$this->registerInternalProperty('instance',
 			SwatDBClassMap::get('SiteInstance'));
 
+		// for efficient loading of tag sets on post sets
+		$this->registerInternalProperty('post');
+
 		$this->table = 'BlorgTag';
 		$this->id_field = 'integer:id';
 	}
