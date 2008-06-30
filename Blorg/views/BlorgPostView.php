@@ -23,9 +23,8 @@ require_once 'Blorg/views/BlorgView.php';
  * - comment_count     - The number of visible comments of this post. Supports
  *                       MODE_ALL and MODE_NONE. Links to the post page with
  *                       a URI fragment of '#comments' appended.
- * - tags              - Tags attached to this post. Supports MODE_ALL,
- *                       MODE_SUMMARY and MODE_NONE. Links to tag archive pages
- *                       by default.
+ * - tags              - Tags on this post. Supports MODE_ALL and MODE_NONE.
+ *                       Links to the tag pages for tags by default.
  * - bodytext          - The post bodytext. Supports MODE_ALL, MODE_SUMMARY and
  *                       MODE_NONE. The summary mode displays a condensed,
  *                       ellipsized version of the post bodytext that is no more
@@ -532,17 +531,15 @@ class BlorgPostView extends BlorgView
 			$counter = 1;
 			if ($num_of_tags > 0) {
 				$link = $this->getLink('tags');
-				$span_tag = new SwatHtmlTag('span');
-				$span_tag->class = 'entry-tags';
-				$span_tag->open();
+				$tags_span_tag = new SwatHtmlTag('span');
+				$tags_span_tag->class = 'entry-tags';
+				$tags_span_tag->open();
 
 				foreach ($tags as $tag) {
 					if ($link === false) {
-						$no_link_tag = new SwatHtmlTag('span');
-						$no_link_tag->setContent(SwatString::minimizeEntities(
-							$tag->title));
-
-						$no_link_tag->display();
+						$span_tag = new SwatHtmlTag('span');
+						$span_tag->setContent($tag->title);
+						$span_tag->display();
 					} else {
 						$a_tag = new SwatHtmlTag('a');
 						$a_tag->rel = 'tag';
@@ -551,13 +548,14 @@ class BlorgPostView extends BlorgView
 						$a_tag->display();
 					}
 
-					if ($counter < $num_of_tags)
-						echo Admin::_(', ');
+					if ($counter < $num_of_tags) {
+						echo ', ';
+					}
 
 					$counter++;
 				}
 
-				$span_tag->close();
+				$tags_span_tag->close();
 			}
 		}
 	}
