@@ -182,6 +182,10 @@ class BlorgPostView extends BlorgView
 		$this->displayCommentCount($post);
 		$comment_count = ob_get_clean();
 
+		ob_start();
+		$this->displayTags($post);
+		$tags = ob_get_clean();
+
 		echo '<div class="entry-subtitle">';
 
 		/*
@@ -213,6 +217,7 @@ class BlorgPostView extends BlorgView
 			}
 		}
 
+		echo $tags;
 		echo '</div>';
 	}
 
@@ -231,7 +236,6 @@ class BlorgPostView extends BlorgView
 	protected function displayFooter(BlorgPost $post)
 	{
 		$this->displayFiles($post);
-		$this->displayTags($post);
 	}
 
 	// }}}
@@ -518,11 +522,11 @@ class BlorgPostView extends BlorgView
 
 				$title_tag = new SwatHtmlTag('span');
 				$title_tag->class = 'entry-tags-title';
-				$title_tag->setContent(Blorg::_('Tags: '));
+				$title_tag->setContent(Blorg::_(' Tags: '));
 				$title_tag->display();
 
 				foreach ($post->tags as $tag) {
-					if ($link === true) {
+					if ($link === false) {
 						$no_link_tag = new SwatHtmlTag('span');
 						$no_link_tag->setContent(SwatString::minimizeEntities(
 							$tag->title));
