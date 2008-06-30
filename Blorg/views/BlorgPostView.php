@@ -231,6 +231,7 @@ class BlorgPostView extends BlorgView
 	protected function displayFooter(BlorgPost $post)
 	{
 		$this->displayFiles($post);
+		$this->displayTags($post);
 	}
 
 	// }}}
@@ -497,6 +498,40 @@ class BlorgPostView extends BlorgView
 
 				$div_tag->close();
 				break;
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function displayTags()
+
+	protected function displayTags(BlorgPost $post)
+	{
+		if ($this->getMode('tags') > BlorgView::MODE_NONE) {
+			$num_of_tags = count($post->tags);
+			$counter = 1;
+			if ($num_of_tags > 0) {
+				$link = $this->getLink('tags');
+				$p_tag = new SwatHtmlTag('p');
+				$p_tag->class = 'entry-tags';
+				$p_tag->open();
+				echo Blorg::_('Tags: ');
+				foreach ($post->tags as $tag) {
+					if ($link === false) {
+						echo SwatString::minimizeEntities($tag->title);
+					} else {
+						$a_tag = new SwatHtmlTag('a');
+						$a_tag->href = 'tag/'.$tag->shortname;
+						$a_tag->setContent($tag->title);
+						$a_tag->display();
+					}
+
+					if ($counter < $num_of_tags)
+						echo Admin::_(', ');
+
+					$counter++;
+				}
+				$p_tag->close();
 			}
 		}
 	}
