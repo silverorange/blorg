@@ -2,15 +2,15 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.0.42';
+$version = '0.0.43';
 $notes = <<<EOT
-see ChangeLog
+No release notes yet!
 EOT;
 
 $description =
 	"Blorg, or better yet Blörg is our awesome new blogging package. Blörgy ".
 	"is a site built using the Blörg package that supports multiple blogs. ".
-	"Currently, several weblogs and other sites are using Blörg."
+	"Currently, several weblogs and other sites are using Blörg.";
 
 $package = new PEAR_PackageFileManager2();
 PEAR::setErrorHandling(PEAR_ERROR_DIE);
@@ -52,7 +52,7 @@ $package->addReplacement('Blorg/Blorg.php', 'pear-config', '@DATA-DIR@', 'data_d
 $package->setPhpDep('5.2.4');
 $package->setPearinstallerDep('1.4.0');
 $package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.3.33');
-$package->addPackageDepWithChannel('required', 'Site', 'pear.silverorange.com', '1.2.43');
+$package->addPackageDepWithChannel('required', 'Site', 'pear.silverorange.com', '1.2.44');
 $package->addPackageDepWithChannel('required', 'Admin', 'pear.silverorange.com', '1.3.17');
 $package->generateContents();
 
