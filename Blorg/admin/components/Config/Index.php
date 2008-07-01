@@ -183,9 +183,26 @@ class BlorgConfigIndex extends AdminPage
 	protected function buildDetailsBlorgDefaultCommentStatus(
 		SwatDetailsStore $ds)
 	{
-		$title = BlorgPost::getCommentStatusTitle(
-			$this->app->config->blorg->default_comment_status);
+		switch ($this->app->config->blorg->default_comment_status) {
+		case 'open':
+			$value = BlorgPost::COMMENT_STATUS_OPEN;
+			break;
 
+		case 'moderated':
+			$value = BlorgPost::COMMENT_STATUS_MODERATED;
+			break;
+
+		case 'locked':
+			$value = BlorgPost::COMMENT_STATUS_LOCKED;
+			break;
+
+		case 'closed':
+		default:
+			$value = BlorgPost::COMMENT_STATUS_CLOSED;
+			break;
+		}
+
+		$title = BlorgPost::getCommentStatusTitle($value);
 		$ds->blorg_default_comment_status = $title;
 	}
 

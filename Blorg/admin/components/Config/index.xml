@@ -3,23 +3,23 @@
 <swatml>
 	<widget class="SwatMessageDisplay" id="message_display" />
 	<widget class="SwatFrame" id="site_frame">
-		<property name="title" translatable="yes">Site Settings</property>
+		<property name="title" translatable="yes">Preferences</property>
 		<widget class="SwatToolbar" id="site_toolbar">
 			<widget class="SwatToolLink">
-				<property name="title" translatable="yes">Edit Site Settings</property>
+				<property name="title" translatable="yes">Edit Preferences</property>
 				<property name="link">Config/Edit</property>
 				<property name="stock_id">edit</property>
 			</widget>
 		</widget>
 		<widget class="SwatDetailsView" id="config_settings_view">
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Site Title</property>
+				<property name="title" translatable="yes">Title</property>
 				<object class="SwatNullTextCellRenderer">
 					<property name="text" type="data">site_title</property>
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Site Tagline</property>
+				<property name="title" translatable="yes">Tagline</property>
 				<object class="SwatNullTextCellRenderer">
 					<property name="text" type="data">site_tagline</property>
 				</object>
@@ -31,7 +31,7 @@
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Site Time Zone</property>
+				<property name="title" translatable="yes">Time Zone</property>
 				<object class="SwatNullTextCellRenderer">
 					<property name="text" type="data">date_time_zone</property>
 				</object>
