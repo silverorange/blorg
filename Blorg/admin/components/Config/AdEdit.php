@@ -14,7 +14,23 @@ class BlorgConfigAdEdit extends AdminEdit
 {
 	// {{{ protected properties
 
+	/**
+	 * @var string
+	 */
 	protected $ui_xml = 'Blorg/admin/components/Config/ad-edit.xml';
+
+	/**
+	 * @var array
+	 */
+	protected $setting_keys = array(
+		'blorg' => array(
+			'ad_top',
+			'ad_bottom',
+			'ad_post_content',
+			'ad_post_comments',
+			'ad_referers_only',
+		),
+	);
 
 	// }}}
 
@@ -34,23 +50,25 @@ class BlorgConfigAdEdit extends AdminEdit
 
 	protected function saveData()
 	{
-		$values = $this->ui->getValues(array(
-			'blorg_ad_top',
-			'blorg_ad_bottom',
-			'blorg_ad_post_content',
-			'blorg_ad_post_comments',
-			'blorg_ad_referers_only',
-		));
+		foreach ($this->setting_keys as $section => $keys) {
+			foreach ($keys as $name) {
+				$field_name = $section.'_'.$name;
+				$saver_method = 'save'.str_replace(' ', '',
+					ucwords(str_replace('_', ' ', $field_name)));
 
-		foreach ($values as $key => $value) {
-			$name = substr_replace($key, '.', strpos($key, '_'), 1);
-			list($section, $title) = explode('.', $name, 2);
-			$this->app->config->$section->$title = (string)$value;
+				if (method_exists($this, $saver_method)) {
+					$this->$saver_method();
+				} else {
+					$widget = $this->ui->getWidget($field_name);
+					$this->app->config->$section->$name = $widget->value;
+				}
+			}
 		}
 
 		$this->app->config->save();
+
 		$message = new SwatMessage(
-			Blorg::_('Your ad settings have been saved.'));
+			Blorg::_('Advertising preferences have been saved.'));
 
 		$this->app->messages->add($message);
 
@@ -60,47 +78,10 @@ class BlorgConfigAdEdit extends AdminEdit
 	// }}}
 
 	// build phase
-	// {{{ protected function buildInternal()
-
-	protected function buildInternal()
-	{
-		parent::buildInternal();
-		$this->buildConfigValues();
-	}
-
-	// }}}
-	// {{{ protected function buildConfigValues()
-
-	protected function buildConfigValues()
-	{
-		$values = array();
-		$setting_keys = array(
-			'blorg' => array(
-				'ad_top',
-				'ad_bottom',
-				'ad_post_content',
-				'ad_post_comments',
-				'ad_referers_only',
-			),
-		);
-
-		foreach ($setting_keys as $section => $keys) {
-			foreach ($keys as $name) {
-				$field_name = $section.'_'.$name;
-				$values[$field_name] = $this->app->config->$section->$name;
-			}
-		}
-
-		$this->ui->setValues($values);
-	}
-
-	// }}}
 	// {{{ protected function buildFrame()
 
 	protected function buildFrame()
 	{
-		$frame = $this->ui->getWidget('edit_frame');
-		$frame->title = Blorg::_('Edit Ad Settings');
 	}
 
 	// }}}
@@ -108,23 +89,56 @@ class BlorgConfigAdEdit extends AdminEdit
 
 	protected function buildButton()
 	{
-		$button = $this->ui->getWidget('submit_button');
-		$button->setFromStock('apply');
 	}
 
 	// }}}
-	// {{{ protected function buildFrame()
+	// {{{ protected function buildForm()
+
+	protected function buildForm()
+	{
+		$form = $this->ui->getWidget('edit_form');
+
+		if (!$form->isProcessed())
+			$this->loadData();
+
+		$form->action = $this->source;
+		$form->autofocus = true;
+
+		if ($form->getHiddenField(self::RELOCATE_URL_FIELD) === null) {
+			$url = $this->getRefererURL();
+			$form->addHiddenField(self::RELOCATE_URL_FIELD, $url);
+		}
+	}
+	// }}}
+	// {{{ protected function buildNavBar()
 
 	protected function buildNavBar()
 	{
-		$this->navbar->createEntry(Blorg::_('Edit Ad Settings'));
+		parent::buildNavBar();
+		$this->navbar->popEntry();
+		$this->navbar->createEntry(Blorg::_('Edit Advertising Preferences'));
 	}
 
 	// }}}
-	// {{{ protected function loadDBData()
+	// {{{ protected function loadData()
 
 	protected function loadData()
 	{
+		foreach ($this->setting_keys as $section => $keys) {
+			foreach ($keys as $name) {
+				$field_name = $section.'_'.$name;
+				$loader_method = 'load'.str_replace(' ', '',
+					ucwords(str_replace('_', ' ', $field_name)));
+
+				if (method_exists($this, $loader_method)) {
+					$this->$loader_method();
+				} else {
+					$widget = $this->ui->getWidget($field_name);
+					$widget->value = $this->app->config->$section->$name;
+				}
+			}
+		}
+
 		return true;
 	}
 
