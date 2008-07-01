@@ -6,7 +6,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once dirname(__FILE__).'/include/BlorgHeaderImageDisplay.php';
 
 /**
- * Page for editing site instance settings
+ * Page for editing preferences for a Blörg site
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -16,7 +16,42 @@ class BlorgConfigEdit extends AdminEdit
 {
 	// {{{ protected properties
 
+	/**
+	 * @var string
+	 */
 	protected $ui_xml = 'Blorg/admin/components/Config/edit.xml';
+
+	/**
+	 * @var array
+	 */
+	protected $comment_status_map = array(
+		'open'      => BlorgPost::COMMENT_STATUS_OPEN,
+		'moderated' => BlorgPost::COMMENT_STATUS_MODERATED,
+		'locked'    => BlorgPost::COMMENT_STATUS_LOCKED,
+		'closed'    => BlorgPost::COMMENT_STATUS_CLOSED,
+	);
+
+	/**
+	 * @var array
+	 */
+	protected $setting_keys = array(
+		'site' => array(
+			'title',
+			'tagline',
+			'meta_description',
+		),
+		'blorg' => array(
+			'header_image',
+			'default_comment_status',
+			'akismet_key',
+		),
+		'date' => array(
+			'time_zone',
+		),
+		'analytics' => array(
+			'google_account',
+		),
+	);
 
 	// }}}
 
@@ -32,22 +67,100 @@ class BlorgConfigEdit extends AdminEdit
 	// }}}
 
 	// process phase
-	// {{{ protected function processUploadFile()
+	// {{{ protected function saveData()
 
-	protected function processUploadFile()
+	protected function saveData()
+	{
+		foreach ($this->setting_keys as $section => $keys) {
+			foreach ($keys as $name) {
+				$field_name = $section.'_'.$name;
+				$saver_method = 'save'.str_replace(' ', '',
+					ucwords(str_replace('_', ' ', $field_name)));
+
+				if (method_exists($this, $saver_method)) {
+					$this->$saver_method();
+				} else {
+					$widget = $this->ui->getWidget($field_name);
+					$this->app->config->$section->$name = $widget->value;
+				}
+			}
+		}
+
+		$this->app->config->save();
+
+		$message = new SwatMessage(
+			Blorg::_('Preferences have been saved.'));
+
+		$this->app->messages->add($message);
+
+		return true;
+	}
+
+	// }}}
+	// {{{ protected function saveBlorgDefaultCommentStatus()
+
+	protected function saveBlorgDefaultCommentStatus()
+	{
+		$widget = $this->ui->getWidget('blorg_default_comment_status');
+		$value = array_search($widget->value, $this->comment_status_map, true);
+		$this->app->config->blorg->default_comment_status = $value;
+	}
+
+	// }}}
+	// {{{ protected function saveBlorgHeaderImage()
+
+	protected function saveBlorgHeaderImage()
+	{
+		$transaction = new SwatDBTransaction($this->app->db);
+		try {
+			$file_id = $this->processHeaderImage();
+			$this->app->config->blorg->header_image = $file_id;
+
+			$transaction->commit();
+		} catch (SwatDBException $e) {
+			$transaction->rollback();
+
+			$message = new SwatMessage(Blorg::_(
+				'A database error has occured. The header image was not '.
+					'saved.'),
+				SwatMessage::SYSTEM_ERROR);
+
+			$this->app->messages->add($message);
+
+			$e->process();
+			return false;
+
+		} catch (SwatException $e) {
+			$message = new SwatMessage(Blorg::_(
+				'An error has occured. The header image was not saved.'),
+				SwatMessage::SYSTEM_ERROR);
+
+			$this->app->messages->add($message);
+
+			$e->process();
+			return false;
+		}
+
+		return true;
+	}
+
+	// }}}
+	// {{{ protected function processHeaderImage()
+
+	protected function processHeaderImage()
 	{
 		$id   = $this->app->config->blorg->header_image;
 		$file = $this->ui->getWidget('header_image');
 
-		if ($this->app->getInstance() === null) {
-			$path = '../../files';
-		} else {
-			$path = '../../files/'.$this->app->getInstance()->shortname;
-		}
-
 		if ($file->isUploaded()) {
-			$new_file_id = $this->createFile($file, $path);
-			$this->removeOldFile($id, $path);
+			if ($this->app->getInstance() === null) {
+				$path = '../../files';
+			} else {
+				$path = '../../files/'.$this->app->getInstance()->shortname;
+			}
+
+			$new_file_id = $this->createHeaderImage($file, $path);
+			$this->removeOldHeaderImage($id, $path);
 		} else {
 			$new_file_id = $id;
 		}
@@ -56,9 +169,9 @@ class BlorgConfigEdit extends AdminEdit
 	}
 
 	// }}}
-	// {{{ protected function createFile()
+	// {{{ protected function createHeaderImage()
 
-	protected function createFile(SwatFileEntry $file, $path)
+	protected function createHeaderImage(SwatFileEntry $file, $path)
 	{
 		$now = new SwatDate();
 		$now->toUTC();
@@ -69,13 +182,13 @@ class BlorgConfigEdit extends AdminEdit
 		$blorg_file->setFileBase($path);
 		$blorg_file->createFileBase($path);
 
-		$blorg_file->description = Blorg::_('This Blorgs Header Image');
-		$blorg_file->visible    = true;
-		$blorg_file->filename   = $file->getUniqueFileName($path);
-		$blorg_file->mime_type  = $file->getMimeType();
-		$blorg_file->filesize   = $file->getSize();
-		$blorg_file->createdate = $now;
-		$blorg_file->instance   = $this->app->getInstanceId();
+		$blorg_file->description = Blorg::_('Header Image');
+		$blorg_file->visible     = false;
+		$blorg_file->filename    = $file->getUniqueFileName($path);
+		$blorg_file->mime_type   = $file->getMimeType();
+		$blorg_file->filesize    = $file->getSize();
+		$blorg_file->createdate  = $now;
+		$blorg_file->instance    = $this->app->getInstanceId();
 		$blorg_file->save();
 
 		$file->saveFile($path, $blorg_file->filename);
@@ -84,77 +197,18 @@ class BlorgConfigEdit extends AdminEdit
 	}
 
 	// }}}
-	// {{{ protected function removeOldFile()
+	// {{{ protected function removeOldHeaderImage()
 
-	protected function removeOldFile($id, $path)
+	protected function removeOldHeaderImage($id, $path)
 	{
 		if ($id != '') {
 			$class_name = SwatDBClassMap::get('BlorgFile');
 			$old_file = new $class_name();
 			$old_file->setDatabase($this->app->db);
-			$old_file->load(intval($id));
-
+			$old_file->load(intval($id), $this->app->getInstance());
 			$old_file->setFileBase($path);
 			$old_file->delete();
 		}
-	}
-
-	// }}}
-	// {{{ protected function saveData()
-
-	protected function saveData()
-	{
-		$values = $this->ui->getValues(array(
-			'site_title',
-			'site_tagline',
-			'site_meta_description',
-			'blorg_default_comment_status',
-			'date_time_zone',
-			'analytics_google_account',
-			'blorg_akismet_key',
-		));
-
-		try {
-			$transaction = new SwatDBTransaction($this->app->db);
-			$values['blorg_header_image'] = $this->processUploadFile();
-			$transaction->commit();
-
-		} catch (SwatDBException $e) {
-			$transaction->rollback();
-
-			$message = new SwatMessage(Admin::_(
-				'A database error has occured. The item was not saved.'),
-				SwatMessage::SYSTEM_ERROR);
-
-			$this->app->messages->add($message);
-
-			$e->process();
-			return false;
-
-		} catch (SwatException $e) {
-			$message = new SwatMessage(Admin::_(
-				'An error has occured. The item was not saved.'),
-				SwatMessage::SYSTEM_ERROR);
-
-			$this->app->messages->add($message);
-
-			$e->process();
-			return false;
-		}
-
-		foreach ($values as $key => $value) {
-			$name = substr_replace($key, '.', strpos($key, '_'), 1);
-			list($section, $title) = explode('.', $name, 2);
-			$this->app->config->$section->$title = (string)$value;
-		}
-
-		$this->app->config->save();
-		$message = new SwatMessage(
-			Blorg::_('Your site settings have been saved.'));
-
-		$this->app->messages->add($message);
-
-		return true;
 	}
 
 	// }}}
@@ -167,68 +221,6 @@ class BlorgConfigEdit extends AdminEdit
 		parent::buildInternal();
 		$this->ui->getWidget('blorg_default_comment_status')->addOptionsByArray(
 			BlorgPost::getCommentStatuses());
-
-		$this->buildConfigValues();
-		$this->buildPreviewImage();
-	}
-
-	// }}}
-	// {{{ protected function buildConfigValues()
-
-	protected function buildConfigValues()
-	{
-		$values = array();
-		$setting_keys = array(
-			'site' => array(
-				'title',
-				'tagline',
-				'meta_description',
-			),
-			'blorg' => array(
-				'header_image',
-				'default_comment_status',
-				'akismet_key',
-			),
-			'date' => array(
-				'time_zone',
-			),
-			'analytics' => array(
-				'google_account',
-			),
-		);
-
-		foreach ($setting_keys as $section => $keys) {
-			foreach ($keys as $name) {
-				$field_name = $section.'_'.$name;
-				$values[$field_name] = $this->app->config->$section->$name;
-			}
-		}
-
-		$this->ui->setValues($values);
-	}
-
-	// }}}
-	// {{{ protected function buildPreviewImage()
-
-	protected function buildPreviewImage()
-	{
-		$header_id = $this->app->config->blorg->header_image;
-
-		if ($header_id != '') {
-			$class = SwatDBClassMap::get('BlorgFile');
-			$file = new $class();
-			$file->setDatabase($this->app->db);
-			$file->load(intval($header_id));
-
-			$path = $file->getRelativeUri('../');
-			$this->ui->getWidget('image_preview')->file = $file;
-		} else {
-			$this->ui->getWidget('image_container')->visible = false;
-			$this->ui->getWidget('change_image')->title =
-				Blorg::_('Add Header Image');
-
-			$this->ui->getWidget('change_image')->open = true;
-		}
 	}
 
 	// }}}
@@ -236,8 +228,6 @@ class BlorgConfigEdit extends AdminEdit
 
 	protected function buildFrame()
 	{
-		$frame = $this->ui->getWidget('edit_frame');
-		$frame->title = Blorg::_('Edit Site Settings');
 	}
 
 	// }}}
@@ -245,16 +235,34 @@ class BlorgConfigEdit extends AdminEdit
 
 	protected function buildButton()
 	{
-		$button = $this->ui->getWidget('submit_button');
-		$button->setFromStock('apply');
 	}
 
 	// }}}
-	// {{{ protected function buildFrame()
+	// {{{ protected function buildForm()
+
+	protected function buildForm()
+	{
+		$form = $this->ui->getWidget('edit_form');
+
+		if (!$form->isProcessed())
+			$this->loadData();
+
+		$form->action = $this->source;
+		$form->autofocus = true;
+
+		if ($form->getHiddenField(self::RELOCATE_URL_FIELD) === null) {
+			$url = $this->getRefererURL();
+			$form->addHiddenField(self::RELOCATE_URL_FIELD, $url);
+		}
+	}
+	// }}}
+	// {{{ protected function buildNavBar()
 
 	protected function buildNavBar()
 	{
-		$this->navbar->createEntry(Blorg::_('Edit Site Settings'));
+		parent::buildNavBar();
+		$this->navbar->popEntry();
+		$this->navbar->createEntry(Blorg::_('Edit Preferences'));
 	}
 
 	// }}}
@@ -262,7 +270,55 @@ class BlorgConfigEdit extends AdminEdit
 
 	protected function loadData()
 	{
+		foreach ($this->setting_keys as $section => $keys) {
+			foreach ($keys as $name) {
+				$field_name = $section.'_'.$name;
+				$loader_method = 'load'.str_replace(' ', '',
+					ucwords(str_replace('_', ' ', $field_name)));
+
+				if (method_exists($this, $loader_method)) {
+					$this->$loader_method();
+				} else {
+					$widget = $this->ui->getWidget($field_name);
+					$widget->value = $this->app->config->$section->$name;
+				}
+			}
+		}
+
 		return true;
+	}
+
+	// }}}
+	// {{{ protected function loadBlorgDefaultCommentStatus()
+
+	protected function loadBlorgDefaultCommentStatus()
+	{
+		$value = $this->app->config->blorg->default_comment_status;
+		if (array_key_exists($value, $this->comment_status_map)) {
+			$widget = $this->ui->getWidget('blorg_default_comment_status');
+			$widget->value = $this->comment_status_map[$value];
+		}
+	}
+
+	// }}}
+	// {{{ protected function loadBlorgHeaderImage()
+
+	protected function loadBlorgHeaderImage()
+	{
+		$value = $this->app->config->blorg->header_image;
+		if ($value == '') {
+			$this->ui->getWidget('image_container')->visible = false;
+
+			$change_image = $this->ui->getWidget('change_image');
+			$change_image->title = Blorg::_('Add Header Image');
+			$change_image->open = true;
+		} else {
+			$class = SwatDBClassMap::get('BlorgFile');
+			$file = new $class();
+			$file->setDatabase($this->app->db);
+			$file->load(intval($value));
+			$this->ui->getWidget('image_preview')->setFile($file);
+		}
 	}
 
 	// }}}

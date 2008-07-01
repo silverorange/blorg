@@ -3,17 +3,17 @@
 <swatml>
 	<widget class="SwatMessageDisplay" id="message_display" />
 	<widget class="SwatFrame" id="edit_frame">
-		<property name="title" translatable="yes">Site Settings</property>
+		<property name="title" translatable="yes">Edit Preferences</property>
 		<widget class="SwatForm" id="edit_form">
 			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Site Title</property>
+				<property name="title" translatable="yes">Title</property>
 				<widget class="SwatEntry" id="site_title">
 					<property name="required" type="boolean">true</property>
 					<property name="maxlength" type="integer">255</property>
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Site Tagline</property>
+				<property name="title" translatable="yes">Tagline</property>
 				<widget class="SwatEntry" id="site_tagline">
 					<property name="maxlength" type="integer">255</property>
 				</widget>
@@ -25,17 +25,21 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Site Time Zone</property>
+				<property name="title" translatable="yes">Time Zone</property>
 				<widget class="SwatTimeZoneEntry" id="date_time_zone" />
 			</widget>
 			<widget class="SwatFormField">
 				<property name="title" translatable="yes">Google Analytics Account</property>
+				<property name="note"><![CDATA[<a href="http://www.google.com/analytics/">http://www.google.com/analytics/</a>]]></property>
+				<property name="note_content_type">text/xml</property>
 				<widget class="SwatEntry" id="analytics_google_account">
 					<property name="maxlength" type="integer">255</property>
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
 				<property name="title" translatable="yes">Akismet Key</property>
+				<property name="note"><![CDATA[Akismet is for automatic spam filtering. <a href="http://akismet.com/personal/">Get an API key</a>]]></property>
+				<property name="note_content_type">text/xml</property>
 				<widget class="SwatEntry" id="blorg_akismet_key">
 					<property name="maxlength" type="integer">255</property>
 				</widget>
@@ -62,7 +66,9 @@
 				</widget>
 			</widget>
 			<widget class="SwatFooterFormField">
-				<widget class="SwatButton" id="submit_button" />
+				<widget class="SwatButton" id="submit_button">
+					<property name="title" translatable="yes">Save Preferences</property>
+				</widget>
 			</widget>
 		</widget>
 	</widget>
