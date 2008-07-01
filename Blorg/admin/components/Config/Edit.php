@@ -3,6 +3,7 @@
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminEdit.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
+require_once 'Blorg/admin/BlorgCommentStatusSlider.php';
 require_once dirname(__FILE__).'/include/BlorgHeaderImageDisplay.php';
 
 /**
@@ -62,6 +63,52 @@ class BlorgConfigEdit extends AdminEdit
 	{
 		parent::initInternal();
 		$this->ui->loadFromXML($this->ui_xml);
+		$this->initCommentStatuses();
+	}
+
+	// }}}
+	// {{{ protected function initCommentStatuses()
+
+	protected function initCommentStatuses()
+	{
+		$status = $this->ui->getWidget('blorg_default_comment_status');
+
+		// open
+		$option = new SwatOption(BlorgPost::COMMENT_STATUS_OPEN,
+			BlorgPost::getCommentStatusTitle(BlorgPost::COMMENT_STATUS_OPEN));
+
+		$status->addOption($option);
+		$status->addContextNote($option, Blorg::_(
+			'Comments can be added by anyone and are immediately visible on '.
+			'this post.'));
+
+		// moderated
+		$option = new SwatOption(BlorgPost::COMMENT_STATUS_MODERATED,
+			BlorgPost::getCommentStatusTitle(
+				BlorgPost::COMMENT_STATUS_MODERATED));
+
+		$status->addOption($option);
+		$status->addContextNote($option, Blorg::_(
+			'Comments can be added by anyone but must be approved by a site '.
+			'author before being visible on this post.'));
+
+		// locked
+		$option = new SwatOption(BlorgPost::COMMENT_STATUS_LOCKED,
+			BlorgPost::getCommentStatusTitle(BlorgPost::COMMENT_STATUS_LOCKED));
+
+		$status->addOption($option);
+		$status->addContextNote($option, Blorg::_(
+			'Comments can only be added by an author. Existing comments are '.
+			'still visible on this post.'));
+
+		// closed
+		$option = new SwatOption(BlorgPost::COMMENT_STATUS_CLOSED,
+			BlorgPost::getCommentStatusTitle(BlorgPost::COMMENT_STATUS_CLOSED));
+
+		$status->addOption($option);
+		$status->addContextNote($option, Blorg::_(
+			'Comments can only be added by an author. No comments are visible '.
+			'on this post.'));
 	}
 
 	// }}}
@@ -214,16 +261,6 @@ class BlorgConfigEdit extends AdminEdit
 	// }}}
 
 	// build phase
-	// {{{ protected function buildInternal()
-
-	protected function buildInternal()
-	{
-		parent::buildInternal();
-		$this->ui->getWidget('blorg_default_comment_status')->addOptionsByArray(
-			BlorgPost::getCommentStatuses());
-	}
-
-	// }}}
 	// {{{ protected function buildFrame()
 
 	protected function buildFrame()
@@ -293,10 +330,26 @@ class BlorgConfigEdit extends AdminEdit
 
 	protected function loadBlorgDefaultCommentStatus()
 	{
-		$value = $this->app->config->blorg->default_comment_status;
-		if (array_key_exists($value, $this->comment_status_map)) {
-			$widget = $this->ui->getWidget('blorg_default_comment_status');
-			$widget->value = $this->comment_status_map[$value];
+		$value  = $this->app->config->blorg->default_comment_status;
+		$widget = $this->ui->getWidget('blorg_default_comment_status');
+
+		switch ($value) {
+		case 'open':
+			$widget->value = BlorgPost::COMMENT_STATUS_OPEN;
+			break;
+
+		case 'moderated':
+			$widget->value = BlorgPost::COMMENT_STATUS_MODERATED;
+			break;
+
+		case 'locked':
+			$widget->value = BlorgPost::COMMENT_STATUS_LOCKED;
+			break;
+
+		case 'closed':
+		default:
+			$widget->value = BlorgPost::COMMENT_STATUS_CLOSED;
+			break;
 		}
 	}
 
