@@ -2,7 +2,7 @@
 
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Blorg/BlorgGadgetFactory.php';
+require_once 'Site/SiteGadgetFactory.php';
 
 /**
  * Proxy page for AJAX requests
@@ -14,7 +14,7 @@ require_once 'Blorg/BlorgGadgetFactory.php';
  *
  * To add a new URI to be proxies, use the {@link BlorgAjaxProxyPage::map()}
  * method. Proxy mappings may be automatically added by gadgets. See the
- * {@link BlorgGadget::defineAjaxProxyMapping()} method for details.
+ * {@link SiteGadget::defineAjaxProxyMapping()} method for details.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -90,7 +90,7 @@ class BlorgAjaxProxyPage extends SitePage
 	protected function initUri($source)
 	{
 		$map = self::$uri_map;
-		$gadgets = BlorgGadgetFactory::getAvailable($this->app);
+		$gadgets = SiteGadgetFactory::getAvailable($this->app);
 		foreach ($gadgets as $gadget) {
 			$map = array_merge($map, $gadget->ajax_proxy_map);
 		}
