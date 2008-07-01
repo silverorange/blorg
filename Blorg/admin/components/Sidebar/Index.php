@@ -4,8 +4,8 @@ require_once 'Admin/pages/AdminIndex.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatTableStore.php';
 require_once 'Swat/SwatDetailsStore.php';
-require_once 'Blorg/BlorgGadgetFactory.php';
-require_once 'Blorg/dataobjects/BlorgGadgetInstanceWrapper.php';
+require_once 'Site/SiteGadgetFactory.php';
+require_once 'Site/dataobjects/SiteGadgetInstanceWrapper.php';
 
 /**
  * Index page for sidebar gadgets
@@ -53,7 +53,7 @@ class BlorgSidebarIndex extends AdminIndex
 
 	protected function getTableModel(SwatView $view)
 	{
-		$sql = sprintf('select * from BlorgGadgetInstance
+		$sql = sprintf('select * from GadgetInstance
 			where instance %s %s
 			order by %s',
 			SwatDB::equalityOperator($this->app->getInstanceId()),
@@ -61,11 +61,11 @@ class BlorgSidebarIndex extends AdminIndex
 			$this->getOrderByClause($view, 'displayorder'));
 
 		$gadget_instances = SwatDB::query($this->app->db, $sql,
-			SwatDBClassMap::get('BlorgGadgetInstanceWrapper'));
+			SwatDBClassMap::get('SiteGadgetInstanceWrapper'));
 
 		$store = new SwatTableStore();
 		foreach ($gadget_instances as $gadget_instance) {
-			$gadget = BlorgGadgetFactory::get($this->app, $gadget_instance);
+			$gadget = SiteGadgetFactory::get($this->app, $gadget_instance);
 			$ds = new SwatDetailsStore($gadget_instance);
 			$ds->title = $gadget->getTitle();
 			$store->add($ds);

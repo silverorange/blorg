@@ -4,8 +4,8 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
 require_once 'Admin/pages/AdminDBDelete.php';
 require_once 'Admin/AdminListDependency.php';
-require_once 'Blorg/BlorgGadgetFactory.php';
-require_once 'Blorg/dataobjects/BlorgGadgetInstanceWrapper.php';
+require_once 'Site/SiteGadgetFactory.php';
+require_once 'Site/dataobjects/SiteGadgetInstanceWrapper.php';
 
 /**
  * Delete confirmation page for sidebar gadgets
@@ -23,7 +23,7 @@ class BlorgSidebarDelete extends AdminDBDelete
 	{
 		parent::processDBData();
 
-		$sql = sprintf('delete from BlorgGadgetInstance
+		$sql = sprintf('delete from GadgetInstance
 			where id in (%s) and instance %s %s',
 			$this->getItemList('integer'),
 			SwatDB::equalityOperator($this->app->getInstanceId()),
@@ -55,7 +55,7 @@ class BlorgSidebarDelete extends AdminDBDelete
 		$this->navbar->popEntry();
 		$this->navbar->createEntry(Blorg::_('Remove'));
 
-		$sql = sprintf('select id, gadget from BlorgGadgetInstance
+		$sql = sprintf('select id, gadget from GadgetInstance
 			where id in (%s) and instance %s %s
 			order by displayorder',
 			$this->getItemList('integer'),
@@ -63,11 +63,11 @@ class BlorgSidebarDelete extends AdminDBDelete
 			$this->app->db->quote($this->app->getInstanceId(), 'integer'));
 
 		$gadget_instances = SwatDB::query($this->app->db, $sql,
-			SwatDBClassMap::get('BlorgGadgetInstanceWrapper'));
+			SwatDBClassMap::get('SiteGadgetInstanceWrapper'));
 
 		$titles = array();
 		foreach ($gadget_instances as $gadget_instance) {
-			$gadget = BlorgGadgetFactory::get($this->app, $gadget_instance);
+			$gadget = SiteGadgetFactory::get($this->app, $gadget_instance);
 			$titles[] = $gadget->getTitle();
 		}
 
