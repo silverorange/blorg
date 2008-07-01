@@ -66,45 +66,45 @@
 		</widget>
 	</widget>
 	<widget class="SwatFrame" id="ad_frame">
-		<property name="title" translatable="yes">Ad Settings</property>
+		<property name="title" translatable="yes">Advertising Preferences</property>
 		<widget class="SwatToolbar" id="ad_toolbar">
 			<widget class="SwatToolLink">
-				<property name="title" translatable="yes">Edit Ad Settings</property>
+				<property name="title" translatable="yes">Edit Advertising Preferences</property>
 				<property name="link">Config/AdEdit</property>
 				<property name="stock_id">edit</property>
 			</widget>
 		</widget>
 		<widget class="SwatDetailsView" id="ad_settings_view">
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Display Ad at Top of Page</property>
+				<property name="title" translatable="yes">Ad at Top of Page</property>
 				<object class="SwatBooleanCellRenderer">
 					<property name="stock_id">yes-no</property>
 					<property name="value" type="data">blorg_ad_top</property>
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Display Ad at Bottom of Page</property>
+				<property name="title" translatable="yes">Ad at Bottom of Page</property>
 				<object class="SwatBooleanCellRenderer">
 					<property name="stock_id">yes-no</property>
 					<property name="value" type="data">blorg_ad_bottom</property>
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Display Ad in Post Content</property>
+				<property name="title" translatable="yes">Ad in Post Content</property>
 				<object class="SwatBooleanCellRenderer">
 					<property name="stock_id">yes-no</property>
 					<property name="value" type="data">blorg_ad_post_content</property>
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Display Ad Before Post Comments</property>
+				<property name="title" translatable="yes">Ad before Post Comments</property>
 				<object class="SwatBooleanCellRenderer">
 					<property name="stock_id">yes-no</property>
 					<property name="value" type="data">blorg_ad_post_comments</property>
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
-				<property name="title" translatable="yes">Only Display Ads to Visitors From Other Websites</property>
+				<property name="title" translatable="yes">Only Display Ads to Visitors from Other Websites</property>
 				<object class="SwatBooleanCellRenderer">
 					<property name="stock_id">yes-no</property>
 					<property name="value" type="data">blorg_ad_referers_only</property>
