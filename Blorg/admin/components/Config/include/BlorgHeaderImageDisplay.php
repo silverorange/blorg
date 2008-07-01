@@ -15,12 +15,12 @@ require_once 'XML/RPCAjax.php';
  */
 class BlorgHeaderImageDisplay extends SwatControl
 {
-	// {{{ public properties
+	// {{{ protected properties
 
 	/**
 	 * @var BlorgFile
 	 */
-	public $file;
+	protected $file;
 
 	// }}}
 	// {{{ public function __construct()
@@ -50,6 +50,12 @@ class BlorgHeaderImageDisplay extends SwatControl
 
 	public function display()
 	{
+		if (!$this->visible)
+			return;
+
+		if ($this->file === null)
+			return;
+
 		parent::display();
 
 		$div_tag = new SwatHtmlTag('div');
@@ -59,6 +65,7 @@ class BlorgHeaderImageDisplay extends SwatControl
 
 		$img_tag = new SwatHtmlTag('img');
 		$img_tag->src = $this->file->getRelativeUri('../');
+		$img_tag->alt = Blorg::_('Header Image');
 		$img_tag->display();
 
 		$div_tag->close();
