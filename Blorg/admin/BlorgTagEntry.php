@@ -104,6 +104,7 @@ class BlorgTagEntry extends SiteTagEntry
 			$this->app->messages->add($message);
 		}
 
+		$this->tag_array[$tag->shortname] = $tag->title;
 		$this->selected_tag_array[] = $tag->shortname;
 	}
 
