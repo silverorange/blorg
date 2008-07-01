@@ -2,8 +2,8 @@
 
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'Blorg/BlorgGadgetFactory.php';
-require_once 'Blorg/dataobjects/BlorgGadgetInstance.php';
+require_once 'Site/SiteGadgetFactory.php';
+require_once 'Site/dataobjects/SiteGadgetInstance.php';
 
 /**
  * Page for adding a sidebar gadget
@@ -44,7 +44,7 @@ class BlorgSidebarAdd extends AdminDBEdit
 
 	protected function initGadgetInstance()
 	{
-		$class_name = SwatDBClassMap::get('BlorgGadgetInstance');
+		$class_name = SwatDBClassMap::get('SiteGadgetInstance');
 		$this->gadget_instance = new $class_name();
 		$this->gadget_instance->setDatabase($this->app->db);
 	}
@@ -55,7 +55,7 @@ class BlorgSidebarAdd extends AdminDBEdit
 	protected function initGadgetList()
 	{
 		$radio_list = $this->ui->getWidget('gadget');
-		$available = BlorgGadgetFactory::getAvailable($this->app);
+		$available = SiteGadgetFactory::getAvailable($this->app);
 
 		$options = array();
 
@@ -90,7 +90,7 @@ class BlorgSidebarAdd extends AdminDBEdit
 		$this->gadget_instance->instance = $this->app->getInstanceId();
 		$this->gadget_instance->save();
 
-		$gadget = BlorgGadgetFactory::get($this->app, $this->gadget_instance);
+		$gadget = SiteGadgetFactory::get($this->app, $this->gadget_instance);
 
 		$message = new SwatMessage(sprintf(
 			Blorg::_('“%s” has been added to the sidebar.'),

@@ -4,10 +4,10 @@ require_once 'Swat/SwatDate.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'Blorg/BlorgGadgetFactory.php';
-require_once 'Blorg/dataobjects/BlorgGadgetInstanceSettingValue.php';
-require_once 'Blorg/dataobjects/BlorgGadgetInstanceSettingValueWrapper.php';
-require_once 'Blorg/dataobjects/BlorgGadgetInstance.php';
+require_once 'Site/SiteGadgetFactory.php';
+require_once 'Site/dataobjects/SiteGadgetInstanceSettingValue.php';
+require_once 'Site/dataobjects/SiteGadgetInstanceSettingValueWrapper.php';
+require_once 'Site/dataobjects/SiteGadgetInstance.php';
 
 /**
  * Page for editing sidebar gadget instance settings
@@ -53,7 +53,7 @@ class BlorgSidebarSettings extends AdminDBEdit
 
 	protected function initGadgetInstance()
 	{
-		$class_name = SwatDBClassMap::get('BlorgGadgetInstance');
+		$class_name = SwatDBClassMap::get('SiteGadgetInstance');
 		$this->gadget_instance = new $class_name();
 		$this->gadget_instance->setDatabase($this->app->db);
 
@@ -84,7 +84,7 @@ class BlorgSidebarSettings extends AdminDBEdit
 
 	protected function initGadget()
 	{
-		$this->gadget = BlorgGadgetFactory::get($this->app,
+		$this->gadget = SiteGadgetFactory::get($this->app,
 			$this->gadget_instance);
 	}
 
@@ -163,7 +163,7 @@ class BlorgSidebarSettings extends AdminDBEdit
 	// }}}
 	// {{{ protected function getSettingDefaultValue()
 
-	protected function getSettingDefaultValue(BlorgGadgetSetting $setting)
+	protected function getSettingDefaultValue(SiteGadgetSetting $setting)
 	{
 		switch ($setting->getType()) {
 		case 'boolean':
@@ -201,7 +201,7 @@ class BlorgSidebarSettings extends AdminDBEdit
 	protected function saveDBData()
 	{
 		// delete old setting values
-		$sql = sprintf('delete from BlorgGadgetInstanceSettingValue
+		$sql = sprintf('delete from GadgetInstanceSettingValue
 			where gadget_instance = %s',
 			$this->app->db->quote($this->id, 'integer'));
 
@@ -209,13 +209,13 @@ class BlorgSidebarSettings extends AdminDBEdit
 
 		// create new wrapper
 		$class_name =
-			SwatDBClassMap::get('BlorgGadgetInstanceSettingValueWrapper');
+			SwatDBClassMap::get('SiteGadgetInstanceSettingValueWrapper');
 
 		$this->gadget_instance->setting_values = new $class_name();
 		$this->gadget_instance->setting_values->setDatabase($this->app->db);
 
 		// add new setting values to wrapper
-		$class_name = SwatDBClassMap::get('BlorgGadgetInstanceSettingValue');
+		$class_name = SwatDBClassMap::get('SiteGadgetInstanceSettingValue');
 		$settings = $this->gadget->getSettings();
 		foreach ($settings as $id => $setting) {
 			$widget = $this->settings_widgets[$id];

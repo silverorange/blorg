@@ -2,8 +2,8 @@
 
 require_once 'Admin/pages/AdminDBOrder.php';
 require_once 'SwatDB/SwatDB.php';
-require_once 'Blorg/BlorgGadgetFactory.php';
-require_once 'Blorg/dataobjects/BlorgGadgetInstanceWrapper.php';
+require_once 'Site/SiteGadgetFactory.php';
+require_once 'Site/dataobjects/SiteGadgetInstanceWrapper.php';
 
 /**
  * Order tool for sidebar gadgets
@@ -19,7 +19,7 @@ class BlorgSidebarOrder extends AdminDBOrder
 
 	protected function saveIndex($id, $index)
 	{
-		SwatDB::updateColumn($this->app->db, 'BlorgGadgetInstance',
+		SwatDB::updateColumn($this->app->db, 'GadgetInstance',
 			'integer:displayorder', $index, 'integer:id', array($id));
 	}
 
@@ -53,21 +53,21 @@ class BlorgSidebarOrder extends AdminDBOrder
 	{
 		$order_widget = $this->ui->getWidget('order');
 
-		$sql = sprintf('select * from BlorgGadgetInstance
+		$sql = sprintf('select * from GadgetInstance
 			where instance %s %s
 			order by displayorder',
 			SwatDB::equalityOperator($this->app->getInstanceId()),
 			$this->app->db->quote($this->app->getInstanceId(), 'integer'));
 
 		$gadget_instances = SwatDB::query($this->app->db, $sql,
-			SwatDBClassMap::get('BlorgGadgetInstanceWrapper'));
+			SwatDBClassMap::get('SiteGadgetInstanceWrapper'));
 
 		foreach ($gadget_instances as $gadget_instance) {
-			$gadget = BlorgGadgetFactory::get($this->app, $gadget_instance);
+			$gadget = SiteGadgetFactory::get($this->app, $gadget_instance);
 			$order_widget->addOption($gadget_instance->id, $gadget->getTitle());
 		}
 
-		$sql = sprintf('select sum(displayorder) from BlorgGadgetInstance
+		$sql = sprintf('select sum(displayorder) from GadgetInstance
 			where instance %s %s',
 			SwatDB::equalityOperator($this->app->getInstanceId()),
 			$this->app->db->quote($this->app->getInstanceId(), 'integer'));
