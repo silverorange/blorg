@@ -4,6 +4,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Swat/SwatString.php';
 require_once 'Blorg/dataobjects/BlorgAuthor.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
+require_once 'Blorg/BlorgCommentParser.php';
 
 /**
  * A comment on a Blörg Post
@@ -129,19 +130,16 @@ class BlorgComment extends SwatDBDataObject
 
 	public static function getBodytextXhtml($bodytext)
 	{
-		$bodytext = str_replace('%', '%%', $bodytext);
+		$bodytext = BlorgCommentParser::parse($bodytext);
+		$bodytext = str_replace("\r\n", "\n", $bodytext);
+		$bodytext = str_replace("\r",   "\n", $bodytext);
+		$bodytext = preg_replace('/[\x0a\s]*\n\n[\x0a\s]*/s', '</p><p>',
+			$bodytext);
 
-		$title        = '(?: title="[^"]+?")?';
-		$href         = ' href="http[^"]+?"';
-		$allowed_tags = '<a'.$title.$href.$title.'>|<\/a>|<\/?strong>|<\/?em>';
-		$expression   = '/('.$allowed_tags.')/ui';
-		$matches      = array();
-		preg_match_all($expression, $bodytext, $matches);
-		$bodytext = preg_replace($expression, '%s', $bodytext);
+		$bodytext = preg_replace('/[\x0a\s]*\n[\x0a\s]*/s', '<br />',
+			$bodytext);
 
-		$bodytext = SwatString::minimizeEntities($bodytext);
-		$bodytext = vsprintf($bodytext, $matches[0]);
-		$bodytext = SwatString::toXHTML($bodytext);
+		$bodytext = '<p>'.$bodytext.'</p>';
 
 		return $bodytext;
 	}
