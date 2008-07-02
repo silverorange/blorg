@@ -5,7 +5,8 @@ function BlorgHeaderImageDisplay(id, file_id)
 
 	this.anchor = document.createElement('a');
 	this.anchor.href = '#';
-	this.anchor.className = 'blorg-header-image-display';
+	this.anchor.className =
+		'swat-tool-link-delete blorg-header-image-display-delete';
 
 	if (typeof this.anchor.textContent == 'undefined')
 		this.anchor.innerText = BlorgHeaderImageDisplay.delete_text;
@@ -17,11 +18,15 @@ function BlorgHeaderImageDisplay(id, file_id)
 	var div = document.getElementById(id);
 	div.appendChild(this.anchor);
 
+	var clear_div = document.createElement('div');
+	clear_div.style.clear = 'both';
+	div.appendChild(clear_div);
+
 	this.div = div.parentNode.parentNode;
 }
 
-BlorgHeaderImageDisplay.confirm_text = 'Remove the Header Image?';
-BlorgHeaderImageDisplay.delete_text  = 'Remove Image';
+BlorgHeaderImageDisplay.confirm_text = 'Delete the header image?';
+BlorgHeaderImageDisplay.delete_text  = 'Delete Image';
 
 BlorgHeaderImageDisplay.prototype.handleClick = function(e)
 {
