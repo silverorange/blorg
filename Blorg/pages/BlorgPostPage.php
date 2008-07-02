@@ -22,6 +22,11 @@ require_once 'NateGoSearch/NateGoSearch.php';
  */
 class BlorgPostPage extends SitePage
 {
+	// {{{ class constants
+
+	const THANK_YOU_ID = 'thank-you';
+
+	// }}}
 	// {{{ protected properties
 
 	/**
@@ -151,6 +156,26 @@ class BlorgPostPage extends SitePage
 
 			if ($this->comment_ui->getWidget('post_button')->hasBeenClicked()) {
 				$this->saveComment();
+
+				switch ($this->post->comment_status) {
+				case BlorgPost::COMMENT_STATUS_OPEN:
+					$uri = $this->source.'?'.self::THANK_YOU_ID.
+						'#comment'.$this->comment->id;
+
+					break;
+
+				case BlorgPost::COMMENT_STATUS_MODERATED:
+					$uri = $this->source.'?comment-thank-you'.
+						'#submit_comment';
+
+					break;
+
+				default:
+					$uri = $this->source;
+					break;
+				}
+
+				$this->app->relocate($uri);
 			}
 		}
 	}
@@ -217,31 +242,6 @@ class BlorgPostPage extends SitePage
 
 		$this->comment->spam = $this->isCommentSpam($this->comment);
 
-		switch ($this->post->comment_status) {
-		case BlorgPost::COMMENT_STATUS_OPEN:
-			$message = new SwatMessage(
-				Blorg::_('Your comment has been published.'));
-
-			$this->comment_ui->getWidget('message_display')->add($message,
-				SwatMessageDisplay::DISMISS_OFF);
-
-			break;
-
-		case BlorgPost::COMMENT_STATUS_MODERATED:
-			$message = new SwatMessage(
-				Blorg::_('Your comment has been submitted.'));
-
-			$message->secondary_content =
-				Blorg::_('Your comment will be published after being '.
-					'approved by the site moderator.');
-
-			$this->comment_ui->getWidget('message_display')->add($message,
-				SwatMessageDisplay::DISMISS_OFF);
-
-			break;
-		}
-
-		$this->clearCommentUi();
 		$this->post->comments->add($this->comment);
 		$this->post->save();
 		$this->addToSearchQueue();
@@ -271,17 +271,6 @@ class BlorgPostPage extends SitePage
 	protected function deleteCommentCookie()
 	{
 		$this->app->cookie->removeCookie('comment_credentials');
-	}
-
-	// }}}
-	// {{{ protected function clearCommentUi()
-
-	protected function clearCommentUi()
-	{
-		$this->comment_ui->getWidget('fullname')->value = null;
-		$this->comment_ui->getWidget('link')->value     = null;
-		$this->comment_ui->getWidget('email')->value    = null;
-		$this->comment_ui->getWidget('bodytext')->value = null;
 	}
 
 	// }}}
@@ -411,6 +400,7 @@ class BlorgPostPage extends SitePage
 		$form            = $ui->getWidget('comment_edit_form');
 		$frame           = $ui->getWidget('comment_edit_frame');
 		$frame->subtitle = $this->post->getTitle();
+		$show_thank_you  = array_key_exists(self::THANK_YOU_ID, $_GET);
 
 		switch ($this->post->comment_status) {
 		case BlorgPost::COMMENT_STATUS_OPEN:
@@ -439,6 +429,32 @@ class BlorgPostPage extends SitePage
 		case BlorgPost::COMMENT_STATUS_CLOSED:
 			$ui->getRoot()->visible = false;
 			break;
+		}
+
+		if ($show_thank_you) {
+			switch ($this->post->comment_status) {
+			case BlorgPost::COMMENT_STATUS_OPEN:
+				$message = new SwatMessage(
+					Blorg::_('Your comment has been published.'));
+
+				$this->comment_ui->getWidget('message_display')->add($message,
+					SwatMessageDisplay::DISMISS_OFF);
+
+				break;
+
+			case BlorgPost::COMMENT_STATUS_MODERATED:
+				$message = new SwatMessage(
+					Blorg::_('Your comment has been submitted.'));
+
+				$message->secondary_content =
+					Blorg::_('Your comment will be published after being '.
+						'approved by the site moderator.');
+
+				$this->comment_ui->getWidget('message_display')->add($message,
+					SwatMessageDisplay::DISMISS_OFF);
+
+				break;
+			}
 		}
 
 		$this->buildCommentPreview();
@@ -536,17 +552,6 @@ class BlorgPostPage extends SitePage
 
 			foreach ($comments as $i => $comment) {
 				if ($i == $count - 1) {
-					// Comment form submits to the top of the new comment if a
-					// new comment was just submitted and it is immediately
-					// visible. Otherwise the form submits to the comment
-					// preview or to the top of the comment form.
-					$form = $this->comment_ui->getWidget('comment_edit_form');
-					$post_button = $this->comment_ui->getWidget('post_button');
-					if (!$form->hasMessage() && $this->post->comment_status !=
-						BlorgPost::COMMENT_STATUS_MODERATED &&
-						$post_button->hasBeenClicked()) {
-						$this->displaySubmitComment();
-					}
 					$div_tag = new SwatHtmlTag('div');
 					$div_tag->id = 'last_comment';
 					$div_tag->open();
