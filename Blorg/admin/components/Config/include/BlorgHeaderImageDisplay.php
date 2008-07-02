@@ -42,6 +42,10 @@ class BlorgHeaderImageDisplay extends SwatControl
 			'packages/blorg/admin/styles/blorg-header-image-display.css',
 			Blorg::PACKAGE_ID);
 
+		$this->addStyleSheet(
+			'packages/swat/styles/swat-tool-link.css',
+			Swat::PACKAGE_ID);
+
 		$this->requires_id = true;
 	}
 
@@ -91,11 +95,42 @@ class BlorgHeaderImageDisplay extends SwatControl
 	 */
 	protected function getInlineJavaScript()
 	{
-		$javascript = sprintf(
+		static $shown = false;
+
+		if (!$shown) {
+			$javascript = $this->getInlineJavaScriptTranslations();
+			$shown = true;
+		} else {
+			$javascript = '';
+		}
+
+		$javascript.= sprintf(
 			"var %s_obj = new BlorgHeaderImageDisplay('%s', %s);",
 			$this->id, $this->id, $this->file->id);
 
 		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getInlineJavaScriptTranslations()
+
+	/**
+	 * Gets translatable string resources for the JavaScript object for
+	 * this widget
+	 *
+	 * @return string translatable JavaScript string resources for this widget.
+	 */
+	protected function getInlineJavaScriptTranslations()
+	{
+		$delete_text  = SwatString::quoteJavaScriptString(
+			Blorg::_('Delete Image'));
+
+		$confirm_text = SwatString::quoteJavaScriptString(
+			Blorg::_('Delete header image?'));
+
+		return
+			"BlorgHeaderImageDisplay.delete_text  = {$delete_text};\n".
+			"BlorgHeaderImageDisplay.confirm_text = {$confirm_text};\n";
 	}
 
 	// }}}

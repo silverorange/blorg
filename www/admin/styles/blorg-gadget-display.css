@@ -11,10 +11,25 @@
 	float: right;
 }
 
+.blorg-gadget-display .blorg-gadget-display-controls input {
+	margin-left: 0.5em;
+}
+
 .blorg-gadget-display .blorg-gadget-display-title {
 	margin: 0.5em 0;
 }
 
 .blorg-gadget-display .blorg-gadget-display-description {
 	margin-bottom: 0.5em;
+}
+
+.blorg-gadget-display dl dt {
+	display: inline;
+	font-weight: bold;
+	float: left;
+}
+
+.blorg-gadget-display dl dd {
+	display: block;
+	margin: 0.5em 0;
 }
