@@ -19,13 +19,13 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField" id="link_field">
-				<property name="title" translatable="yes">Web Address</property>
+				<property name="title" translatable="yes">Website</property>
 				<widget class="SwatEntry" id="link">
 					<property name="maxlength" type="integer">255</property>
 				</widget>
 			</widget>
 			<widget class="SwatFormField" id="email_field">
-				<property name="title" translatable="yes">Email Address</property>
+				<property name="title" translatable="yes">Email</property>
 				<widget class="SwatEmailEntry" id="email">
 					<property name="maxlength" type="integer">255</property>
 				</widget>
