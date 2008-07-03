@@ -63,6 +63,15 @@
 					<property name="visible" type="data">!has_blorg_header_image</property>
 				</object>
 			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Feed Logo</property>
+				<object class="SwatImageCellRenderer">
+					<property name="image" type="data">blorg_feed_logo</property>
+				</object>
+				<object class="SwatNullTextCellRenderer">
+					<property name="visible" type="data">!has_blorg_feed_logo</property>
+				</object>
+			</object>
 		</widget>
 	</widget>
 	<widget class="SwatFrame" id="ad_frame">

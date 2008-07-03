@@ -43,6 +43,7 @@ class BlorgConfigEdit extends AdminEdit
 		),
 		'blorg' => array(
 			'header_image',
+			'feed_logo',
 			'default_comment_status',
 			'akismet_key',
 		),
@@ -160,8 +161,11 @@ class BlorgConfigEdit extends AdminEdit
 	{
 		$transaction = new SwatDBTransaction($this->app->db);
 		try {
-			$file_id = $this->processHeaderImage();
+			$file_id = $this->processHeaderImage('header_image');
 			$this->app->config->blorg->header_image = $file_id;
+
+			$file_id = $this->processHeaderImage('feed_logo');
+			$this->app->config->blorg->feed_logo = $file_id;
 
 			$transaction->commit();
 		} catch (SwatDBException $e) {
@@ -194,10 +198,10 @@ class BlorgConfigEdit extends AdminEdit
 	// }}}
 	// {{{ protected function processHeaderImage()
 
-	protected function processHeaderImage()
+	protected function processHeaderImage($widget)
 	{
-		$id   = $this->app->config->blorg->header_image;
-		$file = $this->ui->getWidget('header_image');
+		$id   = $this->app->config->blorg->$widget;
+		$file = $this->ui->getWidget($widget);
 
 		if ($file->isUploaded()) {
 			if ($this->app->getInstance() === null) {
@@ -371,6 +375,27 @@ class BlorgConfigEdit extends AdminEdit
 			$file->setDatabase($this->app->db);
 			$file->load(intval($value));
 			$this->ui->getWidget('image_preview')->setFile($file);
+		}
+	}
+
+	// }}}
+	// {{{ protected function loadBlorgFeedLogo()
+
+	protected function loadBlorgFeedLogo()
+	{
+		$value = $this->app->config->blorg->feed_logo;
+		if ($value == '') {
+			$this->ui->getWidget('logo_container')->visible = false;
+
+			$change_image = $this->ui->getWidget('change_logo');
+			$change_image->title = Blorg::_('Add Feed Logo');
+			$change_image->open = true;
+		} else {
+			$class = SwatDBClassMap::get('BlorgFile');
+			$file = new $class();
+			$file->setDatabase($this->app->db);
+			$file->load(intval($value));
+			$this->ui->getWidget('logo_preview')->setFile($file);
 		}
 	}
 
