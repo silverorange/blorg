@@ -54,6 +54,7 @@ class BlorgConfigIndex extends AdminPage
 			),
 			'blorg' => array(
 				'header_image',
+				'feed_logo',
 				'default_comment_status',
 				'akismet_key',
 			),
@@ -139,6 +140,27 @@ class BlorgConfigIndex extends AdminPage
 				$path = $file->getRelativeUri('../');
 				$ds->blorg_header_image = $path;
 				$ds->has_blorg_header_image = true;
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function buildDetailsBlorgHeaderImage()
+
+	protected function buildDetailsBlorgFeedLogo(SwatDetailsStore $ds)
+	{
+		$ds->blorg_feed_logo = '';
+		$ds->has_blorg_feed_logo = false;
+
+		$header_image = $this->app->config->blorg->feed_logo;
+		if ($header_image != '') {
+			$class = SwatDBClassMap::get('BlorgFile');
+			$file = new $class();
+			$file->setDatabase($this->app->db);
+			if ($file->load(intval($header_image))) {
+				$path = $file->getRelativeUri('../');
+				$ds->blorg_feed_logo = $path;
+				$ds->has_blorg_feed_logo = true;
 			}
 		}
 	}

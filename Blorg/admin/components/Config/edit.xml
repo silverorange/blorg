@@ -63,6 +63,17 @@
 					</widget>
 				</widget>
 			</widget>
+			<widget class="SwatFormField" id="logo_container">
+				<property name="title" translatable="yes">Feed Logo</property>
+				<widget class="BlorgHeaderImageDisplay" id="logo_preview" />
+			</widget>
+			<widget class="SwatDisclosure" id="change_logo">
+				<property name="title" translatable="yes">Replace Feed Logo</property>
+				<property name="open" type="boolean">false</property>
+				<widget class="SwatFormField">
+					<widget class="SwatFileEntry" id="feed_logo" />
+				</widget>
+			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button">
 					<property name="title" translatable="yes">Save Preferences</property>

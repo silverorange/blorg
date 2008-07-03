@@ -43,7 +43,11 @@ class BlorgConfigHeaderImageAjaxServer extends SiteXMLRPCServer
 			}
 		}
 
-		$this->app->config->blorg->header_image = '';
+		if ($file_id == $this->app->config->blorg->header_image)
+			$this->app->config->blorg->header_image = '';
+		else
+			$this->app->config->blorg->feed_logo = '';
+
 		$this->app->config->save();
 
 		return true;
