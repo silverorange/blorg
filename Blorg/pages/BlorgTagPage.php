@@ -171,6 +171,9 @@ class BlorgTagPage extends SitePage
 		$this->pager->total_records = $post_count;
 		$this->pager->page_size = self::MAX_POSTS;
 		$this->pager->setCurrentPage($this->current_page);
+		/* These strings include a non-breaking space */
+		$this->pager->previous_label = Blorg::_('« Newer');
+		$this->pager->next_label = Blorg::_('Older »');
 		$this->pager->link = $path.'/page%s';
 
 		$this->pager->display();
