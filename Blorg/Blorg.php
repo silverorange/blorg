@@ -113,6 +113,9 @@ class Blorg
 			// A header image for this blorg
 			'blorg.header_image'           => null,
 
+			// A logo for the atom feed of this blorg
+			'blorg.feed_logo'              => null,
+
 			// Optional tagline.
 			'site.tagline'                 => null,
 
