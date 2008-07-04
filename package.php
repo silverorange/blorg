@@ -2,15 +2,9 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.0.45';
+$version = '0.0.46';
 $notes = <<<EOT
-* validate URIs entered in the comments form
-* allow <code> tags in comments
-* better comment tag parsing
-* increased max comment length from 2048 to 8000 characters
-* fix bug that caused dupe tags on posts
-* Use post-redirect-get to prevent dupe comments
-* miscellaneous UI improvements in admin and frontend
+* fix a time-zone conversino bug when creating new posts
 EOT;
 
 $description =
