@@ -39,17 +39,25 @@
 					<property name="rows" type="integer">15</property>
 				</widget>
 			</widget>
-			<widget class="SwatFieldset">
+			<widget class="SwatDisclosure">
 				<property name="title" translatable="yes">OpenID Delegation</property>
+				<property name="open" type="boolean">false</property>
+				<widget class="AdminNote" id="openid_note">
+					<property name="content" translatable="yes"><![CDATA[
+					<p><a href="http://wiki.openid.net/Delegation">OpenID delegation</a> allows you to use this website as your identifier while still using a third-party <a href="http://wiki.openid.net/OpenIDServers">OpenID provider</a>.</p>
+					<p style="margin-bottom: 0;">Once configured, you will be able to use %s as your identifier when signing into OpenID-enabled sites.</p>
+					]]></property>
+					<property name="content_type">text/xml</property>
+				</widget>
 				<widget class="SwatFormField">
-					<property name="title" translatable="yes">OpenID Server</property>
+					<property name="title" translatable="yes">Identity Server</property>
 					<property name="note" translatable="yes"><![CDATA[Example: <em>http://openidprovider.com/server</em>]]></property>
 					<property name="note_content_type">text/xml</property>
 					<widget class="SwatEntry" id="openid_server" />
 				</widget>
 				<widget class="SwatFormField">
-					<property name="title" translatable="yes">OpenID Delegate</property>
-					<property name="note" translatable="yes"><![CDATA[Example: <em>http://name.openidprovider.com/</em>]]></property>
+					<property name="title" translatable="yes">Delegate Identity</property>
+					<property name="note" translatable="yes"><![CDATA[Example: <em>http://myname.openidprovider.com/</em>]]></property>
 					<property name="note_content_type">text/xml</property>
 					<widget class="SwatEntry" id="openid_delegate" />
 				</widget>

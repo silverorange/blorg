@@ -144,6 +144,28 @@ class BlorgAuthorEdit extends AdminDBEdit
 	// }}}
 
 	// build phase
+	// {{{ protected function buildInternal()
+
+	protected function buildInternal()
+	{
+		parent::buildInternal();
+
+		if ($this->author->shortname === null) {
+			$uri = Blorg::_('this author’s public page');
+		} else {
+			$uri = $this->app->getFrontendBaseHref().
+				$this->app->config->blorg->path.'author/'.
+				$this->author->shortname;
+
+			$uri = '<em>'.SwatString::minimizeEntities($uri).'</em>';
+		}
+
+
+		$note = $this->ui->getWidget('openid_note');
+		$note->content = sprintf($note->content, $uri);
+	}
+
+	// }}}
 	// {{{ protected function loadDBData()
 
 	protected function loadDBData()
