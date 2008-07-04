@@ -20,12 +20,12 @@ class BlorgTagGadget extends SiteGadget
 	 * Displays the title of title of this gadget with a link to the tag page.
 	 *
 	 * The title is displayed in a h3 element with the CSS class
-	 * 'blorg-gadget-title'.
+	 * 'site-gadget-title'.
 	 */
 	protected function displayTitle()
 	{
 		$header = new SwatHtmlTag('h3');
-		$header->class = 'blorg-gadget-title';
+		$header->class = 'site-gadget-title';
 
 		$link = new SwatHtmlTag('a');
 		$link->setContent($this->getTitle());

@@ -48,12 +48,12 @@ class BlorgArchiveGadget extends SiteGadget
 	 * Displays the title of title of this widget with a link to the archive.
 	 *
 	 * The title is displayed in a h3 element with the CSS class
-	 * 'blorg-gadget-title'.
+	 * 'site-gadget-title'.
 	 */
 	protected function displayTitle()
 	{
 		$header = new SwatHtmlTag('h3');
-		$header->class = 'blorg-gadget-title';
+		$header->class = 'site-gadget-title';
 
 		$link = new SwatHtmlTag('a');
 		$link->setContent($this->getTitle());
