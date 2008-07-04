@@ -20,7 +20,7 @@
 				</widget>
 				<widget class="SwatFormField" id="link_field">
 					<property name="title" translatable="yes">Website</property>
-					<widget class="SwatEntry" id="link">
+					<widget class="SwatUriEntry" id="link">
 						<property name="maxlength" type="integer">255</property>
 					</widget>
 				</widget>
