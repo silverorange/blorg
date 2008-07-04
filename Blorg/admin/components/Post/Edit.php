@@ -375,13 +375,16 @@ class BlorgPostEdit extends AdminDBEdit
 		$this->post->publish_date =
 			$this->ui->getWidget('publish')->getPublishDate();
 
-		$this->post->enabled = ($this->ui->getWidget('publish')->value !=
-			BlorgPublishRadioTable::HIDDEN);
-
-		if ($this->post->publish_date !== null) {
+		if ($this->post->publish_date === null) {
+			$this->post->publish_date = new SwatDate();
+			$this->post->publish_date->toUTC();
+		} else {
 			$this->post->publish_date->setTZ($this->app->default_time_zone);
 			$this->post->publish_date->toUTC();
 		}
+
+		$this->post->enabled = ($this->ui->getWidget('publish')->value !=
+			BlorgPublishRadioTable::HIDDEN);
 
 		$now = new SwatDate();
 		$now->toUTC();
