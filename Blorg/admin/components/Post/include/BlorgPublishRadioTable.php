@@ -56,12 +56,21 @@ class BlorgPublishRadioTable extends SwatRadioTable
 	// }}}
 	// {{{ public function getPublishDate()
 
+	/**
+	 * @return SwatDate the selected date or null if the current date should
+	 *                  be used. The current date is not returned because it
+	 *                  will be in the server time zone. Dates returned by
+	 *                  this method are in the local time zone.
+	 *
+	 * @see BlorgPublishRadioTable::setPublishDate()
+	 */
 	public function getPublishDate()
 	{
 		$date = $this->getCompositeWidget('publish_date')->value;
 
-		if ($date === null || $this->value == self::PUBLISH_NOW)
-			$date = new SwatDate();
+		if ($date === null || $this->value == self::PUBLISH_NOW) {
+			$date = null;
+		}
 
 		return $date;
 	}
@@ -69,6 +78,12 @@ class BlorgPublishRadioTable extends SwatRadioTable
 	// }}}
 	// {{{ public function setPublishDate()
 
+	/**
+	 * @param SwatDate $date the date to set. The date should be in the local
+	 *                        time zone.
+	 *
+	 * @see BlorgPublishRadioTable::getPublishDate()
+	 */
 	public function setPublishDate(SwatDate $date, $hidden = false)
 	{
 		if ($date !== null) {
