@@ -97,8 +97,14 @@ class BlorgAuthorIndex extends AdminSearch
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->getOrderByClause($view, 'displayorder, name'));
 
-		return SwatDB::query($this->app->db, $sql,
+		$authors = SwatDB::query($this->app->db, $sql,
 			SwatDBClassMap::get('BlorgAuthorWrapper'));
+
+		if (count($authors) < 2) {
+			$this->ui->getWidget('author_order_link')->sensitive = false;
+		}
+
+		return $authors;
 	}
 
 	// }}}
