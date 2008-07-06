@@ -168,9 +168,11 @@ class BlorgPostAtomPage extends SitePage
 					'previous', 'application/atom+xml');
 			}
 
-			$next = '/page'.($this->page + 1);
-			$this->feed->addLink($post_uri.'/feed'.$next,
-				'next', 'application/atom+xml');
+			if ($this->page < ceil($total_comments / $length)) {
+				$next = '/page'.($this->page + 1);
+				$this->feed->addLink($post_uri.'/feed'.$next,
+					'next', 'application/atom+xml');
+			}
 		}
 
 		$this->feed->setGenerator('Blörg');
