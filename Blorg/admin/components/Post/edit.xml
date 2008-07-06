@@ -40,6 +40,7 @@
 				</widget>
 				<widget class="SwatFormField" id="shortname_field">
 					<property name="title" translatable="yes">Short Name</property>
+					<property name="note" translatable="yes">Used in permalinks.</property>
 					<widget class="AdminUniqueEntry" id="shortname">
 						<property name="required" type="boolean">true</property>
 						<property name="maxlength" type="integer">255</property>
