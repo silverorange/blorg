@@ -94,9 +94,41 @@ class BlorgPostComments extends AdminPage
 		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
 		$comments = SwatDB::query($this->app->db, $sql, $wrapper);
 
-		$this->ui->getWidget('results_message')->content =
-			$pager->getResultsMessage(Blorg::_('comment'),
-				Blorg::_('comments'));
+		// init result message
+		$visibility = $this->ui->getWidget('search_visibility')->value;
+		switch ($visibility) {
+		default:
+		case self::SHOW_UNAPPROVED :
+			$this->ui->getWidget('results_message')->content =
+				$pager->getResultsMessage(
+					Blorg::_('pending comment'),
+					Blorg::_('pending comments'));
+
+			break;
+		case self::SHOW_ALL :
+			$this->ui->getWidget('results_message')->content =
+				$pager->getResultsMessage(
+					Blorg::_('comment'),
+					Blorg::_('comments'));
+
+			break;
+
+		case self::SHOW_ALL_SPAM :
+			$this->ui->getWidget('results_message')->content =
+				$pager->getResultsMessage(
+					Blorg::_('comment (including spam)'),
+					Blorg::_('comments (including spam)'));
+
+			break;
+
+		case self::SHOW_SPAM :
+			$this->ui->getWidget('results_message')->content =
+				$pager->getResultsMessage(
+					Blorg::_('spam comment'),
+					Blorg::_('spam comments'));
+
+			break;
+		}
 
 		// efficiently load posts for all comments
 		$instance_id = $this->app->getInstanceId();
@@ -191,6 +223,7 @@ class BlorgPostComments extends AdminPage
 
 			$visibility = $this->ui->getWidget('search_visibility')->value;
 			switch ($visibility) {
+			default:
 			case self::SHOW_UNAPPROVED :
 				$where.= sprintf(
 					' and status = %s and spam = %s',
