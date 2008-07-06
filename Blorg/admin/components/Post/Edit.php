@@ -359,6 +359,7 @@ class BlorgPostEdit extends AdminDBEdit
 		$this->post->extended_bodytext = $values['extended_bodytext'];
 		$this->post->comment_status    = $values['comment_status'];
 
+		// save default author for the current admin user
 		$instance_id = $this->app->getInstanceId();
 		if ($this->id === null && $instance_id !== null) {
 			$sql = sprintf('update AdminUserInstanceBinding
@@ -372,6 +373,7 @@ class BlorgPostEdit extends AdminDBEdit
 			SwatDB::exec($this->app->db, $sql);
 		}
 
+		// set published date
 		$this->post->publish_date =
 			$this->ui->getWidget('publish')->getPublishDate();
 
@@ -386,23 +388,27 @@ class BlorgPostEdit extends AdminDBEdit
 		$this->post->enabled = ($this->ui->getWidget('publish')->value !=
 			BlorgPublishRadioTable::HIDDEN);
 
+		// set create/modified date
 		$now = new SwatDate();
 		$now->toUTC();
 		$id = $this->id;
 
 		if ($id === null) {
-			$this->post->createdate   = $now;
-			$this->post->instance     = $this->app->getInstanceId();
+			$this->post->createdate = $now;
+			$this->post->instance   = $this->app->getInstanceId();
 		} else {
 			$this->post->modified_date = $now;
 		}
 
+		// save the post
 		$this->post->save();
 
+		// save tags
 		$tags = $this->ui->getWidget('tags')->getSelectedTagArray();
 		$this->post->addTagsByShortName($tags,
 			$this->app->getInstance(), true);
 
+		// update files attached to the form to be attached to the post
 		if ($id === null) {
 			$form = $this->ui->getWidget('edit_form');
 			$unique_id = $form->getHiddenField('unique_id');
@@ -420,6 +426,7 @@ class BlorgPostEdit extends AdminDBEdit
 		$message = new SwatMessage(sprintf(Blorg::_('“%s” has been saved.'),
 			$this->post->getTitle()));
 
+		// ping weblogs
 		if ($this->post->enabled) {
 			$this->pingWebLogsDotCom();
 			$message->secondary_content = Blorg::_(
