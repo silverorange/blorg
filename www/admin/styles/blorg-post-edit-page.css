@@ -165,13 +165,13 @@ img.blorg-file-icon {
 }
 
 /* }}} */
-/* {{{ Reply Status Slider */
+/* {{{ Comment Status Slider */
 
-.blorg-reply-status-slider-context-note {
+.blorg-comment-status-slider-context-note {
 	min-height: 4em;
 }
 
-* html .blorg-reply-status-slider-context-note {
+* html .blorg-comment-status-slider-context-note {
 	height: 4em; /* IE 6 hack */
 }
 
