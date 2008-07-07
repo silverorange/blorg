@@ -53,8 +53,7 @@
 				<widget class="BlorgHeaderImageDisplay" id="image_preview" />
 			</widget>
 			<widget class="SwatDisclosure" id="change_image">
-				<property name="title" translatable="yes">Replace Header Image</property>
-				<property name="open" type="boolean">false</property>
+				<property name="title" translatable="yes">Add Header Image</property>
 				<widget class="SwatFormField">
 					<widget class="SwatFileEntry" id="header_image">
 						<property name="accept_mime_types[]">image/jpeg</property>
@@ -68,8 +67,7 @@
 				<widget class="BlorgHeaderImageDisplay" id="logo_preview" />
 			</widget>
 			<widget class="SwatDisclosure" id="change_logo">
-				<property name="title" translatable="yes">Replace Feed Logo</property>
-				<property name="open" type="boolean">false</property>
+				<property name="title" translatable="yes">Add Feed Logo</property>
 				<widget class="SwatFormField">
 					<widget class="SwatFileEntry" id="feed_logo" />
 				</widget>
