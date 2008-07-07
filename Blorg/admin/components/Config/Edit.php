@@ -158,9 +158,9 @@ class BlorgConfigEdit extends AdminEdit
 			$imagick = new Imagick($file->getTempFileName());
 			$width   = $imagick->getImageWidth();
 			$height  = $imagick->getImageHeight();
-			$text    = 'The feed logo must have an aspect ratio of 2:1. '.
-				'Dimesions given were %s x %s. '.
-				'Please resize the logo and try again.';
+			$text    = Blorg::_('The feed logo must have an aspect ratio of '.
+				'2:1. Dimesions given were %s x %s. '.
+				'Please resize the logo and try again.');
 
 			if ($width % $height !== 0 || $width / $height !== 2) {
 				$message = new SwatMessage(Blorg::_(sprintf($text,$height,
