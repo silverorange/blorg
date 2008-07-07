@@ -134,7 +134,9 @@ class BlorgAtomPage extends SitePage
 		$this->feed->setGenerator('Blörg');
 		$this->feed->setBase($site_base_href);
 
-		$this->feed->setIcon($site_base_href.$favicon_file);
+		if ($favicon_file !== null)
+			$this->feed->setIcon($site_base_href.$favicon_file);
+
 		if ($this->app->config->blorg->feed_logo != '') {
 			$class = SwatDBClassMap::get('BlorgFile');
 			$blorg_file = new $class();
