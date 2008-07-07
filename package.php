@@ -2,7 +2,8 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.0.46';
+$version = '0.0.48';
+
 $notes = <<<EOT
 * fix a time-zone conversino bug when creating new posts
 EOT;
