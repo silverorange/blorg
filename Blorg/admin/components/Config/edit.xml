@@ -69,7 +69,11 @@
 			<widget class="SwatDisclosure" id="change_logo">
 				<property name="title" translatable="yes">Add Feed Logo</property>
 				<widget class="SwatFormField">
-					<widget class="SwatFileEntry" id="feed_logo" />
+					<widget class="SwatFileEntry" id="feed_logo">
+						<property name="accept_mime_types[]">image/jpeg</property>
+						<property name="accept_mime_types[]">image/png</property>
+						<property name="accept_mime_types[]">image/gif</property>
+					</widget>
 				</widget>
 			</widget>
 			<widget class="SwatFooterFormField">
