@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swat/SwatMessage.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminEdit.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
@@ -65,6 +66,8 @@ class BlorgConfigEdit extends AdminEdit
 		parent::initInternal();
 		$this->ui->loadFromXML($this->ui_xml);
 		$this->initCommentStatuses();
+		$this->initBlorgHeaderImage();
+		$this->initBlorgFeedLogo();
 	}
 
 	// }}}
@@ -113,8 +116,62 @@ class BlorgConfigEdit extends AdminEdit
 	}
 
 	// }}}
+	// {{{ protected function initBlorgHeaderImage()
+
+	protected function initBlorgHeaderImage()
+	{
+		$value = $this->app->config->blorg->header_image;
+		if ($value != '') {
+			$class = SwatDBClassMap::get('BlorgFile');
+			$file = new $class();
+			$file->setDatabase($this->app->db);
+			$file->load(intval($value));
+			$this->ui->getWidget('image_preview')->setFile($file);
+		}
+	}
+
+	// }}}
+	// {{{ protected function initBlorgFeedLogo()
+
+	protected function initBlorgFeedLogo()
+	{
+		$value = $this->app->config->blorg->feed_logo;
+		if ($value != '') {
+			$class = SwatDBClassMap::get('BlorgFile');
+			$file = new $class();
+			$file->setDatabase($this->app->db);
+			$file->load(intval($value));
+			$this->ui->getWidget('logo_preview')->setFile($file);
+		}
+	}
+
+	// }}}
 
 	// process phase
+	// {{{ protected function validate()
+
+	protected function validate()
+	{
+		$file = $this->ui->getWidget('feed_logo');
+
+		if ($file->isUploaded()) {
+			$imagick = new Imagick($file->getTempFileName());
+			$width   = $imagick->getImageWidth();
+			$height  = $imagick->getImageHeight();
+			$text    = 'The feed logo must have an aspect ratio of 2:1. '.
+				'Dimesions given were %s x %s. '.
+				'Please resize the logo and try again.';
+
+			if ($width % $height !== 0 || $width / $height !== 2) {
+				$message = new SwatMessage(Blorg::_(sprintf($text,$height,
+					$width)));
+
+				$file->addMessage($message);
+			}
+		}
+	}
+
+	// }}}
 	// {{{ protected function saveData()
 
 	protected function saveData()
@@ -399,16 +456,10 @@ class BlorgConfigEdit extends AdminEdit
 		$value = $this->app->config->blorg->header_image;
 		if ($value == '') {
 			$this->ui->getWidget('image_container')->visible = false;
-
-			$change_image = $this->ui->getWidget('change_image');
-			$change_image->title = Blorg::_('Add Header Image');
-			$change_image->open = true;
 		} else {
-			$class = SwatDBClassMap::get('BlorgFile');
-			$file = new $class();
-			$file->setDatabase($this->app->db);
-			$file->load(intval($value));
-			$this->ui->getWidget('image_preview')->setFile($file);
+			$change_image = $this->ui->getWidget('change_image');
+			$change_image->title = Blorg::_('Replace Header Image');
+			$change_image->open = false;
 		}
 	}
 
@@ -420,16 +471,10 @@ class BlorgConfigEdit extends AdminEdit
 		$value = $this->app->config->blorg->feed_logo;
 		if ($value == '') {
 			$this->ui->getWidget('logo_container')->visible = false;
-
-			$change_image = $this->ui->getWidget('change_logo');
-			$change_image->title = Blorg::_('Add Feed Logo');
-			$change_image->open = true;
 		} else {
-			$class = SwatDBClassMap::get('BlorgFile');
-			$file = new $class();
-			$file->setDatabase($this->app->db);
-			$file->load(intval($value));
-			$this->ui->getWidget('logo_preview')->setFile($file);
+			$change_image = $this->ui->getWidget('change_logo');
+			$change_image->title = Blorg::_('Replace Feed Logo');
+			$change_image->open = false;
 		}
 	}
 
