@@ -161,10 +161,45 @@ class BlorgConfigEdit extends AdminEdit
 	{
 		$transaction = new SwatDBTransaction($this->app->db);
 		try {
-			$file_id = $this->processHeaderImage('header_image');
+			$file_id = $this->processImage('header_image');
 			$this->app->config->blorg->header_image = $file_id;
 
-			$file_id = $this->processHeaderImage('feed_logo');
+			$transaction->commit();
+		} catch (SwatDBException $e) {
+			$transaction->rollback();
+
+			$message = new SwatMessage(Blorg::_(
+				'A database error has occured. The header image was not '.
+					'saved.'),
+				SwatMessage::SYSTEM_ERROR);
+
+			$this->app->messages->add($message);
+
+			$e->process();
+			return false;
+
+		} catch (SwatException $e) {
+			$message = new SwatMessage(Blorg::_(
+				'An error has occured. The header image was not saved.'),
+				SwatMessage::SYSTEM_ERROR);
+
+			$this->app->messages->add($message);
+
+			$e->process();
+			return false;
+		}
+
+		return true;
+	}
+
+	// }}}
+	// {{{ protected function saveBlorgFeedLogo()
+
+	protected function saveBlorgFeedLogo()
+	{
+		$transaction = new SwatDBTransaction($this->app->db);
+		try {
+			$file_id = $this->processImage('feed_logo');
 			$this->app->config->blorg->feed_logo = $file_id;
 
 			$transaction->commit();
@@ -196,9 +231,9 @@ class BlorgConfigEdit extends AdminEdit
 	}
 
 	// }}}
-	// {{{ protected function processHeaderImage()
+	// {{{ protected function processImage()
 
-	protected function processHeaderImage($widget)
+	protected function processImage($widget)
 	{
 		$id   = $this->app->config->blorg->$widget;
 		$file = $this->ui->getWidget($widget);
@@ -210,8 +245,8 @@ class BlorgConfigEdit extends AdminEdit
 				$path = '../../files/'.$this->app->getInstance()->shortname;
 			}
 
-			$new_file_id = $this->createHeaderImage($file, $path);
-			$this->removeOldHeaderImage($id, $path);
+			$new_file_id = $this->createBlorgFile($file, $path);
+			$this->removeBlorgFile($id, $path);
 		} else {
 			$new_file_id = $id;
 		}
@@ -220,9 +255,9 @@ class BlorgConfigEdit extends AdminEdit
 	}
 
 	// }}}
-	// {{{ protected function createHeaderImage()
+	// {{{ protected function createBlorgFile()
 
-	protected function createHeaderImage(SwatFileEntry $file, $path)
+	protected function createBlorgFile(SwatFileEntry $file, $path)
 	{
 		$now = new SwatDate();
 		$now->toUTC();
@@ -233,7 +268,6 @@ class BlorgConfigEdit extends AdminEdit
 		$blorg_file->setFileBase($path);
 		$blorg_file->createFileBase($path);
 
-		$blorg_file->description = Blorg::_('Header Image');
 		$blorg_file->visible     = false;
 		$blorg_file->filename    = $file->getUniqueFileName($path);
 		$blorg_file->mime_type   = $file->getMimeType();
@@ -248,9 +282,9 @@ class BlorgConfigEdit extends AdminEdit
 	}
 
 	// }}}
-	// {{{ protected function removeOldHeaderImage()
+	// {{{ protected function removeBlorgFileImage()
 
-	protected function removeOldHeaderImage($id, $path)
+	protected function removeBlorgFile($id, $path)
 	{
 		if ($id != '') {
 			$class_name = SwatDBClassMap::get('BlorgFile');
