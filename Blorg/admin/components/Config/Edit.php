@@ -163,9 +163,7 @@ class BlorgConfigEdit extends AdminEdit
 				'Please resize the logo and try again.');
 
 			if ($width % $height !== 0 || $width / $height !== 2) {
-				$message = new SwatMessage(Blorg::_(sprintf($text,$height,
-					$width)));
-
+				$message = new SwatMessage(sprintf($text, $height, $width));
 				$file->addMessage($message);
 			}
 		}
