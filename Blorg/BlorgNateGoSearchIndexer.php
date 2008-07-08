@@ -4,11 +4,12 @@ require_once 'Swat/SwatDetailsStore.php';
 require_once 'Site/SiteNateGoSearchIndexer.php';
 require_once 'Blorg/Blorg.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
+require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 
 /**
  * Blorg search indexer application for NateGoSearch
  *
- * This indexer indexes posts and articles by default.
+ * This indexer indexes posts, comments, and articles by default.
  * Subclasses may change how and what gets indexed.
  *
  * @package   Blörg
@@ -27,6 +28,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 		parent::queue();
 
 		$this->queuePosts();
+		$this->queueComments();
 	}
 
 	// }}}
@@ -43,6 +45,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 		parent::index();
 
 		$this->indexPosts();
+		$this->indexComments();
 	}
 
 	// }}}
@@ -140,6 +143,102 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 
 		$post_indexer->commit();
 		unset($post_indexer);
+
+		$sql = sprintf('delete from NateGoSearchQueue where document_type = %s',
+			$this->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->db, $sql);
+	}
+
+	// }}}
+	// {{{ protected function queueComments()
+
+	/**
+	 * Repopulates the comments queue
+	 */
+	protected function queueComments()
+	{
+		$this->output(Blorg::_('Repopulating comment search queue ... '),
+			self::VERBOSITY_ALL);
+
+		$type = NateGoSearch::getDocumentType($this->db, 'comment');
+
+		// clear queue
+		$sql = sprintf('delete from NateGoSearchQueue
+			where document_type = %s',
+			$this->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->db, $sql);
+
+		// fill queue
+		$sql = sprintf('insert into NateGoSearchQueue
+			(document_type, document_id) select %s, id from BlorgComment',
+			$this->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->db, $sql);
+
+		$this->output(Blorg::_('done')."\n", self::VERBOSITY_ALL);
+	}
+
+	// }}}
+	// {{{ protected function indexComments()
+
+	protected function indexComments()
+	{
+		$type_shortname = 'comment';
+
+		$spell_checker = new NateGoSearchPSpellSpellChecker('en');
+		$spell_checker->setCustomWordList($this->getCustomWordList());
+		$spell_checker->loadCustomContent();
+
+		$comment_indexer = new NateGoSearchIndexer($type_shortname, $this->db);
+		$comment_indexer->setSpellChecker($spell_checker);
+
+		$comment_indexer->addTerm(new NateGoSearchTerm('fullname', 30));
+		$comment_indexer->addTerm(new NateGoSearchTerm('email', 20));
+		$comment_indexer->addTerm(new NateGoSearchTerm('bodytext', 1));
+		$comment_indexer->setMaximumWordLength(32);
+		$comment_indexer->addUnindexedWords(
+			NateGoSearchIndexer::getDefaultUnindexedWords());
+
+		$type = NateGoSearch::getDocumentType($this->db, $type_shortname);
+
+		$sql = sprintf('select BlorgComment.*
+			from BlorgComment
+				inner join NateGoSearchQueue
+					on BlorgComment.id = NateGoSearchQueue.document_id
+					and NateGoSearchQueue.document_type = %s
+			order by BlorgComment.id',
+			$this->db->quote($type, 'integer'));
+
+		$this->output(Blorg::_('Indexing comments... ').'   ',
+			self::VERBOSITY_ALL);
+
+		$comments = SwatDB::query($this->db, $sql,
+			SwatDBClassMap::get('BlorgCommentWrapper'));
+
+		$total = count($comments);
+		$count = 0;
+		foreach ($comments as $comment) {
+			$ds = new SwatDetailsStore($comment);
+
+			if ($count % 10 == 0) {
+				$comment_indexer->commit();
+				$this->output(str_repeat(chr(8), 3), self::VERBOSITY_ALL);
+				$this->output(sprintf('%2d%%', ($count / $total) * 100),
+					self::VERBOSITY_ALL);
+			}
+
+			$document = new NateGoSearchDocument($ds, 'id');
+			$comment_indexer->index($document);
+			$count++;
+		}
+
+		$this->output(str_repeat(chr(8), 3).Blorg::_('done')."\n",
+			self::VERBOSITY_ALL);
+
+		$comment_indexer->commit();
+		unset($comment_indexer);
 
 		$sql = sprintf('delete from NateGoSearchQueue where document_type = %s',
 			$this->db->quote($type, 'integer'));
