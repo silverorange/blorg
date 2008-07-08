@@ -315,6 +315,15 @@ class BlorgPostPage extends SitePage
 
 	protected function addToSearchQueue()
 	{
+		$this->addPostToSearchQueue();
+		$this->addCommentToSearchQueue();
+	}
+
+	// }}}
+	// {{{ protected function addPostToSearchQueue()
+
+	protected function addPostToSearchQueue()
+	{
 		$type = NateGoSearch::getDocumentType($this->app->db, 'post');
 
 		if ($type === null)
@@ -330,6 +339,31 @@ class BlorgPostPage extends SitePage
 		$sql = sprintf('insert into NateGoSearchQueue
 			(document_id, document_type) values (%s, %s)',
 			$this->app->db->quote($this->post->id, 'integer'),
+			$this->app->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
+	}
+
+	// }}}
+	// {{{ protected function addCommentToSearchQueue()
+
+	protected function addCommentToSearchQueue()
+	{
+		$type = NateGoSearch::getDocumentType($this->app->db, 'comment');
+
+		if ($type === null)
+			return;
+
+		$sql = sprintf('delete from NateGoSearchQueue
+			where document_id = %s and document_type = %s',
+			$this->app->db->quote($this->comment->id, 'integer'),
+			$this->app->db->quote($type, 'integer'));
+
+		SwatDB::exec($this->app->db, $sql);
+
+		$sql = sprintf('insert into NateGoSearchQueue
+			(document_id, document_type) values (%s, %s)',
+			$this->app->db->quote($this->comment->id, 'integer'),
 			$this->app->db->quote($type, 'integer'));
 
 		SwatDB::exec($this->app->db, $sql);
