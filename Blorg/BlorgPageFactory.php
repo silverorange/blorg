@@ -238,7 +238,7 @@ class BlorgPageFactory extends SitePageFactory
 	{
 		$months = implode('|', self::$month_names);
 		$post = 'archive/(\d{4})/('.$months.')/([\w-]+)';
-		$post_feed_sub_page = '(?:/page(\d+)(?:/length(\d+))?|/comment(\d+))?';
+		$post_feed_sub_page = '(?:/page(\d+)|/comment(\d+))?';
 
 		return array(
 			'^(?:page(\d+))?$'                        => 'BlorgFrontPage',

@@ -41,11 +41,6 @@ class BlorgPostAtomPage extends SitePage
 	/**
 	 * @var integer
 	 */
-	protected $length;
-
-	/**
-	 * @var integer
-	 */
 	protected $comment_id;
 
 	// }}}
@@ -61,8 +56,7 @@ class BlorgPostAtomPage extends SitePage
 	 * @param string $shortname
 	 */
 	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$year, $month_name, $shortname, $page = null, $length = null,
-		$comment_id = null)
+		$year, $month_name, $shortname, $page = null, $comment_id = null)
 	{
 		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
 
@@ -71,7 +65,6 @@ class BlorgPostAtomPage extends SitePage
 		$this->initPost($year, $month_name, $shortname);
 
 		$this->page       = $page;
-		$this->length     = $length;
 		$this->comment_id = $comment_id;
 	}
 
@@ -151,9 +144,7 @@ class BlorgPostAtomPage extends SitePage
 
 		// Feed paging. See IETF RFC 5005.
 		if ($this->comment_id == '') {
-			$length = ($this->length === null) ?
-				self::MAX_COMMENTS: $this->length;
-
+			$length = self::MAX_COMMENTS;
 			$page = ($this->page === null) ? 1 : $this->page;
 			$this->feed->addLink($post_uri.'/feed',
 				'first', 'application/atom+xml');
@@ -258,9 +249,7 @@ class BlorgPostAtomPage extends SitePage
 	{
 		if ($this->page != '') {
 			// page of comments
-			$limit = ($this->length == '') ?
-				self::MAX_COMMENTS : $this->length;
-
+			$limit = self::MAX_COMMENTS;
 			$offset = ($this->page - 1) * $limit;
 			$comments = $this->post->getVisibleComments($limit, $offset);
 		} elseif ($this->comment_id != '') {
