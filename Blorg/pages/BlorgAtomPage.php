@@ -57,15 +57,27 @@ class BlorgAtomPage extends SitePage
 	 */
 	protected $recent_period = 172800;
 
+	/**
+	 * @var integer
+	 */
+	protected $page;
+
+	/**
+	 * @var BlorgPostLoader
+	 */
+	protected $post_loader;
+
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteLayout $layout = null)
+	public function __construct(SiteApplication $app, SiteLayout $layout = null,
+		$page_number = 1)
 	{
 		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
 
 		parent::__construct($app, $layout);
 
+		$this->page = $page_number;
 		$this->initPosts();
 	}
 
@@ -74,28 +86,26 @@ class BlorgAtomPage extends SitePage
 
 	protected function initPosts()
 	{
-		$loader = new BlorgPostLoader($this->app->db,
+		$this->post_loader = new BlorgPostLoader($this->app->db,
 			$this->app->getInstance());
 
-		$loader->addSelectField('title');
-		$loader->addSelectField('bodytext');
-		$loader->addSelectField('extended_bodytext');
-		$loader->addSelectField('shortname');
-		$loader->addSelectField('publish_date');
-		$loader->addSelectField('author');
-		$loader->addSelectField('comment_status');
-		$loader->addSelectField('visible_comment_count');
+		$this->post_loader->addSelectField('title');
+		$this->post_loader->addSelectField('bodytext');
+		$this->post_loader->addSelectField('extended_bodytext');
+		$this->post_loader->addSelectField('shortname');
+		$this->post_loader->addSelectField('publish_date');
+		$this->post_loader->addSelectField('author');
+		$this->post_loader->addSelectField('comment_status');
+		$this->post_loader->addSelectField('visible_comment_count');
 
-		$loader->setLoadFiles(true);
-		$loader->setLoadTags(true);
+		$this->post_loader->setLoadFiles(true);
+		$this->post_loader->setLoadTags(true);
 
-		$loader->setWhereClause(sprintf('enabled = %s',
+		$this->post_loader->setWhereClause(sprintf('enabled = %s',
 			$this->app->db->quote(true, 'boolean')));
 
-		$loader->setOrderByClause('publish_date desc');
-		$loader->setRange($this->max_entries);
-
-		$this->posts = $loader->getPosts();
+		$this->post_loader->setOrderByClause('publish_date desc');
+		$this->post_loader->setRange(new SwatDBRange($this->max_entries));
 	}
 
 	// }}}
@@ -149,78 +159,73 @@ class BlorgAtomPage extends SitePage
 		$threshold->toUTC();
 		$threshold->subtractSeconds($this->recent_period);
 
+		$posts = $this->post_loader->getPosts();
 		$count = 0;
 
-		foreach ($this->posts as $post) {
-			$count++;
-
+		foreach ($posts as $post) {
 			if ($count > $this->max_entries ||
 				($count > $this->min_entries) &&
 					$post->publish_date->before($threshold))
 				break;
 
-			$path = $blorg_base_href.'archive';
+			$count++;
+		}
 
-			$date = clone $post->publish_date;
-			$date->convertTZ($this->app->default_time_zone);
-			$year = $date->getYear();
-			$month_name = BlorgPageFactory::$month_names[$date->getMonth()];
+		$this->buildAtomPagination($count);
 
-			$post_uri = sprintf('%s/%s/%s/%s',
-				$path,
-				$year,
-				$month_name,
-				$post->shortname);
+		if ($this->page > 1) {
+			$this->post_loader->setRange($this->min_entries,
+				$count + (($this->page - 2) * $this->min_entries));
 
-			$entry = new XML_Atom_Entry($post_uri, $post->getTitle(),
-				$post->publish_date);
+			$posts = $this->post_loader->getPosts();
+			$count = $this->min_entries;
+		}
 
-			if ($post->extended_bodytext != '') {
-				$full_bodytext = $post->bodytext.$post->extended_bodytext;
-				$entry->setSummary($post->bodytext, 'html');
-				$entry->setContent($full_bodytext, 'html');
-			} else {
-				$entry->setContent($post->bodytext, 'html');
-			}
+		$this->buildEntries($posts, $count);
+	}
 
-			foreach ($post->getTags() as $tag) {
-				$entry->addCategory($tag->shortname, $blorg_base_href,
-					$tag->title);
-			}
+	// }}}
+	// {{{ protected function buildAtomPagination()
 
-			$entry->addLink($post_uri, 'alternate', 'text/html');
+	protected function buildAtomPagination($first_page_size)
+	{
+		// Feed paging. See IETF RFC 5005.
+		$total_posts = $this->post_loader->getPostCount();
+		$site_base_href  = $this->app->getBaseHref();
 
-			foreach ($post->getVisibleFiles() as $file) {
-				$link = new XML_Atom_Link(
-					$site_base_href.$file->getRelativeUri(
-						$this->app->config->blorg->path),
-					'enclosure',
-					$file->mime_type);
+		$this->feed->addLink($site_base_href.'feed',
+			'first', 'application/atom+xml');
 
-				$link->setTitle($file->getDescription());
-				$link->setLength($file->filesize);
-				$entry->addLink($link);
-			}
+		$last = (ceil(($total_posts - $first_page_size) / $this->min_entries)
+			+ 1);
 
-			if ($post->author->visible) {
-				$author_uri = $blorg_base_href.'author/'.
-					$post->author->shortname;
-			} else {
-				$author_uri = '';
-			}
+		$this->feed->addLink($site_base_href.'feed'.'/page'.$last,
+			'last', 'application/atom+xml');
 
-			$entry->addAuthor($post->author->name, $author_uri,
-				$post->author->email);
+		if ($this->page > 1) {
+			$previous = '/page'.($this->page - 1);
+			$this->feed->addLink($site_base_href.'feed'.$previous,
+				'previous', 'application/atom+xml');
+		}
 
-			$visible_comment_count = $post->getVisibleCommentCount();
-			if ($post->comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
-				$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED ||
-				($post->comment_status == BlorgPost::COMMENT_STATUS_LOCKED &&
-				$visible_comment_count > 0)) {
-				$entry->addLink($post_uri.'#comments', 'comments', 'text/html');
-			}
+		if ($this->page != $last) {
+			$next = '/page'.($this->page + 1);
+			$this->feed->addLink($site_base_href.'feed'.$next,
+				'next', 'application/atom+xml');
+		}
+	}
 
-			$this->feed->addEntry($entry);
+	// }}}
+	// {{{ protected function buildEntries()
+
+	protected function buildEntries(BlorgPostWrapper $posts, $limit)
+	{
+		$count = 0;
+		foreach ($posts as $post) {
+			if ($count < $limit)
+				$this->addPost($post);
+
+			$count++;
 		}
 	}
 
@@ -230,6 +235,77 @@ class BlorgAtomPage extends SitePage
 	protected function displayAtomFeed()
 	{
 		echo $this->feed;
+	}
+
+	// }}}
+	// {{{ protected function addPost()
+
+	protected function addPost(BlorgPost $post)
+	{
+		$site_base_href  = $this->app->getBaseHref();
+		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
+		$path = $blorg_base_href.'archive';
+
+		$date = clone $post->publish_date;
+		$date->convertTZ($this->app->default_time_zone);
+		$year = $date->getYear();
+		$month_name = BlorgPageFactory::$month_names[$date->getMonth()];
+
+		$post_uri = sprintf('%s/%s/%s/%s',
+			$path,
+			$year,
+			$month_name,
+			$post->shortname);
+
+		$entry = new XML_Atom_Entry($post_uri, $post->getTitle(),
+			$post->publish_date);
+
+		if ($post->extended_bodytext != '') {
+			$full_bodytext = $post->bodytext.$post->extended_bodytext;
+			$entry->setSummary($post->bodytext, 'html');
+			$entry->setContent($full_bodytext, 'html');
+		} else {
+			$entry->setContent($post->bodytext, 'html');
+		}
+
+		foreach ($post->getTags() as $tag) {
+			$entry->addCategory($tag->shortname, $blorg_base_href,
+				$tag->title);
+		}
+
+		$entry->addLink($post_uri, 'alternate', 'text/html');
+
+		foreach ($post->getVisibleFiles() as $file) {
+			$link = new XML_Atom_Link(
+				$site_base_href.$file->getRelativeUri(
+					$this->app->config->blorg->path),
+				'enclosure',
+				$file->mime_type);
+
+			$link->setTitle($file->getDescription());
+			$link->setLength($file->filesize);
+			$entry->addLink($link);
+		}
+
+		if ($post->author->visible) {
+			$author_uri = $blorg_base_href.'author/'.
+				$post->author->shortname;
+		} else {
+			$author_uri = '';
+		}
+
+		$entry->addAuthor($post->author->name, $author_uri,
+			$post->author->email);
+
+		$visible_comment_count = $post->getVisibleCommentCount();
+		if ($post->comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
+			$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED ||
+			($post->comment_status == BlorgPost::COMMENT_STATUS_LOCKED &&
+			$visible_comment_count > 0)) {
+			$entry->addLink($post_uri.'#comments', 'comments', 'text/html');
+		}
+
+		$this->feed->addEntry($entry);
 	}
 
 	// }}}
