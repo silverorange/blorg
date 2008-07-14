@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Blorg/BlorgPostLoader.php';
 require_once 'XML/Atom/Feed.php';
@@ -128,8 +129,8 @@ class BlorgAtomPage extends SitePage
 	protected function buildAtomFeed()
 	{
 		$site_base_href  = $this->app->getBaseHref();
-		$favicon_file    = $this->app->theme->getFaviconFile();
 		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
+		$feed_base_href  = $site_base_href.$this->source;
 
 		$this->feed = new XML_Atom_Feed($blorg_base_href,
 			$this->app->config->site->title);
@@ -140,20 +141,10 @@ class BlorgAtomPage extends SitePage
 			'application/atom+xml');
 
 		$this->feed->addLink($blorg_base_href, 'alternate', 'text/html');
-
 		$this->feed->setGenerator('Blörg');
 		$this->feed->setBase($site_base_href);
 
-		if ($favicon_file !== null)
-			$this->feed->setIcon($site_base_href.$favicon_file);
-
-		if ($this->app->config->blorg->feed_logo != '') {
-			$class = SwatDBClassMap::get('BlorgFile');
-			$blorg_file = new $class();
-			$blorg_file->setDatabase($this->app->db);
-			$blorg_file->load(intval($this->app->config->blorg->feed_logo));
-			$this->feed->setLogo($site_base_href.$blorg_file->getRelativeUri());
-		}
+		$this->buildFeedIconLogo();
 
 		$threshold = new SwatDate();
 		$threshold->toUTC();
@@ -171,7 +162,7 @@ class BlorgAtomPage extends SitePage
 			$count++;
 		}
 
-		$this->buildAtomPagination($count);
+		$this->buildAtomPagination($count, $feed_base_href);
 
 		if ($this->page > 1) {
 			$this->post_loader->setRange($this->min_entries,
@@ -187,30 +178,30 @@ class BlorgAtomPage extends SitePage
 	// }}}
 	// {{{ protected function buildAtomPagination()
 
-	protected function buildAtomPagination($first_page_size)
+	protected function buildAtomPagination($first_page_size, $base_href)
 	{
 		// Feed paging. See IETF RFC 5005.
 		$total_posts = $this->post_loader->getPostCount();
-		$site_base_href  = $this->app->getBaseHref();
-
-		$this->feed->addLink($site_base_href.'feed',
-			'first', 'application/atom+xml');
+		$this->feed->addLink($base_href, 'first', 'application/atom+xml');
 
 		$last = (ceil(($total_posts - $first_page_size) / $this->min_entries)
 			+ 1);
 
-		$this->feed->addLink($site_base_href.'feed'.'/page'.$last,
+		if ($this->page > $last)
+			throw new SiteNotFoundException(Blorg::_('Page Not Found'));
+
+		$this->feed->addLink($base_href.'/page'.$last,
 			'last', 'application/atom+xml');
 
 		if ($this->page > 1) {
 			$previous = '/page'.($this->page - 1);
-			$this->feed->addLink($site_base_href.'feed'.$previous,
+			$this->feed->addLink($base_href.$previous,
 				'previous', 'application/atom+xml');
 		}
 
 		if ($this->page != $last) {
 			$next = '/page'.($this->page + 1);
-			$this->feed->addLink($site_base_href.'feed'.$next,
+			$this->feed->addLink($base_href.$next,
 				'next', 'application/atom+xml');
 		}
 	}
@@ -226,6 +217,26 @@ class BlorgAtomPage extends SitePage
 				$this->addPost($post);
 
 			$count++;
+		}
+	}
+
+	// }}}
+	// {{{ protected function buildFeedIconLogo()
+
+	protected function buildFeedIconLogo()
+	{
+		$favicon_file = $this->app->theme->getFaviconFile();
+
+		if ($favicon_file !== null)
+			$this->feed->setIcon($this->app->getBaseHref().$favicon_file);
+
+		if ($this->app->config->blorg->feed_logo != '') {
+			$class = SwatDBClassMap::get('BlorgFile');
+			$blorg_file = new $class();
+			$blorg_file->setDatabase($this->app->db);
+			$blorg_file->load(intval($this->app->config->blorg->feed_logo));
+			$this->feed->setLogo($this->app->getBaseHref().
+				$blorg_file->getRelativeUri());
 		}
 	}
 
