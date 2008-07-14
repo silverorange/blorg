@@ -79,7 +79,7 @@ class BlorgTagEntry extends SiteTagEntry
 		// check to see if the tag already exists
 		$instance_id = $this->app->getInstanceId();
 		$sql = sprintf('select * from
-			BlorgTag where title = %s and instance %s %s',
+			BlorgTag where lower(title) = lower(%s) and instance %s %s',
 			$this->app->db->quote($title, 'text'),
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'));

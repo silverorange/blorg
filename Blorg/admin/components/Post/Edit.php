@@ -561,7 +561,7 @@ class BlorgPostEdit extends AdminDBEdit
 
 		$tags = array();
 		foreach ($this->post->tags as $tag)
-			$tags[] = $tag->shortname;
+			$tags[$tag->shortname] = $tag->title;
 
 		$this->ui->getWidget('tags')->setSelectedTagArray($tags);
 	}
