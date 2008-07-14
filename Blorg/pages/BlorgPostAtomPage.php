@@ -74,7 +74,7 @@ class BlorgPostAtomPage extends SitePage
 	protected function initPost($year, $month_name, $shortname)
 	{
 		if (!array_key_exists($month_name, BlorgPageFactory::$months_by_name)) {
-			throw new SiteNotFoundException('Post not found.');
+			throw new SiteNotFoundException(Blorg::_('Post not found.'));
 		}
 
 		// Date parsed from URL is in locale time.
@@ -92,11 +92,11 @@ class BlorgPostAtomPage extends SitePage
 		$this->post->setDatabase($this->app->db);
 		if (!$this->post->loadByDateAndShortname($date, $shortname,
 			$this->app->getInstance())) {
-			throw new SiteNotFoundException('Post not found.');
+			throw new SiteNotFoundException(Blorg::_('Post not found.'));
 		}
 
 		if (!$this->post->enabled) {
-			throw new SiteNotFoundException('Post not found.');
+			throw new SiteNotFoundException(Blorg::_('Post not found.'));
 		}
 	}
 

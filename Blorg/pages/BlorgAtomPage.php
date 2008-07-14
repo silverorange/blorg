@@ -188,7 +188,7 @@ class BlorgAtomPage extends SitePage
 			+ 1);
 
 		if ($this->page > $last)
-			throw new SiteNotFoundException(Blorg::_('Page Not Found'));
+			throw new SiteNotFoundException(Blorg::_('Page not found.'));
 
 		$this->feed->addLink($base_href.'/page'.$last,
 			'last', 'application/atom+xml');
