@@ -238,6 +238,7 @@ class BlorgPageFactory extends SitePageFactory
 	{
 		$months = implode('|', self::$month_names);
 		$post = 'archive/(\d{4})/('.$months.')/([\w-]+)';
+		$page = '(?:/page(\d+))?';
 		$post_feed_sub_page = '(?:/page(\d+)|/comment(\d+))?';
 
 		return array(
@@ -250,12 +251,12 @@ class BlorgPageFactory extends SitePageFactory
 			'^archive/(\d{4})/('.$months.')$'         => 'BlorgMonthArchivePage',
 			'^'.$post.'$'                             => 'BlorgPostPage',
 			'^'.$post.'/feed'.$post_feed_sub_page.'$' => 'BlorgPostAtomPage',
-			'^feed$'                                  => 'BlorgAtomPage',
+			'^feed'.$page.'$'                         => 'BlorgAtomPage',
 			'^file/(.*)$'                             => 'BlorgFileLoaderPage',
 			'^feed/comments$'                         => 'BlorgCommentsAtomPage',
 			'^tag$'                                   => 'BlorgTagIndexPage',
 			'^tag/([\w-]+)(?:/page(\d+))?$'           => 'BlorgTagPage',
-			'^tag/([\w-]+)/feed$'                     => 'BlorgTagAtomPage',
+			'^tag/([\w-]+)/feed'.$page.'$'            => 'BlorgTagAtomPage',
 			'^ajax/(.+)$'                             => 'BlorgAjaxProxyPage',
 		);
 	}
