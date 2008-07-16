@@ -19,7 +19,7 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Meta Description</property>
+				<property name="title" translatable="yes">Default Meta Description</property>
 				<widget class="SwatTextarea" id="site_meta_description">
 					<property name="rows" type="integer">5</property>
 				</widget>
