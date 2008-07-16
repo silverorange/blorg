@@ -421,6 +421,7 @@ class BlorgPost extends SwatDBDataObject
 		$this->checkDB();
 
 		$instance_id = ($instance === null) ? null : $instance->id;
+		$tag_names = array_keys($tag_names);
 
 		$sql = sprintf('delete from BlorgPostTagBinding where post = %s',
 			$this->db->quote($this->id, 'integer'));
