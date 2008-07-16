@@ -239,25 +239,24 @@ class BlorgPageFactory extends SitePageFactory
 		$months = implode('|', self::$month_names);
 		$post = 'archive/(\d{4})/('.$months.')/([\w-]+)';
 		$page = '(?:/page(\d+))?';
-		$post_feed_sub_page = '(?:/page(\d+)|/comment(\d+))?';
 
 		return array(
-			'^(?:page(\d+))?$'                        => 'BlorgFrontPage',
-			'^search$'                                => 'BlorgSearchResultsPage',
-			'^author$'                                => 'BlorgAuthorIndexPage',
-			'^author/([\w-]+)(?:/page(\d+))?$'        => 'BlorgAuthorPage',
-			'^archive$'                               => 'BlorgArchivePage',
-			'^archive/(\d{4})$'                       => 'BlorgYearArchivePage',
-			'^archive/(\d{4})/('.$months.')$'         => 'BlorgMonthArchivePage',
-			'^'.$post.'$'                             => 'BlorgPostPage',
-			'^'.$post.'/feed'.$post_feed_sub_page.'$' => 'BlorgPostAtomPage',
-			'^feed'.$page.'$'                         => 'BlorgAtomPage',
-			'^file/(.*)$'                             => 'BlorgFileLoaderPage',
-			'^feed/comments$'                         => 'BlorgCommentsAtomPage',
-			'^tag$'                                   => 'BlorgTagIndexPage',
-			'^tag/([\w-]+)(?:/page(\d+))?$'           => 'BlorgTagPage',
-			'^tag/([\w-]+)/feed'.$page.'$'            => 'BlorgTagAtomPage',
-			'^ajax/(.+)$'                             => 'BlorgAjaxProxyPage',
+			'^(?:page(\d+))?$'                => 'BlorgFrontPage',
+			'^search$'                        => 'BlorgSearchResultsPage',
+			'^author$'                        => 'BlorgAuthorIndexPage',
+			'^author/([\w-]+)'.$page.'$'      => 'BlorgAuthorPage',
+			'^archive$'                       => 'BlorgArchivePage',
+			'^archive/(\d{4})$'               => 'BlorgYearArchivePage',
+			'^archive/(\d{4})/('.$months.')$' => 'BlorgMonthArchivePage',
+			'^'.$post.'$'                     => 'BlorgPostPage',
+			'^'.$post.'/feed'.$page.'$'       => 'BlorgPostAtomPage',
+			'^feed'.$page.'$'                 => 'BlorgAtomPage',
+			'^file/(.*)$'                     => 'BlorgFileLoaderPage',
+			'^feed/comments'.$page.'$'        => 'BlorgCommentsAtomPage',
+			'^tag$'                           => 'BlorgTagIndexPage',
+			'^tag/([\w-]+)(?:/page(\d+))?$'   => 'BlorgTagPage',
+			'^tag/([\w-]+)/feed'.$page.'$'    => 'BlorgTagAtomPage',
+			'^ajax/(.+)$'                     => 'BlorgAjaxProxyPage',
 		);
 	}
 
