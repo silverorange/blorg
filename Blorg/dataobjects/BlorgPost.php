@@ -415,8 +415,8 @@ class BlorgPost extends SwatDBDataObject
 	// }}}
 	// {{{ public function addTagsByShortname()
 
-	public function addTagsByShortname(array $tag_names,
-		SiteInstance $instance, $clear_existing_tags = false)
+	public function addTagsByShortname(array $tag_names, $instance,
+		$clear_existing_tags = false)
 	{
 		$this->checkDB();
 
