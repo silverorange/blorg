@@ -144,7 +144,8 @@ class BlorgAtomPage extends SitePage
 		$this->feed->setGenerator('Blörg');
 		$this->feed->setBase($site_base_href);
 
-		$this->buildFeedIconLogo();
+		$this->buildLogo();
+		$this->buildIcon();
 
 		$threshold = new SwatDate();
 		$threshold->toUTC();
@@ -221,15 +222,23 @@ class BlorgAtomPage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function buildFeedIconLogo()
+	// {{{ protected function buildIcon()
 
-	protected function buildFeedIconLogo()
+	protected function buildIcon()
 	{
-		$favicon_file = $this->app->theme->getFaviconFile();
+		if ($this->app->hasModule('SiteThemeModule')) {
+			$favicon_file = $this->app->theme->getFaviconFile();
 
-		if ($favicon_file !== null)
-			$this->feed->setIcon($this->app->getBaseHref().$favicon_file);
+			if ($favicon_file !== null)
+				$this->feed->setIcon($this->app->getBaseHref().$favicon_file);
+		}
+	}
 
+	// }}}
+	// {{{ protected function buildLogo()
+
+	protected function buildLogo()
+	{
 		if ($this->app->config->blorg->feed_logo != '') {
 			$class = SwatDBClassMap::get('BlorgFile');
 			$blorg_file = new $class();

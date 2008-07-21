@@ -113,7 +113,6 @@ class BlorgPostAtomPage extends SitePage
 	protected function buildAtomFeed()
 	{
 		$site_base_href  = $this->app->getBaseHref();
-		$favicon_file    = $this->app->theme->getFaviconFile();
 		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
 		$path            = $blorg_base_href.'archive';
 
@@ -160,16 +159,8 @@ class BlorgPostAtomPage extends SitePage
 		$this->feed->setGenerator('Blörg');
 		$this->feed->setBase($site_base_href);
 
-		if ($favicon_file !== null)
-			$this->feed->setIcon($site_base_href.$favicon_file);
-
-		if ($this->app->config->blorg->feed_logo != '') {
-			$class = SwatDBClassMap::get('BlorgFile');
-			$blorg_file = new $class();
-			$blorg_file->setDatabase($this->app->db);
-			$blorg_file->load(intval($this->app->config->blorg->feed_logo));
-			$this->feed->setLogo($site_base_href.$blorg_file->getRelativeUri());
-		}
+		$this->buildLogo();
+		$this->buildIcon();
 
 		if ($this->post->author->visible) {
 			$author_uri = $blorg_base_href.'author/'.
@@ -221,6 +212,34 @@ class BlorgPostAtomPage extends SitePage
 			$entry->addLink($comment_uri, 'alternate', 'text/html');
 
 			$this->feed->addEntry($entry);
+		}
+	}
+
+	// }}}
+	// {{{ protected function buildIcon()
+
+	protected function buildIcon()
+	{
+		if ($this->app->hasModule('SiteThemeModule')) {
+			$favicon_file = $this->app->theme->getFaviconFile();
+
+			if ($favicon_file !== null)
+				$this->feed->setIcon($this->app->getBaseHref().$favicon_file);
+		}
+	}
+
+	// }}}
+	// {{{ protected function buildLogo()
+
+	protected function buildLogo()
+	{
+		if ($this->app->config->blorg->feed_logo != '') {
+			$class = SwatDBClassMap::get('BlorgFile');
+			$blorg_file = new $class();
+			$blorg_file->setDatabase($this->app->db);
+			$blorg_file->load(intval($this->app->config->blorg->feed_logo));
+			$this->feed->setLogo($this->app->getBaseHref().
+				$blorg_file->getRelativeUri());
 		}
 	}
 
