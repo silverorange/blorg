@@ -111,7 +111,8 @@ class BlorgTagAtomPage extends BlorgAtomPage
 		$this->feed->setGenerator('Blörg');
 		$this->feed->setBase($site_base_href);
 
-		$this->buildFeedIconLogo();
+		$this->buildIcon();
+		$this->buildLogo();
 
 		$threshold = new SwatDate();
 		$threshold->toUTC();
