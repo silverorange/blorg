@@ -110,7 +110,6 @@ class BlorgPostLoader
 		$post_wrapper = SwatDBClassMap::get('BlorgPostWrapper');
 		$posts = SwatDB::query($this->db, $sql, $post_wrapper);
 
-
 		if (in_array('author', $this->fields)) {
 			$this->loadPostAuthors($posts);
 		}
@@ -258,8 +257,10 @@ class BlorgPostLoader
 		if (in_array('visible_comment_count', $this->fields)) {
 			$sql.= ' inner join BlorgPostVisibleCommentCountView on
 				BlorgPost.id = BlorgPostVisibleCommentCountView.post and
-				BlorgPost.instance =
-					BlorgPostVisibleCommentCountView.instance';
+				(BlorgPost.instance =
+					BlorgPostVisibleCommentCountView.instance or
+					(BlorgPost.instance is null and
+						BlorgPostVisibleCommentCountView.instance is null))';
 		}
 
 		return $sql;
