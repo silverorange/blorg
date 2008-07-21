@@ -544,7 +544,7 @@ class BlorgPostView extends BlorgView
 					} else {
 						$a_tag = new SwatHtmlTag('a');
 						$a_tag->rel = 'tag';
-						$a_tag->href = 'tag/'.$tag->shortname;
+						$a_tag->href = $this->getTagRelativeUri($tag);
 						$a_tag->setContent($tag->title);
 						$a_tag->display();
 					}

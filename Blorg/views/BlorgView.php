@@ -333,9 +333,7 @@ abstract class BlorgView
 	protected function getAuthorRelativeUri(BlorgAuthor $author)
 	{
 		$path = $this->app->config->blorg->path.'author';
-		return sprintf('%s/%s',
-			$path,
-			$author->shortname);
+		return $path.'/'.$author->shortname;
 	}
 
 	// }}}
@@ -345,6 +343,15 @@ abstract class BlorgView
 	{
 		return $this->getPostRelativeUri($comment->post).
 			'#comment'.$comment->id;
+	}
+
+	// }}}
+	// {{{ protected function getPostRelativeUri()
+
+	protected function getTagRelativeUri(BlorgTag $tag)
+	{
+		$path = $this->app->config->blorg->path.'tag';
+		return $path.'/'.$tag->shortname;
 	}
 
 	// }}}
