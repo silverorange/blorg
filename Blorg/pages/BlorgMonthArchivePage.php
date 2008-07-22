@@ -1,7 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/pages/SitePage.php';
+require_once 'Site/pages/SitePageDecorator.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgViewFactory.php';
@@ -15,7 +15,7 @@ require_once 'Blorg/BlorgPostLoader.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgMonthArchivePage extends SitePage
+class BlorgMonthArchivePage extends SitePageDecorator
 {
 	// {{{ protected properties
 
@@ -35,23 +35,36 @@ class BlorgMonthArchivePage extends SitePage
 	protected $posts;
 
 	// }}}
-	// {{{ public function __construct()
+	// {{{ protected function getArgumentMap()
 
 	/**
-	 * Creates a new month archive page
+	 * @return array
 	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 * @param integer $year
-	 * @param string $month_name
+	 * @see SitePage::getArgumentMap()
 	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$year, $month_name)
+	protected function getArgumentMap()
 	{
-		parent::__construct($app, $layout);
-		$this->initPosts($year, $month_name);
-		$this->year = intval($year);
+		return array(
+			'year'      => array(0, null),
+			'month'     => array(1, null),
+		);
+	}
+
+	// }}}
+
+	// init phase
+	// {{{ public function init()
+
+	public function init()
+	{
+		parent::init();
+
+		$month_name  = $this->getArgument('month');
+		$this->year  = intval($this->getArgument('year'));
 		$this->month = BlorgPageFactory::$months_by_name[$month_name];
+
+		$this->initPosts($this->getArgument('year'),
+			$this->getArgument('month'));
 	}
 
 	// }}}
@@ -106,18 +119,22 @@ class BlorgMonthArchivePage extends SitePage
 	// }}}
 
 	// build phase
-	// {{{ public function build()
+	// {{{ protected function buildContent()
 
-	public function build()
+	protected function buildContent()
 	{
-		$this->buildNavBar();
-
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');
 		$this->displayPosts();
 		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
+	}
 
+	// }}}
+	// {{{ protected function buildTitle()
+
+	protected function buildTitle()
+	{
 		$date = new SwatDate();
 		$date->setYear($this->year);
 		$date->setMonth($this->month);

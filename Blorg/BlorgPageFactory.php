@@ -9,25 +9,30 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  *
  * This factory is responsible for loading URIs of the following forms:
  *
- * - /archive
- * - /archive/<year>
- * - /archive/<year>/<month>
- * - /archive/<year>/<month>/<post-shortname>
- * - /archive/<year>/<month>/<post-shortname>/feed
- *   - /comment<comment-id>
- *   - /page<number>
- *   - /page<number>/length<number>
- * - /author
- * - /author/<author-shortname>
- *   - /page<number>
- * - /feed
- * - /feed/comments
- * - /file/<filename>
- * - /tag/<tag-shortname>
- *   - /page<number>
- * - /tag/<tag-shortname>/feed
- * - <root>
- *   - /page<number>
+ * <code>
+ * - /
+ *   - page<i>number</i>
+ *   - archive/
+ *     - <i>year</i>/
+ *       - <i>month</i>/
+ *         - <i>post-shortname</i>/
+ *           - feed/
+ *             - page<i>number</i>
+ *   - author/
+ *     - <i>author-shortname</i>/
+ *       - page<i>number</i>
+ *   - feed/
+ *     - page<i>number</i>
+ *     - comments/
+ *       - page<i>number</i>
+ *   - file/<i>filename</i>
+ *   - tag/
+ *     - <i>tag-shortname</i>/
+ *       - page<i>number</i>
+ *       - feed/
+ *         - page<i>number</i>
+ *   - ajax/<i>proxy-service</i>
+ * </code>
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -73,163 +78,141 @@ class BlorgPageFactory extends SitePageFactory
 	/**
 	 * Creates a new Blorg page factory
 	 */
-	public function __construct()
+	public function __construct(SiteApplication $app)
 	{
-		$this->class_map['Blorg'] = 'Blorg/pages';
+		parent::__construct($app);
+		$this->page_class_map['Blorg'] = 'Blorg/pages';
 	}
 
 	// }}}
-	// {{{ public function resolvePage()
+	// {{{ public function get()
 
 	/**
 	 * Resolves a page object from a source string
 	 *
-	 * The following URLs can be resolved in Blorg:
-	 *
-	 * - /archive
-	 * - /archive/<year>
-	 * - /archive/<year>/<month>
-	 * - /archive/<year>/<month>/<post-shortname>
-	 * - /author
-	 * - /author/<author-shortname>
-	 * - <nothing>
-	 *
-	 * @param SiteWebApplication $app the web application for which the page is
-	 *                                 being resolved.
 	 * @param string $source the source string for which to get the page.
 	 * @param SiteLayout $layout optional. The layout to use. If not specified,
 	 *                            the layout is resolved from the
-	 *                            <i>$source</i>.
+	 *                            <code>$source</code>.
 	 *
-	 * @return SitePage the page for the given source string.
+	 * @return SiteAbstractPage the page for the given source string.
 	 */
-	public function resolvePage(SiteWebApplication $app, $source,
-		$layout = null)
+	public function get($source, SiteLayout $layout = null)
 	{
-		if ($layout === null) {
-			$layout = $this->resolveLayout($app, $source);
+		$layout = ($layout === null) ? $this->getLayout($source) : $layout;
+
+		$page_info = $this->getPageInfo($source);
+
+		if ($page_info === null) {
+			throw new SiteNotFoundException(
+				sprintf('Page not found for path ‘%s’.', $source));
 		}
 
-		$page = null;
+		// create page object
+		$page = $this->getPage($page_info['page'], $layout,
+			$page_info['arguments']);
+
+		$page->setSource($source);
+
+		// decorate page
+		$decorators = array_reverse($page_info['decorators']);
+		foreach ($decorators as $decorator) {
+			$page = $this->decorate($page, $decorator);
+		}
+
+		return $page;
+	}
+
+	// }}}
+	// {{{ protected function getPageInfo()
+
+	/**
+	 * Gets page info for the passed source string
+	 *
+	 * @param string $source the source string for which to get the page info.
+	 *
+	 * @return array an array of page info. The array has the index values
+	 *               'page', 'decorators' and 'arguments'. If no suitable page
+	 *               is found, null is returned.
+	 */
+	protected function getPageInfo($source)
+	{
+		$info = null;
 
 		foreach ($this->getPageMap() as $pattern => $class) {
-			$params = array();
-			// escape delimiters
-			$pattern = str_replace('@', '\@', $pattern);
+			$regs = array();
+			$pattern = str_replace('@', '\@', $pattern); // escape delimiters
 			$regexp = '@'.$pattern.'@u';
-			if (preg_match($regexp, $source, $params) === 1) {
+			if (preg_match($regexp, $source, $regs) === 1) {
 
-				// discard full match string
-				array_shift($params);
+				$info = array(
+					'page'       => $this->default_page_class,
+					'decorators' => array(),
+					'arguments'  => array(),
+				);
 
-				// add layout as second param
-				array_unshift($params, $layout);
+				array_shift($regs); // discard full match string
 
-				// add app as first param
-				array_unshift($params, $app);
+				// get additional arguments as remaining subpatterns
+				foreach ($regs as $reg) {
+					// set empty regs parsed from page map expressions to null
+					$reg = ($reg == '') ? null : $reg;
+					$info['arguments'][] = $reg;
+				}
 
-				$page = $this->instantiatePage($app, $class, $params);
+				// get page class and/or decorators
+				if (is_array($class)) {
+					$page = array_pop($class);
+					if ($this->isPage($page)) {
+						$info['page']       = $page;
+						$info['decorators'] = $class;
+					} else {
+						$class[]            = $page;
+						$info['decorators'] = $class;
+					}
+				} else {
+					if ($this->isPage($class)) {
+						$info['page'] = $class;
+					} else {
+						$info['decorators'][] = $class;
+					}
+				}
 
 				break;
 			}
 		}
 
-		if ($page === null) {
-			throw new SiteNotFoundException(
-				sprintf('Page not found for path ‘%s’.', $source));
-		}
-
-		return $page;
-	}
-
-	// }}}
-	// {{{ protected function instantiatePage()
-
-	/**
-	 * Instantiates a Blörg page
-	 *
-	 * @param SiteWebApplication $app the web application for which the page is
-	 *                                 being resolved.
-	 * @param string $class the name of the page class to resolve. This must be
-	 *                       either {@link SitePage} or a subclass of
-	 *                       SitePage.
-	 * @param array $params an array of parameters to pass the the constructor
-	 *                       of the page object.
-	 *
-	 * @return SitePage the instantiated page object.
-	 *
-	 * @throws SiteClassNotFoundException if the given class could not be
-	 *                                     resolved or if the given class is
-	 *                                     neither SitePage nor a subclass of
-	 *                                     SitePage.
-	 * @throws SiteNotFoundException if no file could be resolved for the given
-	 *                                class and the given class is undefined.
-	 */
-	protected function instantiatePage(SiteWebApplication $app, $class, $params)
-	{
-		if (!class_exists($class)) {
-			$class_file = "{$this->page_class_path}/{$class}.php";
-
-			if (!file_exists($class_file)) {
-				$class_file = null;
-
-				// look for class file in class map
-				foreach ($this->class_map as $package_prefix => $path) {
-					if (strncmp($class, $package_prefix, strlen($package_prefix)) == 0) {
-						$class_file = "{$path}/{$class}.php";
-						break;
-					}
-				}
-			}
-
-			if ($class_file === null) {
-				throw new SiteNotFoundException(sprintf(
-					'No file found for page class ‘%s’.', $class));
-			}
-
-			require_once $class_file;
-		}
-
-		if (!class_exists($class)) {
-			throw new SiteClassNotFoundException(sprintf(
-				'No page class definition found for ‘%s’.', $class), 0, $class);
-		}
-
-		if ($class != 'SitePage' && !is_subclass_of($class, 'SitePage')) {
-			throw new SiteClassNotFoundException(sprintf(
-				'The provided page class ‘%s’ is not a SitePage.', $class),
-				0, $class);
-		}
-
-		$reflector = new ReflectionClass($class);
-		$page = $reflector->newInstanceArgs($params);
-
-		return $page;
+		return $info;
 	}
 
 	// }}}
 	// {{{ protected function getPageMap()
 
 	/**
-	 * Gets an array of page mappings used to resolve Blorg pages
+	 * Gets an array of page mappings used to resolve Blörg pages
 	 *
 	 * The page mappings are an array of the form:
 	 *
-	 * <pre>
-	 * source expression => page class
-	 * </pre>
+	 * <code>
+	 * array(
+	 *     $source expression => $page_class
+	 * );
+	 * </code>
 	 *
-	 * The <code>source expression</code> is an regular expression using
-	 * PCRE syntax sans-delimiters. The <code>page class</code> is the class
-	 * name of the page to be resolved.
+	 * The <code>$source_expression</code> is an regular expression using PCRE
+	 * syntax sans-delimiters. The delimiter character is unspecified and should
+	 * not be escaped in these expressions. The <code>$page_class</code> is the
+	 * class name of the page to be resolved.
+	 *
+	 * Capturing sub-patterns are passed as arguments to the page constructor.
 	 *
 	 * For example, the following mapping array will match the source
 	 * 'about/content' to the class 'ContactPage':
 	 *
 	 * <code>
-	 * <?php
-	 * array('^(about/contact)$' => 'ContactPage');
-	 * ?>
+	 * array(
+	 *     '^about/contact$' => 'ContactPage',
+	 * );
 	 * </code>
 	 *
 	 * @return array the page mappings of this factory.
@@ -251,10 +234,10 @@ class BlorgPageFactory extends SitePageFactory
 			'^'.$post.'$'                     => 'BlorgPostPage',
 			'^'.$post.'/feed'.$page.'$'       => 'BlorgPostAtomPage',
 			'^feed'.$page.'$'                 => 'BlorgAtomPage',
+			'^feed/comments$'                 => 'BlorgCommentsAtomPage',
 			'^file/(.*)$'                     => 'BlorgFileLoaderPage',
-			'^feed/comments'.$page.'$'        => 'BlorgCommentsAtomPage',
 			'^tag$'                           => 'BlorgTagIndexPage',
-			'^tag/([\w-]+)(?:/page(\d+))?$'   => 'BlorgTagPage',
+			'^tag/([\w-]+)'.$page.'$'         => 'BlorgTagPage',
 			'^tag/([\w-]+)/feed'.$page.'$'    => 'BlorgTagAtomPage',
 			'^ajax/(.+)$'                     => 'BlorgAjaxProxyPage',
 		);

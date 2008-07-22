@@ -1,7 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/pages/SitePathPage.php';
+require_once 'Site/pages/SitePageDecorator.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/Blorg.php';
 require_once 'Blorg/BlorgViewFactory.php';
@@ -14,7 +14,7 @@ require_once 'Blorg/BlorgPostLoader.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgYearArchivePage extends SitePathPage
+class BlorgYearArchivePage extends SitePageDecorator
 {
 	// {{{ protected properties
 
@@ -33,36 +33,103 @@ class BlorgYearArchivePage extends SitePathPage
 	protected $months = array();
 
 	// }}}
-	// {{{ public function __construct()
+	// {{{ protected function getArgumentMap()
 
 	/**
-	 * Creates a new year archive page
+	 * @return array
 	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 * @param integer $year
+	 * @see SitePage::getArgumentMap()
 	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$year)
+	protected function getArgumentMap()
 	{
-		parent::__construct($app, $layout);
-		$this->initMonths($year);
-		$this->year = intval($year);
+		return array(
+			'year'      => array(0, null),
+		);
 	}
 
 	// }}}
-	// {{{ public function build()
 
-	public function build()
+	// init phase
+	// {{{ public function init()
+
+	public function init()
 	{
-		$this->buildNavBar();
+		parent::init();
+		$this->year  = intval($this->getArgument('year'));
+		$this->initMonths($this->getArgument('year'));
+	}
 
+	// }}}
+	// {{{ protected function initMonths()
+
+	protected function initMonths($year)
+	{
+		// Date parsed from URL is in locale time.
+		$date = new SwatDate();
+		$date->setTZ($this->app->default_time_zone);
+		$date->setYear($year);
+		$date->setMonth(1);
+		$date->setDay(1);
+		$date->setHour(0);
+		$date->setMinute(0);
+		$date->setSecond(0);
+
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance());
+
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('comment_status');
+		$loader->addSelectField('visible_comment_count');
+
+		$loader->setWhereClause(sprintf('enabled = %s and
+			date_trunc(\'year\', convertTZ(publish_date, %s)) =
+				date_trunc(\'year\', timestamp %s)',
+			$this->app->db->quote(true, 'boolean'),
+			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+			$this->app->db->quote($date->getDate(), 'date')));
+
+		$loader->setOrderByClause('publish_date desc');
+
+		$posts = $loader->getPosts();
+
+		foreach ($posts as $post) {
+			$publish_date = clone $post->publish_date;
+			$publish_date->convertTZ($this->app->default_time_zone);
+			$month = $publish_date->getMonth();
+			if (!array_key_exists($month, $this->months)) {
+				$this->months[$month] = array();
+			}
+			$this->months[$month][] = $post;
+		}
+
+		if (count($this->months) == 0) {
+			throw new SiteNotFoundException('Page not found');
+		}
+	}
+
+	// }}}
+
+	// build phase
+	// {{{ protected function buildContent()
+
+	protected function buildContent()
+	{
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');
 		$this->displayMonths();
 		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
+	}
 
+	// }}}
+	// {{{ protected function buildTitle()
+
+	protected function buildTitle()
+	{
 		$this->layout->data->title = $this->year;
 	}
 
@@ -136,58 +203,6 @@ class BlorgYearArchivePage extends SitePathPage
 			$li_tag->close();
 		}
 		$ul_tag->close();
-	}
-
-	// }}}
-	// {{{ protected function initMonths()
-
-	protected function initMonths($year)
-	{
-		// Date parsed from URL is in locale time.
-		$date = new SwatDate();
-		$date->setTZ($this->app->default_time_zone);
-		$date->setYear($year);
-		$date->setMonth(1);
-		$date->setDay(1);
-		$date->setHour(0);
-		$date->setMinute(0);
-		$date->setSecond(0);
-
-		$loader = new BlorgPostLoader($this->app->db,
-			$this->app->getInstance());
-
-		$loader->addSelectField('title');
-		$loader->addSelectField('bodytext');
-		$loader->addSelectField('shortname');
-		$loader->addSelectField('publish_date');
-		$loader->addSelectField('author');
-		$loader->addSelectField('comment_status');
-		$loader->addSelectField('visible_comment_count');
-
-		$loader->setWhereClause(sprintf('enabled = %s and
-			date_trunc(\'year\', convertTZ(publish_date, %s)) =
-				date_trunc(\'year\', timestamp %s)',
-			$this->app->db->quote(true, 'boolean'),
-			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
-			$this->app->db->quote($date->getDate(), 'date')));
-
-		$loader->setOrderByClause('publish_date desc');
-
-		$posts = $loader->getPosts();
-
-		foreach ($posts as $post) {
-			$publish_date = clone $post->publish_date;
-			$publish_date->convertTZ($this->app->default_time_zone);
-			$month = $publish_date->getMonth();
-			if (!array_key_exists($month, $this->months)) {
-				$this->months[$month] = array();
-			}
-			$this->months[$month][] = $post;
-		}
-
-		if (count($this->months) == 0) {
-			throw new SiteNotFoundException('Page not found');
-		}
 	}
 
 	// }}}
