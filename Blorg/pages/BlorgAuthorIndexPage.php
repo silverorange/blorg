@@ -1,7 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/pages/SitePage.php';
+require_once 'Site/pages/SitePageDecorator.php';
 require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
 
 /**
@@ -13,7 +13,7 @@ require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgAuthorIndexPage extends SitePage
+class BlorgAuthorIndexPage extends SitePageDecorator
 {
 	// {{{ protected properties
 
@@ -23,17 +23,13 @@ class BlorgAuthorIndexPage extends SitePage
 	protected $authors;
 
 	// }}}
-	// {{{ public function __construct()
 
-	/**
-	 * Creates a new author index page
-	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout)
+	// init phase
+	// {{{ public function init()
+
+	public function init()
 	{
-		parent::__construct($app, $layout);
+		parent::init();
 
 		$instance_id = $this->app->getInstanceId();
 
@@ -50,20 +46,15 @@ class BlorgAuthorIndexPage extends SitePage
 	// }}}
 
 	// build phase
-	// {{{ public function build()
+	// {{{ protected function buildContent()
 
-	public function build()
+	protected function buildContent()
 	{
-		$this->buildNavBar();
-		$this->buildTitle();
-
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');
 		$this->displayAuthors();
 		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
-
-		$this->layout->data->title = Blorg::_('Authors');
 	}
 
 	// }}}
@@ -80,7 +71,15 @@ class BlorgAuthorIndexPage extends SitePage
 
 	protected function buildTitle()
 	{
+		$this->layout->data->title = Blorg::_('Authors');
 		$this->layout->data->html_title = Blorg::_('Authors');
+	}
+
+	// }}}
+	// {{{ protected function buildMetaDescription()
+
+	protected function buildMetaDescription()
+	{
 		$authors = array();
 
 		foreach ($this->authors as $author)

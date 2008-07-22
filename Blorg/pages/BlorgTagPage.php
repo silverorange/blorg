@@ -2,7 +2,7 @@
 
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatPagination.php';
-require_once 'Site/pages/SitePage.php';
+require_once 'Site/pages/SitePageDecorator.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgViewFactory.php';
@@ -19,7 +19,7 @@ require_once 'Blorg/Blorg.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgTagPage extends SitePage
+class BlorgTagPage extends SitePageDecorator
 {
 	// {{{ class constants
 
@@ -49,51 +49,96 @@ class BlorgTagPage extends SitePage
 	protected $pager;
 
 	// }}}
-	// {{{ public function __construct()
+	// {{{ protected function getArgumentMap()
 
 	/**
-	 * Creates a new month archive page
+	 * @return array
 	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 * @param string $shortname
-	 * @param integer $page
+	 * @see SitePage::getArgumentMap()
 	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$shortname, $page = 1)
+	protected function getArgumentMap()
 	{
-		parent::__construct($app, $layout);
-		$this->initPosts($shortname, $page);
+		return array(
+			'shortname' => array(0, null),
+			'page'      => array(1, 1),
+		);
 	}
 
 	// }}}
+
+	// init phase
+	// {{{ public function init()
+
+	public function init()
+	{
+		parent::init();
+		$this->initPosts($this->getArgument('shortname'),
+			$this->getArgument('page'));
+	}
+
+	// }}}
+	// {{{ protected function initPosts()
+
+	protected function initPosts($shortname, $current_page)
+	{
+		$class_name = SwatDBClassMap::get('BlorgTag');
+		$tag = new $class_name();
+		$tag->setDatabase($this->app->db);
+		if (!$tag->loadByShortname($shortname, $this->app->getInstance())) {
+			throw new SiteNotFoundException('Page not found.');
+		}
+
+		$this->tag = $tag;
+
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance());
+
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('comment_status');
+		$loader->addSelectField('visible_comment_count');
+
+		$loader->setLoadFiles(true);
+		$loader->setLoadTags(true);
+
+		$loader->setWhereClause(sprintf('enabled = %s and
+			id in (select post from BlorgPostTagBinding where tag = %s)',
+			$this->app->db->quote(true, 'boolean'),
+			$this->app->db->quote($tag->id, 'integer')));
+
+		$loader->setOrderByClause('publish_date desc');
+
+		$offset = ($current_page - 1) * self::MAX_POSTS;
+		$loader->setRange(self::MAX_POSTS, $offset);
+
+		$this->posts = $loader->getPosts();
+	}
+
+	// }}}
+
+	// build phase
 	// {{{ public function build()
 
 	public function build()
 	{
-		$this->buildNavBar();
 		$this->buildAtomLinks();
+		parent::build();
+	}
 
+	// }}}
+	// {{{ protected function buildContent()
+
+	protected function buildContent()
+	{
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');
 		$this->displayPosts();
 		$this->displayFooter();
 		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
-
-		$this->layout->data->title = sprintf(
-			Blorg::_('Posts Tagged: <em>%s</em>'),
-			$this->tag->title);
-	}
-
-	// }}}
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		parent::finalize();
-		$this->layout->addHtmlHeadEntrySet(
-			$this->pager->getHtmlHeadEntrySet());
 	}
 
 	// }}}
@@ -107,6 +152,16 @@ class BlorgTagPage extends SitePage
 		$this->layout->navbar->createEntry(
 			sprintf(Blorg::_('Posts Tagged: %s'), $this->tag->title),
 			$path.'/'.$this->tag->shortname);
+	}
+
+	// }}}
+	// {{{ protected function buildTitle()
+
+	protected function buildTitle()
+	{
+		$this->layout->data->title = sprintf(
+			Blorg::_('Posts Tagged: <em>%s</em>'),
+			$this->tag->title);
 	}
 
 	// }}}
@@ -188,44 +243,15 @@ class BlorgTagPage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function initPosts()
 
-	protected function initPosts($shortname, $current_page)
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
 	{
-		$class_name = SwatDBClassMap::get('BlorgTag');
-		$tag = new $class_name();
-		$tag->setDatabase($this->app->db);
-		if (!$tag->loadByShortname($shortname, $this->app->getInstance())) {
-			throw new SiteNotFoundException('Page not found.');
-		}
-
-		$this->tag = $tag;
-
-		$loader = new BlorgPostLoader($this->app->db,
-			$this->app->getInstance());
-
-		$loader->addSelectField('title');
-		$loader->addSelectField('bodytext');
-		$loader->addSelectField('shortname');
-		$loader->addSelectField('publish_date');
-		$loader->addSelectField('author');
-		$loader->addSelectField('comment_status');
-		$loader->addSelectField('visible_comment_count');
-
-		$loader->setLoadFiles(true);
-		$loader->setLoadTags(true);
-
-		$loader->setWhereClause(sprintf('enabled = %s and
-			id in (select post from BlorgPostTagBinding where tag = %s)',
-			$this->app->db->quote(true, 'boolean'),
-			$this->app->db->quote($tag->id, 'integer')));
-
-		$loader->setOrderByClause('publish_date desc');
-
-		$offset = ($current_page - 1) * self::MAX_POSTS;
-		$loader->setRange(self::MAX_POSTS, $offset);
-
-		$this->posts = $loader->getPosts();
+		parent::finalize();
+		$this->layout->addHtmlHeadEntrySet(
+			$this->pager->getHtmlHeadEntrySet());
 	}
 
 	// }}}

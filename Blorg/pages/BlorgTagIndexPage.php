@@ -2,7 +2,7 @@
 
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Site/pages/SitePage.php';
+require_once 'Site/pages/SitePageDecorator.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/Blorg.php';
 
@@ -13,31 +13,27 @@ require_once 'Blorg/Blorg.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgTagIndexPage extends SitePage
+class BlorgTagIndexPage extends SitePageDecorator
 {
 	// {{{ protected properties
 
 	protected $tags;
 
 	// }}}
-	// {{{ public function __construct()
 
-	/**
-	 * Creates a new archive page
-	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout)
+	// init phase
+	// {{{ public function init()
+
+	public function init()
 	{
-		parent::__construct($app, $layout);
+		parent::init();
 		$this->initTags();
 	}
 
 	// }}}
-	// {{{ private function initTags()
+	// {{{ protected function initTags()
 
-	private function initTags()
+	protected function initTags()
 	{
 		$instance_id = $this->app->getInstanceId();
 
@@ -62,19 +58,15 @@ class BlorgTagIndexPage extends SitePage
 	// }}}
 
 	// build phase
-	// {{{ public function build()
+	// {{{ protected function buildContent()
 
-	public function build()
+	protected function buildContent()
 	{
-		$this->buildNavBar();
-
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');
-		$this->displayArchive();
+		$this->displayTags();
 		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
-
-		$this->layout->data->title = Blorg::_('Tags');
 	}
 
 	// }}}
@@ -87,9 +79,17 @@ class BlorgTagIndexPage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function displayArchive()
+	// {{{ protected function buildTitle()
 
-	protected function displayArchive()
+	protected function buildTitle()
+	{
+		$this->layout->data->title = Blorg::_('Tags');
+	}
+
+	// }}}
+	// {{{ protected function displayTags()
+
+	protected function displayTags()
 	{
 		$path = $this->app->config->blorg->path.'tag';
 		$locale = SwatI18NLocale::get();

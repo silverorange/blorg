@@ -44,6 +44,11 @@ class BlorgGadgetDisplay extends SwatControl
 	 */
 	protected $gadget_description;
 
+	/**
+	 * @var BlorgGadget
+	 */
+	protected $gadget;
+
 	// }}}
 	// {{{ public function __construct()
 
@@ -64,6 +69,7 @@ class BlorgGadgetDisplay extends SwatControl
 		if ($gadget instanceof BlorgGadget) {
 			$this->gadget_title       = $gadget->getTitle();
 			$this->gadget_description = $gadget->getDescription();
+			$this->gadget             = $gadget;
 		} else {
 			if (is_object($gadget) && isset($gadget->title) &&
 				$gadget->title != '') {
@@ -138,6 +144,21 @@ class BlorgGadgetDisplay extends SwatControl
 		$description_div->class = 'blorg-gadget-display-description';
 		$description_div->setContent($this->getDescription(), 'text/xml');
 		$description_div->display();
+
+		if ($this->gadget instanceof BlorgGadget) {
+			echo '<ul>';
+			foreach ($this->gadget->getSettings() as $setting) {
+				echo '<li>';
+				$strong_tag = new SwatHtmlTag('strong');
+				$strong_tag->setContent(sprintf(Blorg::_('%s:&nbsp;'),
+					$setting->getTitle()));
+
+				$strong_tag->display();
+				echo 'foo';
+				echo '</li>';
+			}
+			echo '</ul>';
+		}
 
 		$content_div->close();
 		$container_div->close();
@@ -231,13 +252,13 @@ class BlorgGadgetDisplay extends SwatControl
 	{
 		$add_button = new SwatButton();
 		$add_button->id = $this->id.'_add_button';
-		$add_button->title = Blorg::_('Add Gadget');
+		$add_button->title = Blorg::_('Add');
 		$add_button->classes[] = 'blorg-theme-display-add_button';
 		$this->addCompositeWidget($add_button, 'add_button');
 
 		$edit_button = new SwatButton();
 		$edit_button->id = $this->id.'_edit_button';
-		$edit_button->title = Blorg::_('Edit');
+		$edit_button->title = Blorg::_('Edit Settings');
 		$edit_button->classes[] = 'blorg-theme-display-edit_button';
 		$this->addCompositeWidget($edit_button, 'edit_button');
 
