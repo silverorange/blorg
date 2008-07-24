@@ -13,7 +13,7 @@ require_once 'SwatI18N/SwatI18NLocale.php';
  * Available settings are:
  *
  * - integer limit controls how many active conversations can be displayed.
- *                 Ten conversations are displayed by default.
+ *                 Five conversations are displayed by default.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -123,11 +123,11 @@ class BlorgActiveConversationsGadget extends SiteGadget
 		$sql = sprintf('select title, bodytext, publish_date, shortname,
 				visible_comment_count, last_comment_date
 			from BlorgPost
-				inner join BlorgPostVisibleCommentCountView
-					on BlorgPost.id = BlorgPostVisibleCommentCountView.post and
-						BlorgPostVisibleCommentCountView.visible_comment_count > 0 and
-						BlorgPostVisibleCommentCountView.instance =
-							BlorgPost.instance
+				inner join BlorgPostVisibleCommentCountView as v
+					on BlorgPost.id = v.post and
+						v.visible_comment_count > 0 and
+						(v.instance = BlorgPost.instance or
+							(v.instance is null and BlorgPost.instance is null))
 			where enabled = %s and comment_status != %s and
 				BlorgPost.instance %s %s
 			order by last_comment_date desc',
