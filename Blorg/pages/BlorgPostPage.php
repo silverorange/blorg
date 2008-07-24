@@ -2,7 +2,7 @@
 
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatUI.php';
-require_once 'Site/pages/SitePageDecorator.php';
+require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgViewFactory.php';
@@ -20,7 +20,7 @@ require_once 'NateGoSearch/NateGoSearch.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostPage extends SitePageDecorator
+class BlorgPostPage extends SitePage
 {
 	// {{{ class constants
 
@@ -50,34 +50,22 @@ class BlorgPostPage extends SitePageDecorator
 	protected $comment_ui_xml = 'Blorg/pages/comment-edit.xml';
 
 	// }}}
-	// {{{ protected function getArgumentMap()
+	// {{{ public function __construct()
 
 	/**
-	 * @return array
+	 * Creates a new post page
 	 *
-	 * @see SitePage::getArgumentMap()
+	 * @param SiteWebApplication $app the application.
+	 * @param SiteLayout $layout
+	 * @param integer $year
+	 * @param string $month_name
+	 * @param string $shortname
 	 */
-	protected function getArgumentMap()
+	public function __construct(SiteWebApplication $app, SiteLayout $layout,
+		$year, $month_name, $shortname)
 	{
-		return array(
-			'year'      => array(0, null),
-			'month'     => array(1, null),
-			'shortname' => array(2, null),
-		);
-	}
-
-	// }}}
-
-	// init phase
-	// {{{ public function init()
-
-	public function init()
-	{
-		parent::init();
-		$this->initPost($this->getArgument('year'),
-			$this->getArgument('month'), $this->getArgument('shortname'));
-
-		$this->initCommentUi();
+		parent::__construct($app, $layout);
+		$this->initPost($year, $month_name, $shortname);
 	}
 
 	// }}}
@@ -110,6 +98,17 @@ class BlorgPostPage extends SitePageDecorator
 		if (!$this->post->enabled) {
 			throw new SiteNotFoundException('Post not found.');
 		}
+	}
+
+	// }}}
+
+	// init phase
+	// {{{ public function init()
+
+	public function init()
+	{
+		parent::init();
+		$this->initCommentUi();
 	}
 
 	// }}}
@@ -377,16 +376,11 @@ class BlorgPostPage extends SitePageDecorator
 
 	public function build()
 	{
+		$this->buildTitle();
+		$this->buildNavBar();
 		$this->buildCommentUi();
 		$this->buildAtomLinks();
-		parent::build();
-	}
 
-	// }}}
-	// {{{ protected function buildContent()
-
-	protected function buildContent()
-	{
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');
 		$this->displayPost();
@@ -401,15 +395,8 @@ class BlorgPostPage extends SitePageDecorator
 
 	protected function buildTitle()
 	{
-		$this->layout->data->title = '';
 		$this->layout->data->html_title = $this->post->getTitle();
-	}
 
-	// }}}
-	// {{{ protected function buildMetaDescription()
-
-	protected function buildMetaDescription()
-	{
 		$this->layout->data->meta_description = SwatString::minimizeEntities(
 			SwatString::ellipsizeRight(
 				SwatString::condense($this->post->bodytext), 300));

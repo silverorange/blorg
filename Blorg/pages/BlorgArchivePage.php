@@ -2,7 +2,7 @@
 
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Site/pages/SitePageDecorator.php';
+require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/Blorg.php';
@@ -14,7 +14,7 @@ require_once 'Blorg/Blorg.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgArchivePage extends SitePageDecorator
+class BlorgArchivePage extends SitePage
 {
 	// {{{ protected properties
 
@@ -43,75 +43,34 @@ class BlorgArchivePage extends SitePageDecorator
 	protected $years = array();
 
 	// }}}
+	// {{{ public function __construct()
 
-	// init phase
-	// {{{ public function init()
-
-	public function init()
+	/**
+	 * Creates a new archive page
+	 *
+	 * @param SiteWebApplication $app the application.
+	 * @param SiteLayout $layout
+	 */
+	public function __construct(SiteWebApplication $app, SiteLayout $layout)
 	{
-		parent::init();
+		parent::__construct($app, $layout);
 		$this->initYears();
 	}
 
 	// }}}
-	// {{{ protected function initYears()
+	// {{{ public function build()
 
-	protected function initYears()
+	public function build()
 	{
-		$instance_id = $this->app->getInstanceId();
+		$this->buildNavBar();
 
-		$sql = sprintf('select count(id) as count,
-				date_part(\'year\', convertTZ(publish_date, %s)) as year,
-				date_part(\'month\', convertTZ(publish_date, %s)) as month
-			from BlorgPost
-			where instance %s %s and enabled = %s
-			group by year, month
-			order by year desc, month desc',
-			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
-			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
-
-		$rs = SwatDB::query($this->app->db, $sql, null,
-			array('integer', 'integer', 'integer'));
-
-		while ($row = $rs->fetchRow(MDB2_FETCHMODE_OBJECT)) {
-			$year  = $row->year;
-			$month = $row->month;
-
-			if (!array_key_exists($year, $this->years)) {
-				$this->years[$year] = array(
-					'post_count' => 0,
-					'months'     => array(),
-				);
-			}
-
-			if (!array_key_exists($month, $this->years[$year]['months'])) {
-				$this->years[$year]['months'][$month] = $row->count;
-			}
-
-			$this->years[$year]['post_count'] += $row->count;
-		}
-
-		if (count($this->years) == 0) {
-			throw new SiteNotFoundException('Page not found');
-		}
-	}
-
-	// }}}
-
-	// build phase
-	// {{{ protected function buildContent()
-
-	protected function buildContent()
-	{
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');
 		$this->displayArchive();
 		Blorg::displayAd($this->app, 'bottom');
 		$this->layout->endCapture();
 
+		$this->layout->data->title = Blorg::_('Archive');
 	}
 
 	// }}}
@@ -121,14 +80,6 @@ class BlorgArchivePage extends SitePageDecorator
 	{
 		$path = $this->app->config->blorg->path.'archive';
 		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
-	}
-
-	// }}}
-	// {{{ protected function buildTitle()
-
-	protected function buildTitle()
-	{
-		$this->layout->data->title = Blorg::_('Archive');
 	}
 
 	// }}}
@@ -198,6 +149,52 @@ class BlorgArchivePage extends SitePageDecorator
 			$year_li_tag->close();
 		}
 		$year_ul_tag->close();
+	}
+
+	// }}}
+	// {{{ protected function initYears()
+
+	protected function initYears()
+	{
+		$instance_id = $this->app->getInstanceId();
+
+		$sql = sprintf('select count(id) as count,
+				date_part(\'year\', convertTZ(publish_date, %s)) as year,
+				date_part(\'month\', convertTZ(publish_date, %s)) as month
+			from BlorgPost
+			where instance %s %s and enabled = %s
+			group by year, month
+			order by year desc, month desc',
+			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->app->db->quote(true, 'boolean'));
+
+		$rs = SwatDB::query($this->app->db, $sql, null,
+			array('integer', 'integer', 'integer'));
+
+		while ($row = $rs->fetchRow(MDB2_FETCHMODE_OBJECT)) {
+			$year  = $row->year;
+			$month = $row->month;
+
+			if (!array_key_exists($year, $this->years)) {
+				$this->years[$year] = array(
+					'post_count' => 0,
+					'months'     => array(),
+				);
+			}
+
+			if (!array_key_exists($month, $this->years[$year]['months'])) {
+				$this->years[$year]['months'][$month] = $row->count;
+			}
+
+			$this->years[$year]['post_count'] += $row->count;
+		}
+
+		if (count($this->years) == 0) {
+			throw new SiteNotFoundException('Page not found');
+		}
 	}
 
 	// }}}

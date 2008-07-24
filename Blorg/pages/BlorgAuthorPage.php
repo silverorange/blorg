@@ -2,7 +2,7 @@
 
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatPagination.php';
-require_once 'Site/pages/SitePageDecorator.php';
+require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/dataobjects/BlorgAuthor.php';
@@ -16,7 +16,7 @@ require_once 'Blorg/dataobjects/BlorgAuthor.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgAuthorPage extends SitePageDecorator
+class BlorgAuthorPage extends SitePage
 {
 	// {{{ class constants
 
@@ -41,31 +41,21 @@ class BlorgAuthorPage extends SitePageDecorator
 	protected $pager;
 
 	// }}}
-	// {{{ protected function getArgumentMap()
+	// {{{ public function __construct()
 
 	/**
-	 * @return array
+	 * Creates a new author page
 	 *
-	 * @see SitePage::getArgumentMap()
+	 * @param SiteWebApplication $app the application.
+	 * @param SiteLayout $layout
+	 * @param string $shortname
 	 */
-	protected function getArgumentMap()
+	public function __construct(SiteWebApplication $app, SiteLayout $layout,
+		$shortname, $current_page = 1)
 	{
-		return array(
-			'shortname' => array(0, null),
-			'page'      => array(1, 1),
-		);
-	}
-
-	// }}}
-
-	// init phase
-	// {{{ public function init()
-
-	public function init()
-	{
-		parent::init();
-		$this->initAuthor($this->getArgument('shortname'));
-		$this->current_page = $this->getArgument('page');
+		parent::__construct($app, $layout);
+		$this->initAuthor($shortname);
+		$this->current_page = $current_page;
 	}
 
 	// }}}
@@ -76,8 +66,8 @@ class BlorgAuthorPage extends SitePageDecorator
 		$class_name = SwatDBClassMap::get('BlorgAuthor');
 		$this->author = new $class_name();
 		$this->author->setDatabase($this->app->db);
-		$instance = $this->app->getInstance();
-		if (!$this->author->loadByShortname($shortname, $instance)) {
+		if (!$this->author->loadByShortname($shortname,
+			$this->app->getInstance())) {
 			throw new SiteNotFoundException('Author not found.');
 		}
 
@@ -89,10 +79,13 @@ class BlorgAuthorPage extends SitePageDecorator
 	// }}}
 
 	// build phase
-	// {{{ protected function buildContent()
+	// {{{ public function build()
 
-	protected function buildContent()
+	public function build()
 	{
+		$this->buildNavBar();
+		$this->buildTitle();
+
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');
 		$this->displayAuthor();
@@ -112,13 +105,6 @@ class BlorgAuthorPage extends SitePageDecorator
 	protected function buildTitle()
 	{
 		$this->layout->data->html_title = $this->author->name;
-	}
-
-	// }}}
-	// {{{ protected function buildMetaDescription()
-
-	protected function buildMetaDescription()
-	{
 		$this->layout->data->meta_description = SwatString::minimizeEntities(
 			SwatString::ellipsizeRight(
 				SwatString::condense($this->author->bodytext), 300));

@@ -18,37 +18,13 @@ class BlorgFileLoaderPage extends SitePage
 
 	// }}}
 	// {{{ public function __construct()
+
 	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		array $arguments = array())
+		$filename)
 	{
 		$layout = new SiteLayout($app, 'Site/layouts/xhtml/fileloader.php');
-		parent::__construct($app, $layout, $arguments);
-	}
-
-	// }}}
-	// {{{ protected function getArgumentMap()
-
-	/**
-	 * @return array
-	 *
-	 * @see SitePage::getArgumentMap()
-	 */
-	protected function getArgumentMap()
-	{
-		return array(
-			'filename' => array(0, null),
-		);
-	}
-
-	// }}}
-
-	// init phase
-	// {{{ public function init()
-
-	public function init()
-	{
-		parent::init();
-		$this->initFile($this->getArgument('filename'));
+		parent::__construct($app, $layout);
+		$this->initFile($filename);
 	}
 
 	// }}}
@@ -59,8 +35,8 @@ class BlorgFileLoaderPage extends SitePage
 		$class_name = SwatDBClassMap::get('BlorgFile');
 		$this->file = new $class_name();
 		$this->file->setDatabase($this->app->db);
-		$instance = $this->app->getInstance();
-		if (!$this->file->loadByFilename($filename, $instance)) {
+		if (!$this->file->loadByFilename($filename,
+			$this->app->getInstance())) {
 			throw new SiteNotFoundException('File not found.');
 		}
 	}

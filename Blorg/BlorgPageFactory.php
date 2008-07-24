@@ -9,30 +9,25 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  *
  * This factory is responsible for loading URIs of the following forms:
  *
- * <code>
- * - /
- *   - page<i>number</i>
- *   - archive/
- *     - <i>year</i>/
- *       - <i>month</i>/
- *         - <i>post-shortname</i>/
- *           - feed/
- *             - page<i>number</i>
- *   - author/
- *     - <i>author-shortname</i>/
- *       - page<i>number</i>
- *   - feed/
- *     - page<i>number</i>
- *     - comments/
- *       - page<i>number</i>
- *   - file/<i>filename</i>
- *   - tag/
- *     - <i>tag-shortname</i>/
- *       - page<i>number</i>
- *       - feed/
- *         - page<i>number</i>
- *   - ajax/<i>proxy-service</i>
- * </code>
+ * - /archive
+ * - /archive/<year>
+ * - /archive/<year>/<month>
+ * - /archive/<year>/<month>/<post-shortname>
+ * - /archive/<year>/<month>/<post-shortname>/feed
+ *   - /comment<comment-id>
+ *   - /page<number>
+ *   - /page<number>/length<number>
+ * - /author
+ * - /author/<author-shortname>
+ *   - /page<number>
+ * - /feed
+ * - /feed/comments
+ * - /file/<filename>
+ * - /tag/<tag-shortname>
+ *   - /page<number>
+ * - /tag/<tag-shortname>/feed
+ * - <root>
+ *   - /page<number>
  *
  * @package   Blörg
  * @copyright 2008 silverorange
@@ -111,8 +106,6 @@ class BlorgPageFactory extends SitePageFactory
 		// create page object
 		$page = $this->getPage($page_info['page'], $layout,
 			$page_info['arguments']);
-
-		$page->setSource($source);
 
 		// decorate page
 		$decorators = array_reverse($page_info['decorators']);
@@ -234,10 +227,10 @@ class BlorgPageFactory extends SitePageFactory
 			'^'.$post.'$'                     => 'BlorgPostPage',
 			'^'.$post.'/feed'.$page.'$'       => 'BlorgPostAtomPage',
 			'^feed'.$page.'$'                 => 'BlorgAtomPage',
-			'^feed/comments$'                 => 'BlorgCommentsAtomPage',
 			'^file/(.*)$'                     => 'BlorgFileLoaderPage',
+			'^feed/comments'.$page.'$'        => 'BlorgCommentsAtomPage',
 			'^tag$'                           => 'BlorgTagIndexPage',
-			'^tag/([\w-]+)'.$page.'$'         => 'BlorgTagPage',
+			'^tag/([\w-]+)(?:/page(\d+))?$'   => 'BlorgTagPage',
 			'^tag/([\w-]+)/feed'.$page.'$'    => 'BlorgTagAtomPage',
 			'^ajax/(.+)$'                     => 'BlorgAjaxProxyPage',
 		);
