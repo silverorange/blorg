@@ -52,20 +52,28 @@ class BlorgPostPage extends SitePage
 	// }}}
 	// {{{ public function __construct()
 
-	/**
-	 * Creates a new post page
-	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 * @param integer $year
-	 * @param string $month_name
-	 * @param string $shortname
-	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$year, $month_name, $shortname)
+	public function __construct(SiteApplication $app, SiteLayout $layout = null,
+		array $arguments = array())
 	{
-		parent::__construct($app, $layout);
+		parent::__construct($app, $layout, $arguments);
+
+		$year = $this->getArgument('year');
+		$month_name = $this->getArgument('month_name');
+		$shortname = $this->getArgument('shortname');
+
 		$this->initPost($year, $month_name, $shortname);
+	}
+
+	// }}}
+	// {{{ protected function getArgumentMap()
+
+	protected function getArgumentMap()
+	{
+		return array(
+			'year' => array(0, null),
+			'month_name' => array(1, null),
+			'shortname' => array(2, null),
+		);
 	}
 
 	// }}}

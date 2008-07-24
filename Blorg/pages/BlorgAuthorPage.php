@@ -43,19 +43,24 @@ class BlorgAuthorPage extends SitePage
 	// }}}
 	// {{{ public function __construct()
 
-	/**
-	 * Creates a new author page
-	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 * @param string $shortname
-	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$shortname, $current_page = 1)
+	public function __construct(SiteApplication $app, SiteLayout $layout = null,
+		array $arguments = array())
 	{
-		parent::__construct($app, $layout);
-		$this->initAuthor($shortname);
-		$this->current_page = $current_page;
+		parent::__construct($app, $layout, $arguments);
+
+		$this->initAuthor($this->getArgument('shortname'));
+		$this->current_page = $this->getArgument('current_page');
+	}
+
+	// }}}
+	// {{{ protected function getArgumentMap()
+
+	protected function getArgumentMap()
+	{
+		return array(
+			'shortname' => array(0, null),
+			'current_page' => array(1, 1),
+		);
 	}
 
 	// }}}

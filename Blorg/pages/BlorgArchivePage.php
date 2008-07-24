@@ -45,16 +45,12 @@ class BlorgArchivePage extends SitePage
 	// }}}
 	// {{{ public function __construct()
 
-	/**
-	 * Creates a new archive page
-	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout)
+	public function __construct(SiteApplication $app, SiteLayout $layout = null,
+		array $arguments = array())
 	{
-		parent::__construct($app, $layout);
-		$this->initYears();
+		parent::__construct($app, $layout, $arguments);
+
+		$this->inityears();
 	}
 
 	// }}}

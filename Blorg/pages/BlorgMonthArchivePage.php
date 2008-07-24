@@ -37,21 +37,28 @@ class BlorgMonthArchivePage extends SitePage
 	// }}}
 	// {{{ public function __construct()
 
-	/**
-	 * Creates a new month archive page
-	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 * @param integer $year
-	 * @param string $month_name
-	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$year, $month_name)
+	public function __construct(SiteApplication $app, SiteLayout $layout = null,
+		array $arguments = array())
 	{
-		parent::__construct($app, $layout);
+		parent::__construct($app, $layout, $arguments);
+
+		$year = $this->getArgument('year');
+		$month_name = $this->getArgument('month_name');
+
 		$this->initPosts($year, $month_name);
 		$this->year = intval($year);
 		$this->month = BlorgPageFactory::$months_by_name[$month_name];
+	}
+
+	// }}}
+	// {{{ protected function getArgumentMap()
+
+	protected function getArgumentMap()
+	{
+		return array(
+			'year' => array(0, null),
+			'month_name' => array(1, null),
+		);
 	}
 
 	// }}}

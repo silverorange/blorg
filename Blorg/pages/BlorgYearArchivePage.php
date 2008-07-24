@@ -35,19 +35,23 @@ class BlorgYearArchivePage extends SitePathPage
 	// }}}
 	// {{{ public function __construct()
 
-	/**
-	 * Creates a new year archive page
-	 *
-	 * @param SiteWebApplication $app the application.
-	 * @param SiteLayout $layout
-	 * @param integer $year
-	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		$year)
+	public function __construct(SiteAbstractPage $page)
 	{
-		parent::__construct($app, $layout);
+		parent::__construct($page);
+
+		$year = $this->getArgument('year');
 		$this->initMonths($year);
 		$this->year = intval($year);
+	}
+
+	// }}}
+	// {{{ protected function getArgumentMap()
+
+	protected function getArgumentMap()
+	{
+		return array(
+			'year' => array(0, null),
+		);
 	}
 
 	// }}}
