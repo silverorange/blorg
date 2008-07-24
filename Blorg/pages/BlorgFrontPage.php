@@ -44,10 +44,21 @@ class BlorgFrontPage extends SitePage
 	// {{{ public function __construct()
 
 	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		$current_page = 1)
+		array $arguments = array())
 	{
-		parent::__construct($app, $layout);
-		$this->initPosts($current_page);
+		parent::__construct($app, $layout, $arguments);
+
+		$this->initPosts($this->getArgument('current_page'));
+	}
+
+	// }}}
+	// {{{ protected function getArgumentMap()
+
+	protected function getArgumentMap()
+	{
+		return array(
+			'current_page' => array(0, 1),
+		);
 	}
 
 	// }}}

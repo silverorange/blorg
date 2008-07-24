@@ -20,11 +20,21 @@ class BlorgFileLoaderPage extends SitePage
 	// {{{ public function __construct()
 
 	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		$filename)
+		array $arguments = array())
 	{
 		$layout = new SiteLayout($app, 'Site/layouts/xhtml/fileloader.php');
 		parent::__construct($app, $layout);
-		$this->initFile($filename);
+		$this->initFile($this->getArgument('filename'));
+	}
+
+	// }}}
+	// {{{ protected function getArgumentMap()
+
+	protected function getArgumentMap()
+	{
+		return array(
+			'filename' => array(0, null),
+		);
 	}
 
 	// }}}
