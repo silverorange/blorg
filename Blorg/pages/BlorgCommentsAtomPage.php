@@ -1,8 +1,7 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
+require_once 'Blorg/pages/BlorgAbstractAtomPage.php';
 require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
-require_once 'XML/Atom/Feed.php';
 require_once 'XML/Atom/Entry.php';
 
 /**
@@ -18,7 +17,7 @@ require_once 'XML/Atom/Entry.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgCommentsAtomPage extends SitePage
+class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 {
 	// {{{ protected properties
 
@@ -28,60 +27,29 @@ class BlorgCommentsAtomPage extends SitePage
 	protected $comments;
 
 	/**
-	 * @var XML_Atom_Feed
-	 */
-	protected $feed;
-
-	/**
-	 * The minimum number of entries to display
-	 *
-	 * @var integer
-	 */
-	protected $min_entries = 20;
-
-	/**
-	 * The maximum number of entries to display
-	 *
-	 * @var integer
-	 */
-	protected $max_entries = 100;
-
-	/**
-	 * Period for recently added comments (in seconds)
-	 *
-	 * Default value is two days.
-	 *
-	 * @var integer
-	 */
-	protected $recent_period = 172800;
-
-	/**
-	 * The current page number of this feed.
-	 *
-	 * @var integer
-	 */
-	protected $page;
-
-	/**
 	 * The total number of comments for this feed.
 	 *
 	 * @var integer
 	 */
-	protected $comment_count;
+	protected $total_count;
+
+	/**
+	 * The total number of comments for the front page of this feed.
+	 *
+	 * @var integer
+	 */
+	protected $front_page_count;
 
 	// }}}
-	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		$page_number = 1)
+	// init phase
+	// {{{ protected function initEntries()
+
+	protected function initEntries()
 	{
-		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
-
-		parent::__construct($app, $layout);
-
-		$this->page = $page_number;
 		$this->initComments();
-		$this->initCommentCount();
+		$this->initTotalCount();
+		$this->initFrontPageCount();
 	}
 
 	// }}}
@@ -115,9 +83,9 @@ class BlorgCommentsAtomPage extends SitePage
 	}
 
 	// }}}
-	// {{{ protected function initCommentCount()
+	// {{{ protected function initTotalCount()
 
-	protected function initCommentCount()
+	protected function initTotalCount()
 	{
 		$instance_id = $this->app->getInstanceId();
 
@@ -133,148 +101,69 @@ class BlorgCommentsAtomPage extends SitePage
 			$this->app->db->quote(BlorgComment::STATUS_PUBLISHED, 'integer'),
 			$this->app->db->quote(false, 'boolean'));
 
-		$this->comment_count = SwatDB::queryOne($this->app->db, $sql);
+		$this->total_count = SwatDB::queryOne($this->app->db, $sql);
+	}
+
+	// }}}
+	// {{{ protected function initFrontPageCount()
+
+	protected function initFrontPageCount()
+	{
+		$count = 0;
+		foreach ($this->comments as $comment) {
+			if ($count > $this->max_entries || ($count > $this->min_entries)
+				&& !$this->isEntryRecent($comment->createdate))
+				break;
+
+			$count++;
+		}
+
+		$this->front_page_count = $count;
 	}
 
 	// }}}
 
 	// build phase
-	// {{{ public function build()
+	// {{{ protected function buildEntries()
 
-	public function build()
-	{
-		$this->buildAtomFeed();
-
-		$this->layout->startCapture('content');
-		$this->displayAtomFeed();
-		$this->layout->endCapture();
-	}
-
-	// }}}
-	// {{{ protected function buildAtomFeed()
-
-	protected function buildAtomFeed()
+	protected function buildEntries(XML_Atom_Feed $feed)
 	{
 		$site_base_href  = $this->app->getBaseHref();
 		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
 		$feed_base_href  = $blorg_base_href.'comments';
 
-		$this->feed = new XML_Atom_Feed($blorg_base_href,
-			sprintf(Blorg::_('%s - Recent Comments'),
-				$this->app->config->site->title));
+		$feed->setSubTitle(Blorg::_('Recent Comments'));
 
-		$this->feed->setSubTitle(Blorg::_('Recent Comments'));
-
-		$this->feed->addLink($site_base_href.$this->source, 'self',
+		$feed->addLink($this->app->getBaseHref().$this->source, 'self',
 			'application/atom+xml');
 
-		$this->feed->setGenerator('Blörg');
-		$this->feed->setBase($site_base_href);
+		$feed->setGenerator('Blörg');
+		$feed->setBase($this->app->getBaseHref());
 
-		$this->buildIcon();
-		$this->buildLogo();
+		$limit = $this->getFrontPageCount();
+		if ($this->page > 1) {
+			$this->initComments($this->getFrontPageCount() +
+				($this->page - 2) * $this->min_entries);
 
-		$threshold = new SwatDate();
-		$threshold->toUTC();
-		$threshold->subtractSeconds($this->recent_period);
+			$limit = $this->min_entries;
+		}
 
 		$count = 0;
 		foreach ($this->comments as $comment) {
+			if ($count < $limit)
+				$this->buildComment($feed, $comment);
+
 			$count++;
-
-			if ($count > $this->max_entries ||
-				($count > $this->min_entries) &&
-					$comment->createdate->before($threshold))
-				break;
-		}
-
-		$this->buildAtomPagination($count, $feed_base_href);
-
-		if ($this->page > 1) {
-			$this->initComments($count +
-				($this->page - 2) * $this->min_entries);
-
-			$count = $this->min_entries;
-		}
-
-		$total = 0;
-		foreach ($this->comments as $comment) {
-			if ($total < $count)
-				$this->addComment($comment);
-
-			$total++;
 		}
 	}
 
 	// }}}
-	// {{{ protected function buildAtomPagination()
+	// {{{ protected function buildComment()
 
-	protected function buildAtomPagination($first_page_size, $base_href)
+	protected function buildComment(XML_Atom_Feed $feed, BlorgComment $comment)
 	{
-		// Feed paging. See IETF RFC 5005.
-		$last = ceil(
-			($this->comment_count - $first_page_size)/ $this->min_entries) + 1;
-
-		if ($this->page > $last)
-			throw new SiteNotFoundException(Blorg::_('Page not found.'));
-
-		$this->feed->addLink($base_href, 'first',
-			'application/atom+xml');
-
-		$this->feed->addLink($base_href.'/page'.$last, 'last',
-			'application/atom+xml');
-
-		if ($this->page > 1) {
-			$previous = '/page'.($this->page - 1);
-			$this->feed->addLink($base_href.$previous, 'previous',
-				'application/atom+xml');
-		}
-
-		if ($this->page != $last) {
-			$next = '/page'.($this->page + 1);
-			$this->feed->addLink($base_href.$next, 'next',
-				'application/atom+xml');
-		}
-	}
-
-	// }}}
-	// {{{ protected function buildIcon()
-
-	protected function buildIcon()
-	{
-		if ($this->app->hasModule('SiteThemeModule')) {
-			$favicon_file = $this->app->theme->getFaviconFile();
-
-			if ($favicon_file !== null)
-				$this->feed->setIcon($this->app->getBaseHref().$favicon_file);
-		}
-	}
-
-	// }}}
-	// {{{ protected function buildLogo()
-
-	protected function buildLogo()
-	{
-		if ($this->app->config->blorg->feed_logo != '') {
-			$class = SwatDBClassMap::get('BlorgFile');
-			$blorg_file = new $class();
-			$blorg_file->setDatabase($this->app->db);
-			$blorg_file->load(intval($this->app->config->blorg->feed_logo));
-			$this->feed->setLogo($this->app->getBaseHref().
-				$blorg_file->getRelativeUri());
-		}
-	}
-
-	// }}}
-	// {{{ protected function addComment()
-
-	protected function addComment($comment)
-	{
-		$site_base_href  = $this->app->getBaseHref();
-		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
-
 		$post = $comment->post;
-		$path = $blorg_base_href.'archive';
+		$path = $this->getBlorgBaseHref().'archive';
 
 		$date = clone $post->publish_date;
 		$date->convertTZ($this->app->default_time_zone);
@@ -292,7 +181,7 @@ class BlorgCommentsAtomPage extends SitePage
 		if ($comment->author !== null) {
 			$author_name = $comment->author->name;
 			if ($comment->author->visible) {
-				$author_uri = $blorg_base_href.'author/'.
+				$author_uri = $this->getBlorgBaseHref().'author/'.
 					$post->author->shortname;
 
 				$author_email = $post->author->email;
@@ -318,15 +207,41 @@ class BlorgCommentsAtomPage extends SitePage
 		$entry->addAuthor($author_name, $author_uri, $author_email);
 		$entry->addLink($comment_uri, 'alternate', 'text/html');
 
-		$this->feed->addEntry($entry);
+		$feed->addEntry($entry);
 	}
 
 	// }}}
-	// {{{ protected function displayAtomFeed()
 
-	protected function displayAtomFeed()
+	// helper methods
+	// {{{ protected function getFrontPageCount()
+
+	protected function getFrontPageCount()
 	{
-		echo $this->feed;
+		return $this->front_page_count;
+	}
+
+	// }}}
+	// {{{ protected function getTotalCount()
+
+	protected function getTotalCount()
+	{
+		return $this->total_count;
+	}
+
+	// }}}
+	// {{{ protected function getBlorgBaseHref()
+
+	protected function getBlorgBaseHref()
+	{
+		return $this->app->getBaseHref().$this->app->config->blorg->path;
+	}
+
+	// }}}
+	// {{{ protected function getFeedBaseHref()
+
+	protected function getFeedBaseHref()
+	{
+		return $this->getBlorgBaseHref().'feed/comments';
 	}
 
 	// }}}

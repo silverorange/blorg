@@ -32,38 +32,24 @@ class BlorgTagAtomPage extends BlorgAtomPage
 	 */
 	protected $tag;
 
-	/**
-	 * @var string
-	 */
-	protected $shortname;
-
 	// }}}
-	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		$shortname, $page_number = 1)
-	{
-		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
-		$this->shortname = $shortname;
-		parent::__construct($app, $layout, $page_number);
-	}
+	// init phase
+	// {{{ protected function initPostLoader()
 
-	// }}}
-	// {{{ protected function initPosts()
-
-	protected function initPosts()
+	protected function initPostLoader()
 	{
 		$class_name = SwatDBClassMap::get('BlorgTag');
 		$tag = new $class_name();
 		$tag->setDatabase($this->app->db);
-		if (!$tag->loadByShortname($this->shortname,
+		if (!$tag->loadByShortname($this->getArgument('shortname'),
 				$this->app->getInstance())) {
 					throw new SiteNotFoundException('Page not found.');
 		}
 
 		$this->tag = $tag;
 
-		parent::initPosts();
+		parent::initPostLoader();
 
 		$this->post_loader->setWhereClause(sprintf('enabled = %s and
 			id in (select post from BlorgPostTagBinding where tag = %s)',
@@ -72,75 +58,53 @@ class BlorgTagAtomPage extends BlorgAtomPage
 	}
 
 	// }}}
+	// {{{ protected function getArgumentMap()
 
-	// build phase
-	// {{{ public function build()
-
-	public function build()
+	protected function getArgumentMap()
 	{
-		$this->buildAtomFeed();
-
-		$this->layout->startCapture('content');
-		$this->displayAtomFeed();
-		$this->layout->endCapture();
+		return array(
+			'shortname' => array(0, null),
+			'page'      => array(1, 1),
+		);
 	}
 
 	// }}}
-	// {{{ protected function buildAtomFeed()
 
-	protected function buildAtomFeed()
+	// build phase
+	// {{{ protected function buildEntries()
+
+	protected function buildEntries(XML_Atom_Feed $feed)
 	{
-		$site_base_href  = $this->app->getBaseHref();
-		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
-		$feed_base_href  = $site_base_href.$this->source;
-		$tag_href = $blorg_base_href.'tag/'.$this->tag->shortname;
+		$tag_href = $this->getBlorgBaseHref().'tag/'.$this->tag->shortname;
 
-		$this->feed = new XML_Atom_Feed($blorg_base_href,
-			sprintf(Blorg::_('%s - %s'),
-				$this->app->config->site->title,
-				$this->tag->title));
-
-		$this->feed->setSubTitle(sprintf(
-			Blorg::_('Posts Tagged: %s'),
+		$feed->setSubTitle(sprintf(Blorg::_('Posts Tagged: %s'),
 			$this->tag->title));
 
-		$this->feed->addLink($site_base_href.$this->source, 'self',
+		$feed->addLink($this->app->getBaseHref().$this->source, 'self',
 			'application/atom+xml');
 
-		$this->feed->addLink($tag_href, 'alternate', 'text/html');
-		$this->feed->setGenerator('Blörg');
-		$this->feed->setBase($site_base_href);
+		$feed->addLink($tag_href, 'alternate', 'text/html');
+		$feed->setGenerator('Blörg');
+		$feed->setBase($this->app->getBaseHref());
 
-		$this->buildIcon();
-		$this->buildLogo();
+		$limit = $this->getFrontPageCount();
+		if ($this->page > 1) {
+			$offset = $this->getFrontPageCount()
+				+ ($this->page - 2) * $this->min_entries;
 
-		$threshold = new SwatDate();
-		$threshold->toUTC();
-		$threshold->subtractSeconds($this->recent_period);
+			$this->post_loader->setRange($this->min_entries, $offset);
+			$this->posts = $this->post_loader->getPosts();
+			$limit = $this->min_entries;
+		}
 
-		$posts = $this->post_loader->getPosts();
+
 		$count = 0;
-
-		foreach ($posts as $post) {
-			if ($count > $this->max_entries ||
-				($count > $this->min_entries) &&
-					$post->publish_date->before($threshold))
-				break;
+		foreach ($this->posts as $post) {
+			if ($count < $limit)
+				$this->buildPost($feed, $post);
 
 			$count++;
 		}
-
-		$this->buildAtomPagination($count, $feed_base_href);
-
-		if ($this->page > 1) {
-			$this->post_loader->setRange($this->min_entries,
-				$count + (($this->page - 2) * $this->min_entries));
-
-			$posts = $this->post_loader->getPosts();
-			$count = $this->min_entries;
-		}
-
-		$this->buildEntries($posts, $count);
 	}
 
 	// }}}
