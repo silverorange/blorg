@@ -36,10 +36,10 @@ class BlorgPostSearchEngine extends SiteSearchEngine
 	protected function getFromClause()
 	{
 		$clause = 'from BlorgPost
-			inner join BlorgPostVisibleCommentCountView on
-				BlorgPostVisibleCommentCountView.instance =
-					BlorgPost.instance and
-				BlorgPost.id = BlorgPostVisibleCommentCountView.post';
+			inner join BlorgPostVisibleCommentCountView as v on
+				(v.instance = BlorgPost.instance or
+					v.instance is null and BlorgPost.instance is null) and
+				BlorgPost.id = v.post';
 
 		if ($this->fulltext_result !== null)
 			$clause.= ' '.
