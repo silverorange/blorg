@@ -101,19 +101,20 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 	// }}}
 
 	// build phase
+	// {{{ protected function buildHeader()
+
+	protected function buildHeader(XML_Atom_Feed $feed)
+	{
+		parent::buildHeader($feed);
+		$feed->setSubTitle(Blorg::_('Recent Posts'));
+		$feed->addLink($this->getBlorgBaseHref(), 'alternate', 'text/html');
+	}
+
+	// }}}
 	// {{{ protected function buildEntries()
 
 	protected function buildEntries(XML_Atom_Feed $feed)
 	{
-		$feed->setSubTitle(Blorg::_('Recent Posts'));
-
-		$feed->addLink($this->app->getBaseHref().$this->source, 'self',
-			'application/atom+xml');
-
-		$feed->addLink($this->getBlorgBaseHref(), 'alternate', 'text/html');
-		$feed->setGenerator('Blörg');
-		$feed->setBase($this->app->getBaseHref());
-
 		$limit = $this->getFrontPageCount();
 		if ($this->page > 1) {
 			$offset = $this->getFrontPageCount()
@@ -135,7 +136,7 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 	}
 
 	// }}}
-	// {{{ protected function addPost()
+	// {{{ protected function buildPost()
 
 	protected function buildPost(XML_Atom_Feed $feed, BlorgPost $post)
 	{

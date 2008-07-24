@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
 require_once 'Blorg/dataobjects/BlorgTag.php';
 require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/pages/BlorgAtomPage.php';
@@ -47,14 +46,14 @@ class BlorgTagAtomPage extends BlorgAtomPage
 					throw new SiteNotFoundException('Page not found.');
 		}
 
-		$this->tag = $tag;
-
 		parent::initPostLoader();
 
 		$this->post_loader->setWhereClause(sprintf('enabled = %s and
 			id in (select post from BlorgPostTagBinding where tag = %s)',
 			$this->app->db->quote(true, 'boolean'),
 			$this->app->db->quote($tag->id, 'integer')));
+
+		$this->tag = $tag;
 	}
 
 	// }}}
@@ -71,40 +70,15 @@ class BlorgTagAtomPage extends BlorgAtomPage
 	// }}}
 
 	// build phase
-	// {{{ protected function buildEntries()
+	// {{{ protected function buildHeader()
 
-	protected function buildEntries(XML_Atom_Feed $feed)
+	protected function buildHeader(XML_Atom_Feed $feed)
 	{
+		parent::buildHeader($feed);
 		$tag_href = $this->getBlorgBaseHref().'tag/'.$this->tag->shortname;
-
+		$feed->addLink($tag_href, 'alternate', 'text/html');
 		$feed->setSubTitle(sprintf(Blorg::_('Posts Tagged: %s'),
 			$this->tag->title));
-
-		$feed->addLink($this->app->getBaseHref().$this->source, 'self',
-			'application/atom+xml');
-
-		$feed->addLink($tag_href, 'alternate', 'text/html');
-		$feed->setGenerator('Blörg');
-		$feed->setBase($this->app->getBaseHref());
-
-		$limit = $this->getFrontPageCount();
-		if ($this->page > 1) {
-			$offset = $this->getFrontPageCount()
-				+ ($this->page - 2) * $this->min_entries;
-
-			$this->post_loader->setRange($this->min_entries, $offset);
-			$this->posts = $this->post_loader->getPosts();
-			$limit = $this->min_entries;
-		}
-
-
-		$count = 0;
-		foreach ($this->posts as $post) {
-			if ($count < $limit)
-				$this->buildPost($feed, $post);
-
-			$count++;
-		}
 	}
 
 	// }}}
