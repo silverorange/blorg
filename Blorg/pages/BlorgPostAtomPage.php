@@ -29,6 +29,11 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 	 */
 	protected $comments;
 
+	/**
+	 * @var integer
+	 */
+	protected $front_page_count;
+
 	// }}}
 
 	// init phase
@@ -67,11 +72,14 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 
 		if ($this->page > 1) {
 			// page of comments
+			$this->front_page_count = $this->min_entries;
 			$offset = ($this->page - 1) * $this->min_entries;
-			$comments = $this->post->getVisibleComments($limit, $offset);
+			$comments = $this->post->getVisibleComments($this->min_entries,
+				$offset);
 		} else {
 			// first page, default page length
-			$comments = $this->post->getVisibleComments($this->min_entires);
+			$comments = $this->post->getVisibleComments($this->min_entries);
+			$this->front_page_count = count($comments);
 		}
 
 		$this->comments = $comments;
@@ -105,18 +113,20 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 	}
 
 	// }}}
-	// {{{ protected function buildAtomFeed()
+	// {{{ protected function buildHeader()
+
+	protected function buildHeader(XML_Atom_Feed $feed)
+	{
+		parent::buildHeader($feed);
+		$feed->setSubTitle(sprintf(Blorg::_('Comments on “%s”'),
+			$this->post->getTitle()));
+	}
+
+	// }}}
+	// {{{ protected function buildEntries()
 
 	protected function buildEntries(XML_Atom_Feed $feed)
 	{
-		$feed->setGenerator('Blörg');
-		$feed->setBase($this->app->getBaseHref());
-		$feed->setSubTitle(sprintf(Blorg::_('Comments on “%s”'),
-			$this->post->getTitle()));
-
-		$feed->addLink($this->app->getBaseHref().$this->source, 'self',
-			'application/atom+xml');
-
 		if ($this->post->author->visible) {
 			$author_uri = $this->getBlorgBaseHref().'author/'.
 				$this->post->author->shortname;
@@ -191,7 +201,7 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 
 	protected function getFrontPageCount()
 	{
-		$this->min_entires;
+		return $this->front_page_count;
 	}
 
 	// }}}

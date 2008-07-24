@@ -109,6 +109,7 @@ abstract class BlorgAbstractAtomPage extends SitePage
 
 	protected function buildContent(XML_Atom_Feed $feed)
 	{
+		$this->buildHeader($feed);
 		$this->buildEntries($feed);
 		$this->buildLogo($feed);
 		$this->buildIcon($feed);
@@ -162,6 +163,17 @@ abstract class BlorgAbstractAtomPage extends SitePage
 			$feed->setLogo($this->app->getBaseHref().
 				$blorg_file->getRelativeUri());
 		}
+	}
+
+	// }}}
+	// {{{ protected function buildHeader()
+
+	protected function buildHeader(XML_Atom_Feed $feed)
+	{
+		$feed->setGenerator('Blörg');
+		$feed->setBase($this->app->getBaseHref());
+		$feed->addLink($this->app->getBaseHref().$this->source, 'self',
+			'application/atom+xml');
 	}
 
 	// }}}

@@ -128,18 +128,6 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 
 	protected function buildEntries(XML_Atom_Feed $feed)
 	{
-		$site_base_href  = $this->app->getBaseHref();
-		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
-		$feed_base_href  = $blorg_base_href.'comments';
-
-		$feed->setSubTitle(Blorg::_('Recent Comments'));
-
-		$feed->addLink($this->app->getBaseHref().$this->source, 'self',
-			'application/atom+xml');
-
-		$feed->setGenerator('Blörg');
-		$feed->setBase($this->app->getBaseHref());
-
 		$limit = $this->getFrontPageCount();
 		if ($this->page > 1) {
 			$this->initComments($this->getFrontPageCount() +
@@ -155,6 +143,15 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 
 			$count++;
 		}
+	}
+
+	// }}}
+	// {{{ protected function buildHeader()
+
+	protected function buildHeader(XML_Atom_Feed $feed)
+	{
+		parent::buildHeader($feed);
+		$feed->setSubTitle(Blorg::_('Recent Comments'));
 	}
 
 	// }}}
