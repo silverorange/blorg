@@ -42,10 +42,11 @@ class BlorgAjaxProxyPage extends SitePage
 	// {{{ public function __construct()
 
 	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		array $arguments = array())
+		$source)
 	{
 		$layout = new SiteLayout($app, 'Blorg/layouts/xhtml/ajax-proxy.php');
-		parent::__construct($app, $layout, $arguments);
+		parent::__construct($app, $layout);
+		$this->initUri($source);
 	}
 
 	// }}}
@@ -81,32 +82,6 @@ class BlorgAjaxProxyPage extends SitePage
 	public static function map($from, $to)
 	{
 		self::$uri_map[$from] = $to;
-	}
-
-	// }}}
-	// {{{ protected function getArgumentMap()
-
-	/**
-	 * @return array
-	 *
-	 * @see SitePage::getArgumentMap()
-	 */
-	protected function getArgumentMap()
-	{
-		return array(
-			'source' => array(0, null),
-		);
-	}
-
-	// }}}
-
-	// init phase
-	// {{{ public function init()
-
-	public function init()
-	{
-		parent::init();
-		$this->initUri($this->getArgument('source'));
 	}
 
 	// }}}

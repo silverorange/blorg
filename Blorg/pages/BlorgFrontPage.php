@@ -2,7 +2,7 @@
 
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatPagination.php';
-require_once 'Site/pages/SitePageDecorator.php';
+require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgViewFactory.php';
 require_once 'Blorg/BlorgPostLoader.php';
@@ -10,14 +10,13 @@ require_once 'Blorg/BlorgPostLoader.php';
 /**
  * Displays all recent posts in reverse chronological order
  *
- * The constant {@link BlorgFrontPage::MAX_POSTS} determines how many posts are
- * displayed on the page.
+ * The constant MAX_POSTS determines how many posts are displayed on the page.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgFrontPage extends SitePageDecorator
+class BlorgFrontPage extends SitePage
 {
 	// {{{ class constants
 
@@ -42,29 +41,13 @@ class BlorgFrontPage extends SitePageDecorator
 	protected $pager;
 
 	// }}}
-	// {{{ protected function getArgumentMap()
+	// {{{ public function __construct()
 
-	/**
-	 * @return array
-	 *
-	 * @see SitePage::getArgumentMap()
-	 */
-	protected function getArgumentMap()
+	public function __construct(SiteApplication $app, SiteLayout $layout = null,
+		$current_page = 1)
 	{
-		return array(
-			'page' => array(0, 1),
-		);
-	}
-
-	// }}}
-
-	// init phase
-	// {{{ public function init()
-
-	public function init()
-	{
-		parent::init();
-		$this->initPosts($this->getArgument('page'));
+		parent::__construct($app, $layout);
+		$this->initPosts($current_page);
 	}
 
 	// }}}
@@ -107,9 +90,9 @@ class BlorgFrontPage extends SitePageDecorator
 	// }}}
 
 	// build phase
-	// {{{ protected function buildContent()
+	// {{{ public function build()
 
-	protected function buildContent()
+	public function build()
 	{
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');
@@ -197,8 +180,8 @@ class BlorgFrontPage extends SitePageDecorator
 	public function finalize()
 	{
 		parent::finalize();
-/*		$this->layout->addHtmlHeadEntrySet(
-			$this->pager->getHtmlHeadEntrySet());*/
+		$this->layout->addHtmlHeadEntrySet(
+			$this->pager->getHtmlHeadEntrySet());
 	}
 
 	// }}}
