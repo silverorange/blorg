@@ -1,8 +1,8 @@
 <?php
 
 require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Site/pages/SitePage.php';
 require_once 'Blorg/BlorgPostLoader.php';
+require_once 'Blorg/pages/BlorgAbstractAtomPage.php';
 require_once 'XML/Atom/Feed.php';
 require_once 'XML/Atom/Entry.php';
 require_once 'XML/Atom/Link.php';
@@ -21,7 +21,7 @@ require_once 'XML/Atom/Link.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgAtomPage extends SitePage
+class BlorgAtomPage extends BlorgAbstractAtomPage
 {
 	// {{{ protected properties
 
@@ -31,61 +31,30 @@ class BlorgAtomPage extends SitePage
 	protected $posts;
 
 	/**
-	 * @var XML_Atom_Feed
-	 */
-	protected $feed;
-
-	/**
-	 * The minimum number of entries to display
-	 *
-	 * @var integer
-	 */
-	protected $min_entries = 20;
-
-	/**
-	 * The maximum number of entries to display
-	 *
-	 * @var integer
-	 */
-	protected $max_entries = 100;
-
-	/**
-	 * Period for recently added posts (in seconds)
-	 *
-	 * Default value is two days.
-	 *
-	 * @var interger
-	 */
-	protected $recent_period = 172800;
-
-	/**
-	 * @var integer
-	 */
-	protected $page;
-
-	/**
 	 * @var BlorgPostLoader
 	 */
 	protected $post_loader;
 
+	/**
+	 * @var integer
+	 */
+	protected $front_page_count;
+
 	// }}}
-	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		$page_number = 1)
+	// init phase
+	// {{{ protected function initEntries()
+
+	protected function initEntries()
 	{
-		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
-
-		parent::__construct($app, $layout);
-
-		$this->page = $page_number;
-		$this->initPosts();
+		$this->initPostLoader();
+		$this->initFrontPagePosts();
 	}
 
 	// }}}
-	// {{{ protected function initPosts()
+	// {{{ protected function initPostLoader()
 
-	protected function initPosts()
+	protected function initPostLoader()
 	{
 		$this->post_loader = new BlorgPostLoader($this->app->db,
 			$this->app->getInstance());
@@ -110,157 +79,65 @@ class BlorgAtomPage extends SitePage
 	}
 
 	// }}}
+	// {{{ protected function initFrontPagePosts()
 
-	// build phase
-	// {{{ public function build()
-
-	public function build()
+	protected function initFrontPagePosts()
 	{
-		$this->buildAtomFeed();
-
-		$this->layout->startCapture('content');
-		$this->displayAtomFeed();
-		$this->layout->endCapture();
-	}
-
-	// }}}
-	// {{{ protected function buildAtomFeed()
-
-	protected function buildAtomFeed()
-	{
-		$site_base_href  = $this->app->getBaseHref();
-		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
-		$feed_base_href  = $site_base_href.$this->source;
-
-		$this->feed = new XML_Atom_Feed($blorg_base_href,
-			$this->app->config->site->title);
-
-		$this->feed->setSubTitle(Blorg::_('Recent Posts'));
-
-		$this->feed->addLink($site_base_href.$this->source, 'self',
-			'application/atom+xml');
-
-		$this->feed->addLink($blorg_base_href, 'alternate', 'text/html');
-		$this->feed->setGenerator('Blörg');
-		$this->feed->setBase($site_base_href);
-
-		$this->buildLogo();
-		$this->buildIcon();
-
-		$threshold = new SwatDate();
-		$threshold->toUTC();
-		$threshold->subtractSeconds($this->recent_period);
-
 		$posts = $this->post_loader->getPosts();
 		$count = 0;
 
 		foreach ($posts as $post) {
-			if ($count > $this->max_entries ||
-				($count > $this->min_entries) &&
-					$post->publish_date->before($threshold))
+			if ($count > $this->max_entries || ($count > $this->min_entries)
+				&& $this->isEntryRecent($post->publish_date))
 				break;
 
 			$count++;
 		}
 
-		$this->buildAtomPagination($count, $feed_base_href);
-
-		if ($this->page > 1) {
-			$this->post_loader->setRange($this->min_entries,
-				$count + (($this->page - 2) * $this->min_entries));
-
-			$posts = $this->post_loader->getPosts();
-			$count = $this->min_entries;
-		}
-
-		$this->buildEntries($posts, $count);
+		$this->front_page_count = $count;
+		$this->posts = $posts;
 	}
 
 	// }}}
-	// {{{ protected function buildAtomPagination()
 
-	protected function buildAtomPagination($first_page_size, $base_href)
-	{
-		// Feed paging. See IETF RFC 5005.
-		$total_posts = $this->post_loader->getPostCount();
-		$this->feed->addLink($base_href, 'first', 'application/atom+xml');
-
-		$last = (ceil(($total_posts - $first_page_size) / $this->min_entries)
-			+ 1);
-
-		if ($this->page > $last)
-			throw new SiteNotFoundException(Blorg::_('Page not found.'));
-
-		$this->feed->addLink($base_href.'/page'.$last,
-			'last', 'application/atom+xml');
-
-		if ($this->page > 1) {
-			$previous = '/page'.($this->page - 1);
-			$this->feed->addLink($base_href.$previous,
-				'previous', 'application/atom+xml');
-		}
-
-		if ($this->page != $last) {
-			$next = '/page'.($this->page + 1);
-			$this->feed->addLink($base_href.$next,
-				'next', 'application/atom+xml');
-		}
-	}
-
-	// }}}
+	// build phase
 	// {{{ protected function buildEntries()
 
-	protected function buildEntries(BlorgPostWrapper $posts, $limit)
+	protected function buildEntries(XML_Atom_Feed $feed)
 	{
+		$feed->setSubTitle(Blorg::_('Recent Posts'));
+
+		$feed->addLink($this->app->getBaseHref().$this->source, 'self',
+			'application/atom+xml');
+
+		$feed->addLink($this->getBlorgBaseHref(), 'alternate', 'text/html');
+		$feed->setGenerator('Blörg');
+		$feed->setBase($this->app->getBaseHref());
+
+		$limit = $this->getFrontPageCount();
+		if ($this->page > 1) {
+			$offset = $this->getFrontPageCount()
+				+ ($this->page - 2) * $this->min_entries;
+
+			$this->post_loader->setRange($this->min_entries, $offset);
+			$this->posts = $this->post_loader->getPosts();
+			$limit = $this->min_entries;
+		}
+
+
 		$count = 0;
-		foreach ($posts as $post) {
+		foreach ($this->posts as $post) {
 			if ($count < $limit)
-				$this->addPost($post);
+				$this->buildPost($feed, $post);
 
 			$count++;
 		}
 	}
 
 	// }}}
-	// {{{ protected function buildIcon()
-
-	protected function buildIcon()
-	{
-		if ($this->app->hasModule('SiteThemeModule')) {
-			$favicon_file = $this->app->theme->getFaviconFile();
-
-			if ($favicon_file !== null)
-				$this->feed->setIcon($this->app->getBaseHref().$favicon_file);
-		}
-	}
-
-	// }}}
-	// {{{ protected function buildLogo()
-
-	protected function buildLogo()
-	{
-		if ($this->app->config->blorg->feed_logo != '') {
-			$class = SwatDBClassMap::get('BlorgFile');
-			$blorg_file = new $class();
-			$blorg_file->setDatabase($this->app->db);
-			$blorg_file->load(intval($this->app->config->blorg->feed_logo));
-			$this->feed->setLogo($this->app->getBaseHref().
-				$blorg_file->getRelativeUri());
-		}
-	}
-
-	// }}}
-	// {{{ protected function displayAtomFeed()
-
-	protected function displayAtomFeed()
-	{
-		echo $this->feed;
-	}
-
-	// }}}
 	// {{{ protected function addPost()
 
-	protected function addPost(BlorgPost $post)
+	protected function buildPost(XML_Atom_Feed $feed, BlorgPost $post)
 	{
 		$site_base_href  = $this->app->getBaseHref();
 		$blorg_base_href = $site_base_href.$this->app->config->blorg->path;
@@ -325,7 +202,41 @@ class BlorgAtomPage extends SitePage
 			$entry->addLink($post_uri.'#comments', 'comments', 'text/html');
 		}
 
-		$this->feed->addEntry($entry);
+		$feed->addEntry($entry);
+	}
+
+	// }}}
+
+	// helper methods
+	// {{{ protected function getTotalCount()
+
+	protected function getTotalCount()
+	{
+		return $this->post_loader->getPostCount();
+	}
+
+	// }}}
+	// {{{ protected function getFrontPageCount()
+
+	protected function getFrontPageCount()
+	{
+		return $this->front_page_count;
+	}
+
+	// }}}
+	// {{{ protected function getBlorgBaseHref()
+
+	protected function getBlorgBaseHref()
+	{
+		return $this->app->getBaseHref().$this->app->config->blorg->path;
+	}
+
+	// }}}
+	// {{{ protected function getFeedBaseHref()
+
+	protected function getFeedBaseHref()
+	{
+		return $this->getBlorgBaseHref().'feed';
 	}
 
 	// }}}
