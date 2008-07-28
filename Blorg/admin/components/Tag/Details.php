@@ -79,7 +79,6 @@ class BlorgTagDetails extends AdminPage
 		$details_frame->subtitle = $this->tag->title;
 
 		$this->buildToolbar();
-		$this->buildNavBar();
 	}
 
 	// }}}
@@ -98,10 +97,12 @@ class BlorgTagDetails extends AdminPage
 	}
 
 	// }}}
-	// {{{ private function buildNavBar()
+	// {{{ protected function buildNavBar()
 
-	private function buildNavBar()
+	protected function buildNavBar()
 	{
+		parent::buildNavBar();
+
 		$this->navbar->popEntry();
 		$this->navbar->addEntry(new SwatNavBarEntry($this->getComponentTitle(),
 			$this->getComponentName()));

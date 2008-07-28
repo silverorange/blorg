@@ -153,8 +153,6 @@ class BlorgPostCommentDelete extends AdminDBDelete
 
 		if ($dep->getStatusLevelCount(AdminDependency::DELETE) == 0)
 			$this->switchToCancelButton();
-
-		$this->buildNavBar();
 	}
 
 	// }}}
@@ -162,6 +160,8 @@ class BlorgPostCommentDelete extends AdminDBDelete
 
 	protected function buildNavBar()
 	{
+		parent::buildNavBar();
+
 		$this->navbar->popEntry();
 		$this->navbar->addEntry(new SwatNavBarEntry($this->post->getTitle(),
 			sprintf('Post/Details?id=%s', $this->post->id)));

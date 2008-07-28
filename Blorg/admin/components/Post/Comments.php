@@ -416,7 +416,6 @@ class BlorgPostComments extends AdminPage
 	protected function buildInternal()
 	{
 		parent::buildInternal();
-		$this->buildNavBar();
 		$this->buildSearchForm();
 		$this->buildAuthorFlydown();
 		$this->buildCommentReplicator();
@@ -466,6 +465,7 @@ class BlorgPostComments extends AdminPage
 
 	protected function buildNavBar()
 	{
+		parent::buildNavBar();
 		$this->navbar->createEntry(Blorg::_('Manage Comments'));
 	}
 
