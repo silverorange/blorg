@@ -85,7 +85,7 @@ class BlorgPageFactory extends SitePageFactory
 	}
 
 	// }}}
-	// {{{ public function get()
+	// {{{ public function resolvePage()
 
 	/**
 	 * Resolves a page object from a source string
@@ -97,9 +97,9 @@ class BlorgPageFactory extends SitePageFactory
 	 *
 	 * @return SiteAbstractPage the page for the given source string.
 	 */
-	public function get($source, SiteLayout $layout = null)
+	public function resolvePage($source, SiteLayout $layout = null)
 	{
-		$layout = ($layout === null) ? $this->getLayout($source) : $layout;
+		$layout = ($layout === null) ? $this->resolveLayout($source) : $layout;
 
 		$page_info = $this->getPageInfo($source);
 
@@ -109,7 +109,7 @@ class BlorgPageFactory extends SitePageFactory
 		}
 
 		// create page object
-		$page = $this->getPage($page_info['page'], $layout,
+		$page = $this->instantiatePage($page_info['page'], $layout,
 			$page_info['arguments']);
 
 		// decorate page
