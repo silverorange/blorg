@@ -287,6 +287,8 @@ class BlorgPostCommentEdit extends AdminDBEdit
 
 	protected function buildNavBar()
 	{
+		parent::buildNavBar();
+
 		$this->navbar->addEntry(new SwatNavBarEntry(
 			$this->comment->post->getTitle(),
 			sprintf('Post/Details?id=%s', $this->comment->post->id)));

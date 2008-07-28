@@ -108,7 +108,6 @@ class BlorgPostDetails extends AdminIndex
 	protected function buildInternal()
 	{
 		parent::buildInternal();
-		$this->buildNavBar();
 		$this->buildPost();
 		$this->buildComments();
 
@@ -132,6 +131,7 @@ class BlorgPostDetails extends AdminIndex
 
 	protected function buildNavBar()
 	{
+		parent::buildNavBar();
 		$this->layout->navbar->createEntry($this->post->getTitle());
 	}
 
