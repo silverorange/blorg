@@ -23,7 +23,7 @@ class BlorgFileLoaderPage extends SitePage
 		array $arguments = array())
 	{
 		$layout = new SiteLayout($app, 'Site/layouts/xhtml/fileloader.php');
-		parent::__construct($app, $layout);
+		parent::__construct($app, $layout, $arguments);
 		$this->initFile($this->getArgument('filename'));
 	}
 
