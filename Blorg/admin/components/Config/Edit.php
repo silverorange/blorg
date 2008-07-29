@@ -174,6 +174,8 @@ class BlorgConfigEdit extends AdminEdit
 
 	protected function saveData()
 	{
+		$settings = array();
+
 		foreach ($this->setting_keys as $section => $keys) {
 			foreach ($keys as $name) {
 				$field_name = $section.'_'.$name;
@@ -186,10 +188,12 @@ class BlorgConfigEdit extends AdminEdit
 					$widget = $this->ui->getWidget($field_name);
 					$this->app->config->$section->$name = $widget->value;
 				}
+
+				$settings[] = $section.'.'.$name;
 			}
 		}
 
-		$this->app->config->save();
+		$this->app->config->save($settings);
 
 		$message = new SwatMessage(
 			Blorg::_('Preferences have been saved.'));
