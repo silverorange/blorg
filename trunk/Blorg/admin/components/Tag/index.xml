@@ -1,0 +1,64 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="search_disclosure">
+		<property name="title" translatable="yes">Search Tags</property>
+		<widget class="SwatToolbar">
+			<widget class="SwatToolLink" id="tag_tool_link">
+				<property name="title" translatable="yes">New Tag</property>
+				<property name="link">Tag/Edit</property>
+				<property name="stock_id">create</property>
+			</widget>
+		</widget>
+		<widget class="SwatForm" id="search_form">
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Title</property>
+				<widget class="AdminSearchOperatorFlydown" id="search_title_operator" />
+				<widget class="SwatEntry" id="search_title" />
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button">
+					<property name="title" translatable="yes">Search</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+	<widget class="SwatFrame" id="results_frame">
+		<property name="title" translatable="yes">Tags</property>
+		<property name="visible" type="boolean">false</property>
+		<widget class="SwatContentBlock" id="results_message" />
+
+		<widget class="SwatForm" id="index_form">
+			<widget class="SwatTableView" id="index_view">
+				<object class="SwatTableViewCheckboxColumn" id="checkbox">
+					<object class="SwatCheckboxCellRenderer" id="items">
+						<property name="value" type="data">id</property>
+					</object>
+				</object>
+				<object class="AdminTableViewOrderableColumn" id="title">
+					<property name="title" translatable="yes">Title</property>
+					<object class="AdminTitleLinkCellRenderer">
+						<property name="text" type="data">title</property>
+						<property name="link">Tag/Details?id=%s</property>
+						<property name="link_value" type="data">id</property>
+					</object>
+				</object>
+				<object class="AdminTableViewOrderableColumn" id="shortname">
+					<property name="title" translatable="yes">Shortname</property>
+					<object class="SwatTextCellRenderer">
+						<property name="text" type="data">shortname</property>
+					</object>
+				</object>
+			</widget>
+			<widget class="AdminPagination" id="pager">
+				<property name="link">Tag</property>
+			</widget>
+			<widget class="SwatActions" id="index_actions">
+				<widget class="SwatActionItem" id="delete">
+					<property name="title" translatable="yes">delete…</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>

@@ -1,0 +1,86 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<property name="title" translatable="yes">Edit Preferences</property>
+		<widget class="SwatForm" id="edit_form">
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Title</property>
+				<widget class="SwatEntry" id="site_title">
+					<property name="required" type="boolean">true</property>
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Tagline</property>
+				<widget class="SwatEntry" id="site_tagline">
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Default Meta Description</property>
+				<widget class="SwatTextarea" id="site_meta_description">
+					<property name="rows" type="integer">5</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Time Zone</property>
+				<widget class="SwatTimeZoneEntry" id="date_time_zone" />
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Google Analytics Account</property>
+				<property name="note"><![CDATA[<a href="http://www.google.com/analytics/">http://www.google.com/analytics/</a>]]></property>
+				<property name="note_content_type">text/xml</property>
+				<widget class="SwatEntry" id="analytics_google_account">
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Akismet Key</property>
+				<property name="note"><![CDATA[Akismet is for automatic spam filtering. <a href="http://akismet.com/personal/">Get an API key</a>]]></property>
+				<property name="note_content_type">text/xml</property>
+				<widget class="SwatEntry" id="blorg_akismet_key">
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Default Comment Status</property>
+				<widget class="BlorgCommentStatusSlider" id="blorg_default_comment_status" />
+			</widget>
+			<widget class="SwatFormField" id="image_container">
+				<property name="title" translatable="yes">Header Image</property>
+				<widget class="BlorgHeaderImageDisplay" id="image_preview" />
+			</widget>
+			<widget class="SwatDisclosure" id="change_image">
+				<property name="title" translatable="yes">Add Header Image</property>
+				<widget class="SwatFormField">
+					<widget class="SwatFileEntry" id="header_image">
+						<property name="accept_mime_types[]">image/jpeg</property>
+						<property name="accept_mime_types[]">image/png</property>
+						<property name="accept_mime_types[]">image/gif</property>
+					</widget>
+				</widget>
+			</widget>
+			<widget class="SwatFormField" id="logo_container">
+				<property name="title" translatable="yes">Feed Logo</property>
+				<widget class="BlorgHeaderImageDisplay" id="logo_preview" />
+			</widget>
+			<widget class="SwatDisclosure" id="change_logo">
+				<property name="title" translatable="yes">Add Feed Logo</property>
+				<widget class="SwatFormField">
+					<widget class="SwatFileEntry" id="feed_logo">
+						<property name="accept_mime_types[]">image/jpeg</property>
+						<property name="accept_mime_types[]">image/png</property>
+						<property name="accept_mime_types[]">image/gif</property>
+					</widget>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button">
+					<property name="title" translatable="yes">Save Preferences</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>

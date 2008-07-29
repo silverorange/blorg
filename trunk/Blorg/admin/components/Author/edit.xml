@@ -1,0 +1,70 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<property name="title" translatable="yes">Author</property>
+		<widget class="SwatForm" id="edit_form">
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Name</property>
+				<widget class="SwatEntry" id="name">
+					<property name="required" type="boolean">true</property>
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Show on Site?</property>
+				<widget class="SwatCheckbox" id="visible" />
+			</widget>
+			<widget class="SwatFormField" id="shortname_field">
+				<property name="title" translatable="yes">Shortname</property>
+				<widget class="AdminUniqueEntry" id="shortname">
+					<property name="required" type="boolean">true</property>
+					<property name="maxlength" type="integer">255</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Email</property>
+				<widget class="SwatEmailEntry" id="email" />
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Short Description</property>
+				<widget class="SwatTextarea" id="description">
+					<property name="rows" type="integer">5</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Biography</property>
+				<widget class="SwatTextarea" id="bodytext">
+					<property name="rows" type="integer">15</property>
+				</widget>
+			</widget>
+			<widget class="SwatDisclosure">
+				<property name="title" translatable="yes">OpenID Delegation</property>
+				<property name="open" type="boolean">false</property>
+				<widget class="AdminNote" id="openid_note">
+					<property name="content" translatable="yes"><![CDATA[
+					<p><a href="http://wiki.openid.net/Delegation">OpenID delegation</a> allows you to use this website as your identifier while still using a third-party <a href="http://wiki.openid.net/OpenIDServers">OpenID provider</a>.</p>
+					<p style="margin-bottom: 0;">Once configured, you will be able to use %s as your identifier when signing into OpenID-enabled sites.</p>
+					]]></property>
+					<property name="content_type">text/xml</property>
+				</widget>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Identity Server</property>
+					<property name="note" translatable="yes"><![CDATA[Example: <em>http://openidprovider.com/server</em>]]></property>
+					<property name="note_content_type">text/xml</property>
+					<widget class="SwatEntry" id="openid_server" />
+				</widget>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Delegate Identity</property>
+					<property name="note" translatable="yes"><![CDATA[Example: <em>http://myname.openidprovider.com/</em>]]></property>
+					<property name="note_content_type">text/xml</property>
+					<widget class="SwatEntry" id="openid_delegate" />
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button" />
+			</widget>
+		</widget>
+	</widget>
+</swatml>

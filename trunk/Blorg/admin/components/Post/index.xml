@@ -1,0 +1,109 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<!-- {{{ Search -->
+	<widget class="SwatFrameDisclosure" id="search_frame">
+		<property name="title" translatable="yes">Search Posts</property>
+		<property name="open" type="boolean">false</property>
+		<widget class="SwatForm" id="search_form">
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Keywords</property>
+				<widget class="SwatEntry" id="search_keywords" />
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Author</property>
+				<widget class="SwatFlydown" id="search_author">
+					<property name="show_blank" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Shown on Site</property>
+				<widget class="SwatYesNoFlydown" id="search_enabled" />
+			</widget>
+			<widget class="SwatDisclosure" id="date_range">
+				<property name="title" translatable="yes">Publish Date</property>
+				<widget class="SwatFormField" id="date_after">
+					<property name="title" translatable="yes">Published On or After</property>
+					<widget class="SwatDateEntry" id="search_publish_date_gt" />
+				</widget>
+				<widget class="SwatFormField" id="date_before">
+					<property name="title" translatable="yes">Published Before</property>
+					<widget class="SwatDateEntry" id="search_publish_date_lt" />
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button">
+					<property name="title" translatable="yes">Search</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+	<!-- }}} -->
+	<widget class="SwatFrame" id="results_frame">
+		<property name="title" translatable="yes">Posts</property>
+		<widget class="SwatToolbar" id="index_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">New Post</property>
+				<property name="link">Post/Edit</property>
+				<property name="stock_id">create</property>
+			</widget>
+		</widget>
+		<widget class="SwatForm" id="index_form">
+			<widget class="SwatTableView" id="index_view">
+				<object class="SwatTableViewGroup">
+					<property name="group_by">publish_date_month</property>
+					<object class="SwatDateCellRenderer">
+						<property name="date" type="data">publish_date_month</property>
+						<property name="format" translatable="yes">%B, %Y</property>
+					</object>
+				</object>
+				<object class="SwatTableViewCheckboxColumn" id="checkbox">
+					<object class="SwatCheckboxCellRenderer" id="items">
+						<property name="value" type="data">id</property>
+					</object>
+				</object>
+				<object class="AdminTableViewOrderableColumn" id="title">
+					<property name="title" translatable="yes">Title</property>
+					<object class="AdminTitleLinkCellRenderer">
+						<property name="text" type="data">title</property>
+						<property name="link">Post/Details?id=%s</property>
+						<property name="link_value" type="data">id</property>
+					</object>
+				</object>
+				<object class="AdminTableViewOrderableColumn" id="shortname">
+					<property name="title" translatable="yes">Short Name</property>
+					<object class="SwatTextCellRenderer">
+						<property name="text" type="data">shortname</property>
+					</object>
+				</object>
+				<object class="AdminTableViewOrderableColumn" id="enabled">
+					<property name="title" translatable="yes">Show On Site</property>
+					<object class="SwatBooleanCellRenderer">
+						<property name="value" type="data">enabled</property>
+					</object>
+				</object>
+			</widget>
+			<widget class="AdminPagination" id="pager">
+				<property name="link">Post</property>
+			</widget>
+			<widget class="SwatActions" id="index_actions">
+				<widget class="SwatActionItem" id="tags_action">
+					<property name="title" translatable="yes">add tags…</property>
+					<widget class="BlorgTagEntry" id="tags" />
+				</widget>
+				<widget class="SwatActionItemDivider" />
+				<widget class="SwatActionItem" id="delete">
+					<property name="title" translatable="yes">delete…</property>
+				</widget>
+				<widget class="SwatActionItemDivider" />
+				<widget class="SwatActionItem" id="enable">
+					<property name="title" translatable="yes">enable</property>
+				</widget>
+				<widget class="SwatActionItem" id="disable">
+					<property name="title" translatable="yes">disable</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>

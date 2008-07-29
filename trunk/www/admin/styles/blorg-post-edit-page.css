@@ -1,0 +1,189 @@
+#title, #bodytext, #extended_bodytext {
+	width: 98%;
+}
+
+/* Safari hack */
+body:last-child:not(:root:root) #bodytext,
+body:last-child:not(:root:root) #extended_bodytext {
+	resize: vertical;
+	max-width: 98%;
+	min-width: 98%;
+}
+
+/* {{{ Edit Page Layout */
+
+#top_submit_button_field {
+	position: absolute;
+	top: -10000px;
+}
+
+#post_primary {
+	margin-right: 265px;
+}
+
+#post_sidebar {
+	float: right;
+	display: inline; /* IE6 hack */
+	width: 250px;
+	position: relative;
+}
+
+#post_secondary {
+	clear: both;
+}
+
+/* }}} */
+/* {{{ Publish Widget */
+
+#publish {
+	border-collapse: collapse;
+}
+
+#publish td {
+	padding: 0 0 0.3em 0;
+}
+
+#publish_date select {
+	font-size: 75%;
+}
+
+#publish td.swat-radio-table-input {
+	padding-right: 0.2em;
+}
+
+#publish .swat-radio-table-input input {
+	margin: 0;
+}
+
+#publish_date #publish_date_month {
+	width: 6em;
+}
+
+.edit-publish-date-link {
+	font-size: 85%;
+	position: relative;
+	bottom: 0.15em;
+	color: #666;
+}
+
+.edit-publish-date-link a:link,
+.edit-publish-date-link a:visited {
+	color: #666;
+}
+.edit-publish-date-link a:hover,
+.edit-publish-date-link a:active {
+	color: #333;
+}
+
+/* }}} */
+/* {{{ Files */
+
+#file_replicator {
+	margin: 1em 0 0 0;
+}
+
+#upload_file_field,
+#upload_description_field {
+	float: left;
+}
+
+#upload_file_field {
+	margin-right: 2em;
+}
+
+#upload_attachment_field {
+	clear: left;
+}
+
+.blorg-file {
+	clear: left;
+}
+
+img.blorg-file-icon {
+	float: left;
+}
+
+.blorg-file-details,
+.blorg-file-title,
+.blorg-file-controls {
+	margin-left: 54px;
+}
+
+.blorg-file-content {
+	color: #666;
+	margin: 1em 0.5em;
+	width: 18em;
+	min-height: 48px;
+	float: left;
+	display: inline;
+}
+
+* html .blorg-file-content { height: 48px; /* IE 6 hack */ }
+
+.blorg-file-details,
+.blorg-file-controls {
+	font-size: 85%;
+}
+
+.blorg-file-attach-status {
+	margin-right: 0.5em;
+}
+
+.blorg-file-controls a:link,
+.blorg-file-controls a:visited {
+	color: #666;
+}
+
+.blorg-file-controls a:hover,
+.blorg-file-controls a:active {
+	color: #333;
+}
+
+.blorg-file-title a:link,
+.blorg-file-title a:visited,
+.blorg-file-title a:active,
+.blorg-file-title a:hover {
+	border: none;
+	background: transparent;
+	padding-left: 0;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.blorg-file-markup {
+	margin-left: 20em;
+	padding-top: 0.5em;
+}
+
+.blorg-file-markup .swat-textarea {
+	font-family: monospace;
+	font-size: 80%;
+	color: #666;
+	border: 1px solid #ccc;
+	width: 98%;
+	resize: none;
+}
+
+/* }}} */
+/* {{{ Comment Status Slider */
+
+.blorg-comment-status-slider-context-note {
+	min-height: 4em;
+}
+
+* html .blorg-comment-status-slider-context-note {
+	height: 4em; /* IE 6 hack */
+}
+
+/* }}} */
+/* {{{ Tags */
+
+.site-tag-entry {
+	width: 228px;
+}
+
+.site-tag-array {
+	width: 228px;
+}
+
+/* }}} */

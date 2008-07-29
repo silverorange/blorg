@@ -1,0 +1,39 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="details_frame">
+		<widget class="SwatToolbar" id="details_toolbar">
+			<widget class="SwatToolLink" id="edit_tool_link">
+				<property name="title" translatable="yes">Edit Tag</property>
+				<property name="link">Tag/Edit?id=%s</property>
+				<property name="stock_id">edit</property>
+			</widget>
+			<widget class="SwatToolLink" id="delete_tool_link">
+				<property name="title" translatable="yes">Delete Tag</property>
+				<property name="link">Tag/Delete?id=%s</property>
+				<property name="stock_id">delete</property>
+			</widget>
+		</widget>
+		<widget class="SwatDetailsView" id="details_view">
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Title</property>
+				<object class="SwatTextCellRenderer">
+					<property name="text" type="data">title</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Shortname</property>
+				<object class="SwatTextCellRenderer">
+					<property name="text" type="data">shortname</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Number of Posts</property>
+				<object class="SwatNumericCellRenderer">
+					<property name="value" type="data">post_count</property>
+				</object>
+			</object>
+		</widget>
+	</widget>
+</swatml>

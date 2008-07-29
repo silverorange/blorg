@@ -1,0 +1,124 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="site_frame">
+		<property name="title" translatable="yes">Preferences</property>
+		<widget class="SwatToolbar" id="site_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Edit Preferences</property>
+				<property name="link">Config/Edit</property>
+				<property name="stock_id">edit</property>
+			</widget>
+		</widget>
+		<widget class="SwatDetailsView" id="config_settings_view">
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Title</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">site_title</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Tagline</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">site_tagline</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Default Meta Description</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">site_meta_description</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Time Zone</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">date_time_zone</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Default Comment Status</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">blorg_default_comment_status</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Google Analytics Account</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">analytics_google_account</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Akismet Key</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">blorg_akismet_key</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Header Image</property>
+				<object class="SwatImageCellRenderer">
+					<property name="image" type="data">blorg_header_image</property>
+				</object>
+				<object class="SwatNullTextCellRenderer">
+					<property name="visible" type="data">!has_blorg_header_image</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Feed Logo</property>
+				<object class="SwatImageCellRenderer">
+					<property name="image" type="data">blorg_feed_logo</property>
+				</object>
+				<object class="SwatNullTextCellRenderer">
+					<property name="visible" type="data">!has_blorg_feed_logo</property>
+				</object>
+			</object>
+		</widget>
+	</widget>
+	<widget class="SwatFrame" id="ad_frame">
+		<property name="title" translatable="yes">Advertising Preferences</property>
+		<widget class="SwatToolbar" id="ad_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Edit Advertising Preferences</property>
+				<property name="link">Config/AdEdit</property>
+				<property name="stock_id">edit</property>
+			</widget>
+		</widget>
+		<widget class="SwatDetailsView" id="ad_settings_view">
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Ad at Top of Page</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">blorg_ad_top</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Ad at Bottom of Page</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">blorg_ad_bottom</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Ad in Post Content</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">blorg_ad_post_content</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Ad before Post Comments</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">blorg_ad_post_comments</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Only Display Ads to Visitors from Other Websites</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">blorg_ad_referers_only</property>
+				</object>
+			</object>
+		</widget>
+	</widget>
+</swatml>

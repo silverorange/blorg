@@ -1,0 +1,135 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="details_frame">
+		<widget class="SwatToolbar" id="details_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Edit Post</property>
+				<property name="link">Post/Edit?id=%s</property>
+				<property name="stock_id">edit</property>
+			</widget>
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Delete Post</property>
+				<property name="link">Post/Delete?id=%s</property>
+				<property name="stock_id">delete</property>
+			</widget>
+		</widget>
+		<widget class="SwatDetailsView" id="details_view">
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Short Name</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">shortname</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title">Tags</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">tags_summary</property>
+					<property name="content_type">text/xml</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Show on Site</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="value" type="data">enabled</property>
+					<property name="stock_id">yes-no</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Comment Status</property>
+				<object class="BlorgCommentStatusCellRenderer">
+					<property name="status" type="data">comment_status</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="createdate">
+				<property name="title" translatable="yes">Created</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">createdate</property>
+					<property name="format" type="constant">SwatDate::DF_DATE</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="modified_date">
+				<property name="title" translatable="yes">Last Modified</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">modified_date</property>
+					<property name="format" type="constant">SwatDate::DF_DATE</property>
+					<property name="visible" type="data">has_modified_date</property>
+				</object>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" translatable="yes">&lt;never&gt;</property>
+					<property name="visible" type="data">!has_modified_date</property>
+				</object>
+			</object>
+		</widget>
+		<widget class="SwatContentBlock" id="post_preview"/>
+		<!-- {{{ Comments -->
+		<widget class="SwatFrame" id="comments_frame">
+			<property name="title" translatable="yes">Comments</property>
+			<widget class="SwatToolbar" id="comments_toolbar">
+				<widget class="SwatToolLink">
+					<property name="title" translatable="yes">New Comment</property>
+					<property name="link">Post/CommentEdit?post=%s</property>
+					<property name="stock_id">create</property>
+				</widget>
+			</widget>
+			<widget class="SwatForm" id="comments_form">
+				<widget class="SwatTableView" id="comments_view">
+					<object class="SwatTableViewCheckboxColumn" id="checkbox">
+						<object class="SwatCheckboxCellRenderer" id="comments">
+							<property name="value" type="data">id</property>
+						</object>
+					</object>
+					<object class="AdminTableViewOrderableColumn" id="fullname">
+						<property name="title" translatable="yes">Posted By</property>
+						<object class="AdminTitleLinkCellRenderer">
+							<property name="text" type="data">fullname</property>
+							<property name="link">Post/CommentEdit?id=%s</property>
+							<property name="link_value" type="data">id</property>
+							<property name="stock_id">edit</property>
+						</object>
+					</object>
+					<object class="AdminTableViewOrderableColumn" id="createdate">
+						<property name="title" translatable="yes">Date</property>
+						<object class="SwatDateCellRenderer">
+							<property name="date" type="data">createdate</property>
+							<property name="format" type="constant">SwatDate::DF_DATE_TIME</property>
+						</object>
+					</object>
+					<object class="SwatTableViewColumn" id="visibility">
+						<property name="title" translatable="yes">Visiblility</property>
+						<object class="BlorgCommentVisibilityCellRenderer">
+							<property name="status" type="data">status</property>
+							<property name="spam" type="data">spam</property>
+						</object>
+					</object>
+					<object class="SwatTableViewSpanningColumn" id="bodytext">
+						<property name="offset" type="integer">1</property>
+						<object class="SwatTextCellRenderer">
+							<property name="text" type="data">bodytext</property>
+						</object>
+					</object>
+				</widget>
+				<widget class="AdminPagination" id="pager">
+					<property name="link">Post/Details</property>
+				</widget>
+				<widget class="SwatActions" id="comment_actions">
+					<widget class="SwatActionItem" id="approve">
+						<property name="title" translatable="yes">publish</property>
+					</widget>
+					<widget class="SwatActionItem" id="deny">
+						<property name="title" translatable="yes">unpublish</property>
+					</widget>
+					<widget class="SwatActionItem" id="spam">
+						<property name="title" translatable="yes">mark as spam</property>
+					</widget>
+					<widget class="SwatActionItemDivider" />
+					<widget class="SwatActionItem" id="delete">
+						<property name="title" translatable="yes">delete…</property>
+					</widget>
+				</widget>
+			</widget>
+		</widget>
+		<!-- }}} -->
+	</widget>
+</swatml>

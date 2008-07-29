@@ -1,0 +1,29 @@
+label.blorg-markup-view-label {
+	font-size: 85%;
+	font-weight: normal;
+	color: #666;
+}
+
+label.blorg-markup-view-label a {
+	padding: 1px 4px;
+	border-color: #fff;
+	border-style: solid;
+	border-width: 1px 1px 0 1px;
+}
+
+label.blorg-markup-view-label a:link,
+label.blorg-markup-view-label a:visited {
+	color: #666;
+}
+
+label.blorg-markup-view-label a:hover,
+label.blorg-markup-view-label a:active,
+label.blorg-markup-view-label a.blorg-markup-view-selected {
+	background-color: #f8f6f0;
+	border-color: #dcceb2;
+	outline: none;
+	text-decoration: none;
+}
+
+label.blorg-markup-view-label a.blorg-markup-view-selected {
+}

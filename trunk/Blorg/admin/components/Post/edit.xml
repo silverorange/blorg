@@ -1,0 +1,139 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<property name="title" translatable="yes">Post</property>
+		<widget class="SwatForm" id="edit_form">
+			<widget class="SwatFormField" id="top_submit_button_field">
+				<widget class="SwatButton" id="top_submit_button" />
+			</widget>
+			<!-- {{{ Form Sidebar Area -->
+			<widget class="SwatDisplayableContainer" id="post_sidebar">
+				<widget class="SwatGroupingFormField" id="publish_field">
+					<property name="title" translatable="yes">Publish Post</property>
+					<widget class="BlorgPublishRadioTable" id="publish" />
+				</widget>
+				<widget class="SwatGroupingFormField" id="author_field">
+					<property name="title" translatable="yes">Author</property>
+					<widget class="SwatFlydown" id="author">
+						<property name="show_blank" type="boolean">false</property>
+					</widget>
+				</widget>
+				<widget class="SwatGroupingFormField">
+					<property name="title" translatable="yes">Comment Status</property>
+					<widget class="BlorgCommentStatusSlider" id="comment_status" />
+				</widget>
+				<widget class="SwatGroupingFormField">
+					<property name="title" translatable="yes">Tags</property>
+					<widget class="BlorgTagEntry" id="tags" />
+				</widget>
+			</widget>
+			<!-- }}} -->
+			<!-- {{{ Primary Form Area -->
+			<widget class="SwatDisplayableContainer" id="post_primary">
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Title</property>
+					<widget class="SwatEntry" id="title">
+						<property name="maxlength" type="integer">255</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField" id="shortname_field">
+					<property name="title" translatable="yes">Short Name</property>
+					<property name="note" translatable="yes">Used in permalinks.</property>
+					<widget class="AdminUniqueEntry" id="shortname">
+						<property name="required" type="boolean">true</property>
+						<property name="maxlength" type="integer">255</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField" id="bodytext_field">
+					<property name="title" translatable="yes">Body Text</property>
+					<widget class="SwatXHTMLTextarea" id="bodytext">
+						<property name="required" type="boolean">true</property>
+						<property name="rows" type="integer">15</property>
+						<property name="allow_ignore_validation_errors" type="boolean">true</property>
+					</widget>
+				</widget>
+				<widget class="SwatFormField">
+					<property name="title" translatable="yes">Extended Text</property>
+					<widget class="SwatXHTMLTextarea" id="extended_bodytext">
+						<property name="rows" type="integer">15</property>
+						<property name="allow_ignore_validation_errors" type="boolean">true</property>
+					</widget>
+				</widget>
+			</widget>
+			<!-- }}} -->
+			<!-- {{{ Secondary Form Area -->
+			<widget class="SwatDisplayableContainer" id="post_secondary">
+				<!-- {{{ files -->
+				<widget class="SwatDisclosure" id="file_disclosure">
+					<property name="title" translatable="yes">Upload File</property>
+					<property name="open" type="boolean">false</property>
+					<widget class="SwatDisplayableContainer" id="upload_container">
+						<widget class="SwatFormField" id="upload_file_field">
+							<property name="title" translatable="yes">Choose File</property>
+							<widget class="SwatFileEntry" id="upload_file">
+								<property name="size" type="integer">20</property>
+								<property name="display_maximum_upload_size" type="boolean">true</property>
+							</widget>
+						</widget>
+						<widget class="SwatFormField" id="upload_description_field">
+							<property name="title" translatable="yes">Description (optional)</property>
+							<widget class="SwatEntry" id="upload_description">
+								<property name="size" type="integer">30</property>
+							</widget>
+						</widget>
+						<widget class="SwatFormField" id="upload_attachment_field">
+							<property name="title" translatable="yes">Attach File to Post</property>
+							<property name="note">Files marked as attachments are automatically listed and linked at the bottom of the post. Use this for podcasting.</property>
+							<widget class="SwatCheckbox" id="upload_attachment" />
+						</widget>
+						<widget class="SwatFormField">
+							<widget class="SwatButton" id="upload_button">
+								<property name="title" translatable="yes">Upload</property>
+							</widget>
+						</widget>
+					</widget>
+					</widget>
+				</widget>
+					<widget class="SwatReplicableContainer" id="file_replicator">
+						<property name="classes[]">clearfix</property>
+						<widget class="SwatDisplayableContainer">
+							<property name="classes[]">blorg-file</property>
+							<widget class="SwatDisplayableContainer">
+								<property name="classes[]">blorg-file-content</property>
+								<widget class="SwatImageDisplay" id="file_icon">
+									<property name="classes[]">blorg-file-icon</property>
+									<property name="occupy_width" type="integer">48</property>
+									<property name="occupy_height" type="integer">48</property>
+								</widget>
+								<widget class="SwatDisplayableContainer">
+									<property name="classes[]">blorg-file-title</property>
+									<widget class="SwatToolLink" id="file_title" />
+								</widget>
+								<widget class="SwatDisplayableContainer">
+									<property name="classes[]">blorg-file-details</property>
+									<widget class="SwatContentBlock" id="file_details" />
+								</widget>
+								<widget class="SwatDisplayableContainer">
+									<property name="classes[]">blorg-file-controls</property>
+									<widget class="BlorgFileAttachControl" id="file_attach_control" />
+									<widget class="BlorgFileDeleteControl" id="file_delete_control" />
+								</widget>
+							</widget>
+							<widget class="SwatDisplayableContainer">
+								<property name="classes[]">blorg-file-markup</property>
+								<widget class="BlorgMarkupView" id="file_markup" />
+							</widget>
+						</widget>
+				<!-- }}} -->
+			</widget>
+			<!-- }}} -->
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button">
+					<property name="classes[]">swat-primary</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>

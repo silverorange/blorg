@@ -1,0 +1,55 @@
+.blorg-theme-display {
+	border-top: 1px solid #e7ddc8;
+	min-height: 104px;
+	padding: 1em;
+}
+
+/* IE min-height hack */
+* html .blorg-theme-display {
+	height: 104px;
+}
+
+.blorg-theme-display-selected {
+	background: #f8f6f0;
+	border: 1px solid #e7ddc8;
+	margin-bottom: 10px;
+}
+
+.blorg-theme-display .blorg-theme-display-image {
+	float: left;
+	border: 1px solid #ccc;
+	padding: 2px;
+	background: #fff;
+}
+
+.blorg-theme-display a:hover .blorg-theme-display-image {
+	border: 1px solid #3F5ACE;
+}
+
+.blorg-theme-display .blorg-theme-display-content {
+	margin-left: 168px;
+}
+
+.blorg-theme-display .blorg-theme-display-controls {
+	float: right;
+}
+
+.blorg-theme-display .blorg-theme-display-title {
+	margin: 0.5em 0;
+}
+
+.blorg-theme-display .blorg-theme-display-description {
+	margin-bottom: 0.5em;
+}
+
+.blorg-theme-display .blorg-theme-display-author {
+	color: #999;
+}
+
+.blorg-theme-display .blorg-theme-display-author a {
+	color: #999;
+}
+
+.blorg-theme-display .blorg-theme-display-author a:hover {
+	color: #666;
+}

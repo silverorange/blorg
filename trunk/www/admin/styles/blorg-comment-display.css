@@ -1,0 +1,63 @@
+.blorg-comment-display {
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+
+.blorg-comment-display .blorg-comment-display-content {
+	border: 1px solid #000;
+	padding: 0.5em;
+	margin: 0.5em 0;
+}
+
+.blorg-comment-red .blorg-comment-display-content {
+	border: 1px solid #dc6e66;
+	background: #ffe3e0;
+}
+
+.blorg-comment-yellow .blorg-comment-display-content {
+	border: 1px solid #facd00;
+	background: #ff9;
+}
+
+.blorg-comment-green .blorg-comment-display-content {
+	border: 1px solid #fff;
+	border-bottom: 1px solid #e7ddc8;
+	zoom: 1; /* IE hack */
+}
+
+.blorg-comment-display-confirmation {
+	position: absolute;
+	border: 1px solid #e7ddc8;
+	background: #fff;
+	padding: 0.5em;
+}
+
+.blorg-comment-display-confirmation div {
+	margin-bottom: 0.25em;
+}
+
+.blorg-comment-display .blorg-comment-display-controls {
+	float: right;
+}
+
+.blorg-comment-display .blorg-comment-display-controls input {
+	width: 7em;
+	font-size: 85%;
+	padding: 0.1em;
+	vertical-align: middle;
+}
+
+.blorg-comment-display h4 {
+	margin: 0.5em 0;
+}
+
+.blorg-comment-display .comment {
+	margin-left: 0.5em;
+}
+
+.blorg-comment-display .comment-link {
+	font-weight: bold;
+	margin-bottom: 0.5em;
+	color: #666;
+}
