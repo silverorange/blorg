@@ -42,6 +42,16 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	}
 
 	// }}}
+	// {{{ protected function buildNavBar()
+
+	protected function buildNavBar()
+	{
+		parent::buildNavBar();
+		$path = $this->app->config->blorg->path.'search';
+		$this->layout->navbar->createEntry(Blorg::_('Search'), $path);
+	}
+
+	// }}}
 	// {{{ protected function buildResults()
 
 	protected function buildResults()
