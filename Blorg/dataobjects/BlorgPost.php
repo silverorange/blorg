@@ -160,7 +160,6 @@ class BlorgPost extends SwatDBDataObject
 	public function loadByDateAndShortname(SwatDate $date, $shortname,
 		SiteInstance $instance = null)
 	{
-
 		$this->checkDB();
 
 		$loaded = false;
@@ -514,6 +513,31 @@ class BlorgPost extends SwatDBDataObject
 
 		$this->table = 'BlorgPost';
 		$this->id_field = 'integer:id';
+	}
+
+	// }}}
+	// {{{ protected function getSerializableSubDataObjects()
+
+	protected function getSerializableSubDataObjects()
+	{
+		return array(
+			'author',
+			'instance',
+			'tags',
+			'files',
+			'comments',
+		);
+	}
+
+	// }}}
+	// {{{ protected function getSerializablePrivateProperties()
+
+	protected function getSerializablePrivateProperties()
+	{
+		return array_merge(parent::getSerializablePrivateProperties(), array(
+			'visible_files',
+			'tags_cache',
+		));
 	}
 
 	// }}}
