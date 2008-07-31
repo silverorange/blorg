@@ -2,7 +2,7 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.1.2';
+$version = '0.1.3';
 
 $notes = <<<EOT
 * fix fileloader
@@ -53,7 +53,7 @@ $package->addReplacement('Blorg/Blorg.php', 'pear-config', '@DATA-DIR@', 'data_d
 $package->setPhpDep('5.2.4');
 $package->setPearinstallerDep('1.4.0');
 $package->addPackageDepWithChannel('required', 'Swat',  'pear.silverorange.com', '1.3.34');
-$package->addPackageDepWithChannel('required', 'Site',  'pear.silverorange.com', '1.2.46');
+$package->addPackageDepWithChannel('required', 'Site',  'pear.silverorange.com', '1.3.1');
 $package->addPackageDepWithChannel('required', 'Admin', 'pear.silverorange.com', '1.3.17');
 $package->addPackageDepWithChannel('required', 'Date',  'pear.silverorange.com', '1.5.0so5');
 $package->generateContents();

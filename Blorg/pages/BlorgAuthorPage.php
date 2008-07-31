@@ -68,16 +68,31 @@ class BlorgAuthorPage extends SitePage
 
 	protected function initAuthor($shortname)
 	{
-		$class_name = SwatDBClassMap::get('BlorgAuthor');
-		$this->author = new $class_name();
-		$this->author->setDatabase($this->app->db);
-		if (!$this->author->loadByShortname($shortname,
-			$this->app->getInstance())) {
-			throw new SiteNotFoundException('Author not found.');
+		$this->author = false;
+
+		if (isset($this->app->memcache)) {
+			$key = 'author_'.$shortname;
+			$this->author = $this->app->memcache->getNs('authors', $key);
 		}
 
-		if (!$this->author->visible) {
-			throw new SiteNotFoundException('Author not found.');
+		if ($this->author === false) {
+			$class_name = SwatDBClassMap::get('BlorgAuthor');
+			$this->author = new $class_name();
+			$this->author->setDatabase($this->app->db);
+			if (!$this->author->loadByShortname($shortname,
+				$this->app->getInstance())) {
+				throw new SiteNotFoundException('Author not found.');
+			}
+
+			if (!$this->author->visible) {
+				throw new SiteNotFoundException('Author not found.');
+			}
+
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->setNs('authors', $key, $this->author);
+			}
+		} else {
+			$this->author->setDatabase($this->app->db);
 		}
 	}
 
@@ -223,8 +238,9 @@ class BlorgAuthorPage extends SitePage
 
 	protected function getAuthorPosts()
 	{
+		$memcache = (isset($this->app->memcache)) ? $this->app->memcache : null;
 		$loader = new BlorgPostLoader($this->app->db,
-			$this->app->getInstance());
+			$this->app->getInstance(), $memcache);
 
 		$loader->addSelectField('title');
 		$loader->addSelectField('bodytext');

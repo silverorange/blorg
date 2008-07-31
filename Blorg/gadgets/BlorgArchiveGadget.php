@@ -143,42 +143,54 @@ class BlorgArchiveGadget extends SiteGadget
 
 	protected function getYears()
 	{
-		$years = array();
+		$years = false;
 
-		$instance_id = $this->app->getInstanceId();
+		if (isset($this->app->memcache)) {
+			$years = $this->app->memcache->getNs('posts', 'archive_gadget');
+		}
 
-		$sql = sprintf('select count(id) as count,
-				date_part(\'year\', convertTZ(publish_date, %s)) as year,
-				date_part(\'month\', convertTZ(publish_date, %s)) as month
-			from BlorgPost
-			where instance %s %s and enabled = %s
-			group by year, month
-			order by year desc, month desc',
-			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
-			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
+		if ($years === false) {
+			$years = array();
 
-		$rs = SwatDB::query($this->app->db, $sql, null,
-			array('integer', 'integer', 'integer'));
+			$instance_id = $this->app->getInstanceId();
 
-		while ($row = $rs->fetchRow(MDB2_FETCHMODE_OBJECT)) {
-			$year  = $row->year;
-			$month = $row->month;
+			$sql = sprintf('select count(id) as count,
+					date_part(\'year\', convertTZ(publish_date, %s)) as year,
+					date_part(\'month\', convertTZ(publish_date, %s)) as month
+				from BlorgPost
+				where instance %s %s and enabled = %s
+				group by year, month
+				order by year desc, month desc',
+				$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+				$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+				SwatDB::equalityOperator($instance_id),
+				$this->app->db->quote($instance_id, 'integer'),
+				$this->app->db->quote(true, 'boolean'));
 
-			if (!array_key_exists($year, $years)) {
-				$years[$year] = array(
-					'post_count' => 0,
-					'months'     => array(),
-				);
+			$rs = SwatDB::query($this->app->db, $sql, null,
+				array('integer', 'integer', 'integer'));
+
+			while ($row = $rs->fetchRow(MDB2_FETCHMODE_OBJECT)) {
+				$year  = $row->year;
+				$month = $row->month;
+
+				if (!array_key_exists($year, $years)) {
+					$years[$year] = array(
+						'post_count' => 0,
+						'months'     => array(),
+					);
+				}
+
+				if (!array_key_exists($month, $years[$year]['months'])) {
+					$years[$year]['months'][$month] = $row->count;
+				}
+
+				$years[$year]['post_count'] += $row->count;
 			}
 
-			if (!array_key_exists($month, $years[$year]['months'])) {
-				$years[$year]['months'][$month] = $row->count;
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->setNs('posts', 'archive_gadget', $years);
 			}
-
-			$years[$year]['post_count'] += $row->count;
 		}
 
 		return $years;

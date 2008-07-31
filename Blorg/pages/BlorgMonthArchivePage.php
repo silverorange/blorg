@@ -80,8 +80,9 @@ class BlorgMonthArchivePage extends SitePage
 		$date->setMinute(0);
 		$date->setSecond(0);
 
+		$memcache = (isset($this->app->memcache)) ? $this->app->memcache : null;
 		$loader = new BlorgPostLoader($this->app->db,
-			$this->app->getInstance());
+			$this->app->getInstance(), $memcache);
 
 		$loader->addSelectField('title');
 		$loader->addSelectField('bodytext');

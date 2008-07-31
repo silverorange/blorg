@@ -57,16 +57,33 @@ class BlorgAuthorsGadget extends SiteGadget
 
 	protected function getAuthors()
 	{
-		$sql = sprintf('select id, name, shortname, email, description
-			from BlorgAuthor
-			where visible = %s and instance %s %s
-			order by displayorder',
-			$this->app->db->quote(true, 'boolean'),
-			SwatDB::equalityOperator($this->app->getInstanceId()),
-			$this->app->db->quote($this->app->getInstanceId(), 'integer'));
+		$authors = false;
 
-		return SwatDB::query($this->app->db, $sql,
-			SwatDBClassMap::get('BlorgAuthorWrapper'));
+		if (isset($this->app->memcache)) {
+			$authors = $this->app->memcache->getNs('authors', 'authors_gadget');
+		}
+
+		if ($authors === false) {
+			$sql = sprintf('select id, name, shortname, email, description
+				from BlorgAuthor
+				where visible = %s and instance %s %s
+				order by displayorder',
+				$this->app->db->quote(true, 'boolean'),
+				SwatDB::equalityOperator($this->app->getInstanceId()),
+				$this->app->db->quote($this->app->getInstanceId(), 'integer'));
+
+			$authors = SwatDB::query($this->app->db, $sql,
+				SwatDBClassMap::get('BlorgAuthorWrapper'));
+
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->setNs('authors', 'authors_gadget',
+					$authors);
+			}
+		} else {
+			$authors->setDatabase($this->app->db);
+		}
+
+		return $authors;
 	}
 
 	// }}}

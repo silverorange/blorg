@@ -10,13 +10,6 @@ require_once 'XML/Atom/Link.php';
 /**
  * Displays an Atom feed of all recent posts in reverse chronological order
  *
- * The number of posts is always at least {@link BlorgAtomPage::$min_entries},
- * but if a recently published set of posts (within the time of
- * {@link BlorgAtomPage::$recent_period}) exceeds <code>$min_entries</code>,
- * up to, {@link BlorgAtomPage::$max_entries} posts will be displayed. This
- * makes it easier to ensure that a subscriber won't miss any posts, while
- * limiting server load for the feed.
- *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
@@ -33,7 +26,7 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 	/**
 	 * @var BlorgPostLoader
 	 */
-	protected $post_loader;
+	protected $loader;
 
 	/**
 	 * @var integer
@@ -56,26 +49,27 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 
 	protected function initPostLoader()
 	{
-		$this->post_loader = new BlorgPostLoader($this->app->db,
-			$this->app->getInstance());
+		$memcache = (isset($this->app->memcache)) ? $this->app->memcache : null;
+		$this->loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance(), $memcache);
 
-		$this->post_loader->addSelectField('title');
-		$this->post_loader->addSelectField('bodytext');
-		$this->post_loader->addSelectField('extended_bodytext');
-		$this->post_loader->addSelectField('shortname');
-		$this->post_loader->addSelectField('publish_date');
-		$this->post_loader->addSelectField('author');
-		$this->post_loader->addSelectField('comment_status');
-		$this->post_loader->addSelectField('visible_comment_count');
+		$this->loader->addSelectField('title');
+		$this->loader->addSelectField('bodytext');
+		$this->loader->addSelectField('extended_bodytext');
+		$this->loader->addSelectField('shortname');
+		$this->loader->addSelectField('publish_date');
+		$this->loader->addSelectField('author');
+		$this->loader->addSelectField('comment_status');
+		$this->loader->addSelectField('visible_comment_count');
 
-		$this->post_loader->setLoadFiles(true);
-		$this->post_loader->setLoadTags(true);
+		$this->loader->setLoadFiles(true);
+		$this->loader->setLoadTags(true);
 
-		$this->post_loader->setWhereClause(sprintf('enabled = %s',
+		$this->loader->setWhereClause(sprintf('enabled = %s',
 			$this->app->db->quote(true, 'boolean')));
 
-		$this->post_loader->setOrderByClause('publish_date desc');
-		$this->post_loader->setRange(new SwatDBRange($this->max_entries));
+		$this->loader->setOrderByClause('publish_date desc');
+		$this->loader->setRange(new SwatDBRange($this->max_entries));
 	}
 
 	// }}}
@@ -83,7 +77,7 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 
 	protected function initFrontPagePosts()
 	{
-		$posts = $this->post_loader->getPosts();
+		$posts = $this->loader->getPosts();
 		$count = 0;
 
 		foreach ($posts as $post) {
@@ -120,8 +114,8 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 			$offset = $this->getFrontPageCount()
 				+ ($this->page - 2) * $this->min_entries;
 
-			$this->post_loader->setRange($this->min_entries, $offset);
-			$this->posts = $this->post_loader->getPosts();
+			$this->loader->setRange($this->min_entries, $offset);
+			$this->posts = $this->loader->getPosts();
 			$limit = $this->min_entries;
 		}
 
@@ -213,7 +207,7 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 
 	protected function getTotalCount()
 	{
-		return $this->post_loader->getPostCount();
+		return $this->loader->getPostCount();
 	}
 
 	// }}}
