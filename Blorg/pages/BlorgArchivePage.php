@@ -49,7 +49,6 @@ class BlorgArchivePage extends SitePage
 		array $arguments = array())
 	{
 		parent::__construct($app, $layout, $arguments);
-
 		$this->inityears();
 	}
 
@@ -152,40 +151,55 @@ class BlorgArchivePage extends SitePage
 
 	protected function initYears()
 	{
-		$instance_id = $this->app->getInstanceId();
+		$this->years = false;
 
-		$sql = sprintf('select count(id) as count,
-				date_part(\'year\', convertTZ(publish_date, %s)) as year,
-				date_part(\'month\', convertTZ(publish_date, %s)) as month
-			from BlorgPost
-			where instance %s %s and enabled = %s
-			group by year, month
-			order by year desc, month desc',
-			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
-			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
+		if (isset($this->app->memcache)) {
+			$this->years = $this->app->memcache->getNs('posts',
+				'archive_years');
+		}
 
-		$rs = SwatDB::query($this->app->db, $sql, null,
-			array('integer', 'integer', 'integer'));
+		if ($this->years === false) {
+			$this->years = array();
+			$instance_id = $this->app->getInstanceId();
 
-		while ($row = $rs->fetchRow(MDB2_FETCHMODE_OBJECT)) {
-			$year  = $row->year;
-			$month = $row->month;
+			$sql = sprintf('select count(id) as count,
+					date_part(\'year\', convertTZ(publish_date, %s)) as year,
+					date_part(\'month\', convertTZ(publish_date, %s)) as month
+				from BlorgPost
+				where instance %s %s and enabled = %s
+				group by year, month
+				order by year desc, month desc',
+				$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+				$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+				SwatDB::equalityOperator($instance_id),
+				$this->app->db->quote($instance_id, 'integer'),
+				$this->app->db->quote(true, 'boolean'));
 
-			if (!array_key_exists($year, $this->years)) {
-				$this->years[$year] = array(
-					'post_count' => 0,
-					'months'     => array(),
-				);
+			$rs = SwatDB::query($this->app->db, $sql, null,
+				array('integer', 'integer', 'integer'));
+
+			while ($row = $rs->fetchRow(MDB2_FETCHMODE_OBJECT)) {
+				$year  = $row->year;
+				$month = $row->month;
+
+				if (!array_key_exists($year, $this->years)) {
+					$this->years[$year] = array(
+						'post_count' => 0,
+						'months'     => array(),
+					);
+				}
+
+				if (!array_key_exists($month, $this->years[$year]['months'])) {
+					$this->years[$year]['months'][$month] = $row->count;
+				}
+
+				$this->years[$year]['post_count'] += $row->count;
 			}
 
-			if (!array_key_exists($month, $this->years[$year]['months'])) {
-				$this->years[$year]['months'][$month] = $row->count;
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->setNs('posts', 'archive_years',
+					$this->years);
 			}
-
-			$this->years[$year]['post_count'] += $row->count;
 		}
 
 		if (count($this->years) == 0) {

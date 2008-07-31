@@ -3,6 +3,7 @@
 require_once 'SwatDB/SwatDB.php';
 require_once 'SwatDB/SwatDBRange.php';
 require_once 'Site/dataobjects/SiteInstance.php';
+require_once 'Site/SiteMemcacheModule.php';
 require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
@@ -48,6 +49,11 @@ class BlorgPostLoader
 	protected $instance;
 
 	/**
+	 * @var SiteMemcacheModule
+	 */
+	protected $memcache;
+
+	/**
 	 * @var SwatDBRange
 	 */
 	protected $range;
@@ -85,10 +91,11 @@ class BlorgPostLoader
 	// {{{ public function __construct()
 
 	public function __construct(MDB2_Driver_Common $db,
-		SiteInstance $instance = null)
+		SiteInstance $instance = null, SiteMemcacheModule $memcache = null)
 	{
 		$this->db = $db;
 		$this->instance = $instance;
+		$this->memcache = $memcache;
 	}
 
 	// }}}
@@ -98,28 +105,59 @@ class BlorgPostLoader
 
 	public function getPosts()
 	{
-		$sql = $this->getSelectClause();
-		$sql.= $this->getWhereClause();
-		$sql.= $this->getOrderByClause();
+		$posts = false;
 
-		if ($this->range !== null) {
-			$this->db->setLimit($this->range->getLimit(),
-				$this->range->getOffset());
+		if ($this->memcache !== null) {
+			$key = $this->getPostsCacheKey();
+			$ids = $this->memcache->getNs('posts', $key);
+			if ($ids !== false) {
+				$post_wrapper = SwatDBClassMap::get('BlorgPostWrapper');
+				$posts = new $post_wrapper();
+
+				if (count($ids) > 0) {
+					foreach ($this->memcache->getNs('posts', $ids) as $post) {
+						$posts->add($post);
+					}
+				}
+
+				$posts->setDatabase($this->db);
+			}
 		}
 
-		$post_wrapper = SwatDBClassMap::get('BlorgPostWrapper');
-		$posts = SwatDB::query($this->db, $sql, $post_wrapper);
+		if ($posts === false) {
+			$sql = $this->getSelectClause();
+			$sql.= $this->getWhereClause();
+			$sql.= $this->getOrderByClause();
 
-		if (in_array('author', $this->fields)) {
-			$this->loadPostAuthors($posts);
-		}
+			if ($this->range !== null) {
+				$this->db->setLimit($this->range->getLimit(),
+					$this->range->getOffset());
+			}
 
-		if ($this->load_files) {
-			$this->loadPostFiles($posts);
-		}
+			$post_wrapper = SwatDBClassMap::get('BlorgPostWrapper');
+			$posts = SwatDB::query($this->db, $sql, $post_wrapper);
 
-		if ($this->load_tags) {
-			$this->loadPostTags($posts);
+			if (in_array('author', $this->fields)) {
+				$this->loadPostAuthors($posts);
+			}
+
+			if ($this->load_files) {
+				$this->loadPostFiles($posts);
+			}
+
+			if ($this->load_tags) {
+				$this->loadPostTags($posts);
+			}
+
+			if ($this->memcache !== null) {
+				$ids = array();
+				foreach ($posts as $id => $post) {
+					$post_key = $key.'_'.$id;
+					$ids[] = $post_key;
+					$this->memcache->setNs('posts', $post_key, $post);
+				}
+				$this->memcache->setNs('posts', $key, $ids);
+			}
 		}
 
 		return $posts;
@@ -130,9 +168,24 @@ class BlorgPostLoader
 
 	public function getPostCount()
 	{
-		$sql = 'select count(id) from BlorgPost';
-		$sql.= $this->getWhereClause();
-		return SwatDB::queryOne($this->db, $sql);
+		$count = false;
+
+		if ($this->memcache !== null) {
+			$key = $this->getPostCountCacheKey();
+			$count = $this->memcache->getNs('posts', $key);
+		}
+
+		if ($count === false) {
+			$sql = 'select count(1) from BlorgPost';
+			$sql.= $this->getWhereClause();
+			$count = SwatDB::queryOne($this->db, $sql);
+
+			if ($this->memcache !== null) {
+				$this->memcache->setNs('posts', $key, $count);
+			}
+		}
+
+		return $count;
 	}
 
 	// }}}
@@ -140,27 +193,100 @@ class BlorgPostLoader
 
 	public function getPost($id)
 	{
-		$sql = $this->getSelectClause();
-		$sql.= $this->getWhereClause();
-		$sql.= sprintf(' and BlorgPost.id = %s',
-			$this->db->quote($id, 'integer'));
+		$post = false;
 
-		$post_wrapper = SwatDBClassMap::get('BlorgPostWrapper');
-		$posts = SwatDB::query($this->db, $sql, $post_wrapper);
-
-		if (in_array('author', $this->fields)) {
-			$this->loadPostAuthors($posts);
+		if ($this->memcache !== null) {
+			$key = $this->getPostCacheKey($id);
+			$post = $this->memcache->getNs('posts', $key);
 		}
 
-		if ($this->load_files) {
-			$this->loadPostFiles($posts);
+		if ($post === false) {
+			$sql = $this->getSelectClause();
+			$sql.= $this->getWhereClause();
+			$sql.= sprintf(' and BlorgPost.id = %s',
+				$this->db->quote($id, 'integer'));
+
+			$this->db->setLimit(1, 0);
+
+			$post_wrapper = SwatDBClassMap::get('BlorgPostWrapper');
+			$posts = SwatDB::query($this->db, $sql, $post_wrapper);
+
+			if (in_array('author', $this->fields)) {
+				$this->loadPostAuthors($posts);
+			}
+
+			if ($this->load_files) {
+				$this->loadPostFiles($posts);
+			}
+
+			if ($this->load_tags) {
+				$this->loadPostTags($posts);
+			}
+
+			$post = $posts->getFirst();
+
+			if ($this->memcache !== null) {
+				$this->memcache->setNs('posts', $key, $post);
+			}
+		} else {
+			$post->setDatabase($this->db);
 		}
 
-		if ($this->load_tags) {
-			$this->loadPostTags($posts);
+		return $post;
+	}
+
+	// }}}
+	// {{{ public function getPostByDateAndShortname()
+
+	public function getPostByDateAndShortname(SwatDate $date, $shortname)
+	{
+		$post = false;
+
+		if ($this->memcache !== null) {
+			$key = $date->format('%Y%m%d').$shortname;
+			$key = $this->getPostCacheKey($key);
+			$post = $this->memcache->getNs('posts', $key);
 		}
 
-		return $posts->getFirst();
+		if ($post === false) {
+			$sql = $this->getSelectClause();
+			$sql.= $this->getWhereClause();
+			$sql.= sprintf(' and BlorgPost.shortname = %s and
+				date_trunc(\'month\', convertTZ(publish_date, %s)) =
+					date_trunc(\'month\', timestamp %s)',
+				$this->db->quote($shortname, 'text'),
+				$this->db->quote($date->tz->getId(), 'text'),
+				$this->db->quote($date->getDate(), 'date'));
+
+			$this->db->setLimit(1, 0);
+
+			$post_wrapper = SwatDBClassMap::get('BlorgPostWrapper');
+			$posts = SwatDB::query($this->db, $sql, $post_wrapper);
+
+			if (in_array('author', $this->fields)) {
+				$this->loadPostAuthors($posts);
+			}
+
+			if ($this->load_files) {
+				$this->loadPostFiles($posts);
+			}
+
+			if ($this->load_tags) {
+				$this->loadPostTags($posts);
+			}
+
+			$post = $posts->getFirst();
+
+			if ($this->memcache !== null) {
+				$this->memcache->setNs('posts', $key, $post);
+			}
+		} else {
+			if ($post !== null) {
+				$post->setDatabase($this->db);
+			}
+		}
+
+		return $post;
 	}
 
 	// }}}
@@ -428,6 +554,51 @@ class BlorgPostLoader
 			}
 			$current_recordset->add($tag);
 		}
+	}
+
+	// }}}
+	// {{{ protected function getPostsCacheKey()
+
+	protected function getPostsCacheKey()
+	{
+		$keys = array(
+			$this->range,
+			$this->order_by_clause,
+			$this->where_clause,
+			$this->fields,
+			$this->load_files,
+			$this->load_tags,
+		);
+
+		return md5(serialize($keys));
+	}
+
+	// }}}
+	// {{{ protected function getPostCountCacheKey()
+
+	protected function getPostCountCacheKey()
+	{
+		$keys = array(
+			$this->where_clause,
+		);
+
+		return md5(serialize($keys));
+	}
+
+	// }}}
+	// {{{ protected function getPostCacheKey()
+
+	protected function getPostCacheKey($id)
+	{
+		$keys = array(
+			$id,
+			$this->where_clause,
+			$this->fields,
+			$this->load_files,
+			$this->load_tags,
+		);
+
+		return md5(serialize($keys));
 	}
 
 	// }}}

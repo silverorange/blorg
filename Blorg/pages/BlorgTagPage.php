@@ -39,14 +39,14 @@ class BlorgTagPage extends SitePage
 	protected $tag;
 
 	/**
-	 * @var integer
-	 */
-	protected $current_page = 1;
-
-	/**
 	 * @var SwatPagination
 	 */
 	protected $pager;
+
+	/**
+	 * @var BlorgPostLoader
+	 */
+	protected $loader;
 
 	// }}}
 	// {{{ public function __construct()
@@ -55,9 +55,8 @@ class BlorgTagPage extends SitePage
 		array $arguments = array())
 	{
 		parent::__construct($app, $layout, $arguments);
-
 		$this->initPosts($this->getArgument('shortname'),
-			$this->getArgument('current_page'));
+			$this->getArgument('page'));
 	}
 
 	// }}}
@@ -67,11 +66,59 @@ class BlorgTagPage extends SitePage
 	{
 		return array(
 			'shortname' => array(0, null),
-			'current_page' => array(1, 1),
+			'page'      => array(1, 1),
 		);
 	}
 
 	// }}}
+	// {{{ protected function initPosts()
+
+	protected function initPosts($shortname, $page)
+	{
+		$class_name = SwatDBClassMap::get('BlorgTag');
+		$tag = new $class_name();
+		$tag->setDatabase($this->app->db);
+		if (!$tag->loadByShortname($shortname, $this->app->getInstance())) {
+			throw new SiteNotFoundException('Page not found.');
+		}
+
+		$this->tag = $tag;
+
+		$memcache = (isset($this->app->memcache)) ? $this->app->memcache : null;
+		$this->loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance(), $memcache);
+
+		$this->loader->addSelectField('title');
+		$this->loader->addSelectField('bodytext');
+		$this->loader->addSelectField('shortname');
+		$this->loader->addSelectField('publish_date');
+		$this->loader->addSelectField('author');
+		$this->loader->addSelectField('comment_status');
+		$this->loader->addSelectField('visible_comment_count');
+
+		$this->loader->setLoadFiles(true);
+		$this->loader->setLoadTags(true);
+
+		$this->loader->setWhereClause(sprintf('enabled = %s and
+			id in (select post from BlorgPostTagBinding where tag = %s)',
+			$this->app->db->quote(true, 'boolean'),
+			$this->app->db->quote($tag->id, 'integer')));
+
+		$this->loader->setOrderByClause('publish_date desc');
+
+		$offset = ($page - 1) * self::MAX_POSTS;
+		$this->loader->setRange(self::MAX_POSTS, $offset);
+
+		$this->posts = $this->loader->getPosts();
+
+		if (count($this->posts) == 0) {
+			throw new SiteNotFoundException('Page not found.');
+		}
+	}
+
+	// }}}
+
+	// build phase
 	// {{{ public function build()
 
 	public function build()
@@ -154,28 +201,17 @@ class BlorgTagPage extends SitePage
 
 	protected function displayFooter()
 	{
+		$post_count = $this->loader->getPostCount();
+
 		echo '<div class="footer">';
 
 		$path = $this->app->config->blorg->path.'tag/'.$this->tag->shortname;
-
-		$instance_id = $this->app->getInstanceId();
-
-		$sql = sprintf('select count(id) from BlorgPost
-			where
-				id in (select post from BlorgPostTagBinding where tag = %s) and
-				instance %s %s and enabled = %s',
-			$this->app->db->quote($this->tag->id, 'integer'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
-
-		$post_count = SwatDB::queryOne($this->app->db, $sql, 'integer');
 
 		$this->pager = new SwatPagination();
 		$this->pager->display_parts ^= SwatPagination::POSITION;
 		$this->pager->total_records = $post_count;
 		$this->pager->page_size = self::MAX_POSTS;
-		$this->pager->setCurrentPage($this->current_page);
+		$this->pager->setCurrentPage($this->getArgument('page'));
 		/* These strings include a non-breaking space */
 		$this->pager->previous_label = Blorg::_('« Newer');
 		$this->pager->next_label = Blorg::_('Older »');
@@ -190,47 +226,6 @@ class BlorgTagPage extends SitePage
 		echo '</div>';
 
 		echo '</div>';
-	}
-
-	// }}}
-	// {{{ protected function initPosts()
-
-	protected function initPosts($shortname, $current_page)
-	{
-		$class_name = SwatDBClassMap::get('BlorgTag');
-		$tag = new $class_name();
-		$tag->setDatabase($this->app->db);
-		if (!$tag->loadByShortname($shortname, $this->app->getInstance())) {
-			throw new SiteNotFoundException('Page not found.');
-		}
-
-		$this->tag = $tag;
-
-		$loader = new BlorgPostLoader($this->app->db,
-			$this->app->getInstance());
-
-		$loader->addSelectField('title');
-		$loader->addSelectField('bodytext');
-		$loader->addSelectField('shortname');
-		$loader->addSelectField('publish_date');
-		$loader->addSelectField('author');
-		$loader->addSelectField('comment_status');
-		$loader->addSelectField('visible_comment_count');
-
-		$loader->setLoadFiles(true);
-		$loader->setLoadTags(true);
-
-		$loader->setWhereClause(sprintf('enabled = %s and
-			id in (select post from BlorgPostTagBinding where tag = %s)',
-			$this->app->db->quote(true, 'boolean'),
-			$this->app->db->quote($tag->id, 'integer')));
-
-		$loader->setOrderByClause('publish_date desc');
-
-		$offset = ($current_page - 1) * self::MAX_POSTS;
-		$loader->setRange(self::MAX_POSTS, $offset);
-
-		$this->posts = $loader->getPosts();
 	}
 
 	// }}}

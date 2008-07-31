@@ -6,6 +6,14 @@ require_once 'XML/Atom/Feed.php';
 /**
  * Abstract class used to help build atom feeds.
  *
+ * The number of posts is always at least
+ * {@link BlorgAbstractAtomPage::$min_entries}, but if a recently published set
+ * of posts (within the time of {@link BlorgAbstractAtomPage::$recent_period})
+ * exceeds <code>$min_entries</code>, up to
+ * {@link BlorgAbstractAtomPage::$max_entries} posts will be displayed. This
+ * makes it easier to ensure that a subscriber won't miss any posts, while
+ * limiting server load for the feed.
+ *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1

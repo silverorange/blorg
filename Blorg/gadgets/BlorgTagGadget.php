@@ -60,57 +60,59 @@ class BlorgTagGadget extends SiteGadget
 
 			$locale = SwatI18NLocale::get();
 			foreach ($tags as $tag) {
-				$popularity = $tag->post_count / $max;
+				if ($tag->post_count > 0 || $this->getValue('show_empty')) {
+					$popularity = $tag->post_count / $max;
 
-				$li_tag = new SwatHtmlTag('li');
-				$li_tag->open();
+					$li_tag = new SwatHtmlTag('li');
+					$li_tag->open();
 
-				$tag_span_tag = new SwatHtmlTag('span');
-				$tag_span_tag->class = $this->getTagClass($popularity);
-				$tag_span_tag->open();
-
-				$anchor_tag = new SwatHtmlTag('a');
-				$anchor_tag->href = $path.'/'.$tag->shortname;
-				$anchor_tag->setContent($tag->title);
-				$anchor_tag->display();
-
-				if ($this->getValue('show_post_counts')) {
-					echo ' ';
-					$span_tag = new SwatHtmlTag('span');
-					$span_tag->setContent(sprintf(Blorg::ngettext(
-						'(%s post)', '(%s posts)', $tag->post_count),
-						$locale->formatNumber($tag->post_count)));
-
-					$span_tag->display();
-				}
-
-				if ($this->getValue('show_feed_links')) {
-					echo ' ';
-					$span_tag = new SwatHtmlTag('span');
-					$span_tag->class = 'feed';
-					$span_tag->open();
-
-					echo '(';
+					$tag_span_tag = new SwatHtmlTag('span');
+					$tag_span_tag->class = $this->getTagClass($popularity);
+					$tag_span_tag->open();
 
 					$anchor_tag = new SwatHtmlTag('a');
-					$anchor_tag->class = 'feed';
-					$anchor_tag->href = $path.'/'.$tag->shortname.'/feed';
-					$anchor_tag->setContent('Feed');
+					$anchor_tag->href = $path.'/'.$tag->shortname;
+					$anchor_tag->setContent($tag->title);
 					$anchor_tag->display();
 
-					echo ')';
+					if ($this->getValue('show_post_counts')) {
+						echo ' ';
+						$span_tag = new SwatHtmlTag('span');
+						$span_tag->setContent(sprintf(Blorg::ngettext(
+							'(%s post)', '(%s posts)', $tag->post_count),
+							$locale->formatNumber($tag->post_count)));
 
-					$span_tag->close();
+						$span_tag->display();
+					}
+
+					if ($this->getValue('show_feed_links')) {
+						echo ' ';
+						$span_tag = new SwatHtmlTag('span');
+						$span_tag->class = 'feed';
+						$span_tag->open();
+
+						echo '(';
+
+						$anchor_tag = new SwatHtmlTag('a');
+						$anchor_tag->class = 'feed';
+						$anchor_tag->href = $path.'/'.$tag->shortname.'/feed';
+						$anchor_tag->setContent('Feed');
+						$anchor_tag->display();
+
+						echo ')';
+
+						$span_tag->close();
+					}
+
+					$tag_span_tag->close();
+
+					// breaking space for inline list items in cloud view
+					if ($this->getValue('cloud_view')) {
+						echo ' ';
+					}
+
+					$li_tag->close();
 				}
-
-				$tag_span_tag->close();
-
-				// breaking space for inline list items in cloud view
-				if ($this->getValue('cloud_view')) {
-					echo ' ';
-				}
-
-				$li_tag->close();
 			}
 
 			$ul_tag->close();
@@ -148,22 +150,31 @@ class BlorgTagGadget extends SiteGadget
 
 	protected function getTags()
 	{
-		if ($this->getValue('show_empty')) {
-			$extra_where = '';
-		} else {
-			$extra_where = ' and post_count > 0';
+		$tags = false;
+
+		if (isset($this->app->memcache)) {
+			$tags = $this->app->memcache->getNs('tags', 'tags_gadget');
 		}
 
-		$sql = sprintf('select * from BlorgTag
-			inner join BlorgTagVisiblePostCountView
-				on BlorgTag.id = BlorgTagVisiblePostCountView.tag
-			where instance %s %s %s
-			order by title desc',
-			SwatDB::equalityOperator($this->app->getInstanceId()),
-			$this->app->db->quote($this->app->getInstanceId(), 'integer'),
-			$extra_where);
+		if ($tags === false) {
+			$sql = sprintf('select * from BlorgTag
+				inner join BlorgTagVisiblePostCountView
+					on BlorgTag.id = BlorgTagVisiblePostCountView.tag
+				where instance %s %s
+				order by title desc',
+				SwatDB::equalityOperator($this->app->getInstanceId()),
+				$this->app->db->quote($this->app->getInstanceId(), 'integer'));
 
-		return SwatDB::query($this->app->db, $sql);
+			$tags = SwatDB::query($this->app->db, $sql);
+
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->setNs('tags', 'tags_gadget', $tags);
+			}
+		} else {
+			$tags->setDatabase($this->app->db);
+		}
+
+		return $tags;
 	}
 
 	// }}}

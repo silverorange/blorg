@@ -5,6 +5,7 @@ require_once 'Swat/SwatUI.php';
 require_once 'Site/pages/SitePage.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
+require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/BlorgViewFactory.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgComment.php';
@@ -95,15 +96,27 @@ class BlorgPostPage extends SitePage
 		$date->setMinute(0);
 		$date->setSecond(0);
 
-		$class_name = SwatDBClassMap::get('BlorgPost');
-		$this->post = new $class_name();
-		$this->post->setDatabase($this->app->db);
-		if (!$this->post->loadByDateAndShortname($date, $shortname,
-			$this->app->getInstance())) {
-			throw new SiteNotFoundException('Post not found.');
-		}
+		$memcache = (isset($this->app->memcache)) ? $this->app->memcache : null;
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance(), $memcache);
 
-		if (!$this->post->enabled) {
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('comment_status');
+		$loader->addSelectField('visible_comment_count');
+
+		$loader->setLoadFiles(true);
+		$loader->setLoadTags(true);
+
+		$loader->setWhereClause(sprintf('enabled = %s',
+			$this->app->db->quote(true, 'boolean')));
+
+		$this->post = $loader->getPostByDateAndShortname($date, $shortname);
+
+		if ($this->post === null) {
 			throw new SiteNotFoundException('Post not found.');
 		}
 	}

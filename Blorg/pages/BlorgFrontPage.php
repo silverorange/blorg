@@ -31,14 +31,14 @@ class BlorgFrontPage extends SitePage
 	protected $posts;
 
 	/**
-	 * @var integer
-	 */
-	protected $current_page = 1;
-
-	/**
 	 * @var SwatPagination
 	 */
 	protected $pager;
+
+	/**
+	 * @var BlorgPostLoader
+	 */
+	protected $loader;
 
 	// }}}
 	// {{{ public function __construct()
@@ -47,8 +47,7 @@ class BlorgFrontPage extends SitePage
 		array $arguments = array())
 	{
 		parent::__construct($app, $layout, $arguments);
-
-		$this->initPosts($this->getArgument('current_page'));
+		$this->initPosts($this->getArgument('page'));
 	}
 
 	// }}}
@@ -57,45 +56,44 @@ class BlorgFrontPage extends SitePage
 	protected function getArgumentMap()
 	{
 		return array(
-			'current_page' => array(0, 1),
+			'page' => array(0, 1),
 		);
 	}
 
 	// }}}
 	// {{{ protected function initPosts()
 
-	protected function initPosts($current_page)
+	protected function initPosts($page)
 	{
-		$loader = new BlorgPostLoader($this->app->db,
-			$this->app->getInstance());
+		$memcache = (isset($this->app->memcache)) ? $this->app->memcache : null;
+		$this->loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance(), $memcache);
 
-		$loader->addSelectField('title');
-		$loader->addSelectField('bodytext');
-		$loader->addSelectField('extended_bodytext');
-		$loader->addSelectField('shortname');
-		$loader->addSelectField('publish_date');
-		$loader->addSelectField('author');
-		$loader->addSelectField('comment_status');
-		$loader->addSelectField('visible_comment_count');
+		$this->loader->addSelectField('title');
+		$this->loader->addSelectField('bodytext');
+		$this->loader->addSelectField('extended_bodytext');
+		$this->loader->addSelectField('shortname');
+		$this->loader->addSelectField('publish_date');
+		$this->loader->addSelectField('author');
+		$this->loader->addSelectField('comment_status');
+		$this->loader->addSelectField('visible_comment_count');
 
-		$loader->setLoadFiles(true);
-		$loader->setLoadTags(true);
+		$this->loader->setLoadFiles(true);
+		$this->loader->setLoadTags(true);
 
-		$loader->setWhereClause(sprintf('enabled = %s',
+		$this->loader->setWhereClause(sprintf('enabled = %s',
 			$this->app->db->quote(true, 'boolean')));
 
-		$loader->setOrderByClause('publish_date desc');
+		$this->loader->setOrderByClause('publish_date desc');
 
-		$offset = ($current_page - 1) * self::MAX_POSTS;
-		$loader->setRange(self::MAX_POSTS, $offset);
+		$offset = ($page - 1) * self::MAX_POSTS;
+		$this->loader->setRange(self::MAX_POSTS, $offset);
 
-		$this->posts = $loader->getPosts();
+		$this->posts = $this->loader->getPosts();
 
 		if (count($this->posts) == 0) {
 			throw new SiteNotFoundException('Page not found.');
 		}
-
-		$this->current_page = $current_page;
 	}
 
 	// }}}
@@ -144,22 +142,13 @@ class BlorgFrontPage extends SitePage
 
 		$path = $this->app->config->blorg->path;
 
-		$instance_id = $this->app->getInstanceId();
-
-		$sql = sprintf('select count(id) from BlorgPost
-			where instance %s %s
-				and enabled = %s',
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
-
-		$post_count = SwatDB::queryOne($this->app->db, $sql, 'integer');
+		$post_count = $this->loader->getPostCount();
 
 		$this->pager = new SwatPagination();
 		$this->pager->display_parts ^= SwatPagination::POSITION;
 		$this->pager->total_records = $post_count;
 		$this->pager->page_size = self::MAX_POSTS;
-		$this->pager->setCurrentPage($this->current_page);
+		$this->pager->setCurrentPage($this->getArgument('page'));
 		/* These strings include a non-breaking space */
 		$this->pager->previous_label = Blorg::_('« Newer');
 		$this->pager->next_label = Blorg::_('Older »');

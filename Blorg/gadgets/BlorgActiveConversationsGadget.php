@@ -120,25 +120,52 @@ class BlorgActiveConversationsGadget extends SiteGadget
 
 	protected function getActiveConversations()
 	{
-		$sql = sprintf('select title, bodytext, publish_date, shortname,
-				visible_comment_count, last_comment_date
-			from BlorgPost
-				inner join BlorgPostVisibleCommentCountView as v
-					on BlorgPost.id = v.post and
-						v.visible_comment_count > 0 and
-						(v.instance = BlorgPost.instance or
-							(v.instance is null and BlorgPost.instance is null))
-			where enabled = %s and comment_status != %s and
-				BlorgPost.instance %s %s
-			order by last_comment_date desc',
-			$this->app->db->quote(true, 'boolean'),
-			$this->app->db->quote(BlorgPost::COMMENT_STATUS_CLOSED, 'integer'),
-			SwatDB::equalityOperator($this->app->getInstanceId()),
-			$this->app->db->quote($this->app->getInstanceId(), 'integer'));
+		$active_conversations = false;
 
-		$this->app->db->setLimit($this->getValue('limit'));
+		if (isset($this->app->memcache)) {
+			$limit = $this->app->memcache->get('active_conversations_limit');
+			if ($limit !== false && $this->getValue('limit') == $limit) {
+				$active_conversations = $this->app->memcache->getNs('posts',
+					'active_conversations_gadget');
+			} else {
+				$this->app->memcache->deleteNs('posts',
+					'active_conversations_gadget');
 
-		return SwatDB::query($this->app->db, $sql);
+				$this->app->memcache->set('active_conversations_limit',
+					$this->getValue('limit'));
+			}
+		}
+
+		if ($active_conversations === false) {
+			$comment_status_closed = BlorgPost::COMMENT_STATUS_CLOSED;
+			$sql = sprintf('select title, bodytext, publish_date, shortname,
+					visible_comment_count, last_comment_date
+				from BlorgPost
+					inner join BlorgPostVisibleCommentCountView as v
+						on BlorgPost.id = v.post and
+							v.visible_comment_count > 0 and
+							(v.instance = BlorgPost.instance or
+								(v.instance is null and
+								BlorgPost.instance is null))
+				where enabled = %s and comment_status != %s and
+					BlorgPost.instance %s %s
+				order by last_comment_date desc',
+				$this->app->db->quote(true, 'boolean'),
+				$this->app->db->quote($comment_status_closed, 'integer'),
+				SwatDB::equalityOperator($this->app->getInstanceId()),
+				$this->app->db->quote($this->app->getInstanceId(), 'integer'));
+
+			$this->app->db->setLimit($this->getValue('limit'));
+
+			$active_conversations = SwatDB::query($this->app->db, $sql);
+
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->setNs('posts',
+					'active_conversations_gadget', $active_conversations);
+			}
+		}
+
+		return $active_conversations;
 	}
 
 	// }}}
