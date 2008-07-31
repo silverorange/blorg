@@ -14,6 +14,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  *   - page<i>number</i>
  *   - archive/
  *     - <i>year</i>/
+ *       - page<i>number</i>
  *       - <i>month</i>/
  *         - <i>post-shortname</i>/
  *           - feed/
@@ -227,7 +228,7 @@ class BlorgPageFactory extends SitePageFactory
 			'^author$'                        => 'BlorgAuthorIndexPage',
 			'^author/([\w-]+)'.$page.'$'      => 'BlorgAuthorPage',
 			'^archive$'                       => 'BlorgArchivePage',
-			'^archive/(\d{4})$'               => 'BlorgYearArchivePage',
+			'^archive/(\d{4})'.$page.'$'      => 'BlorgYearArchivePage',
 			'^archive/(\d{4})/('.$months.')$' => 'BlorgMonthArchivePage',
 			'^'.$post.'$'                     => 'BlorgPostPage',
 			'^'.$post.'/feed'.$page.'$'       => 'BlorgPostAtomPage',
