@@ -1,0 +1,53 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatDisplayableContainer" id="left_frame">
+		<widget class="SwatFrame" id="info_frame">
+			<property name="title" translatable="yes">Welcome</property>
+			<widget class="SwatContentBlock" id="info" />
+			<widget class="SwatToolLink" id="new_post">
+				<property name="title" translatable="yes">New Post</property>
+				<property name="link">Post/Edit</property>
+				<property name="stock_id">create</property>
+			</widget>
+			<widget class="SwatDisplayableContainer">
+				<property name="classes[]">clear-fix</property>
+			</widget>
+		</widget>
+		<widget class="SwatFrame" id="posts_frame">
+			<property name="title" translatable="yes">Recent Posts</property>
+			<widget class="SwatTableView" id="posts_view">
+				<object class="SwatTableViewColumn">
+					<object class="AdminTitleLinkCellRenderer">
+						<property name="text" type="data">title</property>
+						<property name="link">Post/Details?id=%s</property>
+						<property name="link_value" type="data">id</property>
+					</object>
+				</object>
+			</widget>
+			<widget class="SwatDisplayableContainer">
+				<property name="classes[]">footer-link</property>
+				<widget class="SwatToolLink" id="posts_view_all">
+					<property name="title" translatable="yes">View All Posts</property>
+					<property name="link">Post</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+	<widget class="SwatFrame" id="comments_frame">
+		<property name="title" translatable="yes">Recent Comments</property>
+		<widget class="SwatForm" id="comments_form">
+			<widget class="SwatReplicableContainer" id="comment_replicator">
+				<widget class="BlorgCommentDisplay" id="comment" />
+			</widget>
+		</widget>
+		<widget class="SwatDisplayableContainer">
+			<property name="classes[]">footer-link</property>
+			<widget class="SwatToolLink" id="comments_view_all">
+				<property name="title" translatable="yes">View All Comments</property>
+				<property name="link">Post/Comments</property>
+			</widget>
+		</widget>
+	</widget>
+</swatml>

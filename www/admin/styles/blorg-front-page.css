@@ -1,0 +1,55 @@
+.footer-link {
+	margin-top: 1em;
+}
+
+.footer-link #posts_view_all,
+.footer-link #comments_view_all {
+	border: none;
+	background: transparent;
+}
+
+#left_frame {
+	float: left;
+	width: 300px;
+}
+
+#left_frame #info_frame {
+	margin-top: 0;
+}
+
+#comments_frame {
+	margin-left: 313px;
+	font-size: 85%;
+}
+
+#info_frame {
+	border: 1px solid #f0dca1;
+	background: #fffbc9;
+}
+#info_frame .swat-frame-contents {
+	background: #fffbc9;
+}
+#info_frame .swat-frame-title {
+	background: #f0dca1 url(../images/blorg-welcome-frame-header.png) repeat-x scroll left bottom;
+}
+
+#info_frame ul {
+	margin-top: 0;
+	padding-left: 2em;
+}
+
+a#new_post {
+	display: block;
+	float: left;
+	padding: 6px 8px 6px 28px;
+	border: 1px solid #f0dca1;
+	background-color: #fdf2c0;
+}
+
+a#new_post:hover {
+	background-color: #f8ecb7;
+}
+
+.clear-fix {
+	clear: left;
+}
