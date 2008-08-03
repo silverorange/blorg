@@ -34,7 +34,11 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote($file_id, 'integer'));
 
-		SwatDB::exec($this->app->db, $sql);
+		$num = SwatDB::exec($this->app->db, $sql);
+
+		if ($num > 0 && isset($this->app->memcache)) {
+			$this->app->memcache->flushNS('posts');
+		}
 
 		return true;
 	}
@@ -60,7 +64,11 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 			$this->app->db->quote($instance_id, 'integer'),
 			$this->app->db->quote($file_id, 'integer'));
 
-		SwatDB::exec($this->app->db, $sql);
+		$num = SwatDB::exec($this->app->db, $sql);
+
+		if ($num > 0 && isset($this->app->memcache)) {
+			$this->app->memcache->flushNS('posts');
+		}
 
 		return true;
 	}
@@ -92,6 +100,9 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 		if ($file->load(intval($file_id))) {
 			if ($file->getInternalValue('instance') === $instance_id) {
 				$file->delete();
+				if (isset($this->app->memcache) {
+					$this->app->memcache->flushNS('posts');
+				}
 			}
 		}
 
