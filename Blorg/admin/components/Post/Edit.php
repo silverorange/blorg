@@ -268,6 +268,10 @@ class BlorgPostEdit extends AdminDBEdit
 
 			$file->saveFile($path, $blorg_file->filename);
 
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->flushNs('posts');
+			}
+
 			// add message
 			if ($blorg_file->visible) {
 				$message = new SwatMessage(Blorg::_('The following file '.
