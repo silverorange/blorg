@@ -27,6 +27,11 @@ class BlorgTagDelete extends AdminDBDelete
 
 		$num = SwatDB::exec($this->app->db, $sql);
 
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->flushNs('tags');
+			$this->app->memcache->flushNs('posts');
+		}
+
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
 			'One tag has been deleted.',
 			'%d tags have been deleted.', $num),

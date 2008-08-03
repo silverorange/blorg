@@ -33,6 +33,11 @@ class BlorgAuthorDelete extends AdminDBDelete
 
 		$num = SwatDB::exec($this->app->db, $sql);
 
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->flushNs('authors');
+			$this->app->memcache->flushNs('posts');
+		}
+
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
 			'One author has been deleted.',
 			'%d authors have been deleted.', $num),

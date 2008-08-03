@@ -428,6 +428,11 @@ class BlorgPostEdit extends AdminDBEdit
 		// save the post
 		$this->post->save();
 
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->flushNs('posts');
+			$this->app->memcache->flushNs('tags');
+		}
+
 		// save tags
 		$tags = $this->ui->getWidget('tags')->getSelectedTagArray();
 		$this->post->addTagsByShortName($tags,

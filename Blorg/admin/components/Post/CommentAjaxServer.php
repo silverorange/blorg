@@ -64,6 +64,10 @@ class BlorgPostCommentAjaxServer extends SiteXMLRPCServer
 
 				$comment->spam = true;
 				$comment->save();
+
+				if (isset($this->app->memcache) {
+					$this->app->memcache->flushNS('posts');
+				}
 			}
 		}
 
@@ -119,6 +123,10 @@ class BlorgPostCommentAjaxServer extends SiteXMLRPCServer
 
 				$comment->spam = false;
 				$comment->save();
+
+				if (isset($this->app->memcache) {
+					$this->app->memcache->flushNS('posts');
+				}
 			}
 		}
 
@@ -144,6 +152,10 @@ class BlorgPostCommentAjaxServer extends SiteXMLRPCServer
 			if ($comment->status !== BlorgComment::STATUS_PUBLISHED) {
 				$comment->status = BlorgComment::STATUS_PUBLISHED;
 				$comment->save();
+
+				if (isset($this->app->memcache) {
+					$this->app->memcache->flushNS('posts');
+				}
 			}
 		}
 
@@ -169,6 +181,10 @@ class BlorgPostCommentAjaxServer extends SiteXMLRPCServer
 			if ($comment->status !== BlorgComment::STATUS_UNPUBLISHED) {
 				$comment->status = BlorgComment::STATUS_UNPUBLISHED;
 				$comment->save();
+
+				if (isset($this->app->memcache) {
+					$this->app->memcache->flushNS('posts');
+				}
 			}
 		}
 
@@ -192,6 +208,10 @@ class BlorgPostCommentAjaxServer extends SiteXMLRPCServer
 		$comment->setDatabase($this->app->db);
 		if ($comment->load($comment_id, $this->app->getInstance())) {
 			$comment->delete();
+
+			if (isset($this->app->memcache) {
+				$this->app->memcache->flushNS('posts');
+			}
 		}
 
 		return true;

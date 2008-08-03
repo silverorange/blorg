@@ -129,6 +129,10 @@ class BlorgPostCommentEdit extends AdminDBEdit
 
 		$this->addToSearchQueue();
 
+		if (isset($this->app->memcache) {
+			$this->app->memcache->flushNS('posts');
+		}
+
 		$message = new SwatMessage(Blorg::_('Comment has been saved.'));
 
 		$this->app->messages->add($message);

@@ -53,6 +53,10 @@ class BlorgPostDelete extends AdminDBDelete
 
 		$num = SwatDB::exec($this->app->db, $sql);
 
+		if (isset($this->app->memcache) {
+			$this->app->memcache->flushNS('posts');
+		}
+
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
 			'One post has been deleted.',
 			'%d posts have been deleted.', $num),
