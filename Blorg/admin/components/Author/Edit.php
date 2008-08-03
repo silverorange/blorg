@@ -137,7 +137,10 @@ class BlorgAuthorEdit extends AdminDBEdit
 
 		if (isset($this->app->memcache)) {
 			$this->app->memcache->flushNs('authors');
-			$this->app->memcache->flushNs('posts');
+
+			// only clear the posts when editing an existing author
+			if ($this->id !== null)
+				$this->app->memcache->flushNs('posts');
 		}
 
 		$message = new SwatMessage(

@@ -35,7 +35,6 @@ class BlorgAuthorOrder extends AdminDBOrder
 
 		if (isset($this->app->memcache)) {
 			$this->app->memcache->flushNs('authors');
-			$this->app->memcache->flushNs('posts');
 		}
 	}
 
