@@ -41,6 +41,11 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected $ui_xml = 'Blorg/admin/components/Post/edit.xml';
 
+	/**
+	 * @integer
+	 */
+	protected $original_author_id;
+
 	// }}}
 
 	// init phase
@@ -90,6 +95,10 @@ class BlorgPostEdit extends AdminDBEdit
 					Blorg::_('Post with id ‘%s’ not found.'), $this->id));
 			}
 		}
+
+		// remember original author so we can clear the authors cache if it
+		// was changed
+		$this->original_author_id = $this->post->getInternalValue('author');
 	}
 
 	// }}}
@@ -431,6 +440,9 @@ class BlorgPostEdit extends AdminDBEdit
 		if (isset($this->app->memcache)) {
 			$this->app->memcache->flushNs('posts');
 			$this->app->memcache->flushNs('tags');
+			if ($this->original_author_id !== $this->post->author) {
+				$this->app->memcache->flushNs('authors');
+			}
 		}
 
 		// save tags
