@@ -61,3 +61,17 @@
 	margin-bottom: 0.5em;
 	color: #666;
 }
+
+.blorg-comment-display abbr.comment-published {
+	border-bottom: none;
+}
+
+.blorg-comment-display .comment-title {
+	font-weight: normal;
+	color: #666;
+}
+
+.blorg-comment-display .comment-title .comment-author {
+	font-weight: bold;
+	color: #000;
+}
