@@ -46,6 +46,16 @@ class BlorgPostEdit extends AdminDBEdit
 	 */
 	protected $original_author_id;
 
+	/**
+	 * @integer
+	 */
+	protected $original_publish_date;
+
+	/**
+	 * @integer
+	 */
+	protected $original_enabled;
+
 	// }}}
 
 	// init phase
@@ -99,6 +109,11 @@ class BlorgPostEdit extends AdminDBEdit
 		// remember original author so we can clear the authors cache if it
 		// was changed
 		$this->original_author_id = $this->post->getInternalValue('author');
+
+		// remember original publish_date and enabled so we can clear the
+		// tags cache if they changed
+		$this->original_publish_date = $this->post->publish_date;
+		$this->original_enabled      = $this->post->enabled;
 	}
 
 	// }}}
@@ -439,7 +454,24 @@ class BlorgPostEdit extends AdminDBEdit
 
 		if (isset($this->app->memcache)) {
 			$this->app->memcache->flushNs('posts');
-			$this->app->memcache->flushNs('tags');
+
+			$old_date = $this->original_publish_date;
+			$new_date = $this->post->publish_date;
+
+			if ($old_date instanceof Date && $new_date instanceof Date) {
+				$date_changed = (Date::compare($old_date, $new_date) !== 0);
+			} elseif ($old_date instanceof Date && $new_date === null) {
+				$date_changed = true;
+			} elseif ($old_date === null && $new_date instanceof Date) {
+				$date_changed = true;
+			} else {
+				$date_changed = ($old_date !== $new_date);
+			}
+
+			if ($this->original_enabled !== $this->post->enabled ||
+				$date_changed) {
+				$this->app->memcache->flushNs('tags');
+			}
 			if ($this->original_author_id !== $this->post->author) {
 				$this->app->memcache->flushNs('authors');
 			}
