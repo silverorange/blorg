@@ -32,6 +32,11 @@ class BlorgAuthorOrder extends AdminDBOrder
 			$this->app->db->quote($instance_id, 'integer'));
 
 		SwatDB::exec($this->app->db, $sql);
+
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->flushNs('authors');
+			$this->app->memcache->flushNs('posts');
+		}
 	}
 
 	// }}}

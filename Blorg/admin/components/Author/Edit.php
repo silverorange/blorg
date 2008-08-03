@@ -135,6 +135,11 @@ class BlorgAuthorEdit extends AdminDBEdit
 
 		$this->author->save();
 
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->flushNs('authors');
+			$this->app->memcache->flushNs('posts');
+		}
+
 		$message = new SwatMessage(
 			sprintf(Blorg::_('“%s” has been saved.'), $this->author->name));
 

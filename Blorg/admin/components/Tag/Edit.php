@@ -128,6 +128,11 @@ class BlorgTagEdit extends AdminDBEdit
 
 		$this->tag->save();
 
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->flushNs('tags');
+			$this->app->memcache->flushNs('posts');
+		}
+
 		$message = new SwatMessage(
 			sprintf(Blorg::_('“%s” has been saved.'), $this->tag->title));
 

@@ -52,6 +52,10 @@ class BlorgPostCommentDelete extends AdminDBDelete
 
 		$num = SwatDB::exec($this->app->db, $sql);
 
+		if (isset($this->app->memcache) {
+			$this->app->memcache->flushNS('posts');
+		}
+
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
 			'One comment has been deleted.',
 			'%s comments have been deleted.', $num),
