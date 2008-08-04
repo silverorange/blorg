@@ -44,11 +44,6 @@ class BlorgPostEdit extends AdminDBEdit
 	/**
 	 * @integer
 	 */
-	protected $original_author_id;
-
-	/**
-	 * @integer
-	 */
 	protected $original_publish_date;
 
 	/**
@@ -105,10 +100,6 @@ class BlorgPostEdit extends AdminDBEdit
 					Blorg::_('Post with id ‘%s’ not found.'), $this->id));
 			}
 		}
-
-		// remember original author so we can clear the authors cache if it
-		// was changed
-		$this->original_author_id = $this->post->getInternalValue('author');
 
 		// remember original publish_date and enabled so we can clear the
 		// tags cache if they changed
@@ -456,6 +447,7 @@ class BlorgPostEdit extends AdminDBEdit
 		// save the post
 		$this->post->save();
 
+		// clear cache
 		if (isset($this->app->memcache)) {
 			$this->app->memcache->flushNs('posts');
 
@@ -475,9 +467,6 @@ class BlorgPostEdit extends AdminDBEdit
 			if ($this->original_enabled !== $this->post->enabled ||
 				$date_changed) {
 				$this->app->memcache->flushNs('tags');
-			}
-			if ($this->original_author_id !== $this->post->author) {
-				$this->app->memcache->flushNs('authors');
 			}
 		}
 
