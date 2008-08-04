@@ -48,7 +48,7 @@ class BlorgTagAtomPage extends BlorgAtomPage
 
 		parent::initPostLoader();
 
-		$this->post_loader->setWhereClause(sprintf('enabled = %s and
+		$this->loader->setWhereClause(sprintf('enabled = %s and
 			id in (select post from BlorgPostTagBinding where tag = %s)',
 			$this->app->db->quote(true, 'boolean'),
 			$this->app->db->quote($tag->id, 'integer')));
