@@ -102,6 +102,7 @@ class BlorgPostPage extends SitePage
 
 		$loader->addSelectField('title');
 		$loader->addSelectField('bodytext');
+		$loader->addSelectField('extended_bodytext');
 		$loader->addSelectField('shortname');
 		$loader->addSelectField('publish_date');
 		$loader->addSelectField('author');
