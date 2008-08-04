@@ -68,6 +68,8 @@ class BlorgTagDetails extends AdminPage
 	{
 		parent::buildInternal();
 
+		$this->buildMessages();
+
 		$ds = new SwatDetailsStore($this->tag);
 		$ds->post_count = $this->tag->getPostCount();
 
