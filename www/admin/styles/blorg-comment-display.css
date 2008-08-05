@@ -49,7 +49,7 @@
 }
 
 .blorg-comment-display h4 {
-	margin: 0.5em 0;
+	margin: 0.5em 0 0 0;
 }
 
 .blorg-comment-display .comment {
@@ -58,7 +58,6 @@
 
 .blorg-comment-display .comment-link {
 	font-weight: bold;
-	margin-bottom: 0.5em;
 	color: #666;
 }
 
