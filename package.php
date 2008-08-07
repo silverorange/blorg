@@ -2,10 +2,12 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.1.7';
+$version = '0.1.8';
 
 $notes = <<<EOT
-* fix fileloader
+* fix syntex errors in comment tools
+* move comments to their own admin component
+* remove author flydown in comment search
 EOT;
 
 $description =
