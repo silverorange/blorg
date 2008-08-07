@@ -33,7 +33,7 @@ BlorgCommentDisplay.STATUS_PUBLISHED   = 1;
 BlorgCommentDisplay.STATUS_UNPUBLISHED = 2;
 
 BlorgCommentDisplay.xml_rpc_client = new XML_RPC_Client(
-	'Post/CommentAjaxServer');
+	'Comment/AjaxServer');
 
 // {{{ initControls()
 
