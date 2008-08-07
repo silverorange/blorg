@@ -129,7 +129,7 @@ class BlorgPostCommentEdit extends AdminDBEdit
 
 		$this->addToSearchQueue();
 
-		if (isset($this->app->memcache) {
+		if (isset($this->app->memcache)) {
 			$this->app->memcache->flushNS('posts');
 		}
 

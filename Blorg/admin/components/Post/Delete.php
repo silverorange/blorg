@@ -53,7 +53,7 @@ class BlorgPostDelete extends AdminDBDelete
 
 		$num = SwatDB::exec($this->app->db, $sql);
 
-		if (isset($this->app->memcache) {
+		if (isset($this->app->memcache)) {
 			$this->app->memcache->flushNS('posts');
 		}
 
