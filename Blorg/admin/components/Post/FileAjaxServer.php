@@ -100,7 +100,7 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 		if ($file->load(intval($file_id))) {
 			if ($file->getInternalValue('instance') === $instance_id) {
 				$file->delete();
-				if (isset($this->app->memcache) {
+				if (isset($this->app->memcache)) {
 					$this->app->memcache->flushNS('posts');
 				}
 			}
