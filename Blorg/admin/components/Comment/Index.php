@@ -6,6 +6,7 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatString.php';
 require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
+require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 require_once 'Blorg/admin/BlorgCommentDisplay.php';
 
@@ -83,15 +84,17 @@ class BlorgCommentIndex extends AdminPage
 
 	protected function initComments()
 	{
-		$sql = 'select count(id) from BlorgComment where '.
-			$this->getWhereClause();
+		$sql = 'select count(1) from BlorgComment
+			left outer join BlorgAuthor on BlorgComment.author = BlorgAuthor.id
+			where '.$this->getWhereClause();
 
 		$pager = $this->ui->getWidget('pager');
 		$pager->total_records = SwatDB::queryOne($this->app->db, $sql);
 
 		// load comments
 		$sql = sprintf(
-			'select * from BlorgComment
+			'select BlorgComment.* from BlorgComment
+			left outer join BlorgAuthor on BlorgComment.author = BlorgAuthor.id
 			where %s
 			order by createdate desc',
 			$this->getWhereClause());
@@ -148,6 +151,18 @@ class BlorgCommentIndex extends AdminPage
 		$post_wrapper = SwatDBClassMap::get('BlorgPostWrapper');
 		$comments->loadAllSubDataObjects('post', $this->app->db, $post_sql,
 			$post_wrapper);
+
+		// efficiently load authors for all comments
+		$instance_id = $this->app->getInstanceId();
+		$author_sql = sprintf('select id, name
+			from BlorgAuthor
+			where instance %s %s and id in (%%s)',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'));
+
+		$author_wrapper = SwatDBClassMap::get('BlorgAuthorWrapper');
+		$comments->loadAllSubDataObjects('author', $this->app->db, $author_sql,
+			$author_wrapper);
 
 		$this->comments = array();
 		foreach ($comments as $comment) {
@@ -210,22 +225,20 @@ class BlorgCommentIndex extends AdminPage
 				$where.= $clause->getClause($this->app->db, 'and');
 			}
 
-			$author_clause = new AdminSearchClause('integer:author',
-				$this->ui->getWidget('search_author')->value);
-
-			$fullname = $this->ui->getWidget('search_fullname')->value;
-			if (trim($fullname) != '') {
-				$fullname_clause = new AdminSearchClause('fullname', $fullname);
+			$author = $this->ui->getWidget('search_author')->value;
+			if (trim($author) != '') {
+				$fullname_clause = new AdminSearchClause('fullname', $author);
 				$fullname_clause->table = 'BlorgComment';
 				$fullname_clause->operator = AdminSearchClause::OP_CONTAINS;
+
+				$author_clause = new AdminSearchClause('name', $author);
+				$author_clause->table = 'BlorgAuthor';
+				$author_clause->operator = AdminSearchClause::OP_CONTAINS;
 
 				$where.= ' and (';
 				$where.= $fullname_clause->getClause($this->app->db, '');
 				$where.= $author_clause->getClause($this->app->db, 'or');
 				$where.= ')';
-
-			} else {
-				$where.= $author_clause->getClause($this->app->db);
 			}
 
 			$visibility = $this->ui->getWidget('search_visibility')->value;
@@ -247,8 +260,7 @@ class BlorgCommentIndex extends AdminPage
 				break;
 
 			case self::SHOW_ALL_SPAM :
-				// do extra where needed
-
+				// no extra where needed
 				break;
 
 			case self::SHOW_SPAM :
@@ -271,76 +283,6 @@ class BlorgCommentIndex extends AdminPage
 	protected function processInternal()
 	{
 		parent::processInternal();
-	}
-
-	// }}}
-	// {{{ protected function processActions()
-
-	public function processActions(SwatTableView $view, SwatActions $actions)
-	{
-		//TODO: make these actions instance aware
-		$num = count($view->getSelection());
-		$message = null;
-		foreach ($view->getSelection() as $item)
-			$item_list[] = $this->app->db->quote($item, 'integer');
-
-		switch ($actions->selected->id) {
-		case 'delete':
-			$this->app->replacePage('Post/CommentDelete');
-			$this->app->getPage()->setItems($view->getSelection());
-			break;
-
-		case 'approve':
-			SwatDB::query($this->app->db, sprintf(
-				'update BlorgComment set status = %s, spam = %s
-				where id in (%s)',
-				$this->app->db->quote(BlorgComment::STATUS_PUBLISHED,
-					'integer'),
-				$this->app->db->quote(false, 'boolean'),
-				implode(',', $item_list)));
-
-			$message = new SwatMessage(sprintf(Blorg::ngettext(
-				'One comment has been published.',
-				'%s comments have been published.', $num),
-				SwatString::numberFormat($num)));
-
-			break;
-
-		case 'deny':
-			SwatDB::query($this->app->db, sprintf(
-				'update BlorgComment set status = %s, spam = %s
-				where id in (%s)',
-				$this->app->db->quote(BlorgComment::STATUS_UNPUBLISHED,
-					'integer'),
-				$this->app->db->quote(false, 'boolean'),
-				implode(',', $item_list)));
-;
-			$message = new SwatMessage(sprintf(Blorg::ngettext(
-				'One comment has been unpublished.',
-				'%s comments have been unpublished.', $num),
-				SwatString::numberFormat($num)));
-
-			break;
-
-		case 'spam':
-			SwatDB::query($this->app->db, sprintf(
-				'update BlorgComment set status = %s, spam = %s
-				where id in (%s)',
-				$this->app->db->quote(BlorgComment::STATUS_UNPUBLISHED,
-					'integer'),
-				$this->app->db->quote(true, 'boolean'),
-				implode(',', $item_list)));
-
-			$message = new SwatMessage(sprintf(Blorg::ngettext(
-				'One comment has been marked as spam.',
-				'%s comments have been marked as spam.', $num),
-				SwatString::numberFormat($num)));
-
-			break;
-		}
-
-		if ($message !== null)
-			$this->app->messages->add($message);
 	}
 
 	// }}}
@@ -424,7 +366,6 @@ class BlorgCommentIndex extends AdminPage
 	{
 		parent::buildInternal();
 		$this->buildSearchForm();
-		$this->buildAuthorFlydown();
 		$this->buildCommentReplicator();
 	}
 
@@ -438,24 +379,6 @@ class BlorgCommentIndex extends AdminPage
 			$comment_display = $comment_replicator->getWidget('comment', $id);
 			$comment_display->setComment($this->comments[$id]);
 		}
-	}
-
-	// }}}
-	// {{{ protected function buildAuthorFlydown()
-
-	protected function buildAuthorFlydown()
-	{
-		$instance_id = $this->app->getInstanceId();
-		$where_clause = sprintf('visible = %s and instance %s %s',
-			$this->app->db->quote(true, 'boolean'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'));
-
-		$author_flydown = $this->ui->getWidget('search_author');
-		$author_flydown->show_blank = true;
-		$author_flydown->addOptionsByArray(SwatDB::getOptionArray(
-			$this->app->db, 'BlorgAuthor', 'name', 'id', 'name',
-			$where_clause));
 	}
 
 	// }}}
