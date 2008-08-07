@@ -16,7 +16,7 @@ require_once 'Blorg/admin/BlorgCommentDisplay.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostComments extends AdminPage
+class BlorgCommentIndex extends AdminPage
 {
 	// {{{ class constants
 
@@ -31,7 +31,7 @@ class BlorgPostComments extends AdminPage
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Blorg/admin/components/Post/comments.xml';
+	protected $ui_xml = 'Blorg/admin/components/Comment/index.xml';
 
 	/**
 	 * @var string
@@ -465,15 +465,6 @@ class BlorgPostComments extends AdminPage
 	{
 		$form = $this->ui->getWidget('search_form', true);
 		$form->action = $this->source;
-	}
-
-	// }}}
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
-		$this->navbar->createEntry(Blorg::_('Manage Comments'));
 	}
 
 	// }}}

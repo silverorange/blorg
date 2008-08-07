@@ -15,9 +15,14 @@ require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostCommentEdit extends AdminDBEdit
+class BlorgCommentEdit extends AdminDBEdit
 {
 	// {{{ protected properties
+
+	/**
+	 * @var string
+	 */
+	protected $ui_xml = 'Blorg/admin/components/Comment/edit.xml';
 
 	/**
 	 * @var BlorgComment
@@ -33,7 +38,8 @@ class BlorgPostCommentEdit extends AdminDBEdit
 	{
 		parent::initInternal();
 
-		$this->ui->loadFromXML(dirname(__FILE__).'/comment-edit.xml');
+		$this->ui->loadFromXML($this->ui_xml);
+
 		$this->initBlorgComment();
 
 		if ($this->id === null || $this->comment->author !== null) {
@@ -293,16 +299,25 @@ class BlorgPostCommentEdit extends AdminDBEdit
 	{
 		parent::buildNavBar();
 
-		$this->navbar->addEntry(new SwatNavBarEntry(
-			$this->comment->post->getTitle(),
-			sprintf('Post/Details?id=%s', $this->comment->post->id)));
+		$post_id = $this->app->initVar('post');
+		if ($post_id !== null) {
+			$this->navbar->popEntry();
+			$this->navbar->popEntry();
 
-		if ($this->id === null)
 			$this->navbar->addEntry(new SwatNavBarEntry(
-				Blorg::_('New Comment')));
-		else
+				Blorg::_('Posts'), 'Post'));
+
 			$this->navbar->addEntry(new SwatNavBarEntry(
-				Blorg::_('Edit Comment')));
+				$this->comment->post->getTitle(),
+				sprintf('Post/Details?id=%s', $this->comment->post->id)));
+
+			if ($this->id === null)
+				$this->navbar->addEntry(new SwatNavBarEntry(
+					Blorg::_('New Comment')));
+			else
+				$this->navbar->addEntry(new SwatNavBarEntry(
+					Blorg::_('Edit Comment')));
+		}
 	}
 
 	// }}}

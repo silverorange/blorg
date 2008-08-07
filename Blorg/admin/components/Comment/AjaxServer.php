@@ -14,7 +14,7 @@ require_once 'Services/Akismet.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostCommentAjaxServer extends SiteXMLRPCServer
+class BlorgCommentAjaxServer extends SiteXMLRPCServer
 {
 	// {{{ public function spam()
 

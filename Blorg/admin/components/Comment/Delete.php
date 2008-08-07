@@ -13,7 +13,7 @@ require_once 'NateGoSearch/NateGoSearch.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostCommentDelete extends AdminDBDelete
+class BlorgCommentDelete extends AdminDBDelete
 {
 	// {{{ private properties
 
@@ -166,7 +166,16 @@ class BlorgPostCommentDelete extends AdminDBDelete
 	{
 		parent::buildNavBar();
 
+		// build the navbar like we're in the Post component because it's the
+		// only way this delete page gets loaded. In the Comment component,
+		// comments get deleted with the AJAX server.
+
 		$this->navbar->popEntry();
+		$this->navbar->popEntry();
+
+		$this->navbar->addEntry(new SwatNavBarEntry(
+			Blorg::_('Posts'), 'Post'));
+
 		$this->navbar->addEntry(new SwatNavBarEntry($this->post->getTitle(),
 			sprintf('Post/Details?id=%s', $this->post->id)));
 

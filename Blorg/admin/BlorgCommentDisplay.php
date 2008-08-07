@@ -148,7 +148,7 @@ class BlorgCommentDisplay extends SwatControl
 		echo ' - ';
 
 		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->href = sprintf('Post/CommentEdit?id=%s',
+		$anchor_tag->href = sprintf('Comment/Edit?id=%s',
 			$this->comment->id);
 
 		$anchor_tag->setContent(Blorg::_('Edit'));
