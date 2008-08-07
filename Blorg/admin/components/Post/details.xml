@@ -69,7 +69,7 @@
 			<widget class="SwatToolbar" id="comments_toolbar">
 				<widget class="SwatToolLink">
 					<property name="title" translatable="yes">New Comment</property>
-					<property name="link">Post/CommentEdit?post=%s</property>
+					<property name="link">Comment/Edit?post=%s</property>
 					<property name="stock_id">create</property>
 				</widget>
 			</widget>
@@ -84,8 +84,9 @@
 						<property name="title" translatable="yes">Posted By</property>
 						<object class="AdminTitleLinkCellRenderer">
 							<property name="text" type="data">fullname</property>
-							<property name="link">Post/CommentEdit?id=%s</property>
-							<property name="link_value" type="data">id</property>
+							<property name="link">Comment/Edit?post=%s&amp;id=%s</property>
+							<property name="link_value[]" type="data">post_id</property>
+							<property name="link_value[]" type="data">id</property>
 							<property name="stock_id">edit</property>
 						</object>
 					</object>

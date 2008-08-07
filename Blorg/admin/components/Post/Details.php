@@ -93,7 +93,7 @@ class BlorgPostDetails extends AdminIndex
 	{
 		switch ($actions->selected->id) {
 		case 'delete':
-			$this->app->replacePage('Post/CommentDelete');
+			$this->app->replacePage('Comment/Delete');
 			$this->app->getPage()->setItems($view->getSelection());
 			$this->app->getPage()->setPost($this->post);
 			break;
@@ -121,8 +121,8 @@ class BlorgPostDetails extends AdminIndex
 	protected function getTableModel(SwatView $view)
 	{
 		switch ($view->id) {
-			case 'comments_view':
-				return $this->getCommentsTableModel($view);
+		case 'comments_view':
+			return $this->getCommentsTableModel($view);
 		}
 	}
 
@@ -190,7 +190,7 @@ class BlorgPostDetails extends AdminIndex
 	}
 
 	// }}}
-	// {{{ protected function getReviewsTableModel()
+	// {{{ protected function getCommentsTableModel()
 
 	protected function getCommentsTableModel(SwatTableView $view)
 	{
@@ -224,6 +224,8 @@ class BlorgPostDetails extends AdminIndex
 
 			$ds->bodytext = SwatString::condense(
 				SwatString::ellipsizeRight($comment->bodytext, 500));
+
+			$ds->post_id = $this->post->id;
 
 			$store->add($ds);
 		}
