@@ -46,7 +46,7 @@
 			<property name="classes[]">footer-link</property>
 			<widget class="SwatToolLink" id="comments_view_all">
 				<property name="title" translatable="yes">View All Comments</property>
-				<property name="link">Post/Comments</property>
+				<property name="link">Comment</property>
 			</widget>
 		</widget>
 	</widget>
