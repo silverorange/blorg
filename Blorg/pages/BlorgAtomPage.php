@@ -28,26 +28,22 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 	 */
 	protected $loader;
 
-	/**
-	 * @var integer
-	 */
-	protected $front_page_count;
-
 	// }}}
 
 	// init phase
-	// {{{ protected function initEntries()
+	// {{{ public function init()
 
-	protected function initEntries()
+	public function init()
 	{
-		$this->initPostLoader();
-		$this->initFrontPagePosts();
+		parent::init();
+		$this->initPostLoader($this->getArgument('page'));
+		$this->initPosts();
 	}
 
 	// }}}
 	// {{{ protected function initPostLoader()
 
-	protected function initPostLoader()
+	protected function initPostLoader($page)
 	{
 		$memcache = (isset($this->app->memcache)) ? $this->app->memcache : null;
 		$this->loader = new BlorgPostLoader($this->app->db,
@@ -69,27 +65,20 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 			$this->app->db->quote(true, 'boolean')));
 
 		$this->loader->setOrderByClause('publish_date desc');
-		$this->loader->setRange(new SwatDBRange($this->max_entries));
+
+		$offset = ($page - 1) * $this->getPageSize();
+		$this->loader->setRange($this->getPageSize(), $offset);
 	}
 
 	// }}}
-	// {{{ protected function initFrontPagePosts()
+	// {{{ protected function initPosts()
 
-	protected function initFrontPagePosts()
+	protected function initPosts()
 	{
-		$posts = $this->loader->getPosts();
-		$count = 0;
-
-		foreach ($posts as $post) {
-			if ($count > $this->max_entries || ($count > $this->min_entries)
-				&& $this->isEntryRecent($post->publish_date))
-				break;
-
-			$count++;
+		$this->posts = $this->loader->getPosts();
+		if (count($this->posts) === 0) {
+			throw new SiteNotFoundException('Page not found.');
 		}
-
-		$this->front_page_count = $count;
-		$this->posts = $posts;
 	}
 
 	// }}}
@@ -109,23 +98,8 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 
 	protected function buildEntries(XML_Atom_Feed $feed)
 	{
-		$limit = $this->getFrontPageCount();
-		if ($this->page > 1) {
-			$offset = $this->getFrontPageCount()
-				+ ($this->page - 2) * $this->min_entries;
-
-			$this->loader->setRange($this->min_entries, $offset);
-			$this->posts = $this->loader->getPosts();
-			$limit = $this->min_entries;
-		}
-
-
-		$count = 0;
 		foreach ($this->posts as $post) {
-			if ($count < $limit)
-				$this->buildPost($feed, $post);
-
-			$count++;
+			$this->buildPost($feed, $post);
 		}
 	}
 
@@ -208,14 +182,6 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 	protected function getTotalCount()
 	{
 		return $this->loader->getPostCount();
-	}
-
-	// }}}
-	// {{{ protected function getFrontPageCount()
-
-	protected function getFrontPageCount()
-	{
-		return $this->front_page_count;
 	}
 
 	// }}}
