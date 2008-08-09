@@ -6,14 +6,6 @@ require_once 'XML/Atom/Feed.php';
 /**
  * Abstract class used to help build atom feeds.
  *
- * The number of posts is always at least
- * {@link BlorgAbstractAtomPage::$min_entries}, but if a recently published set
- * of posts (within the time of {@link BlorgAbstractAtomPage::$recent_period})
- * exceeds <code>$min_entries</code>, up to
- * {@link BlorgAbstractAtomPage::$max_entries} posts will be displayed. This
- * makes it easier to ensure that a subscriber won't miss any posts, while
- * limiting server load for the feed.
- *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
@@ -27,34 +19,6 @@ abstract class BlorgAbstractAtomPage extends SitePage
 	 */
 	protected $feed;
 
-	/**
-	 * The minimum number of entries to display
-	 *
-	 * @var integer
-	 */
-	protected $min_entries = 20;
-
-	/**
-	 * The maximum number of entries to display
-	 *
-	 * @var integer
-	 */
-	protected $max_entries = 100;
-
-	/**
-	 * Period for recently added posts (in seconds)
-	 *
-	 * Default value is two days.
-	 *
-	 * @var interger
-	 */
-	protected $recent_period = 172800;
-
-	/**
-	 * @var integer
-	 */
-	protected $page;
-
 	// }}}
 
 	// init phase
@@ -65,10 +29,6 @@ abstract class BlorgAbstractAtomPage extends SitePage
 	{
 		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
 		parent::__construct($app, $layout, $arguments);
-		$this->page = $this->getArgument('page') == 0 ? 1 :
-			$this->getArgument('page');
-
-		$this->initEntries();
 	}
 
 	// }}}
@@ -80,11 +40,6 @@ abstract class BlorgAbstractAtomPage extends SitePage
 			'page' => array(0, 1),
 		);
 	}
-
-	// }}}
-	// {{{ abstract protected function initEntries()
-
-	abstract protected function initEntries();
 
 	// }}}
 
@@ -129,20 +84,22 @@ abstract class BlorgAbstractAtomPage extends SitePage
 
 	protected function buildPagination(XML_Atom_Feed $feed)
 	{
+		$page = $this->getArgument('page');
 		$type = 'application/atom+xml';
-		$last = ceil(($this->getTotalCount() - $this->getFrontPageCount()) /
-			$this->min_entries) + 1;
+		$last = intval(ceil($this->getTotalCount() / $this->getPageSize()));
 
 		$feed->addLink($this->getFeedBaseHref(), 'first', $type);
 		$feed->addLink($this->getFeedBaseHref().'/page'.$last, 'last', $type);
 
-		if ($this->page > 1)
-			$feed->addLink($this->getFeedBaseHref().'/page'.($this->page - 1),
+		if ($page > 1) {
+			$feed->addLink($this->getFeedBaseHref().'/page'.($page - 1),
 				'previous', $type);
+		}
 
-		if ($this->page != $last)
-			$feed->addLink($this->getFeedBaseHref().'/page'.($this->page + 1),
+		if ($page < $last) {
+			$feed->addLink($this->getFeedBaseHref().'/page'.($page + 1),
 				'next', $type);
+		}
 	}
 
 	// }}}
@@ -192,18 +149,6 @@ abstract class BlorgAbstractAtomPage extends SitePage
 	// }}}
 
 	// helper methods
-	// {{{ protected function isEntryRecent()
-
-	protected function isEntryRecent(SwatDate $entry_date)
-	{
-		$threshold = new SwatDate();
-		$threshold->toUTC();
-		$threshold->subtractSeconds($this->recent_period);
-
-		return ($entry_date->after($threshold));
-	}
-
-	// }}}
 	// {{{ abstract protected function getBlorgBaseHref()
 
 	abstract protected function getBlorgBaseHref();
@@ -219,9 +164,12 @@ abstract class BlorgAbstractAtomPage extends SitePage
 	abstract protected function getTotalCount();
 
 	// }}}
-	// {{{ abstract protected function getFrontPageCount()
+	// {{{ protected function getPageSize()
 
-	abstract protected function getFrontPageCount();
+	protected function getPageSize()
+	{
+		return 20;
+	}
 
 	// }}}
 }

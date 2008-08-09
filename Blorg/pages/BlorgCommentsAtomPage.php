@@ -7,12 +7,6 @@ require_once 'XML/Atom/Entry.php';
 /**
  * Displays an Atom feed of all recent comments in reverse chronological order
  *
- * The number of comments is always at least $min_entries, but if a recently
- * published set of comments (within the time of $recent_period) exceeds
- * $min_entries, up to $max_entries comments will be displayed. This makes it
- * easier to ensure that a subscriber won't miss any comments while
- * limiting server load for the feed.
- *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
@@ -43,82 +37,67 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 	// }}}
 
 	// init phase
-	// {{{ protected function initEntries()
+	// {{{ public function init()
 
-	protected function initEntries()
+	public function init()
 	{
-		$this->initComments();
-		$this->initTotalCount();
-		$this->initFrontPageCount();
+		parent::init();
+		$this->initComments($this->getArgument('page'));
 	}
 
 	// }}}
 	// {{{ protected function initComments()
 
-	protected function initComments($offset = null)
+	protected function initComments($page)
 	{
 		$instance_id = $this->app->getInstanceId();
 
-		$sql = sprintf('select BlorgComment.* from BlorgComment
-			inner join BlorgPost on BlorgComment.post = BlorgPost.id and
-				BlorgPost.enabled = %s and BlorgPost.instance %s %s and
-				BlorgPost.comment_status != %s
-			where BlorgComment.status = %s and BlorgComment.spam = %s
+		$sql = sprintf('select BlorgComment.* from BlorgComment %s where %s
 			order by BlorgComment.createdate desc',
-			$this->app->db->quote(true, 'boolean'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(BlorgPost::COMMENT_STATUS_CLOSED, 'integer'),
-			$this->app->db->quote(BlorgComment::STATUS_PUBLISHED, 'integer'),
-			$this->app->db->quote(false, 'boolean'));
+			$this->getJoinClause(),
+			$this->getWhereClause());
 
-		if ($offset != null)
-			$this->app->db->setLimit($this->min_entries, $offset);
-		else
-			$this->app->db->setLimit($this->max_entries);
-
+		$offset = ($page - 1) * $this->getPageSize();
+		$this->app->db->setLimit($this->getPageSize(), $offset);
 
 		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
 		$this->comments = SwatDB::query($this->app->db, $sql, $wrapper);
-	}
 
-	// }}}
-	// {{{ protected function initTotalCount()
+		if (count($this->comments) === 0) {
+			throw new SiteNotFoundException('Page not found.');
+		}
 
-	protected function initTotalCount()
-	{
-		$instance_id = $this->app->getInstanceId();
-
-		$sql = sprintf('select count(BlorgComment.id) from BlorgComment
-			inner join BlorgPost on BlorgComment.post = BlorgPost.id and
-				BlorgPost.enabled = %s and BlorgPost.instance %s %s and
-				BlorgPost.comment_status != %s
-			where BlorgComment.status = %s and BlorgComment.spam = %s',
-			$this->app->db->quote(true, 'boolean'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(BlorgPost::COMMENT_STATUS_CLOSED, 'integer'),
-			$this->app->db->quote(BlorgComment::STATUS_PUBLISHED, 'integer'),
-			$this->app->db->quote(false, 'boolean'));
+		$sql = sprintf('select count(1) from BlorgComment %s where %s',
+			$this->getJoinClause(),
+			$this->getWhereClause());
 
 		$this->total_count = SwatDB::queryOne($this->app->db, $sql);
 	}
 
 	// }}}
-	// {{{ protected function initFrontPageCount()
+	// {{{ protected function getJoinClause()
 
-	protected function initFrontPageCount()
+	protected function getJoinClause()
 	{
-		$count = 0;
-		foreach ($this->comments as $comment) {
-			if ($count > $this->max_entries || ($count > $this->min_entries)
-				&& !$this->isEntryRecent($comment->createdate))
-				break;
+		$instance_id = $this->app->getInstanceId();
+		return sprintf('inner join BlorgPost on
+				BlorgComment.post = BlorgPost.id and
+				BlorgPost.enabled = %s and BlorgPost.instance %s %s and
+				BlorgPost.comment_status != %s',
+			$this->app->db->quote(true, 'boolean'),
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->app->db->quote(BlorgPost::COMMENT_STATUS_CLOSED, 'integer'));
+	}
 
-			$count++;
-		}
+	// }}}
+	// {{{ protected function getWhereClause()
 
-		$this->front_page_count = $count;
+	protected function getWhereClause()
+	{
+		return sprintf('BlorgComment.status = %s and BlorgComment.spam = %s',
+			$this->app->db->quote(BlorgComment::STATUS_PUBLISHED, 'integer'),
+			$this->app->db->quote(false, 'boolean'));
 	}
 
 	// }}}
@@ -128,20 +107,8 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 
 	protected function buildEntries(XML_Atom_Feed $feed)
 	{
-		$limit = $this->getFrontPageCount();
-		if ($this->page > 1) {
-			$this->initComments($this->getFrontPageCount() +
-				($this->page - 2) * $this->min_entries);
-
-			$limit = $this->min_entries;
-		}
-
-		$count = 0;
 		foreach ($this->comments as $comment) {
-			if ($count < $limit)
-				$this->buildComment($feed, $comment);
-
-			$count++;
+			$this->buildComment($feed, $comment);
 		}
 	}
 
@@ -210,14 +177,6 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 	// }}}
 
 	// helper methods
-	// {{{ protected function getFrontPageCount()
-
-	protected function getFrontPageCount()
-	{
-		return $this->front_page_count;
-	}
-
-	// }}}
 	// {{{ protected function getTotalCount()
 
 	protected function getTotalCount()
@@ -239,6 +198,14 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 	protected function getFeedBaseHref()
 	{
 		return $this->getBlorgBaseHref().'feed/comments';
+	}
+
+	// }}}
+	// {{{ protected function getPageSize()
+
+	protected function getPageSize()
+	{
+		return 50;
 	}
 
 	// }}}
