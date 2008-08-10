@@ -100,6 +100,10 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 		$this->comments = $this->post->getVisibleComments(
 			$this->getPageSize(), $offset);
 
+		if (count($this->comments) === 0) {
+			throw new SiteNotFoundException(Blorg::_('Page not found.'));
+		}
+
 		$this->total_count = $this->post->getVisibleCommentCount();
 	}
 
