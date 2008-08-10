@@ -149,11 +149,6 @@ abstract class BlorgAbstractAtomPage extends SitePage
 	// }}}
 
 	// helper methods
-	// {{{ abstract protected function getBlorgBaseHref()
-
-	abstract protected function getBlorgBaseHref();
-
-	// }}}
 	// {{{ abstract protected function getFeedBaseHref()
 
 	abstract protected function getFeedBaseHref();
@@ -162,6 +157,14 @@ abstract class BlorgAbstractAtomPage extends SitePage
 	// {{{ abstract protected function getTotalCount()
 
 	abstract protected function getTotalCount();
+
+	// }}}
+	// {{{ protected function getBlorgBaseHref()
+
+	protected function getBlorgBaseHref()
+	{
+		return $this->app->getBaseHref().$this->app->config->blorg->path;
+	}
 
 	// }}}
 	// {{{ protected function getPageSize()

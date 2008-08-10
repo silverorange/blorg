@@ -30,22 +30,48 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 	protected $comments;
 
 	/**
+	 * The total number of comments for this feed.
+	 *
 	 * @var integer
 	 */
-	protected $front_page_count;
+	protected $total_count;
+
+	// }}}
+	// {{{ protected function getArgumentMap()
+
+	protected function getArgumentMap()
+	{
+		return array(
+			'year'       => array(0, null),
+			'month_name' => array(1, null),
+			'shortname'  => array(2, null),
+			'page'       => array(3, 1),
+		);
+	}
 
 	// }}}
 
 	// init phase
-	// {{{ protected function initEntries()
+	// {{{ public function init()
 
-	protected function initEntries()
+	public function init()
 	{
-		$year = $this->getArgument('year');
-		$month_name = $this->getArgument('month_name');
-		$shortname = $this->getArgument('shortname');
+		parent::init();
+
+		$this->initComments(
+			$this->getArgument('year'),
+			$this->getArgument('month_name'),
+			$this->getArgument('shortname'),
+			$this->getArgument('page'));
+	}
+
+	// }}}
+	// {{{ protected function initComments()
+
+	protected function initComments($year, $month_name, $shortname, $page)
+	{
 		if (!array_key_exists($month_name, BlorgPageFactory::$months_by_name)) {
-			throw new SiteNotFoundException(Blorg::_('Post not found.'));
+			throw new SiteNotFoundException(Blorg::_('Page not found.'));
 		}
 
 		// Date parsed from URL is in locale time.
@@ -63,39 +89,18 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 		$this->post->setDatabase($this->app->db);
 		if (!$this->post->loadByDateAndShortname($date, $shortname,
 			$this->app->getInstance())) {
-			throw new SiteNotFoundException(Blorg::_('Post not found.'));
+			throw new SiteNotFoundException(Blorg::_('Page not found.'));
 		}
 
 		if (!$this->post->enabled) {
-			throw new SiteNotFoundException(Blorg::_('Post not found.'));
+			throw new SiteNotFoundException(Blorg::_('Page not found.'));
 		}
 
-		if ($this->page > 1) {
-			// page of comments
-			$this->front_page_count = $this->min_entries;
-			$offset = ($this->page - 1) * $this->min_entries;
-			$comments = $this->post->getVisibleComments($this->min_entries,
-				$offset);
-		} else {
-			// first page, default page length
-			$comments = $this->post->getVisibleComments($this->min_entries);
-			$this->front_page_count = count($comments);
-		}
+		$offset = ($page - 1) * $this->getPageSize();
+		$this->comments = $this->post->getVisibleComments(
+			$this->getPageSize(), $offset);
 
-		$this->comments = $comments;
-	}
-
-	// }}}
-	// {{{ protected function getArgumentMap()
-
-	protected function getArgumentMap()
-	{
-		return array(
-			'year'       => array(0, null),
-			'month_name' => array(1, null),
-			'shortname'  => array(2, null),
-			'page'       => array(3, 1),
-		);
+		$this->total_count = $this->post->getVisibleCommentCount();
 	}
 
 	// }}}
@@ -113,19 +118,18 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 	}
 
 	// }}}
-	// {{{ protected function buildHeader()
+	// {{{ protected function buildContent()
 
-	protected function buildHeader(XML_Atom_Feed $feed)
+	protected function buildContent(XML_Atom_Feed $feed)
 	{
-		parent::buildHeader($feed);
-		$feed->setSubTitle(sprintf(Blorg::_('Comments on “%s”'),
-			$this->post->getTitle()));
+		parent::buildContent($feed);
+		$this->buildAuthor($feed);
 	}
 
 	// }}}
-	// {{{ protected function buildEntries()
+	// {{{ protected function buildAuthor()
 
-	protected function buildEntries(XML_Atom_Feed $feed)
+	protected function buildAuthor(XML_Atom_Feed $feed)
 	{
 		if ($this->post->author->visible) {
 			$author_uri = $this->getBlorgBaseHref().'author/'.
@@ -136,7 +140,28 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 
 		$feed->addAuthor($this->post->author->name, $author_uri,
 			$this->post->author->email);
+	}
 
+	// }}}
+	// {{{ protected function buildHeader()
+
+	protected function buildHeader(XML_Atom_Feed $feed)
+	{
+		parent::buildHeader($feed);
+
+		$feed->addLink($this->getPostUri($this->post), 'alternate',
+			'text/html');
+
+		$feed->setSubTitle(sprintf(Blorg::_('Comments on “%s”'),
+			$this->post->getTitle()));
+	}
+
+	// }}}
+	// {{{ protected function buildEntries()
+
+	protected function buildEntries(XML_Atom_Feed $feed)
+	{
+		// reverse chronoligical ordering
 		$comments = array();
 		foreach ($this->comments as $comment) {
 			$comments[] = $comment;
@@ -144,8 +169,9 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 
 		$comments = array_reverse($comments);
 
-		foreach ($comments as $comment)
+		foreach ($comments as $comment) {
 			$this->buildComment($feed, $comment);
+		}
 	}
 
 	// }}}
@@ -153,7 +179,7 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 
 	protected function buildComment(XML_Atom_Feed $feed, BlorgComment $comment)
 	{
-		$comment_uri = $this->getBlorgBaseHref().'#comment'.$comment->id;
+		$comment_uri = $this->getPostUri($this->post).'#comment'.$comment->id;
 
 		if ($comment->author !== null) {
 			$author_name = $comment->author->name;
@@ -193,25 +219,33 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 
 	protected function getTotalCount()
 	{
-		return $this->post->getVisibleCommentCount();
+		return $this->total_count;
 	}
 
 	// }}}
-	// {{{ protected function getFrontPageCount()
+	// {{{ protected function getFeedBaseHref()
 
-	protected function getFrontPageCount()
+	protected function getFeedBaseHref()
 	{
-		return $this->front_page_count;
+		return $this->getPostUri($this->post).'/feed';
 	}
 
 	// }}}
-	// {{{ protected function getBlorgBaseHref()
+	// {{{ protected function getPageSize()
 
-	protected function getBlorgBaseHref()
+	protected function getPageSize()
 	{
-		$path = $this->app->getBaseHref().$this->app->config->blorg->path.'archive';
+		return 50;
+	}
 
-		$date = clone $this->post->publish_date;
+	// }}}
+	// {{{ protected function getPostUri()
+
+	protected function getPostUri(BlorgPost $post)
+	{
+		$path = $this->getBlorgBaseHref().'archive';
+
+		$date = clone $post->publish_date;
 		$date->convertTZ($this->app->default_time_zone);
 		$year = $date->getYear();
 		$month_name = BlorgPageFactory::$month_names[$date->getMonth()];
@@ -220,15 +254,7 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 			$path,
 			$year,
 			$month_name,
-			$this->post->shortname);
-	}
-
-	// }}}
-	// {{{ protected function getFeedBaseHref()
-
-	protected function getFeedBaseHref()
-	{
-		return $this->getBlorgBaseHref().'/feed';
+			$post->shortname);
 	}
 
 	// }}}

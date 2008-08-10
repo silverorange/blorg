@@ -27,13 +27,6 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 	 */
 	protected $total_count;
 
-	/**
-	 * The total number of comments for the front page of this feed.
-	 *
-	 * @var integer
-	 */
-	protected $front_page_count;
-
 	// }}}
 
 	// init phase
@@ -161,8 +154,7 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 		}
 
 		$entry = new XML_Atom_Entry($comment_uri,
-			sprintf(Blorg::_('%s on “%s”'),
-				$author_name, $post->getTitle()),
+			sprintf(Blorg::_('%s on “%s”'), $author_name, $post->getTitle()),
 			$comment->createdate);
 
 		$entry->setContent(BlorgComment::getBodytextXhtml(
@@ -182,14 +174,6 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 	protected function getTotalCount()
 	{
 		return $this->total_count;
-	}
-
-	// }}}
-	// {{{ protected function getBlorgBaseHref()
-
-	protected function getBlorgBaseHref()
-	{
-		return $this->app->getBaseHref().$this->app->config->blorg->path;
 	}
 
 	// }}}
