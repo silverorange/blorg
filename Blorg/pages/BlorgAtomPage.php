@@ -185,14 +185,6 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 	}
 
 	// }}}
-	// {{{ protected function getBlorgBaseHref()
-
-	protected function getBlorgBaseHref()
-	{
-		return $this->app->getBaseHref().$this->app->config->blorg->path;
-	}
-
-	// }}}
 	// {{{ protected function getFeedBaseHref()
 
 	protected function getFeedBaseHref()
