@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Blorg/BlorgPageFactory.php';
+require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 require_once 'Blorg/pages/BlorgAbstractAtomPage.php';
@@ -84,17 +85,27 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 		$date->setMinute(0);
 		$date->setSecond(0);
 
-		$class_name = SwatDBClassMap::get('BlorgPost');
-		$this->post = new $class_name();
-		$this->post->setDatabase($this->app->db);
-		if (!$this->post->loadByDateAndShortname($date, $shortname,
-			$this->app->getInstance())) {
-			throw new SiteNotFoundException(Blorg::_('Page not found.'));
+		$memcache = (isset($this->app->memcache)) ? $this->app->memcache : null;
+		$loader = new BlorgPostLoader($this->app->db,
+			$this->app->getInstance(), $memcache);
+
+		$loader->addSelectField('title');
+		$loader->addSelectField('bodytext');
+		$loader->addSelectField('shortname');
+		$loader->addSelectField('publish_date');
+		$loader->addSelectField('author');
+		$loader->addSelectField('visible_comment_count');
+
+		$loader->setWhereClause(sprintf('enabled = %s',
+			$this->app->db->quote(true, 'boolean')));
+
+		$this->post = $loader->getPostByDateAndShortname($date, $shortname);
+
+		if ($this->post === null) {
+			throw new SiteNotFoundException('Post not found.');
 		}
 
-		if (!$this->post->enabled) {
-			throw new SiteNotFoundException(Blorg::_('Page not found.'));
-		}
+		$this->total_count = $this->post->getVisibleCommentCount();
 
 		$offset = ($page - 1) * $this->getPageSize();
 		$this->comments = $this->post->getVisibleComments(
@@ -103,8 +114,6 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 		if (count($this->comments) === 0) {
 			throw new SiteNotFoundException(Blorg::_('Page not found.'));
 		}
-
-		$this->total_count = $this->post->getVisibleCommentCount();
 	}
 
 	// }}}
