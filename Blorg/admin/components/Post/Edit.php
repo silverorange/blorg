@@ -446,19 +446,16 @@ class BlorgPostEdit extends AdminDBEdit
 			}
 		}
 
-		$modified = $post->isModified();
+		$modified = $this->post->isModified();
 
 		// save the post
 		$this->post->save();
 
 		// save tags
 		$tags = $this->ui->getWidget('tags')->getSelectedTagArray();
-		if ($tags > 0) {
-			$this->post->addTagsByShortName($tags,
-				$this->app->getInstance(), true);
-
-			$modified = true;
-		}
+		$result = $this->post->setTagsByShortName($tags);
+		$modified = ($modified || $result['added'] > 0 ||
+			$result['removed'] > 0);
 
 		// update files attached to the form to be attached to the post
 		if ($this->id === null) {
