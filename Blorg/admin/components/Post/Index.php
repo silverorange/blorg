@@ -128,6 +128,11 @@ class BlorgPostIndex extends AdminSearch
 						$this->app->getInstance());
 				}
 
+				if (isset($this->app->memcache)) {
+					$this->app->memcache->flushNs('posts');
+					$this->app->memcache->flushNs('tags');
+				}
+
 				$num = count($view->getSelection());
 				$num_tags = count($tag_array);
 				if ($num_tags === 1) {
