@@ -131,17 +131,19 @@ class BlorgCommentEdit extends AdminDBEdit
 
 		$this->comment->bodytext = $values['bodytext'];
 
-		$this->comment->save();
+		if ($this->comment->isModified()) {
+			$this->comment->save();
 
-		$this->addToSearchQueue();
+			$this->addToSearchQueue();
 
-		if (isset($this->app->memcache)) {
-			$this->app->memcache->flushNS('posts');
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->flushNS('posts');
+			}
+
+			$message = new SwatMessage(Blorg::_('Comment has been saved.'));
+
+			$this->app->messages->add($message);
 		}
-
-		$message = new SwatMessage(Blorg::_('Comment has been saved.'));
-
-		$this->app->messages->add($message);
 	}
 
 	// }}}
