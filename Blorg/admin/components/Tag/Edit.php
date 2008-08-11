@@ -131,7 +131,11 @@ class BlorgTagEdit extends AdminDBEdit
 
 			if (isset($this->app->memcache)) {
 				$this->app->memcache->flushNs('tags');
-				$this->app->memcache->flushNs('posts');
+
+				// only clear the posts when editing an existing tag
+				if ($this->id !== null) {
+					$this->app->memcache->flushNs('posts');
+				}
 			}
 
 			$message = new SwatMessage(
