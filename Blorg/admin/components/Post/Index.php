@@ -67,9 +67,7 @@ class BlorgPostIndex extends AdminSearch
 
 	public function processActions(SwatTableView $view, SwatActions $actions)
 	{
-		$instance_id = $this->app->getInstanceId();
 		$message = null;
-
 		$items = SwatDB::implodeSelection($this->app->db,
 			$view->getSelection(), 'integer');
 
@@ -80,6 +78,7 @@ class BlorgPostIndex extends AdminSearch
 			break;
 
 		case 'enable':
+			$instance_id = $this->app->getInstanceId();
 			$num = SwatDB::exec($this->app->db, sprintf(
 				'update BlorgPost set enabled = %s
 				where instance %s %s and id in (%s)',
@@ -100,6 +99,7 @@ class BlorgPostIndex extends AdminSearch
 			break;
 
 		case 'disable':
+			$instance_id = $this->app->getInstanceId();
 			$num = SwatDB::exec($this->app->db, sprintf(
 				'update BlorgPost set enabled = %s
 				where instance %s %s and id in (%s)',
@@ -123,23 +123,30 @@ class BlorgPostIndex extends AdminSearch
 			$tag_array = $this->ui->getWidget('tags')->getSelectedTagArray();
 			if (count($tag_array) > 0) {
 				$posts = $this->getPostsFromSelection($view->getSelection());
-				foreach ($posts as $post)
+				foreach ($posts as $post) {
 					$post->addTagsByShortname($tag_array,
 						$this->app->getInstance());
+				}
 
 				$num = count($view->getSelection());
-				if (count($tag_array) > 1) {
+				$num_tags = count($tag_array);
+				if ($num_tags === 1) {
+					$tag = reset($tag_array);
 					$message = new SwatMessage(sprintf(Blorg::ngettext(
-						'%s tags have been added to one post.',
-						'%s tags have been added to %s posts.', $num),
-						SwatString::numberFormat(count($tag_array)),
+						'The tag “%s” has been added to one post.',
+						'The tag “%s” has been added to %s posts.', $num),
+						SwatString::minimizeEntities($tag),
 						SwatString::numberFormat($num)));
 				} else {
 					$message = new SwatMessage(sprintf(Blorg::ngettext(
-						'A tag has been added to one post.',
-						'A tag has been added to %s posts.', $num),
+						'%s tags have been added to one post.',
+						'%s tags have been added to %s posts.', $num),
+						SwatString::numberFormat($num_tags),
 						SwatString::numberFormat($num)));
 				}
+
+				// clear selected tags
+				$this->ui->getWidget('tags')->setSelectedTagArray(array());
 			}
 
 			break;
