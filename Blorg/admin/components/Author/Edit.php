@@ -133,20 +133,23 @@ class BlorgAuthorEdit extends AdminDBEdit
 		if ($this->id === null)
 			$this->author->instance = $this->app->getInstanceId();
 
-		$this->author->save();
+		if ($this->author->isModified()) {
+			$this->author->save();
 
-		if (isset($this->app->memcache)) {
-			$this->app->memcache->flushNs('authors');
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->flushNs('authors');
 
-			// only clear the posts when editing an existing author
-			if ($this->id !== null)
-				$this->app->memcache->flushNs('posts');
+				// only clear the posts when editing an existing author
+				if ($this->id !== null) {
+					$this->app->memcache->flushNs('posts');
+				}
+			}
+
+			$message = new SwatMessage(
+				sprintf(Blorg::_('“%s” has been saved.'), $this->author->name));
+
+			$this->app->messages->add($message);
 		}
-
-		$message = new SwatMessage(
-			sprintf(Blorg::_('“%s” has been saved.'), $this->author->name));
-
-		$this->app->messages->add($message);
 	}
 
 	// }}}
