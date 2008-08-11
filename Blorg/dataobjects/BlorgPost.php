@@ -414,35 +414,80 @@ class BlorgPost extends SwatDBDataObject
 	// }}}
 	// {{{ public function addTagsByShortname()
 
-	public function addTagsByShortname(array $tag_names,
-		SiteInstance $instance = null, $clear_existing_tags = false)
+	public function addTagsByShortname(array $tag_names)
 	{
 		$this->checkDB();
+		$this->db->loadModule('Datatype');
 
-		$instance_id = ($instance === null) ? null : $instance->id;
-		$tag_names = array_keys($tag_names);
-
-		$sql = sprintf('delete from BlorgPostTagBinding where post = %s',
-			$this->db->quote($this->id, 'integer'));
-
-		if (!$clear_existing_tags)
-			$sql.= sprintf(' and tag in (select id from
-				BlorgTag where shortname in (%s) and instance %s %s)',
-				$this->db->datatype->implodeArray($tag_names, 'text'),
-				SwatDB::equalityOperator($instance_id),
-				$this->db->quote($instance_id, 'integer'));
-
-		SwatDB::exec($this->db, $sql);
+		$shortnames  = array_keys($tag_names);
+		$instance_id = $this->getInternalValue('instance');
 
 		$sql = sprintf('insert into BlorgPostTagBinding
-			(post, tag) select %1$s, id from BlorgTag
-			where shortname in (%2$s) and BlorgTag.instance %3$s %4$s',
+			(post, tag) select %s, id from BlorgTag
+			where shortname in (%s) and instance %s %s and id not in
+				(select tag from BlorgPostTagBinding where post = %s)',
 			$this->db->quote($this->id, 'integer'),
-			$this->db->datatype->implodeArray($tag_names, 'text'),
+			$this->db->datatype->implodeArray($shortnames, 'text'),
+			SwatDB::equalityOperator($instance_id),
+			$this->db->quote($instance_id, 'integer'),
+			$this->db->quote($this->id, 'integer'));
+
+		$num = SwatDB::exec($this->db, $sql);
+
+		return array('added' => $num);
+	}
+
+	// }}}
+	// {{{ public function removeTagsByShortname()
+
+	public function removeTagsByShortname(array $tag_names)
+	{
+		$this->checkDB();
+		$this->db->loadModule('Datatype');
+
+		$shortnames  = array_keys($tag_names);
+		$instance_id = $this->getInternalValue('instance');
+
+		$sql = sprintf('delete from BlorgPostTagBinding where post = %s and
+			tag in (select id from BlorgTag where shortname in (%s) and
+				instance %s %s)',
+			$this->db->quote($this->id, 'integer'),
+			$this->db->datatype->implodeArray($shortnames, 'text'),
 			SwatDB::equalityOperator($instance_id),
 			$this->db->quote($instance_id, 'integer'));
 
-		SwatDB::exec($this->db, $sql);
+		$num = SwatDB::exec($this->db, $sql);
+
+		return array('removed' => $num);
+	}
+
+	// }}}
+	// {{{ public function setTagsByShortname()
+
+	public function setTagsByShortname(array $tag_names)
+	{
+		$this->checkDB();
+		$this->db->loadModule('Datatype');
+
+		$return      = array();
+		$shortnames  = array_keys($tag_names);
+		$instance_id = $this->getInternalValue('instance');
+
+		// delete all tags not in the selected tags
+		$sql = sprintf('delete from BlorgPostTagBinding where post = %s and
+			tag not in (select id from BlorgTag where shortname in (%s) and
+				instance %s %s)',
+			$this->db->quote($this->id, 'integer'),
+			$this->db->datatype->implodeArray($shortnames, 'text'),
+			SwatDB::equalityOperator($instance_id),
+			$this->db->quote($instance_id, 'integer'));
+
+		$num = SwatDB::exec($this->db, $sql);
+
+		$return['removed'] = $num;
+
+		// add tags
+		return array_merge($this->addTagsByShortname($tag_names), $return);
 	}
 
 	// }}}
