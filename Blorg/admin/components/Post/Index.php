@@ -80,7 +80,7 @@ class BlorgPostIndex extends AdminSearch
 			break;
 
 		case 'enable':
-			SwatDB::query($this->app->db, sprintf(
+			$num = SwatDB::exec($this->app->db, sprintf(
 				'update BlorgPost set enabled = %s
 				where instance %s %s and id in (%s)',
 				$this->app->db->quote(true, 'boolean'),
@@ -96,7 +96,7 @@ class BlorgPostIndex extends AdminSearch
 			break;
 
 		case 'disable':
-			SwatDB::query($this->app->db, sprintf(
+			$num = SwatDB::exec($this->app->db, sprintf(
 				'update BlorgPost set enabled = %s
 				where instance %s %s and id in (%s)',
 				$this->app->db->quote(false, 'boolean'),
