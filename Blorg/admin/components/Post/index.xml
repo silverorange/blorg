@@ -98,10 +98,10 @@
 				</widget>
 				<widget class="SwatActionItemDivider" />
 				<widget class="SwatActionItem" id="enable">
-					<property name="title" translatable="yes">enable</property>
+					<property name="title" translatable="yes">show on site</property>
 				</widget>
 				<widget class="SwatActionItem" id="disable">
-					<property name="title" translatable="yes">disable</property>
+					<property name="title" translatable="yes">hide on site</property>
 				</widget>
 			</widget>
 		</widget>
