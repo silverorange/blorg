@@ -68,10 +68,10 @@ class BlorgPostIndex extends AdminSearch
 	public function processActions(SwatTableView $view, SwatActions $actions)
 	{
 		$instance_id = $this->app->getInstanceId();
-		$num = count($view->getSelection());
 		$message = null;
-		foreach ($view->getSelection() as $item)
-			$item_list[] = $this->app->db->quote($item, 'integer');
+
+		$items = SwatDB::implodeSelection($this->app->db,
+			$view->getSelection(), 'integer');
 
 		switch ($actions->selected->id) {
 		case 'delete':
@@ -86,7 +86,11 @@ class BlorgPostIndex extends AdminSearch
 				$this->app->db->quote(true, 'boolean'),
 				SwatDB::equalityOperator($instance_id),
 				$this->app->db->quote($instance_id, 'integer'),
-				implode(',', $item_list)));
+				$items));
+
+			if ($num > 0 && isset($this->app->memcache)) {
+				$this->app->memcache->flushNs('posts');
+			}
 
 			$message = new SwatMessage(sprintf(Blorg::ngettext(
 				'One post has been enabled.',
@@ -102,7 +106,11 @@ class BlorgPostIndex extends AdminSearch
 				$this->app->db->quote(false, 'boolean'),
 				SwatDB::equalityOperator($instance_id),
 				$this->app->db->quote($instance_id, 'integer'),
-				implode(',', $item_list)));
+				$items));
+
+			if ($num > 0 && isset($this->app->memcache)) {
+				$this->app->memcache->flushNs('posts');
+			}
 
 			$message = new SwatMessage(sprintf(Blorg::ngettext(
 				'One post has been disabled.',
