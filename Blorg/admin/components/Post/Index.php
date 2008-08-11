@@ -124,8 +124,7 @@ class BlorgPostIndex extends AdminSearch
 			if (count($tag_array) > 0) {
 				$posts = $this->getPostsFromSelection($view->getSelection());
 				foreach ($posts as $post) {
-					$post->addTagsByShortname($tag_array,
-						$this->app->getInstance());
+					$post->addTagsByShortname($tag_array);,
 				}
 
 				if (isset($this->app->memcache)) {
