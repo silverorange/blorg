@@ -454,8 +454,8 @@ class BlorgPostEdit extends AdminDBEdit
 		// save tags
 		$tags = $this->ui->getWidget('tags')->getSelectedTagArray();
 		$result = $this->post->setTagsByShortName($tags);
-		$modified = ($modified || $result['added'] > 0 ||
-			$result['removed'] > 0);
+		$tags_modified = ($result['added'] > 0 || $result['removed'] > 0);
+		$modified = ($modified || $tags_modified);
 
 		// update files attached to the form to be attached to the post
 		if ($this->id === null) {
@@ -482,17 +482,18 @@ class BlorgPostEdit extends AdminDBEdit
 				$new_date = $this->post->publish_date;
 
 				if ($old_date instanceof Date && $new_date instanceof Date) {
-					$date_changed = (Date::compare($old_date, $new_date) !== 0);
+					$date_modified = (Date::compare($old_date,
+						$new_date) !== 0);
 				} elseif ($old_date instanceof Date && $new_date === null) {
-					$date_changed = true;
+					$date_modified = true;
 				} elseif ($old_date === null && $new_date instanceof Date) {
-					$date_changed = true;
+					$date_modified = true;
 				} else {
-					$date_changed = ($old_date !== $new_date);
+					$date_modified = ($old_date !== $new_date);
 				}
 
 				if ($this->original_enabled !== $this->post->enabled ||
-					$date_changed) {
+					$date_modified || $tags_modified) {
 					$this->app->memcache->flushNs('tags');
 				}
 			}
