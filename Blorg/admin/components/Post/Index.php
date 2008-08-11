@@ -93,8 +93,8 @@ class BlorgPostIndex extends AdminSearch
 			}
 
 			$message = new SwatMessage(sprintf(Blorg::ngettext(
-				'One post has been enabled.',
-				'%s posts have been enabled.', $num),
+				'One post has been shown on site.',
+				'%s posts have been shown on site.', $num),
 				SwatString::numberFormat($num)));
 
 			break;
@@ -113,8 +113,8 @@ class BlorgPostIndex extends AdminSearch
 			}
 
 			$message = new SwatMessage(sprintf(Blorg::ngettext(
-				'One post has been disabled.',
-				'%s posts have been disabled.', $num),
+				'One post has been hidden on site.',
+				'%s posts have been hidden on site.', $num),
 				SwatString::numberFormat($num)));
 
 			break;
