@@ -267,6 +267,14 @@ class BlorgPostPage extends SitePage
 		$this->post->comments->add($this->comment);
 		$this->post->save();
 		$this->addToSearchQueue();
+
+		// clear posts cache if comment is visible
+		if (isset($this->app->memcache)) {
+			if (!$this->comment->spam &&
+				$comment->status === BlorgComment::STATUS_PUBLISHED) {
+				$this->app->memcache->flushNs('posts');
+			}
+		}
 	}
 
 	// }}}
