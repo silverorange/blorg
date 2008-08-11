@@ -97,9 +97,13 @@ class BlorgTagEntry extends SiteTagEntry
 			$tag->instance = $instance_id;
 			$tag->title = $title;
 			$tag->save();
-			$message = new SwatMessage(
-				sprintf(Blorg::_('“%s” tag has been added'),
-					$tag->title));
+
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->flushNs('tags');
+			}
+
+			$message = new SwatMessage(sprintf(
+				Blorg::_('The tag “%s” has been added.'), $tag->title));
 
 			$this->app->messages->add($message);
 		}
