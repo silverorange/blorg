@@ -115,7 +115,7 @@
 					<property name="link">Post/Details</property>
 				</widget>
 				<widget class="SwatActions" id="comment_actions">
-					<widget class="SwatActionItem" id="approve">
+					<!--widget class="SwatActionItem" id="approve">
 						<property name="title" translatable="yes">publish</property>
 					</widget>
 					<widget class="SwatActionItem" id="deny">
@@ -124,7 +124,7 @@
 					<widget class="SwatActionItem" id="spam">
 						<property name="title" translatable="yes">mark as spam</property>
 					</widget>
-					<widget class="SwatActionItemDivider" />
+					<widget class="SwatActionItemDivider" /-->
 					<widget class="SwatActionItem" id="delete">
 						<property name="title" translatable="yes">delete…</property>
 					</widget>
