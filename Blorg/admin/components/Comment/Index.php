@@ -365,6 +365,7 @@ class BlorgCommentIndex extends AdminPage
 	protected function buildInternal()
 	{
 		parent::buildInternal();
+		$this->buildMessages();
 		$this->buildSearchForm();
 		$this->buildCommentReplicator();
 	}
