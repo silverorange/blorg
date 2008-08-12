@@ -271,7 +271,7 @@ class BlorgPostPage extends SitePage
 		// clear posts cache if comment is visible
 		if (isset($this->app->memcache)) {
 			if (!$this->comment->spam &&
-				$comment->status === BlorgComment::STATUS_PUBLISHED) {
+				$this->comment->status === BlorgComment::STATUS_PUBLISHED) {
 				$this->app->memcache->flushNs('posts');
 			}
 		}
