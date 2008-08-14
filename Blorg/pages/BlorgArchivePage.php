@@ -163,8 +163,8 @@ class BlorgArchivePage extends SitePage
 			$instance_id = $this->app->getInstanceId();
 
 			$sql = sprintf('select count(id) as count,
-					date_part(\'year\', convertTZ(publish_date, %s)) as year,
-					date_part(\'month\', convertTZ(publish_date, %s)) as month
+					extract(YEAR FROM convertTZ(publish_date, %s)) as year,
+					extract(MONTH FROM convertTZ(publish_date, %s)) as month
 				from BlorgPost
 				where instance %s %s and enabled = %s
 				group by year, month
