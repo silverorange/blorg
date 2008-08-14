@@ -212,6 +212,17 @@ class BlorgComment extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ protected function getSerializableSubDataObjects()
+
+	protected function getSerializableSubDataObjects()
+	{
+		return array(
+			'post',
+			'author',
+		);
+	}
+
+	// }}}
 }
 
 ?>
