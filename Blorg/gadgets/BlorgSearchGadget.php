@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/SiteGadget.php';
+require_once 'Site/gadgets/SiteGadget.php';
 require_once 'Site/SiteSearchForm.php';
 require_once 'Swat/SwatFormField.php';
 require_once 'Site/SiteUnnamedButton.php';
