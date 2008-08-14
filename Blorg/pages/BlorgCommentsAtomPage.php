@@ -43,28 +43,76 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 
 	protected function initComments($page)
 	{
-		$instance_id = $this->app->getInstanceId();
+		// get comments for this page
+		$this->comments = false;
 
-		$sql = sprintf('select BlorgComment.* from BlorgComment %s where %s
-			order by BlorgComment.createdate desc',
-			$this->getJoinClause(),
-			$this->getWhereClause());
+		if (isset($this->app->memcache)) {
+			$key = $this->getCommentsCacheKey();
+			$this->comments = $this->app->memcache->getNs('posts', $key);
+		}
 
-		$offset = ($page - 1) * $this->getPageSize();
-		$this->app->db->setLimit($this->getPageSize(), $offset);
+		if ($this->comments === false) {
+			$sql = sprintf('select BlorgComment.* from BlorgComment %s where %s
+				order by BlorgComment.createdate desc',
+				$this->getJoinClause(),
+				$this->getWhereClause());
 
-		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
-		$this->comments = SwatDB::query($this->app->db, $sql, $wrapper);
+			$offset = ($page - 1) * $this->getPageSize();
+			$this->app->db->setLimit($this->getPageSize(), $offset);
+
+			$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
+			$this->comments = SwatDB::query($this->app->db, $sql, $wrapper);
+
+			// efficiently load posts
+			$post_wrapper = SwatDBClassMap::get('BlorgPostWrapper');
+			$post_sql = 'select id, title, shortname, bodytext, publish_date
+				from BlorgPost
+				where id in (%s)';
+
+			$this->comments->loadAllSubDataObjects('post', $this->app->db,
+				$post_sql, $post_wrapper);
+
+			// efficiently load authors
+			$author_wrapper = SwatDBClassMap::get('BlorgAuthorWrapper');
+			$author_sql = 'select id, name, shortname, email, visible
+				from BlorgAuthor
+				where id in (%s)';
+
+			$this->comments->loadAllSubDataObjects('author', $this->app->db,
+				$author_sql, $author_wrapper);
+
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->setNs('posts', $key, $this->comments);
+			}
+		} else {
+			$this->comments->setDatabase($this->app->db);
+		}
 
 		if (count($this->comments) === 0) {
 			throw new SiteNotFoundException('Page not found.');
 		}
 
-		$sql = sprintf('select count(1) from BlorgComment %s where %s',
-			$this->getJoinClause(),
-			$this->getWhereClause());
+		// get total number of comments
+		$this->total_count = false;
 
-		$this->total_count = SwatDB::queryOne($this->app->db, $sql);
+		if (isset($this->app->memcache)) {
+			$total_key = $this->getTotalCountCacheKey();
+			$this->total_count = $this->app->memcache->getNs('posts',
+				$total_key);
+		}
+
+		if ($this->total_count === false) {
+			$sql = sprintf('select count(1) from BlorgComment %s where %s',
+				$this->getJoinClause(),
+				$this->getWhereClause());
+
+			$this->total_count = SwatDB::queryOne($this->app->db, $sql);
+
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->setNs('posts', $total_key,
+					$this->total_count);
+			}
+		}
 	}
 
 	// }}}
@@ -91,6 +139,22 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 		return sprintf('BlorgComment.status = %s and BlorgComment.spam = %s',
 			$this->app->db->quote(BlorgComment::STATUS_PUBLISHED, 'integer'),
 			$this->app->db->quote(false, 'boolean'));
+	}
+
+	// }}}
+	// {{{ protected function getCommentsCacheKey()
+
+	protected function getCommentsCacheKey()
+	{
+		return 'comments_feed_page'.$this->getArgument('page');
+	}
+
+	// }}}
+	// {{{ protected function getTotalCountCacheKey()
+
+	protected function getTotalCountCacheKey()
+	{
+		return 'comments_feed_total_count';
 	}
 
 	// }}}
@@ -139,9 +203,9 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 			$author_name = $comment->author->name;
 			if ($comment->author->visible) {
 				$author_uri = $this->getBlorgBaseHref().'author/'.
-					$post->author->shortname;
+					$comment->author->shortname;
 
-				$author_email = $post->author->email;
+				$author_email = $comment->author->email;
 			} else {
 				$author_uri   = '';
 				$author_email = '';
