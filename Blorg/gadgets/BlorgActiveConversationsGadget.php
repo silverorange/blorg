@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/SiteGadget.php';
+require_once 'Site/gadgets/SiteGadget.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Swat/SwatString.php';

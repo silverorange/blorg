@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Site/SiteGadget.php';
+require_once 'Site/gadgets/SiteGadget.php';
 require_once 'Swat/SwatString.php';
 require_once 'Swat/SwatHtmlTag.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
