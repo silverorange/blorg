@@ -107,13 +107,36 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 
 		$this->total_count = $this->post->getVisibleCommentCount();
 
-		$offset = ($page - 1) * $this->getPageSize();
-		$this->comments = $this->post->getVisibleComments(
-			$this->getPageSize(), $offset);
+		$this->comments = false;
+
+		if (isset($this->app->memcache)) {
+			$key = $this->getCommentsCacheKey();
+			$this->comments = $this->app->memcache->getNs('posts', $key);
+		}
+
+		if ($this->comments === false) {
+			$offset = ($page - 1) * $this->getPageSize();
+			$this->comments = $this->post->getVisibleComments(
+				$this->getPageSize(), $offset);
+
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->setNs('posts', $key, $this->comments);
+			}
+		} else {
+			$this->comments->setDatabase($this->app->db);
+		}
 
 		if (count($this->comments) === 0) {
 			throw new SiteNotFoundException(Blorg::_('Page not found.'));
 		}
+	}
+
+	// }}}
+	// {{{ protected function getCommentsCacheKey()
+
+	protected function getCommentsCacheKey()
+	{
+		return 'comments_'.$this->post->id.'_page'.$this->getArgument('page');
 	}
 
 	// }}}
