@@ -1,7 +1,9 @@
 <?php
 
 require_once 'Blorg/pages/BlorgAbstractAtomPage.php';
+require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
 require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
+require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 require_once 'XML/Atom/Entry.php';
 
 /**
