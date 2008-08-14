@@ -49,6 +49,15 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 		if (isset($this->app->memcache)) {
 			$key = $this->getCommentsCacheKey();
 			$this->comments = $this->app->memcache->getNs('posts', $key);
+
+			/*
+			 * Note: The limit of comments per page is somewhat important here.
+			 * In extreme cases, we could run over the 1M size limit for cached
+			 * values. This would occur when every comment is close to the
+			 * maximum size in bodytext (8K) and the associated posts also have
+			 * a very large bodytext (about 8K each). In these rare cases,
+			 * caching will fail.
+			 */
 		}
 
 		if ($this->comments === false) {
