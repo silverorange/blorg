@@ -110,17 +110,27 @@ class BlorgPostLoader
 		if ($this->memcache !== null) {
 			$key = $this->getPostsCacheKey();
 			$ids = $this->memcache->getNs('posts', $key);
+
 			if ($ids !== false) {
 				$post_wrapper = SwatDBClassMap::get('BlorgPostWrapper');
 				$posts = new $post_wrapper();
 
 				if (count($ids) > 0) {
-					foreach ($this->memcache->getNs('posts', $ids) as $post) {
-						$posts->add($post);
+					$cached_posts = $this->memcache->getNs('posts', $ids);
+
+					if (count($cached_posts) !== count($ids)) {
+						// one or more posts are missing from the cache
+						$posts = false;
+					} else {
+						foreach ($cached_posts as $post) {
+							$posts->add($post);
+						}
 					}
 				}
 
-				$posts->setDatabase($this->db);
+				if ($posts !== false) {
+					$posts->setDatabase($this->db);
+				}
 			}
 		}
 
