@@ -270,8 +270,11 @@ class BlorgFrontIndex extends AdminPage
 			$start_date->getDay(), $start_date->getMonth(),
 			$start_date->getYear());
 
-		$posts_per_month  = $post_info->post_count / $months;
-		$comments_per_day = $post_info->comment_count / $days;
+		$posts_per_month = ($months == 0) ?
+			0 : $post_info->post_count / $months;
+
+		$comments_per_day = ($days == 0) ?
+			0 : $post_info->comment_count / $days;
 
 		return array(
 			'post_count'       => $post_info->post_count,
