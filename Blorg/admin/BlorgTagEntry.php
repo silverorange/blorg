@@ -109,7 +109,7 @@ class BlorgTagEntry extends SiteTagEntry
 		}
 
 		$this->tag_array[$tag->shortname] = $tag->title;
-		$this->selected_tag_array[] = $tag->shortname;
+		$this->selected_tag_array[$tag->shortname] = $tag->title;
 	}
 
 	// }}}
