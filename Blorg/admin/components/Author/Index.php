@@ -39,11 +39,55 @@ class BlorgAuthorIndex extends AdminSearch
 	{
 		$num = count($view->getSelection());
 		$message = null;
+		$items = SwatDB::implodeSelection($this->app->db,
+			$view->getSelection(), 'integer');
 
 		switch ($actions->selected->id) {
 		case 'delete':
 			$this->app->replacePage($this->getComponentName().'/Delete');
 			$this->app->getPage()->setItems($view->getSelection());
+			break;
+
+		case 'enable':
+			$instance_id = $this->app->getInstanceId();
+			$num = SwatDB::exec($this->app->db, sprintf(
+				'update BlorgAuthor set visible = %s
+				where instance %s %s and id in (%s)',
+				$this->app->db->quote(true, 'boolean'),
+				SwatDB::equalityOperator($instance_id),
+				$this->app->db->quote($instance_id, 'integer'),
+				$items));
+
+			if ($num > 0 && isset($this->app->memcache)) {
+				$this->app->memcache->flushNs('authors');
+			}
+
+			$message = new SwatMessage(sprintf(Blorg::ngettext(
+				'One author has been shown on site.',
+				'%s authors have been shown on site.', $num),
+				SwatString::numberFormat($num)));
+
+			break;
+
+		case 'disable':
+			$instance_id = $this->app->getInstanceId();
+			$num = SwatDB::exec($this->app->db, sprintf(
+				'update BlorgAuthor set visible = %s
+				where instance %s %s and id in (%s)',
+				$this->app->db->quote(false, 'boolean'),
+				SwatDB::equalityOperator($instance_id),
+				$this->app->db->quote($instance_id, 'integer'),
+				$items));
+
+			if ($num > 0 && isset($this->app->memcache)) {
+				$this->app->memcache->flushNs('authors');
+			}
+
+			$message = new SwatMessage(sprintf(Blorg::ngettext(
+				'One author has been hidden on site.',
+				'%s authors have been hidden on site.', $num),
+				SwatString::numberFormat($num)));
+
 			break;
 		}
 
