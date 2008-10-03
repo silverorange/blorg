@@ -14,13 +14,12 @@ require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
  */
 class BlorgSearchResultsPage extends SiteSearchResultsPage
 {
-	// init phase
-	// {{{ public function init()
+	// {{{ public function __construct()
 
-	public function init()
+	public function __construct(SiteAbstractPage $page)
 	{
+		parent::__construct($page);
 		$this->ui_xml = 'Blorg/pages/search-results.xml';
-		parent::init();
 	}
 
 	// }}}
@@ -61,7 +60,6 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 		if (count($this->getSearchDataValues()) > 0) {
 			$fulltext_result = $this->searchFulltext();
 
-			$this->buildArticles($fulltext_result);
 			$this->buildPosts($fulltext_result);
 
 			if ($fulltext_result !== null) {
@@ -80,10 +78,7 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 
 	protected function getFulltextTypes()
 	{
-		$types = parent::getFulltextTypes();
-		$types[] = 'post';
-
-		return $types;
+		return array('post');
 	}
 
 	// }}}
@@ -123,7 +118,6 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	{
 		$engine = new BlorgPostSearchEngine($this->app);
 		$this->setSearchEngine('post', $engine);
-
 		return $engine;
 	}
 
