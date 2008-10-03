@@ -12,15 +12,4 @@
 			<property name="type">post</property>
 		</widget>
 	</widget>
-	<widget class="SwatFrame" id="article_results_frame">
-		<property name="title" translatable="yes">Article Search Results</property>
-		<property name="visible" type="boolean">false</property>
-		<widget class="SwatContentBlock" id="article_results">
-			<property name="content_type">text/xml</property>
-		</widget>
-		<widget class="SiteSearchPagination" id="article_pager">
-			<property name="page_size" type="integer">10</property>
-			<property name="type">article</property>
-		</widget>
-	</widget>
 </swatml>
