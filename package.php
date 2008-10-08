@@ -2,7 +2,7 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.1.13';
+$version = '0.1.14';
 
 $notes = <<<EOT
 * memcache comment atom feeds
