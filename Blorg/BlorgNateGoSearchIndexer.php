@@ -56,8 +56,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 	 */
 	protected function queuePosts()
 	{
-		$this->output(Blorg::_('Repopulating post search queue ... '),
-			self::VERBOSITY_ALL);
+		$this->debug(Blorg::_('Repopulating post search queue ... '));
 
 		$type = NateGoSearch::getDocumentType($this->db, 'post');
 
@@ -75,7 +74,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 
 		SwatDB::exec($this->db, $sql);
 
-		$this->output(Blorg::_('done')."\n", self::VERBOSITY_ALL);
+		$this->debug(Blorg::_('done')."\n");
 	}
 
 	// }}}
@@ -108,7 +107,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 			order by BlorgPost.id',
 			$this->db->quote($type, 'integer'));
 
-		$this->output(Blorg::_('Indexing posts... ').'   ',
+		$this->debug(Blorg::_('Indexing posts... ').'   ');
 			self::VERBOSITY_ALL);
 
 		$posts = SwatDB::query($this->db, $sql,
@@ -127,9 +126,8 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 
 			if ($count % 10 == 0) {
 				$post_indexer->commit();
-				$this->output(str_repeat(chr(8), 3), self::VERBOSITY_ALL);
-				$this->output(sprintf('%2d%%', ($count / $total) * 100),
-					self::VERBOSITY_ALL);
+				$this->debug(str_repeat(chr(8), 3));
+				$this->debug(sprintf('%2d%%', ($count / $total) * 100));
 			}
 
 			$document = new NateGoSearchDocument($ds, 'id');
@@ -138,8 +136,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 			$count++;
 		}
 
-		$this->output(str_repeat(chr(8), 3).Blorg::_('done')."\n",
-			self::VERBOSITY_ALL);
+		$this->debug(str_repeat(chr(8), 3).Blorg::_('done')."\n");
 
 		$post_indexer->commit();
 		unset($post_indexer);
@@ -158,7 +155,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 	 */
 	protected function queueComments()
 	{
-		$this->output(Blorg::_('Repopulating comment search queue ... '),
+		$this->debug(Blorg::_('Repopulating comment search queue ... '));
 			self::VERBOSITY_ALL);
 
 		$type = NateGoSearch::getDocumentType($this->db, 'comment');
@@ -177,7 +174,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 
 		SwatDB::exec($this->db, $sql);
 
-		$this->output(Blorg::_('done')."\n", self::VERBOSITY_ALL);
+		$this->debug(Blorg::_('done')."\n");
 	}
 
 	// }}}
@@ -211,7 +208,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 			order by BlorgComment.id',
 			$this->db->quote($type, 'integer'));
 
-		$this->output(Blorg::_('Indexing comments... ').'   ',
+		$this->debug(Blorg::_('Indexing comments... ').'   ');
 			self::VERBOSITY_ALL);
 
 		$comments = SwatDB::query($this->db, $sql,
@@ -224,9 +221,8 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 
 			if ($count % 10 == 0) {
 				$comment_indexer->commit();
-				$this->output(str_repeat(chr(8), 3), self::VERBOSITY_ALL);
-				$this->output(sprintf('%2d%%', ($count / $total) * 100),
-					self::VERBOSITY_ALL);
+				$this->debug(str_repeat(chr(8), 3));
+				$this->debug(sprintf('%2d%%', ($count / $total) * 100));
 			}
 
 			$document = new NateGoSearchDocument($ds, 'id');
@@ -234,8 +230,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 			$count++;
 		}
 
-		$this->output(str_repeat(chr(8), 3).Blorg::_('done')."\n",
-			self::VERBOSITY_ALL);
+		$this->debug(str_repeat(chr(8), 3).Blorg::_('done')."\n");
 
 		$comment_indexer->commit();
 		unset($comment_indexer);
