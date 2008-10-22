@@ -108,7 +108,6 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 			$this->db->quote($type, 'integer'));
 
 		$this->debug(Blorg::_('Indexing posts... ').'   ');
-			self::VERBOSITY_ALL);
 
 		$posts = SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('BlorgPostWrapper'));
@@ -156,7 +155,6 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 	protected function queueComments()
 	{
 		$this->debug(Blorg::_('Repopulating comment search queue ... '));
-			self::VERBOSITY_ALL);
 
 		$type = NateGoSearch::getDocumentType($this->db, 'comment');
 
@@ -209,7 +207,6 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 			$this->db->quote($type, 'integer'));
 
 		$this->debug(Blorg::_('Indexing comments... ').'   ');
-			self::VERBOSITY_ALL);
 
 		$comments = SwatDB::query($this->db, $sql,
 			SwatDBClassMap::get('BlorgCommentWrapper'));
