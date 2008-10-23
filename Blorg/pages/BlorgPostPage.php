@@ -470,12 +470,17 @@ class BlorgPostPage extends SitePage
 		case BlorgPost::COMMENT_STATUS_OPEN:
 		case BlorgPost::COMMENT_STATUS_MODERATED:
 			$form->action = $this->source.'#submit_comment';
-			if (isset($this->app->cookie->comment_credentials)) {
-				$values = $this->app->cookie->comment_credentials;
-				$ui->getWidget('fullname')->value    = $values['fullname'];
-				$ui->getWidget('link')->value        = $values['link'];
-				$ui->getWidget('email')->value       = $values['email'];
-				$ui->getWidget('remember_me')->value = true;
+			try {
+				if (isset($this->app->cookie->comment_credentials)) {
+					$values = $this->app->cookie->comment_credentials;
+					$ui->getWidget('fullname')->value    = $values['fullname'];
+					$ui->getWidget('link')->value        = $values['link'];
+					$ui->getWidget('email')->value       = $values['email'];
+					$ui->getWidget('remember_me')->value = true;
+				}
+			} catch (SiteCookieException $e) {
+				// ignore cookie errors, but delete the bad cookie
+				$this->app->cookie->removeCookie('comment_credentials');
 			}
 			break;
 
