@@ -2,13 +2,10 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.1.14';
+$version = '0.1.15';
 
 $notes = <<<EOT
-* memcache comment atom feeds
-* handle case where some posts are missing from the cache
-* fix duplicated items appearing on add gadget admin page
-* MySQL fixes
+* Suppress and handle bad cookies
 EOT;
 
 $description =
