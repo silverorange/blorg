@@ -45,6 +45,9 @@ class BlorgPostIndex extends AdminSearch
 		// setup tag entry control
 		$this->ui->getWidget('tags')->setApplication($this->app);
 		$this->ui->getWidget('tags')->setAllTags();
+
+		$this->ui->getWidget('search_tags')->setApplication($this->app);
+		$this->ui->getWidget('search_tags')->setAllTags();
 	}
 
 	// }}}
@@ -380,6 +383,15 @@ class BlorgPostIndex extends AdminSearch
 				$clause->operator = AdminSearchClause::OP_LT;
 				$where.= $clause->getClause($this->app->db);
 			}
+
+			// tags
+			$tags = $this->ui->getWidget('search_tags')->getSelectedTagArray();
+			foreach ($tags as $shortname => $title)
+				$where.= sprintf(' and BlorgPost.id in (select post from
+					BlorgPostTagBinding inner join BlorgTag on
+					BlorgTag.id = BlorgPostTagBinding.tag
+					where BlorgTag.shortname = %s)',
+					$this->app->db->quote($shortname, 'text'));
 
 			$this->where_clause = $where;
 		}

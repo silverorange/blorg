@@ -18,6 +18,12 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Tagged</property>
+				<widget class="BlorgTagEntry" id="search_tags">
+					<property name="allow_adding_tags" type="boolean">false</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
 				<property name="title" translatable="yes">Shown on Site</property>
 				<widget class="SwatYesNoFlydown" id="search_enabled" />
 			</widget>
