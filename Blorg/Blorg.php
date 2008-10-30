@@ -116,6 +116,9 @@ class Blorg
 			// A logo for the atom feed of this blorg
 			'blorg.feed_logo'              => null,
 
+			// Whether or not to use the visual editor.
+			'blorg.visual_editor'          => true,
+
 			// Optional tagline.
 			'site.tagline'                 => null,
 

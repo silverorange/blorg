@@ -43,6 +43,13 @@
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Use Visual Editor For Posts</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="value" type="data">blorg_visual_editor</property>
+					<property name="stock_id">yes-no</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Google Analytics Account</property>
 				<object class="SwatNullTextCellRenderer">
 					<property name="text" type="data">analytics_google_account</property>

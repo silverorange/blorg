@@ -1,6 +1,8 @@
 <?php
 
 require_once 'Swat/SwatOption.php';
+require_once 'Swat/SwatTextareaEditor.php';
+require_once 'Swat/SwatXHTMLTextarea.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'Site/exceptions/SiteInvalidImageException.php';
@@ -39,6 +41,9 @@ class BlorgPostEdit extends AdminDBEdit
 	 */
 	protected $post;
 
+	/**
+	 * @var string
+	 */
 	protected $ui_xml = 'Blorg/admin/components/Post/edit.xml';
 
 	/**
@@ -50,6 +55,16 @@ class BlorgPostEdit extends AdminDBEdit
 	 * @integer
 	 */
 	protected $original_enabled;
+
+	/**
+	 * @var SwatControl
+	 */
+	protected $bodytext_control;
+
+	/**
+	 * @var SwatControl
+	 */
+	protected $extended_bodytext_control;
 
 	// }}}
 
@@ -81,6 +96,8 @@ class BlorgPostEdit extends AdminDBEdit
 
 		$this->ui->getWidget('file_replicator')->replicators =
 			$this->getFileReplicators();
+
+		$this->initBodytextControls();
 	}
 
 	// }}}
@@ -170,6 +187,44 @@ class BlorgPostEdit extends AdminDBEdit
 				$status->value = BlorgPost::COMMENT_STATUS_CLOSED;
 				break;
 			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function initBodytextControls()
+
+	protected function initBodytextControls()
+	{
+		if ($this->app->config->blorg->visual_editor) {
+			// visual editors
+			$this->bodytext_control = new SwatTextareaEditor('bodytext');
+			$this->bodytext_control->required = true;
+			$field = $this->ui->getWidget('bodytext_field');
+			$field->add($this->bodytext_control);
+
+			$this->extended_bodytext_control =
+				new SwatTextareaEditor('extended_bodytext');
+
+			$field = $this->ui->getWidget('extended_bodytext_field');
+			$field->add($this->extended_bodytext_control);
+		} else {
+			// raw editors
+			$this->bodytext_control = new SwatXHTMLTextarea('bodytext');
+			$this->bodytext_control->allow_ignore_validation_errors = true;
+			$this->bodytext_control->required = true;
+			$this->bodytext_control->rows = 15;
+			$field = $this->ui->getWidget('bodytext_field');
+			$field->add($this->bodytext_control);
+
+			$this->extended_bodytext_control =
+				new SwatXHTMLTextarea('extended_bodytext');
+
+			$this->extended_bodytext_control->rows = 15;
+			$this->extended_bodytext_control->allow_ignore_validation_errors =
+				true;
+
+			$field = $this->ui->getWidget('extended_bodytext_field');
+			$field->add($this->extended_bodytext_control);
 		}
 	}
 
@@ -392,17 +447,23 @@ class BlorgPostEdit extends AdminDBEdit
 			'title',
 			'shortname',
 			'author',
-			'bodytext',
-			'extended_bodytext',
 			'comment_status',
 		));
+
+		$values['bodytext']          = $this->bodytext_control->value;
+		$values['extended_bodytext'] = $this->extended_bodytext_control->value;
 
 		$this->post->author            = $values['author'];
 		$this->post->title             = $values['title'];
 		$this->post->shortname         = $values['shortname'];
+		$this->post->comment_status    = $values['comment_status'];
+
 		$this->post->bodytext          = $values['bodytext'];
 		$this->post->extended_bodytext = $values['extended_bodytext'];
-		$this->post->comment_status    = $values['comment_status'];
+
+		$this->post->bodytext_filter =
+			($this->app->config->blorg->visual_editor) ?
+			'visual' : 'raw';
 
 		// save default author for the current admin user
 		$instance_id = $this->app->getInstanceId();
@@ -602,6 +663,10 @@ class BlorgPostEdit extends AdminDBEdit
 	protected function loadDBData()
 	{
 		$this->ui->setValues(get_object_vars($this->post));
+
+		$this->bodytext_control->value = $this->post->bodytext;
+		$this->extended_bodytext_control->value =
+			$this->post->extended_bodytext;
 
 		if ($this->post->publish_date !== null) {
 			$publish_date = new SwatDate($this->post->publish_date);

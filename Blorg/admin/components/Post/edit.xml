@@ -10,6 +10,17 @@
 			</widget>
 			<!-- {{{ Form Sidebar Area -->
 			<widget class="SwatDisplayableContainer" id="post_sidebar">
+				<widget class="SwatFieldset" id="shortname_field">
+					<property name="title" translatable="yes">Short Name</property>
+					<widget class="SwatFormField">
+					<property name="title" translatable="yes">Short Name</property>
+						<property name="note" translatable="yes">Used in permalinks.</property>
+						<widget class="AdminUniqueEntry" id="shortname">
+							<property name="required" type="boolean">true</property>
+							<property name="maxlength" type="integer">255</property>
+						</widget>
+					</widget>
+				</widget>
 				<widget class="SwatGroupingFormField" id="publish_field">
 					<property name="title" translatable="yes">Publish Post</property>
 					<widget class="BlorgPublishRadioTable" id="publish" />
@@ -38,28 +49,11 @@
 						<property name="maxlength" type="integer">255</property>
 					</widget>
 				</widget>
-				<widget class="SwatFormField" id="shortname_field">
-					<property name="title" translatable="yes">Short Name</property>
-					<property name="note" translatable="yes">Used in permalinks.</property>
-					<widget class="AdminUniqueEntry" id="shortname">
-						<property name="required" type="boolean">true</property>
-						<property name="maxlength" type="integer">255</property>
-					</widget>
-				</widget>
 				<widget class="SwatFormField" id="bodytext_field">
 					<property name="title" translatable="yes">Body Text</property>
-					<widget class="SwatXHTMLTextarea" id="bodytext">
-						<property name="required" type="boolean">true</property>
-						<property name="rows" type="integer">15</property>
-						<property name="allow_ignore_validation_errors" type="boolean">true</property>
-					</widget>
 				</widget>
-				<widget class="SwatFormField">
+				<widget class="SwatFormField" id="extended_bodytext_field">
 					<property name="title" translatable="yes">Extended Text</property>
-					<widget class="SwatXHTMLTextarea" id="extended_bodytext">
-						<property name="rows" type="integer">15</property>
-						<property name="allow_ignore_validation_errors" type="boolean">true</property>
-					</widget>
 				</widget>
 			</widget>
 			<!-- }}} -->

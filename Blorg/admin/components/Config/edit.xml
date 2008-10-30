@@ -48,6 +48,10 @@
 				<property name="title" translatable="yes">Default Comment Status</property>
 				<widget class="BlorgCommentStatusSlider" id="blorg_default_comment_status" />
 			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Use Visual Editor for Posts</property>
+				<widget class="SwatCheckbox" id="blorg_visual_editor" />
+			</widget>
 			<widget class="SwatFormField" id="image_container">
 				<property name="title" translatable="yes">Header Image</property>
 				<widget class="BlorgHeaderImageDisplay" id="image_preview" />
