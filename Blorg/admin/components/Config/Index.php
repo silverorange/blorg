@@ -57,6 +57,7 @@ class BlorgConfigIndex extends AdminPage
 				'feed_logo',
 				'default_comment_status',
 				'akismet_key',
+				'visual_editor',
 			),
 			'date' => array(
 				'time_zone',

@@ -47,6 +47,7 @@ class BlorgConfigEdit extends AdminEdit
 			'feed_logo',
 			'default_comment_status',
 			'akismet_key',
+			'visual_editor',
 		),
 		'date' => array(
 			'time_zone',
@@ -287,6 +288,16 @@ class BlorgConfigEdit extends AdminEdit
 		}
 
 		return true;
+	}
+
+	// }}}
+	// {{{ protected function saveBlorgVisualEditor()
+
+	protected function saveBlorgVisualEditor()
+	{
+		$widget = $this->ui->getWidget('blorg_visual_editor');
+		$value = ($widget->value) ? '1' : '0';
+		$this->app->config->blorg->visual_editor = $value;
 	}
 
 	// }}}

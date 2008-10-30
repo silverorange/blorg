@@ -84,6 +84,26 @@ class BlorgPost extends SwatDBDataObject
 	public $extended_bodytext;
 
 	/**
+	 * The display filter to apply to this post's bodytext
+	 *
+	 * This field should be set to an appropriate value by whatever code sets
+	 * the bodytext of this post. The value of this field is checked when the
+	 * bodytext is displayed in the {@link BlorgPostView} object.
+	 *
+	 * The values available by default are:
+	 *
+	 * - 'raw'    - no filtering is performed,
+	 * - 'visual' - special filtering for the {@link SwatTextareaEditor} visual
+	 *              editor is performed.
+	 *
+	 * Other packages may define other filter types. If an unrecognized filter
+	 * type is used, 'raw' is assumed.
+	 *
+	 * @var string
+	 */
+	public $bodytext_filter = 'raw';
+
+	/**
 	 * Date the post was created.
 	 *
 	 * @var Date
