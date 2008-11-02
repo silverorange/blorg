@@ -517,6 +517,7 @@ class BlorgPostEdit extends AdminDBEdit
 		$result = $this->post->setTagsByShortName($tags);
 		$tags_modified = ($result['added'] > 0 || $result['removed'] > 0);
 		$modified = ($modified || $tags_modified);
+		$instance_id = $this->app->getInstanceId();
 
 		// update files attached to the form to be attached to the post
 		if ($this->id === null) {
@@ -524,10 +525,12 @@ class BlorgPostEdit extends AdminDBEdit
 			$unique_id = $form->getHiddenField('unique_id');
 			$sql = sprintf('update BlorgFile set post = %s,
 				form_unique_id = null
-				where form_unique_id = %s and post != %s',
+				where form_unique_id = %s and post is null
+					and instance %s %s',
 				$this->app->db->quote($this->post->id, 'integer'),
 				$this->app->db->quote($unique_id, 'text'),
-				$this->app->db->quote($this->post->id, 'integer'));
+				SwatDB::equalityOperator($instance_id),
+				$this->app->db->quote($instance_id, 'integer'));
 
 			$num = SwatDB::exec($this->app->db, $sql);
 			$modified = ($modified || $num > 0);
