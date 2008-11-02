@@ -374,7 +374,7 @@ class BlorgPostEdit extends AdminDBEdit
 			$shortname = $this->ui->getWidget('shortname')->value;
 			if ($shortname === null) {
 				$title_value = ($this->ui->getWidget('title')->value == '') ?
-					$this->ui->getWidget('bodytext')->value :
+					$this->bodytext_control->value :
 					$this->ui->getWidget('title')->value;
 
 				$shortname = $this->generateShortname($title_value);
