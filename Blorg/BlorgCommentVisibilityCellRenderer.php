@@ -29,15 +29,15 @@ class BlorgCommentVisibilityCellRenderer extends SwatCellRenderer
 			$alt = BlorgComment::getStatusTitle($this->status);
 
 			switch ($this->status) {
-			case (BlorgComment::STATUS_UNPUBLISHED):
+			case (SiteComment::STATUS_UNPUBLISHED):
 				$color = 'Red';
 				break;
 
-			case (BlorgComment::STATUS_PUBLISHED):
+			case (SiteComment::STATUS_PUBLISHED):
 				$color = 'Green';
 				break;
 
-			case (BlorgComment::STATUS_PENDING):
+			case (SiteComment::STATUS_PENDING):
 				$color = 'Yellow';
 				break;
 			}
