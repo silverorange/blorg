@@ -126,7 +126,7 @@ class BlorgCommentEdit extends AdminDBEdit
 		}
 
 		if ($this->comment->status === null) {
-			$this->comment->status = BlorgComment::STATUS_PUBLISHED;
+			$this->comment->status = SiteComment::STATUS_PUBLISHED;
 		}
 
 		$this->comment->bodytext = $values['bodytext'];
@@ -271,15 +271,7 @@ class BlorgCommentEdit extends AdminDBEdit
 			$this->ui->getWidget('author')->addOptionsByArray($authors);
 		}
 
-		$statuses = array(
-			BlorgComment::STATUS_PUBLISHED =>
-				BlorgComment::getStatusTitle(BlorgComment::STATUS_PUBLISHED),
-			BlorgComment::STATUS_PENDING =>
-				BlorgComment::getStatusTitle(BlorgComment::STATUS_PENDING),
-			BlorgComment::STATUS_UNPUBLISHED =>
-				BlorgComment::getStatusTitle(BlorgComment::STATUS_UNPUBLISHED),
-		);
-
+		$statuses = SiteComment::getStatusArray();
 		$this->ui->getWidget('status')->addOptionsByArray($statuses);
 	}
 

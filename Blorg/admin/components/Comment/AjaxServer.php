@@ -149,8 +149,8 @@ class BlorgCommentAjaxServer extends SiteXMLRPCServer
 		$comment = new $class_name();
 		$comment->setDatabase($this->app->db);
 		if ($comment->load($comment_id, $this->app->getInstance())) {
-			if ($comment->status !== BlorgComment::STATUS_PUBLISHED) {
-				$comment->status = BlorgComment::STATUS_PUBLISHED;
+			if ($comment->status !== SiteComment::STATUS_PUBLISHED) {
+				$comment->status = SiteComment::STATUS_PUBLISHED;
 				$comment->save();
 
 				if (isset($this->app->memcache)) {
@@ -178,8 +178,8 @@ class BlorgCommentAjaxServer extends SiteXMLRPCServer
 		$comment = new $class_name();
 		$comment->setDatabase($this->app->db);
 		if ($comment->load($comment_id, $this->app->getInstance())) {
-			if ($comment->status !== BlorgComment::STATUS_UNPUBLISHED) {
-				$comment->status = BlorgComment::STATUS_UNPUBLISHED;
+			if ($comment->status !== SiteComment::STATUS_UNPUBLISHED) {
+				$comment->status = SiteComment::STATUS_UNPUBLISHED;
 				$comment->save();
 
 				if (isset($this->app->memcache)) {

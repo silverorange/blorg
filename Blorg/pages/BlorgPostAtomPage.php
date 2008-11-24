@@ -239,8 +239,8 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 			sprintf(Blorg::_('By: %s'), $author_name),
 			$comment->createdate);
 
-		$entry->setContent(BlorgComment::getBodytextXhtml(
-			$comment->bodytext), 'html');
+		$entry->setContent(SiteCommentFilter::toXhtml($comment->bodytext),
+			'html');
 
 		$entry->addAuthor($author_name, $author_uri, $author_email);
 		$entry->addLink($comment_uri, 'alternate', 'text/html');

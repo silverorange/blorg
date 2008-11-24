@@ -2,9 +2,9 @@
 
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Swat/SwatString.php';
+require_once 'Site/dataobjects/SiteComment.php';
 require_once 'Blorg/dataobjects/BlorgAuthor.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/BlorgCommentParser.php';
 
 /**
  * A comment on a Blörg Post
@@ -13,138 +13,8 @@ require_once 'Blorg/BlorgCommentParser.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgComment extends SwatDBDataObject
+class BlorgComment extends SiteCommment
 {
-	// {{{ constants
-
-	const STATUS_PENDING     = 0;
-	const STATUS_PUBLISHED   = 1;
-	const STATUS_UNPUBLISHED = 2;
-
-	// }}}
-	// {{{ public properties
-
-	/**
-	 * Unique Identifier
-	 *
-	 * @var integer
-	 */
-	public $id;
-
-	/**
-	 * Fullname of person commenting
-	 *
-	 * @var string
-	 */
-	public $fullname;
-
-	/**
-	 * Link to display with the comment
-	 *
-	 * @var string
-	 */
-	public $link;
-
-	/**
-	 * Email address of the person commenting
-	 *
-	 * @var string
-	 */
-	public $email;
-
-	/**
-	 * The body of this comment
-	 *
-	 * @var string
-	 */
-	public $bodytext;
-
-	/**
-	 * Visibility status
-	 *
-	 * Set using class contstants:
-	 * STATUS_PENDING - waiting on moderation
-	 * STATUS_PUBLISHED - comment published on site
-	 * STATUS_UNPUBLISHED - not shown on the site
-	 *
-	 * @var integer
-	 */
-	public $status;
-
-	/**
-	 * Whether or not this comment is spam
-	 *
-	 * @var boolean
-	 */
-	public $spam = false;
-
-	/**
-	 * IP Address of the person commenting
-	 *
-	 * @var string
-	 */
-	public $ip_address;
-
-	/**
-	 * User agent of the HTTP client used to comment
-	 *
-	 * @var string
-	 */
-	public $user_agent;
-
-	/**
-	 * Date this comment was created
-	 *
-	 * @var Date
-	 */
-	public $createdate;
-
-	// }}}
-	// {{{ public static function getStatusTitle()
-
-	public static function getStatusTitle($status)
-	{
-		switch ($status) {
-		case self::STATUS_PENDING :
-			$title = Blorg::_('Pending Approval');
-			break;
-
-		case self::STATUS_PUBLISHED :
-			$title = Blorg::_('Shown on Site');
-			break;
-
-		case self::STATUS_UNPUBLISHED :
-			$title = Blorg::_('Not Approved');
-			break;
-
-		default:
-			$title = Blorg::_('Unknown Status');
-			break;
-		}
-
-		return $title;
-	}
-
-	// }}}
-	// {{{ public static function getBodytextXhtml()
-
-	public static function getBodytextXhtml($bodytext)
-	{
-		$bodytext = BlorgCommentParser::parse($bodytext);
-		$bodytext = str_replace("\r\n", "\n", $bodytext);
-		$bodytext = str_replace("\r",   "\n", $bodytext);
-		$bodytext = preg_replace('/[\x0a\s]*\n\n[\x0a\s]*/s', '</p><p>',
-			$bodytext);
-
-		$bodytext = preg_replace('/[\x0a\s]*\n[\x0a\s]*/s', '<br />',
-			$bodytext);
-
-		$bodytext = '<p>'.$bodytext.'</p>';
-
-		return $bodytext;
-	}
-
-	// }}}
 	// {{{ public function load()
 
 	/**
@@ -228,7 +98,7 @@ class BlorgComment extends SwatDBDataObject
 
 	protected function init()
 	{
-		$this->registerDateProperty('createdate');
+		parent::init();
 
 		$this->registerInternalProperty('post',
 			SwatDBClassMap::get('BlorgPost'));
@@ -237,7 +107,6 @@ class BlorgComment extends SwatDBDataObject
 			SwatDBClassMap::get('BlorgAuthor'));
 
 		$this->table = 'BlorgComment';
-		$this->id_field = 'integer:id';
 	}
 
 	// }}}

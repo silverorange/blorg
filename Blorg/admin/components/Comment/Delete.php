@@ -140,7 +140,7 @@ class BlorgCommentDelete extends AdminDBDelete
 
 			$entry->id           = $comment->id;
 			$entry->title        = SwatString::ellipsizeRight(
-				SwatString::condense(BlorgComment::getBodytextXhtml(
+				SwatString::condense(SiteCommentFilter::toXhtml(
 					$comment->bodytext)), 100);
 
 			$entry->status_level = AdminDependency::DELETE;
