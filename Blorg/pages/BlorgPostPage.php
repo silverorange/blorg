@@ -2,7 +2,7 @@
 
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatUI.php';
-require_once 'Site/pages/SitePage.php';
+require_once 'Site/pages/SitePageDecorator.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgPostLoader.php';
@@ -21,7 +21,7 @@ require_once 'NateGoSearch/NateGoSearch.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostPage extends SitePage
+class BlorgPostPage extends SitePageDecorator
 {
 	// {{{ class constants
 
@@ -53,10 +53,9 @@ class BlorgPostPage extends SitePage
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		array $arguments = array())
+	public function __construct(SiteAbstractPage $page)
 	{
-		parent::__construct($app, $layout, $arguments);
+		parent::__construct($page);
 
 		$year = $this->getArgument('year');
 		$month_name = $this->getArgument('month_name');
@@ -406,10 +405,16 @@ class BlorgPostPage extends SitePage
 
 	public function build()
 	{
-		$this->buildTitle();
-		$this->buildNavBar();
-		$this->buildCommentUi();
+		parent::build();
 		$this->buildAtomLinks();
+	}
+
+	// }}}
+	// {{{ protected function buildContent()
+
+	protected function buildContent()
+	{
+		$this->buildCommentUi();
 
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');
@@ -421,15 +426,21 @@ class BlorgPostPage extends SitePage
 	}
 
 	// }}}
+	// {{{ protected function buildMetaDescription()
+
+	protected function buildMetaDescription()
+	{
+		$this->layout->data->meta_description = SwatString::minimizeEntities(
+			SwatString::ellipsizeRight(
+				SwatString::condense($this->post->bodytext), 300));
+	}
+
+	// }}}
 	// {{{ protected function buildTitle()
 
 	protected function buildTitle()
 	{
 		$this->layout->data->html_title = $this->post->getTitle();
-
-		$this->layout->data->meta_description = SwatString::minimizeEntities(
-			SwatString::ellipsizeRight(
-				SwatString::condense($this->post->bodytext), 300));
 	}
 
 	// }}}
