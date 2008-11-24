@@ -13,7 +13,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgComment extends SiteCommment
+class BlorgComment extends SiteComment
 {
 	// {{{ public function load()
 
