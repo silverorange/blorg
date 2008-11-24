@@ -240,11 +240,11 @@ class BlorgPostPage extends SitePage
 
 		switch ($this->post->comment_status) {
 		case BlorgPost::COMMENT_STATUS_OPEN:
-			$this->comment->status = BlorgComment::STATUS_PUBLISHED;
+			$this->comment->status = SiteComment::STATUS_PUBLISHED;
 			break;
 
 		case BlorgPost::COMMENT_STATUS_MODERATED:
-			$this->comment->status = BlorgComment::STATUS_PENDING;
+			$this->comment->status = SiteComment::STATUS_PENDING;
 			break;
 		}
 
@@ -271,7 +271,7 @@ class BlorgPostPage extends SitePage
 		// clear posts cache if comment is visible
 		if (isset($this->app->memcache)) {
 			if (!$this->comment->spam &&
-				$this->comment->status === BlorgComment::STATUS_PUBLISHED) {
+				$this->comment->status === SiteComment::STATUS_PUBLISHED) {
 				$this->app->memcache->flushNs('posts');
 			}
 		}

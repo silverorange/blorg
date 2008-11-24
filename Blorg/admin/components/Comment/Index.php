@@ -247,7 +247,7 @@ class BlorgCommentIndex extends AdminPage
 			case self::SHOW_UNAPPROVED :
 				$where.= sprintf(
 					' and status = %s and spam = %s',
-					$this->app->db->quote(BlorgComment::STATUS_PENDING,
+					$this->app->db->quote(SiteComment::STATUS_PENDING,
 						'integer'),
 					$this->app->db->quote(false, 'boolean'));
 

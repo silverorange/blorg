@@ -148,7 +148,7 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 	protected function getWhereClause()
 	{
 		return sprintf('BlorgComment.status = %s and BlorgComment.spam = %s',
-			$this->app->db->quote(BlorgComment::STATUS_PUBLISHED, 'integer'),
+			$this->app->db->quote(SiteComment::STATUS_PUBLISHED, 'integer'),
 			$this->app->db->quote(false, 'boolean'));
 	}
 
@@ -232,8 +232,8 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 			sprintf(Blorg::_('%s on “%s”'), $author_name, $post->getTitle()),
 			$comment->createdate);
 
-		$entry->setContent(BlorgComment::getBodytextXhtml(
-			$comment->bodytext), 'html');
+		$entry->setContent(SiteCommentFilter::toXhtml($comment->bodytext),
+			'html');
 
 		$entry->addAuthor($author_name, $author_uri, $author_email);
 		$entry->addLink($comment_uri, 'alternate', 'text/html');

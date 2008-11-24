@@ -171,11 +171,11 @@ class BlorgCommentDisplay extends SwatControl
 			echo ' - ', Blorg::_('Spam');
 		} else {
 			switch ($this->comment->status) {
-			case BlorgComment::STATUS_UNPUBLISHED:
+			case SiteComment::STATUS_UNPUBLISHED:
 				echo ' - ', Blorg::_('Unpublished');
 				break;
 
-			case BlorgComment::STATUS_PENDING:
+			case SiteComment::STATUS_PENDING:
 				echo ' - ', Blorg::_('Pending');
 				break;
 			}
@@ -225,15 +225,15 @@ class BlorgCommentDisplay extends SwatControl
 			$class = 'blorg-comment-red';
 		} else {
 			switch ($this->comment->status) {
-			case BlorgComment::STATUS_UNPUBLISHED:
+			case SiteComment::STATUS_UNPUBLISHED:
 				$class = 'blorg-comment-red';
 				break;
 
-			case BlorgComment::STATUS_PENDING:
+			case SiteComment::STATUS_PENDING:
 				$class = 'blorg-comment-yellow';
 				break;
 
-			case BlorgComment::STATUS_PUBLISHED:
+			case SiteComment::STATUS_PUBLISHED:
 			default:
 				$class = 'blorg-comment-green';
 				break;

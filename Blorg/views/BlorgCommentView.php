@@ -235,7 +235,7 @@ class BlorgCommentView extends BlorgView
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'comment-content';
 			$div_tag->setContent(
-				BlorgComment::getBodyTextXhtml($comment->bodytext), 'text/xml');
+				SiteCommentFilter::toXhtml($comment->bodytext), 'text/xml');
 
 			$div_tag->display();
 			break;
@@ -243,7 +243,7 @@ class BlorgCommentView extends BlorgView
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'comment-content';
 			$div_tag->setContent(SwatString::ellipsizeRight(
-				SwatString::condense(BlorgComment::getBodyTextXhtml(
+				SwatString::condense(SiteCommentFilter::toXhtml(
 					$comment->bodytext)), 400), 'text/xml');
 
 			$div_tag->display();

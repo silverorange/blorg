@@ -305,7 +305,7 @@ class BlorgPost extends SwatDBDataObject
 			where post = %s and status = %s and spam = %s
 			order by createdate',
 			$this->db->quote($this->id, 'integer'),
-			$this->db->quote(BlorgComment::STATUS_PUBLISHED, 'integer'),
+			$this->db->quote(SiteComment::STATUS_PUBLISHED, 'integer'),
 			$this->db->quote(false, 'boolean'));
 
 		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
