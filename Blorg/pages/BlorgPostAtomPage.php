@@ -126,7 +126,7 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 			$this->comments->setDatabase($this->app->db);
 		}
 
-		if (count($this->comments) === 0) {
+		if ($page > 1 && count($this->comments) === 0) {
 			throw new SiteNotFoundException(Blorg::_('Page not found.'));
 		}
 	}
