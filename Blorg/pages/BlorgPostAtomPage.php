@@ -146,7 +146,8 @@ class BlorgPostAtomPage extends BlorgAbstractAtomPage
 
 	protected function buildFeed()
 	{
-		$feed = new XML_Atom_Feed($this->getBlorgBaseHref().'#comments',
+		// TODO: this is wrong
+		$feed = new XML_Atom_Feed($this->getPostUri($this->post).'#comments',
 			$this->app->config->site->title);
 
 		$this->buildContent($feed);
