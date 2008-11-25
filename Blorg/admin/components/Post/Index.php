@@ -428,8 +428,17 @@ class BlorgPostIndex extends AdminSearch
 		$keywords = trim($this->ui->getWidget('search_keywords')->value);
 		$author   = $this->ui->getWidget('search_author')->value;
 		$enabled  = $this->ui->getWidget('search_enabled')->value;
+		$tags     = $this->ui->getWidget('search_tags')->getSelectedTagArray();
+		$date_gt  = $this->ui->getWidget('search_publish_date_gt')->value;
+		$date_lt  = $this->ui->getWidget('search_publish_date_lt')->value;
 
-		return ($keywords != '' || $author != null || $enabled != null);
+
+		return ($keywords != ''
+			|| $author != null
+			|| $enabled != null
+			|| count($tags)
+			|| $date_gt != null
+			|| $date_lt != null);
 	}
 
 	// }}}
