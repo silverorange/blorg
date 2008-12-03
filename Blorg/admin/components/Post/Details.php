@@ -149,26 +149,38 @@ class BlorgPostDetails extends AdminIndex
 		$view->setPartMode('author', BlorgView::MODE_ALL, false);
 		$view->setPartMode('title', BlorgView::MODE_ALL, false);
 		$view->setPartMode('permalink', BlorgView::MODE_ALL, false);
+		$view->setPartMode('tags', BlorgView::MODE_NONE, false);
 		$view->setPartMode('comment_count', BlorgView::MODE_ALL, false);
 		$view->setPartMode('extended_bodytext', BlorgView::MODE_ALL, false);
 		$view->display($this->post);
 		$content_block->content = ob_get_clean();
 		$content_block->content_type = 'text/xml';
 
-		$ds = new SwatDetailsStore($this->post);
-		$ds->has_modified_date = ($this->post->modified_date !== null);
-
-		ob_start();
-		$this->displayTags();
-		$ds->tags_summary = ob_get_clean();
-
-		$details_view = $this->ui->getWidget('details_view');
-		$details_view->data = $ds;
+		$details_view->data = $this->getPostDetailsStore();
 
 		$details_frame = $this->ui->getWidget('details_frame');
 		$details_frame->title = Blorg::_('Post');
 		$details_frame->subtitle = $this->post->getTitle();
 		$this->title = $this->post->getTitle();
+	}
+
+	// }}}
+	// {{{ protected function getPostDetailsStore()
+ 
+	protected function getPostDetailsStore()
+	{
+		$store = new SwatDetailsStore($this->post);
+
+		$store->has_modified_date = ($this->post->modified_date !== null);
+
+		$store->comment_status_title =
+			BlorgPost::getCommentStatusTitle($this->post->comment_status);
+
+		ob_start();
+		$this->displayTags();
+		$store->tags_summary = ob_get_clean();
+
+		return $store;
 	}
 
 	// }}}
