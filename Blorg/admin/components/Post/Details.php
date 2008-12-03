@@ -157,6 +157,7 @@ class BlorgPostDetails extends AdminIndex
 		$content_block->content = ob_get_clean();
 		$content_block->content_type = 'text/xml';
 
+		$details_view = $this->ui->getWidget('details_view');
 		$details_view->data = $this->getPostDetailsStore();
 
 		$details_frame = $this->ui->getWidget('details_frame');
@@ -167,7 +168,7 @@ class BlorgPostDetails extends AdminIndex
 
 	// }}}
 	// {{{ protected function getPostDetailsStore()
- 
+
 	protected function getPostDetailsStore()
 	{
 		$store = new SwatDetailsStore($this->post);
