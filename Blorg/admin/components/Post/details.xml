@@ -38,7 +38,7 @@
 			</object>
 			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Comment Status</property>
-				<object class="BlorgCommentStatusCellRenderer">
+				<object class="SiteCommentStatusCellRenderer">
 					<property name="status" type="data">comment_status</property>
 				</object>
 			</object>
@@ -99,7 +99,7 @@
 					</object>
 					<object class="SwatTableViewColumn" id="visibility">
 						<property name="title" translatable="yes">Visiblility</property>
-						<object class="BlorgCommentVisibilityCellRenderer">
+						<object class="SiteCommentVisibilityCellRenderer">
 							<property name="status" type="data">status</property>
 							<property name="spam" type="data">spam</property>
 						</object>
