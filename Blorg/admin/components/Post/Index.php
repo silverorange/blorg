@@ -220,10 +220,7 @@ class BlorgPostIndex extends AdminSearch
 		$pager = $this->ui->getWidget('pager');
 		$pager->total_records = SwatDB::queryOne($this->app->db, $sql);
 
-		$sql = sprintf(
-			'select id, title, shortname, publish_date, enabled,
-				bodytext
-			from BlorgPost
+		$sql = sprintf('select * from BlorgPost
 			%s
 			where %s
 			order by %s',
@@ -232,7 +229,8 @@ class BlorgPostIndex extends AdminSearch
 			$this->getOrderByClause($view, 'publish_date desc, title'));
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
-		$posts = SwatDB::query($this->app->db, $sql, 'BlorgPostWrapper');
+		$posts = SwatDB::query($this->app->db, $sql,
+			SwatDBClassMap::get('BlorgPostWrapper'));
 
 		$current_date = null;
 		$store = new SwatTableStore();
