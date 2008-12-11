@@ -419,9 +419,9 @@ class BlorgPostIndex extends AdminSearch
 	}
 
 	// }}}
-	// {{{ private function hasSearch()
+	// {{{ protected function hasSearch()
 
-	private function hasSearch()
+	protected function hasSearch()
 	{
 		$keywords = trim($this->ui->getWidget('search_keywords')->value);
 		$author   = $this->ui->getWidget('search_author')->value;
