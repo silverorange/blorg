@@ -474,14 +474,13 @@ class BlorgPostView extends BlorgView
 					$flag);
 
 				if ($flag && $link !== false) {
-					$bodytext.= ' ';
 					$anchor_tag = new SwatHtmlTag('a');
 					if (is_string($link)) {
 						$anchor_tag->href = $link;
 					} else {
 						$anchor_tag->href = $this->getPostRelativeUri($post);
 					}
-					$anchor_tag->setContent(Blorg::_('read more »'));
+					$anchor_tag->setContent(Blorg::_(' read more »'));
 					$bodytext.= $anchor_tag;
 				}
 			}
