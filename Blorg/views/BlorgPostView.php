@@ -480,8 +480,8 @@ class BlorgPostView extends BlorgView
 					} else {
 						$anchor_tag->href = $this->getPostRelativeUri($post);
 					}
-					$anchor_tag->setContent(Blorg::_(' read more »'));
-					$bodytext.= $anchor_tag;
+					$anchor_tag->setContent(Blorg::_('read more »'));
+					$bodytext.= ' '.$anchor_tag;
 				}
 			}
 
