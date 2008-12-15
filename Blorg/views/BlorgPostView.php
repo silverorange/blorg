@@ -454,6 +454,7 @@ class BlorgPostView extends BlorgView
 
 		case BlorgView::MODE_SUMMARY:
 			$bodytext = null;
+			$link = $this->getLink('bodytext');
 
 			// don't summarize microblogs
 			if ($post->title == '') {
@@ -467,8 +468,22 @@ class BlorgPostView extends BlorgView
 			}
 
 			if ($bodytext === null) {
+				$flag = false;
 				$bodytext = SwatString::ellipsizeRight(SwatString::condense(
-					$post->bodytext), $this->bodytext_summary_length);
+					$post->bodytext), $this->bodytext_summary_length, ' …',
+					$flag);
+
+				if ($flag && $link !== false) {
+					$bodytext.= ' ';
+					$anchor_tag = new SwatHtmlTag('a');
+					if (is_string($link)) {
+						$anchor_tag->href = $link;
+					} else {
+						$anchor_tag->href = $this->getPostRelativeUri($post);
+					}
+					$anchor_tag->setContent(Blorg::_('read more »'));
+					$bodytext.= $anchor_tag;
+				}
 			}
 
 			$div_tag = new SwatHtmlTag('div');
