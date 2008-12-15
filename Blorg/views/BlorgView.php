@@ -346,7 +346,7 @@ abstract class BlorgView
 	}
 
 	// }}}
-	// {{{ protected function getPostRelativeUri()
+	// {{{ protected function getTagRelativeUri()
 
 	protected function getTagRelativeUri(BlorgTag $tag)
 	{
