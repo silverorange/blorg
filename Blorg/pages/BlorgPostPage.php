@@ -186,7 +186,7 @@ class BlorgPostPage extends SitePageDecorator
 					break;
 
 				case BlorgPost::COMMENT_STATUS_MODERATED:
-					$uri = $this->source.'?comment-thank-you'.
+					$uri = $this->source.'?'.self::THANK_YOU_ID.
 						'#submit_comment';
 
 					break;
