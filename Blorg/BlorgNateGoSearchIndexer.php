@@ -82,9 +82,8 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 
 	protected function indexPosts()
 	{
-		$spell_checker = new NateGoSearchPSpellSpellChecker('en');
-		$spell_checker->setCustomWordList($this->getCustomWordList());
-		$spell_checker->loadCustomContent();
+		$spell_checker = new NateGoSearchPSpellSpellChecker('en_US', '', '',
+			$this->getCustomWordList());
 
 		$post_indexer = new NateGoSearchIndexer('post', $this->db);
 		$post_indexer->setSpellChecker($spell_checker);
@@ -182,9 +181,8 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 	{
 		$type_shortname = 'comment';
 
-		$spell_checker = new NateGoSearchPSpellSpellChecker('en');
-		$spell_checker->setCustomWordList($this->getCustomWordList());
-		$spell_checker->loadCustomContent();
+		$spell_checker = new NateGoSearchPSpellSpellChecker('en_US', '', '',
+			$this->getCustomWordList());
 
 		$comment_indexer = new NateGoSearchIndexer($type_shortname, $this->db);
 		$comment_indexer->setSpellChecker($spell_checker);
