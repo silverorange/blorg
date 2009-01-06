@@ -1,10 +1,11 @@
-function BlorgLastFmGadget(id, username, limit, invert)
+function BlorgLastFmGadget(id, username, limit, invert, date_format)
 {
-	this.id         = id;
-	this.username   = username;
-	this.limit      = limit;
-	this.invert     = invert;
-	this.output_div = document.getElementById(this.id);
+	this.id          = id;
+	this.username    = username;
+	this.limit       = limit;
+	this.invert      = invert;
+	this.output_div  = document.getElementById(this.id);
+	this.date_format = (date_format === 'short') ? 'short' : 'long';
 
 	this.init();
 	this.requestRecentSongs();
@@ -27,6 +28,13 @@ BlorgLastFmGadget.months = [
 	'October',
 	'November',
 	'December'
+];
+
+BlorgLastFmGadget.short_months = [
+	'Jan', 'Feb', 'Mar',
+	'Apr', 'May', 'Jun',
+	'Jul', 'Aug', 'Sep',
+	'Oct', 'Nov', 'Dec'
 ];
 
 BlorgLastFmGadget.throbber_image = new Image();
@@ -127,21 +135,6 @@ BlorgLastFmGadget.prototype.handleSuccessfulUpdate = function(o)
 			var date = new Date();
 			date.setTime(parseInt(dates[0].getAttribute('uts')) * 1000);
 
-			var hours = date.getHours();
-
-			if (hours > 12) {
-				hours -= 12;
-				var ampm = 'pm';
-			} else {
-				var ampm = 'am';
-			}
-			if (hours == 0)
-				hours = 12;
-
-			var minutes = date.getMinutes();
-			if (minutes < 10)
-				minutes = '0' + minutes;
-
 			var a = document.createElement('a');
 			a.href = urls[0].firstChild.nodeValue;
 			a.title = BlorgLastFmGadget.visit_text;
@@ -151,9 +144,7 @@ BlorgLastFmGadget.prototype.handleSuccessfulUpdate = function(o)
 
 			var span = document.createElement('span');
 			span.appendChild(document.createTextNode(
-				hours + ':' + minutes + ' ' + ampm + ', ' +
-				BlorgLastFmGadget.months[date.getMonth()] + ' ' +
-				date.getDate()));
+				this.formatDate(date, this.date_format)));
 
 			li.appendChild(a);
 			li.appendChild(document.createElement('br'));
@@ -173,4 +164,33 @@ BlorgLastFmGadget.prototype.handleSuccessfulUpdate = function(o)
 
 BlorgLastFmGadget.prototype.handleFailedUpdate = function(o)
 {
+}
+
+BlorgLastFmGadget.prototype.formatDate = function(date, format)
+{
+	var hours = date.getHours();
+
+	if (hours > 12) {
+		hours -= 12;
+		var ampm = 'pm';
+	} else {
+		var ampm = 'am';
+	}
+	if (hours == 0)
+		hours = 12;
+
+	var minutes = date.getMinutes();
+	if (minutes < 10)
+		minutes = '0' + minutes;
+
+	if (format === 'short') {
+		var formatted_date = hours + ':' + minutes + ampm + ', ' +
+			BlorgLastFmGadget.short_months[date.getMonth()] + ' ' +
+			date.getDate();
+	} else {
+		var formatted_date = hours + ':' + minutes + ' ' + ampm + ', ' +
+			BlorgLastFmGadget.months[date.getMonth()] + ' ' + date.getDate();
+	}
+
+	return formatted_date;
 }
