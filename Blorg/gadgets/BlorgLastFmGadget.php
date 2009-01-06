@@ -76,23 +76,30 @@ class BlorgLastFmGadget extends SiteGadget
 		$none_text     = Blorg::_('‹none›');
 
 		$months = array();
+		$short_months = array();
 		$date = new Date('2000-01-01T00:00:00Z');
 		while ($date->getMonth() <= 12) {
 			$months[] = SwatString::quoteJavaScriptString($date->format('%B'));
+			$short_months[] = SwatString::quoteJavaScriptString(
+				$date->format('%b'));
+
 			$date->setMonth($date->getMonth() + 1);
 		}
 
 		$months = implode(', ', $months);
+		$short_months = implode(', ', $short_months);
 
 		return sprintf(
 			"BlorgLastFmGadget.throbber_text = '%s';\n".
 			"BlorgLastFmGadget.visit_text = '%s';\n".
 			"BlorgLastFmGadget.none_text = '%s';\n".
-			"BlorgLastFmGadget.months = [%s];\n",
+			"BlorgLastFmGadget.months = [%s];\n".
+			"BlorgLastFmGadget.short_months = [%s];\n",
 			$throbber_text,
 			$visit_text,
 			$none_text,
-			$months);
+			$months,
+			$short_months);
 	}
 
 	// }}}
