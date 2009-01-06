@@ -44,14 +44,18 @@ class BlorgLastFmGadget extends SiteGadget
 			$javascript = '';
 		}
 
-		$id       = SwatString::quoteJavaScriptString($this->id);
-		$limit    = $this->getValue('limit');
-		$invert   = ($this->getValue('invert')) ? 'true' : 'false';
+		$id     = SwatString::quoteJavaScriptString($this->id);
+		$limit  = $this->getValue('limit');
+		$invert = ($this->getValue('invert')) ? 'true' : 'false';
+
+		$date_format = SwatString::quoteJavaScriptString(
+			$this->getValue('date_format'));
+
 		$username = SwatString::quoteJavaScriptString(
 			$this->getValue('username'));
 
-		$javascript.= sprintf("new BlorgLastFmGadget(%s, %s, %s, %s);",
-			$id, $username, $limit, $invert);
+		$javascript.= sprintf("new BlorgLastFmGadget(%s, %s, %s, %s, %s);",
+			$id, $username, $limit, $invert, $date_format);
 
 		return $javascript;
 	}
@@ -98,10 +102,14 @@ class BlorgLastFmGadget extends SiteGadget
 	{
 		$this->defineDefaultTitle(Blorg::_('Recently Listened'));
 
-		$this->defineSetting('username', Blorg::_('User Name'), 'string');
-		$this->defineSetting('limit',    Blorg::_('Limit'), 'integer', 10);
-		$this->defineSetting('invert',   Blorg::_('Invert Loading Image'),
+		$this->defineSetting('username',    Blorg::_('User Name'), 'string');
+		$this->defineSetting('limit',       Blorg::_('Limit'), 'integer', 10);
+		$this->defineSetting('invert',      Blorg::_('Invert Loading Image'),
 			'boolean', false);
+
+		$this->defineSetting('date_format',
+			Blorg::_('Date Format (“short” 2:36pm, Jan 5 — or — '.
+				'“long” 2:36 pm, January 5)'), 'string', 'long');
 
 		$this->defineDescription(Blorg::_(
 			'Lists recently listened songs for a user on Last.fm.'));
