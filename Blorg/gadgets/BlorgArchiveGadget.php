@@ -52,12 +52,14 @@ class BlorgArchiveGadget extends SiteGadget
 	 */
 	protected function displayTitle()
 	{
+		$path = $this->app->config->blorg->path.'archive';
+
 		$header = new SwatHtmlTag('h3');
 		$header->class = 'site-gadget-title';
 
 		$link = new SwatHtmlTag('a');
 		$link->setContent($this->getTitle());
-		$link->href = 'archive';
+		$link->href = $path;
 
 		$header->open();
 		$link->display();
