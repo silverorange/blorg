@@ -99,7 +99,8 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 			$this->comments->setDatabase($this->app->db);
 		}
 
-		if (count($this->comments) === 0) {
+		// if we're not on the first page and there are no comments, 404
+		if ($page > 1 && count($this->comments) === 0) {
 			throw new SiteNotFoundException('Page not found.');
 		}
 
