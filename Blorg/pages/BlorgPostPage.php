@@ -448,6 +448,9 @@ class BlorgPostPage extends SitePageDecorator
 
 	protected function buildNavBar()
 	{
+		if (!property_exists($this->layout, 'navbar'))
+			return;
+
 		$path = $this->app->config->blorg->path.'archive';
 		$this->layout->navbar->createEntry(Blorg::_('Archive'), $path);
 
