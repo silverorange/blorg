@@ -135,7 +135,8 @@ class BlorgYearArchivePage extends SitePage
 
 	public function build()
 	{
-		$this->buildNavBar();
+		if (isset($this->layout->navbar))
+			$this->buildNavBar();
 
 		$this->layout->startCapture('content');
 		Blorg::displayAd($this->app, 'top');

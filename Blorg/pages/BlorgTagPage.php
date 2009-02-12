@@ -123,7 +123,9 @@ class BlorgTagPage extends SitePage
 
 	public function build()
 	{
-		$this->buildNavBar();
+		if (isset($this->layout->navbar))
+			$this->buildNavBar();
+
 		$this->buildAtomLinks();
 
 		$this->layout->startCapture('content');
