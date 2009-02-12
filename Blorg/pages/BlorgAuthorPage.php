@@ -101,7 +101,9 @@ class BlorgAuthorPage extends SitePage
 
 	public function build()
 	{
-		$this->buildNavBar();
+		if (isset($this->layout->navbar))
+			$this->buildNavBar();
+
 		$this->buildTitle();
 
 		$this->layout->startCapture('content');
