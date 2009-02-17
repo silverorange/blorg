@@ -371,7 +371,7 @@ class BlorgPostView extends BlorgView
 			// display human-readable date in local time
 			$date = clone $post->publish_date;
 			$date->convertTZ($this->app->default_time_zone);
-			$abbr_tag->setContent($date->format(SwatDate::DF_DATE_LONG));
+			$abbr_tag->setContent($date->format($this->getDateFormat($post)));
 			$abbr_tag->display();
 
 			$permalink_tag->close();
@@ -616,6 +616,19 @@ class BlorgPostView extends BlorgView
 	// }}}
 
 	// helper methods
+	// {{{ protected function getDateFormat()
+
+	/**
+	 * Get a date format for displays the date part of the permalink
+	 *
+	 * @param BlorgPost $post
+	 */
+	protected function getDateFormat(BlorgPost $post)
+	{
+		return SwatDate::DF_DATE_LONG;
+	}
+
+	// }}}
 	// {{{ protected function isVisible()
 
 	/**
