@@ -48,7 +48,7 @@ class BlorgTagIndexPage extends SitePage
 						BlorgTag.id = BlorgPostTagBinding.tag
 					inner join BlorgPost on
 						BlorgPostTagBinding.post = BlorgPost.id
-					inner join Instance on BlorgTag.instance = Instance.id
+					left outer join Instance on BlorgTag.instance = Instance.id
 				where BlorgTag.instance %s %s and BlorgPost.enabled = %s
 					group by BlorgTag.title, BlorgTag.shortname
 					order by BlorgTag.title',
