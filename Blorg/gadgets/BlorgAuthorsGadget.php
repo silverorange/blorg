@@ -87,17 +87,6 @@ class BlorgAuthorsGadget extends SiteGadget
 	}
 
 	// }}}
-	// {{{ protected function getAuthorRelativeUri()
-
-	protected function getAuthorRelativeUri(BlorgAuthor $author)
-	{
-		$path = $this->app->config->blorg->path.'author';
-		return sprintf('%s/%s',
-			$path,
-			$author->shortname);
-	}
-
-	// }}}
 	// {{{ protected function displayAuthor()
 
 	protected function displayAuthor(BlorgAuthor $author)
