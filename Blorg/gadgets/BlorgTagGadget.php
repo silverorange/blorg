@@ -29,7 +29,7 @@ class BlorgTagGadget extends SiteGadget
 
 		$link = new SwatHtmlTag('a');
 		$link->setContent($this->getTitle());
-		$link->href = 'tag';
+		$link->href = $this->app->config->blorg->path.'tag';
 
 		$header->open();
 		$link->display();
