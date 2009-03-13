@@ -180,8 +180,11 @@ class BlorgFrontPage extends SitePage
 	public function finalize()
 	{
 		parent::finalize();
-		$this->layout->addHtmlHeadEntrySet(
-			$this->pager->getHtmlHeadEntrySet());
+
+		if ($this->pager !== null) {
+			$this->layout->addHtmlHeadEntrySet(
+				$this->pager->getHtmlHeadEntrySet());
+		}
 	}
 
 	// }}}
