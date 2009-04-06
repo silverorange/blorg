@@ -18,3 +18,4 @@ create table BlorgPost (
 
 create index BlorgPost_instance_index on BlorgPost(instance);
 create index BlorgPost_enabled_index on BlorgPost(enabled);
+CREATE INDEX BlorgPost_instance_enabled_index ON BlorgPost(instance, enabled);
