@@ -14,6 +14,11 @@ require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
  */
 class BlorgSearchResultsPage extends SiteSearchResultsPage
 {
+	// {{{ private properties
+
+	private $memcache_posts;
+
+	// }}}
 	// {{{ public function __construct()
 
 	public function __construct(SiteAbstractPage $page)
@@ -37,6 +42,7 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 		Blorg::displayAd($this->app, 'top');
 		echo $this->layout->data->content;
 		Blorg::displayAd($this->app, 'bottom');
+		$this->app->timer->display();
 		$this->layout->data->content = ob_get_clean();
 	}
 
@@ -89,11 +95,8 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	protected function buildPosts($fulltext_result)
 	{
 		$pager = $this->ui->getWidget('post_pager');
-		$engine = $this->instantiatePostSearchEngine();
-		$engine->setFulltextResult($fulltext_result);
-		$posts = $engine->search($pager->page_size, $pager->current_record);
+		$posts = $this->getPosts($fulltext_result, $pager);
 
-		$pager->total_records = $engine->getResultCount();
 		$pager->link = $this->source;
 
 		$this->result_count['post'] = count($posts);
@@ -109,6 +112,41 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 			$this->displayPosts($posts);
 			$results->content = ob_get_clean();
 		}
+	}
+
+	// }}}
+	// {{{ protected function getPosts()
+
+	protected function getPosts(SiteNateGoFulltextSearchResult $result,
+		SwatPagination $pager)
+	{
+		SwatDB::setDebug(true);
+
+		if (isset($this->app->memcache)) {
+			$key = $this->getPostsMemcacheKey();
+			$posts = $this->app->memcache->getNs('posts', $key);
+			$total_records = $this->app->memcache->getNs('posts',
+				$key.'.total_records');
+
+			if ($posts !== false && $total_records !== false) {
+				$pager->total_records = $total_records;
+				return $posts;
+			}
+		}
+
+		$engine = $this->instantiatePostSearchEngine();
+		$engine->setFulltextResult($result);
+		$posts = $engine->search($pager->page_size, $pager->current_record);
+		$pager->total_records = $engine->getResultCount();
+
+		// used to memcache the posts
+		if (isset($this->app->memcache)) {
+			$this->memcache_posts = $posts;
+			$this->app->memcache->setNs('posts', $key.'.total_records',
+				$engine->getResultCount());
+		}
+
+		return $posts;
 	}
 
 	// }}}
@@ -141,6 +179,20 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	}
 
 	// }}}
+	// {{{ protected function getPostsMemcacheKey()
+
+	protected function getPostsMemcacheKey()
+	{
+		$pager = $this->ui->getWidget('post_pager');
+		$instance = $this->app->instance->getInstance();
+
+		return sprintf('BlorgSearchResultsPage.posts.%s.%s.%s.%s',
+			($instance === null ? 'null' : $instance->id),
+			$this->getQueryString(),
+			$pager->page_size, $pager->current_record);
+	}
+
+	// }}}
 
 	// finalize phase
 	// {{{ public function finalize()
@@ -150,6 +202,11 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 		parent::finalize();
 		$this->layout->addHtmlHeadEntrySet(
 			$this->ui->getRoot()->getHtmlHeadEntrySet());
+
+		if ($this->memcache_posts !== null) {
+			$key = $this->getPostsMemcacheKey();
+			$this->app->memcache->setNs('posts', $key, $this->memcache_posts);
+		}
 	}
 
 	// }}}
