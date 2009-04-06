@@ -42,7 +42,6 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 		Blorg::displayAd($this->app, 'top');
 		echo $this->layout->data->content;
 		Blorg::displayAd($this->app, 'bottom');
-		$this->app->timer->display();
 		$this->layout->data->content = ob_get_clean();
 	}
 
