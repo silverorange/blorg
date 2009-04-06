@@ -3,6 +3,7 @@
 require_once 'Services/Twitter.php';
 require_once 'Swat/SwatDate.php';
 require_once 'Site/gadgets/SiteGadget.php';
+require_once 'Site/exceptions/SiteException.php';
 
 /**
  * Displays recent twitter updates
@@ -167,7 +168,8 @@ class BlorgTwitterGadget extends SiteGadget
 			$timeline = $this->twitter->statuses->user_timeline($params);
 		} catch (Services_Twitter_Exception $e) {
 			$this->has_error = $e->getCode();
-			$e->log();
+			$exception = new SiteException($e->getMessage(), $e->getCode());
+			$exception->log();
 		}
 
 		return $timeline;
