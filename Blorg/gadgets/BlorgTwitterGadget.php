@@ -133,7 +133,7 @@ class BlorgTwitterGadget extends SiteGadget
 		switch ($this->has_error) {
 			case Services_Twitter::ERROR_DOWN:
 			case Services_Twitter::ERROR_UNAVAILABLE:
-				echo 'Looks like twitter is unavialable right now.';
+				echo 'Looks like twitter is unavailable right now.';
 				break;
 			default:
 				echo 'Something went wrong. Now we know about it so we will'.
