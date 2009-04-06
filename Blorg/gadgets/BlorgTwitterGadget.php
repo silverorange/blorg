@@ -149,12 +149,53 @@ class BlorgTwitterGadget extends SiteGadget
 
 	protected function getDateString(SwatDate $post_date)
 	{
-		$difference = $this->now->dateDiff($post_date);
-		$hours = ceil($difference * 24);
-		$date_string = sprintf(Blorg::ngettext(
-			'around one hour ago',
-			'around %s hours ago', $hours),
-			SwatString::numberFormat($hours));
+		$difference = $this->now->getSecond() - $post_date->getSecond();
+		if ($difference > 0) {
+			$date_string = sprintf(Blorg::ngettext(
+				'around one second ago',
+				'around %s seconds ago', $difference),
+				SwatString::numberFormat($difference));
+		}
+
+		$difference = $this->now->getMinute() - $post_date->getMinute();
+		if ($difference > 0) {
+			$date_string = sprintf(Blorg::ngettext(
+				'around one minute ago',
+				'around %s minutes ago', $difference),
+				SwatString::numberFormat($difference));
+		}
+
+		$difference = $this->now->getHour() - $post_date->getHour();
+		if ($difference > 0) {
+			$date_string = sprintf(Blorg::ngettext(
+				'around one hour ago',
+				'around %s hours ago', $difference),
+				SwatString::numberFormat($difference));
+		}
+
+		$difference = $this->now->getDay() - $post_date->getDay();
+		if ($difference > 0) {
+			$date_string = sprintf(Blorg::ngettext(
+				'around one day ago',
+				'around %s days ago', $difference),
+				SwatString::numberFormat($difference));
+		}
+
+		$difference = $this->now->getMonth() - $post_date->getMonth();
+		if ($difference > 0) {
+			$date_string = sprintf(Blorg::ngettext(
+				'around one month ago',
+				'around %s months ago', $difference),
+				SwatString::numberFormat($difference));
+		}
+
+		$difference = $this->now->getYear() - $post_date->getYear();
+		if ($difference > 0) {
+			$date_string = sprintf(Blorg::ngettext(
+				'around one year ago',
+				'around %s years ago', $difference),
+				SwatString::numberFormat($difference));
+		}
 
 		return $date_string;
 	}
