@@ -136,12 +136,15 @@ class BlorgTwitterGadget extends SiteGadget
 		switch ($this->has_error) {
 			case Services_Twitter::ERROR_DOWN:
 			case Services_Twitter::ERROR_UNAVAILABLE:
-				echo 'Looks like Twitter is unavailable right now.';
+				$message = Blorg::_(
+					'Looks like Twitter is unavailable right now.');
 				break;
 			default:
-				echo 'Something went wrong. Now we know about it so we will'.
-					'fix it.';
+				$message = Blorg::_('Something went wrong. Now that we know'.
+					' about it we will fix it.');
 		}
+
+		echo $message;
 	}
 
 	// }}}
@@ -149,52 +152,37 @@ class BlorgTwitterGadget extends SiteGadget
 
 	protected function getDateString(SwatDate $post_date)
 	{
-		$difference = $this->now->getSecond() - $post_date->getSecond();
-		if ($difference > 0) {
-			$date_string = sprintf(Blorg::ngettext(
-				'around one second ago',
-				'around %s seconds ago', $difference),
-				SwatString::numberFormat($difference));
-		}
-
-		$difference = $this->now->getMinute() - $post_date->getMinute();
-		if ($difference > 0) {
+		$difference = $this->now->dateDiff($post_date);
+		if ($difference < (1/24.0)) {
+			$minutes = ceil(3600 * 24 * $difference);
 			$date_string = sprintf(Blorg::ngettext(
 				'around one minute ago',
-				'around %s minutes ago', $difference),
-				SwatString::numberFormat($difference));
-		}
-
-		$difference = $this->now->getHour() - $post_date->getHour();
-		if ($difference > 0) {
+				'around %s minutes ago', $minutes),
+				SwatString::numberFormat($minutes));
+		} else if ($difference < 1) {
+			$hours = ceil(24 * $difference);
 			$date_string = sprintf(Blorg::ngettext(
 				'around one hour ago',
-				'around %s hours ago', $difference),
-				SwatString::numberFormat($difference));
-		}
-
-		$difference = $this->now->getDay() - $post_date->getDay();
-		if ($difference > 0) {
+				'around %s hours ago', $hours),
+				SwatString::numberFormat($hours));
+		} else if ($difference < 30) {
+			$days = ceil($difference);
 			$date_string = sprintf(Blorg::ngettext(
 				'around one day ago',
-				'around %s days ago', $difference),
-				SwatString::numberFormat($difference));
-		}
-
-		$difference = $this->now->getMonth() - $post_date->getMonth();
-		if ($difference > 0) {
+				'around %s days ago', $days),
+				SwatString::numberFormat($days));
+		} else if ($difference < 365) {
+			$months = ceil($difference / 30);
 			$date_string = sprintf(Blorg::ngettext(
 				'around one month ago',
-				'around %s months ago', $difference),
-				SwatString::numberFormat($difference));
-		}
-
-		$difference = $this->now->getYear() - $post_date->getYear();
-		if ($difference > 0) {
+				'around %s months ago', $months),
+				SwatString::numberFormat($months));
+		} else {
+			$years = ceil($difference / 365);
 			$date_string = sprintf(Blorg::ngettext(
 				'around one year ago',
-				'around %s years ago', $difference),
-				SwatString::numberFormat($difference));
+				'around %s years ago', $months),
+				SwatString::numberFormat($months));
 		}
 
 		return $date_string;
