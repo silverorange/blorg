@@ -119,8 +119,6 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	protected function getPosts(SiteNateGoFulltextSearchResult $result,
 		SwatPagination $pager)
 	{
-		SwatDB::setDebug(true);
-
 		if (isset($this->app->memcache)) {
 			$key = $this->getPostsMemcacheKey();
 			$posts = $this->app->memcache->getNs('posts', $key);
