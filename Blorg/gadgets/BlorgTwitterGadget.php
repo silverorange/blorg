@@ -97,8 +97,10 @@ class BlorgTwitterGadget extends SiteGadget
 
 	protected function displayTimeline($timeline)
 	{
-		$ul_tag = new SwatHtmlTag('ul');
-		$ul_tag->open();
+		$span_tag = new SwatHtmlTag('span');
+		$a_tag = new SwatHtmlTag('a');
+
+		echo '<ul>';
 
 		for ($i = 0; $i < $this->getValue('max_updates')
 				&& count($timeline->status) > $i; $i++) {
@@ -106,22 +108,23 @@ class BlorgTwitterGadget extends SiteGadget
 			$create_date = new SwatDate(strtotime($status->created_at),
 				DATE_FORMAT_UNIXTIME);
 
-			echo '<li><div>';
-			$a_tag = new SwatHtmlTag('a');
+			echo '<li>';
 			$a_tag->href = sprintf('%s/%s/status/%s', Services_Twitter::$uri,
 				$this->getValue('username'), $status->id);
 
 			$a_tag->setContent($status->text);
-			$a_tag->display();
+			$span_tag->setContent(sprintf('(%s)',
+				$this->getDateString($create_date)));
 
-			echo '</div>';
-			echo $this->getDateString($create_date);
+			$a_tag->display();
+			echo ' ';
+			$span_tag->display();
 			echo '</li>';
 		}
 
-		$ul_tag->close();
+		echo '</ul>';
 
-		printf('<span>Follow <a href="%1$s/%2$s">%2$s</a> on Twitter',
+		printf('Follow <a href="%1$s/%2$s">%2$s</a> on Twitter',
 			Services_Twitter::$uri, $this->getValue('username'));
 	}
 
