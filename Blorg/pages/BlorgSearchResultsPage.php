@@ -126,6 +126,7 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 				$key.'.total_records');
 
 			if ($posts !== false && $total_records !== false) {
+				$posts->setDatabase($this->app->db);
 				$pager->total_records = $total_records;
 				return $posts;
 			}
