@@ -115,7 +115,7 @@ class BlorgPostView extends BlorgView
 
 		if ($this->isVisible($post)) {
 			$div_tag = new SwatHtmlTag('div');
-			$div_tag->id = sprintf('post_%s', $post->shortname);
+			$div_tag->id = $this->getXhtmlId($post);
 			$div_tag->class = 'entry hentry entry-author-'.
 				$post->author->shortname;
 
@@ -616,6 +616,19 @@ class BlorgPostView extends BlorgView
 	// }}}
 
 	// helper methods
+	// {{{ protected function getXhtmlId()
+
+	protected function getXhtmlId(BlorgPost $post)
+	{
+		$date = clone $post->publish_date;
+		$date->convertTZ($this->app->default_time_zone);
+		$date = $date->format('%Y%m%d');
+		return sprintf('post_%s_%s',
+			$post->shortname,
+			$date);
+	}
+
+	// }}}
 	// {{{ protected function getDateFormat()
 
 	/**
