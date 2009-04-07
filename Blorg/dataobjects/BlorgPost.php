@@ -161,19 +161,6 @@ class BlorgPost extends SwatDBDataObject
 	 */
 	protected $tags_cache;
 
-	/**
-	 * Cache of visible comments for this post
-	 *
-	 * Array indexes are hash keys built from the limit and offset passed to
-	 * the {@link BlorgPost::getVisibleComments()} method. Array values are
-	 * {@link BlorgCommentWrapper} objects.
-	 *
-	 * @var array
-	 *
-	 * @see BlorgPost::getVisibleComments()
-	 */
-	protected $visible_comments = array();
-
 	// }}}
 	// {{{ public function loadByDateAndShortname()
 
@@ -310,36 +297,35 @@ class BlorgPost extends SwatDBDataObject
 	// }}}
 	// {{{ public function getVisibleComments()
 
+	/**
+	 * Note: The results of this method are intentionally not cached or
+	 * serialized. Because the comment object serializes its post reference,
+	 * serializing the visible comments results in at best oversized serialized
+	 * data structures (to the point of crashing PHP) and at worst infinite
+	 * recursion upon serialization.
+	 */
 	public function getVisibleComments($limit = null, $offset = 0)
 	{
-		$key = 'key-'.$limit.'-'.$offset;
+		$this->checkDB();
 
-		if (array_key_exists($key, $this->visible_comments)) {
-			$comments = $this->visible_comments[$key];
-		} else {
-			$this->checkDB();
+		$sql = sprintf('select * from BlorgComment
+			where post = %s and status = %s and spam = %s
+			order by createdate',
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote(SiteComment::STATUS_PUBLISHED, 'integer'),
+			$this->db->quote(false, 'boolean'));
 
-			$sql = sprintf('select * from BlorgComment
-				where post = %s and status = %s and spam = %s
-				order by createdate',
-				$this->db->quote($this->id, 'integer'),
-				$this->db->quote(SiteComment::STATUS_PUBLISHED, 'integer'),
-				$this->db->quote(false, 'boolean'));
+		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
 
-			$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
+		if ($limit !== null) {
+			$this->db->setLimit($limit, $offset);
+		}
 
-			if ($limit !== null) {
-				$this->db->setLimit($limit, $offset);
-			}
+		$comments = SwatDB::query($this->db, $sql, $wrapper);
 
-			$comments = SwatDB::query($this->db, $sql, $wrapper);
-
-			// set post on comment objects so they don't have to query it again
-			foreach ($comments as $comment) {
-				$comment->post = $this;
-			}
-
-			$this->visible_comments[$key] = $comments;
+		// set post on comment objects so they don't have to query it again
+		foreach ($comments as $comment) {
+			$comment->post = $this;
 		}
 
 		return $comments;
