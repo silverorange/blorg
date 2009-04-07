@@ -161,6 +161,19 @@ class BlorgPost extends SwatDBDataObject
 	 */
 	protected $tags_cache;
 
+	/**
+	 * Cache of visible comments for this post
+	 *
+	 * Array indexes are hash keys built from the limit and offset passed to
+	 * the {@link BlorgPost::getVisibleComments()} method. Array values are
+	 * {@link BlorgCommentWrapper} objects.
+	 *
+	 * @var array
+	 *
+	 * @see BlorgPost::getVisibleComments()
+	 */
+	protected $visible_comments = array();
+
 	// }}}
 	// {{{ public function loadByDateAndShortname()
 
@@ -299,26 +312,34 @@ class BlorgPost extends SwatDBDataObject
 
 	public function getVisibleComments($limit = null, $offset = 0)
 	{
-		$this->checkDB();
+		$key = 'key-'.$limit.'-'.$offset;
 
-		$sql = sprintf('select * from BlorgComment
-			where post = %s and status = %s and spam = %s
-			order by createdate',
-			$this->db->quote($this->id, 'integer'),
-			$this->db->quote(SiteComment::STATUS_PUBLISHED, 'integer'),
-			$this->db->quote(false, 'boolean'));
+		if (array_key_exists($key, $this->visible_comments)) {
+			$comments = $this->visible_comments[$key];
+		} else {
+			$this->checkDB();
 
-		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
+			$sql = sprintf('select * from BlorgComment
+				where post = %s and status = %s and spam = %s
+				order by createdate',
+				$this->db->quote($this->id, 'integer'),
+				$this->db->quote(SiteComment::STATUS_PUBLISHED, 'integer'),
+				$this->db->quote(false, 'boolean'));
 
-		if ($limit !== null) {
-			$this->db->setLimit($limit, $offset);
-		}
+			$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
 
-		$comments = SwatDB::query($this->db, $sql, $wrapper);
+			if ($limit !== null) {
+				$this->db->setLimit($limit, $offset);
+			}
 
-		// set post on comment objects so they don't have to query it again
-		foreach ($comments as $comment) {
-			$comment->post = $this;
+			$comments = SwatDB::query($this->db, $sql, $wrapper);
+
+			// set post on comment objects so they don't have to query it again
+			foreach ($comments as $comment) {
+				$comment->post = $this;
+			}
+
+			$this->visible_comments[$key] = $comments;
 		}
 
 		return $comments;
@@ -602,6 +623,7 @@ class BlorgPost extends SwatDBDataObject
 		return array_merge(parent::getSerializablePrivateProperties(), array(
 			'visible_files',
 			'tags_cache',
+			'visible_comments',
 		));
 	}
 
