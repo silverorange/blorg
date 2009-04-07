@@ -609,7 +609,6 @@ class BlorgPost extends SwatDBDataObject
 		return array_merge(parent::getSerializablePrivateProperties(), array(
 			'visible_files',
 			'tags_cache',
-			'visible_comments',
 		));
 	}
 
