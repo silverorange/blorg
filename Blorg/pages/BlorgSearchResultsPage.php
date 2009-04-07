@@ -14,11 +14,6 @@ require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
  */
 class BlorgSearchResultsPage extends SiteSearchResultsPage
 {
-	// {{{ private properties
-
-	private $memcache_posts;
-
-	// }}}
 	// {{{ public function __construct()
 
 	public function __construct(SiteAbstractPage $page)
@@ -119,30 +114,33 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	protected function getPosts(SiteNateGoFulltextSearchResult $result,
 		SwatPagination $pager)
 	{
-		if (isset($this->app->memcache)) {
-			$key = $this->getPostsMemcacheKey();
-			$posts = $this->app->memcache->getNs('posts', $key);
-			$total_records = $this->app->memcache->getNs('posts',
-				$key.'.total_records');
+		$pager = $this->ui->getWidget('post_pager');
+		SwatDB::setDebug();
 
-			if ($posts !== false && $total_records !== false) {
-				$posts->setDatabase($this->app->db);
-				$pager->total_records = $total_records;
-				return $posts;
-			}
+		// cached content
+		$key = sprintf('BlorgSearchResultsPage.getPosts.%s.%s.%s',
+			$this->getQueryString(),
+			$pager->page_size, $pager->current_record);
+
+		$posts = $this->getCacheValue($key, 'posts');
+		$total_records = $this->getCacheValue($key.'.total_records',
+			'posts');
+
+		if ($posts !== false && $total_records !== false) {
+			$posts->setDatabase($this->app->db);
+			$pager->total_records = $total_records;
+			return $posts;
 		}
 
+		// get posts
 		$engine = $this->instantiatePostSearchEngine();
 		$engine->setFulltextResult($result);
 		$posts = $engine->search($pager->page_size, $pager->current_record);
 		$pager->total_records = $engine->getResultCount();
 
-		// used to memcache the posts
-		if (isset($this->app->memcache)) {
-			$this->memcache_posts = $posts;
-			$this->app->memcache->setNs('posts', $key.'.total_records',
-				$engine->getResultCount());
-		}
+		$this->addCacheValue($posts, $key, 'posts');
+		$this->addCacheValue($engine->getResultCount(),
+			$key.'.total_records', 'posts');
 
 		return $posts;
 	}
@@ -181,13 +179,6 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 
 	protected function getPostsMemcacheKey()
 	{
-		$pager = $this->ui->getWidget('post_pager');
-		$instance = $this->app->instance->getInstance();
-
-		return sprintf('BlorgSearchResultsPage.posts.%s.%s.%s.%s',
-			($instance === null ? 'null' : $instance->id),
-			$this->getQueryString(),
-			$pager->page_size, $pager->current_record);
 	}
 
 	// }}}
@@ -200,11 +191,6 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 		parent::finalize();
 		$this->layout->addHtmlHeadEntrySet(
 			$this->ui->getRoot()->getHtmlHeadEntrySet());
-
-		if ($this->memcache_posts !== null) {
-			$key = $this->getPostsMemcacheKey();
-			$this->app->memcache->setNs('posts', $key, $this->memcache_posts);
-		}
 	}
 
 	// }}}
