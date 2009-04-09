@@ -115,7 +115,6 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 		SwatPagination $pager)
 	{
 		$pager = $this->ui->getWidget('post_pager');
-		SwatDB::setDebug();
 
 		// cached content
 		$key = sprintf('BlorgSearchResultsPage.getPosts.%s.%s.%s',
