@@ -175,13 +175,6 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	}
 
 	// }}}
-	// {{{ protected function getPostsMemcacheKey()
-
-	protected function getPostsMemcacheKey()
-	{
-	}
-
-	// }}}
 
 	// finalize phase
 	// {{{ public function finalize()
