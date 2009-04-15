@@ -124,8 +124,12 @@ class BlorgTwitterGadget extends SiteGadget
 
 		echo '</ul>';
 
+		echo '<div class="site-gadget-footer">';
+
 		printf('Follow <a href="%1$s/%2$s">%2$s</a> on Twitter',
 			Services_Twitter::$uri, $this->getValue('username'));
+
+		echo '</div>';
 	}
 
 	// }}}
