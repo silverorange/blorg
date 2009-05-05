@@ -74,18 +74,18 @@ class BlorgTwitterGadget extends SiteGadget
 
 			if ($this->now->after($last_update)) {
 				$timeline = $this->getUserTimeline();
-				if (!$this->has_error)
+				if ($this->has_error === false)
 					$this->updateCacheValue($timeline->asXML());
 			} else {
 				$timeline = simplexml_load_string($this->getCacheValue());
 			}
 		} else {
 			$timeline = $this->getUserTimeline();
-			if (!$this->has_error)
+			if ($this->has_error === false)
 				$this->updateCacheValue($timeline->asXML());
 		}
 
-		if ($this->has_error)
+		if ($this->has_error !== false)
 			$this->displayErrorMessage();
 		else
 			$this->displayTimeline($timeline);
