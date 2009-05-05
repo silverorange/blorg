@@ -126,8 +126,11 @@ class BlorgTwitterGadget extends SiteGadget
 
 		echo '<div class="site-gadget-footer">';
 
-		printf('Follow <a href="%1$s/%2$s">%2$s</a> on Twitter',
-			Services_Twitter::$uri, $this->getValue('username'));
+		$a_tag = new SwatHtmlTag('a');
+		$a_tag->href = Services_Twitter::$uri.'/'.$this->getValue('username');
+		$a_tag->setContent($this->getValue('username'));
+
+		printf(Blorg::_('Follow %s on Twitter'), $a_tag);
 
 		echo '</div>';
 	}
@@ -160,32 +163,32 @@ class BlorgTwitterGadget extends SiteGadget
 		if ($difference < (1/24.0)) {
 			$minutes = ceil(3600 * 24 * $difference);
 			$date_string = sprintf(Blorg::ngettext(
-				'around one minute ago',
-				'around %s minutes ago', $minutes),
+				Blorg::_('around one minute ago'),
+				Blorg::_('around %s minutes ago'), $minutes),
 				SwatString::numberFormat($minutes));
 		} else if ($difference < 1) {
 			$hours = ceil(24 * $difference);
 			$date_string = sprintf(Blorg::ngettext(
-				'around one hour ago',
-				'around %s hours ago', $hours),
+				Blorg::_('around one hour ago'),
+				Blorg::_('around %s hours ago'), $hours),
 				SwatString::numberFormat($hours));
 		} else if ($difference < 30) {
 			$days = ceil($difference);
 			$date_string = sprintf(Blorg::ngettext(
-				'around one day ago',
-				'around %s days ago', $days),
+				Blorg::_('around one day ago'),
+				Blorg::_('around %s days ago'), $days),
 				SwatString::numberFormat($days));
 		} else if ($difference < 365) {
 			$months = ceil($difference / 30);
 			$date_string = sprintf(Blorg::ngettext(
-				'around one month ago',
-				'around %s months ago', $months),
+				Blorg::_('around one month ago'),
+				Blorg::_('around %s months ago'), $months),
 				SwatString::numberFormat($months));
 		} else {
 			$years = ceil($difference / 365);
 			$date_string = sprintf(Blorg::ngettext(
-				'around one year ago',
-				'around %s years ago', $months),
+				Blorg::_('around one year ago'),
+				Blorg::_('around %s years ago'), $months),
 				SwatString::numberFormat($months));
 		}
 
