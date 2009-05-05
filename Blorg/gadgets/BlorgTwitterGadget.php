@@ -161,7 +161,7 @@ class BlorgTwitterGadget extends SiteGadget
 	{
 		$difference = $this->now->dateDiff($post_date);
 		if ($difference < (1/24.0)) {
-			$minutes = ceil(3600 * 24 * $difference);
+			$minutes = ceil(60 * 24 * $difference);
 			$date_string = sprintf(Blorg::ngettext(
 				Blorg::_('around one minute ago'),
 				Blorg::_('around %s minutes ago'), $minutes),
