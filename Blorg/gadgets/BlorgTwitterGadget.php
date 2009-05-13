@@ -64,6 +64,15 @@ class BlorgTwitterGadget extends SiteGadget
 	}
 
 	// }}}
+	// {{{ public function display()
+
+	public function display()
+	{
+		parent::display();
+		$this->displayFooter();
+	}
+
+	// }}}
 	// {{{ protected function displayContent()
 
 	protected function displayContent()
@@ -93,6 +102,25 @@ class BlorgTwitterGadget extends SiteGadget
 	}
 
 	// }}}
+	// {{{ protected function displayFooter()
+
+	protected function displayFooter()
+	{
+		$footer = new SwatHtmlTag('div');
+		$footer->class = 'site-gadget-footer';
+
+		$a_tag = new SwatHtmlTag('a');
+		$a_tag->href = Services_Twitter::$uri.'/'.$this->getValue('username');
+		$a_tag->setContent($this->getValue('username'));
+
+		$footer->setContent(sprintf(Blorg::_('Follow %s on Twitter'), $a_tag),
+			'text/xml');
+
+		if ($this->has_error === false)
+			$footer->display();
+	}
+
+	// }}}
 	// {{{ protected function displayTimeline()
 
 	protected function displayTimeline($timeline)
@@ -113,8 +141,8 @@ class BlorgTwitterGadget extends SiteGadget
 				$this->getValue('username'), $status->id);
 
 			$a_tag->setContent($status->text);
-			$span_tag->setContent(sprintf('(%s)',
-				$this->getDateString($create_date)));
+			$span_tag->setContent(sprintf('(around %s ago)',
+				$create_date->getHumanReadableDateDiff()));
 
 			$a_tag->display();
 			echo ' ';
@@ -123,16 +151,6 @@ class BlorgTwitterGadget extends SiteGadget
 		}
 
 		echo '</ul>';
-
-		echo '<div class="site-gadget-footer">';
-
-		$a_tag = new SwatHtmlTag('a');
-		$a_tag->href = Services_Twitter::$uri.'/'.$this->getValue('username');
-		$a_tag->setContent($this->getValue('username'));
-
-		printf(Blorg::_('Follow %s on Twitter'), $a_tag);
-
-		echo '</div>';
 	}
 
 	// }}}
@@ -152,47 +170,6 @@ class BlorgTwitterGadget extends SiteGadget
 		}
 
 		echo $message;
-	}
-
-	// }}}
-	// {{{ protected function getDateString()
-
-	protected function getDateString(SwatDate $post_date)
-	{
-		$difference = $this->now->dateDiff($post_date);
-		if ($difference < (1/24.0)) {
-			$minutes = ceil(60 * 24 * $difference);
-			$date_string = sprintf(Blorg::ngettext(
-				Blorg::_('around one minute ago'),
-				Blorg::_('around %s minutes ago'), $minutes),
-				SwatString::numberFormat($minutes));
-		} else if ($difference < 1) {
-			$hours = ceil(24 * $difference);
-			$date_string = sprintf(Blorg::ngettext(
-				Blorg::_('around one hour ago'),
-				Blorg::_('around %s hours ago'), $hours),
-				SwatString::numberFormat($hours));
-		} else if ($difference < 30) {
-			$days = ceil($difference);
-			$date_string = sprintf(Blorg::ngettext(
-				Blorg::_('around one day ago'),
-				Blorg::_('around %s days ago'), $days),
-				SwatString::numberFormat($days));
-		} else if ($difference < 365) {
-			$months = ceil($difference / 30);
-			$date_string = sprintf(Blorg::ngettext(
-				Blorg::_('around one month ago'),
-				Blorg::_('around %s months ago'), $months),
-				SwatString::numberFormat($months));
-		} else {
-			$years = ceil($difference / 365);
-			$date_string = sprintf(Blorg::ngettext(
-				Blorg::_('around one year ago'),
-				Blorg::_('around %s years ago'), $months),
-				SwatString::numberFormat($months));
-		}
-
-		return $date_string;
 	}
 
 	// }}}
