@@ -150,12 +150,14 @@ class BlorgTwitterGadget extends SiteGadget
 
 	protected function displayFooter()
 	{
+		$real_name = $this->timeline->status[0]->user->name;
+
 		$footer = new SwatHtmlTag('div');
 		$footer->class = 'site-gadget-footer';
 
 		$a_tag = new SwatHtmlTag('a');
 		$a_tag->href = Services_Twitter::$uri.'/'.$this->getValue('username');
-		$a_tag->setContent($this->getValue('username'));
+		$a_tag->setContent($real_name);
 
 		$footer->setContent(sprintf(Blorg::_('Follow %s on Twitter'), $a_tag),
 			'text/xml');
