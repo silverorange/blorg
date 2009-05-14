@@ -3,7 +3,6 @@
 require_once 'Services/Twitter.php';
 require_once 'Swat/SwatDate.php';
 require_once 'Site/gadgets/SiteGadget.php';
-require_once 'Site/exceptions/SiteException.php';
 
 /**
  * Displays recent twitter updates
@@ -24,7 +23,7 @@ class BlorgTwitterGadget extends SiteGadget
 	/**
 	 * The amount of time in minutes we wait before we update the cache
 	 *
-	 * @var integet the amount of time in minutes
+	 * @var integer the amount of time in minutes
 	 */
 	const UPDATE_THRESHOLD = 5;
 
@@ -32,11 +31,13 @@ class BlorgTwitterGadget extends SiteGadget
 	// {{{ protected properties
 
 	/**
-	 * Whether or not there was an error requesting the users timerline.
+	 * The exception generated if there was an error requesting the user
+	 *  timeline
 	 *
-	 * @var mixed false if no error occured else an integer error code
+	 * @var Services_Twitter_Exception null if no exception occured else an
+	 *                                  exception object
 	 */
-	protected $has_error = false;
+	protected $timeline_exception;
 
 	/**
 	 * An object used to access the Twitter API
@@ -44,6 +45,13 @@ class BlorgTwitterGadget extends SiteGadget
 	 * @var Services_Twitter the API object
 	 */
 	protected $twitter;
+
+	/**
+	 * A SimpleXMLElement object that contains the current twitter timeline
+	 *
+	 * @var SimpleXMLElement the current user timeline
+	 */
+	protected $timeline;
 
 	/**
 	 * The current date and time
@@ -61,6 +69,8 @@ class BlorgTwitterGadget extends SiteGadget
 
 		$this->now = new SwatDate();
 		$this->now->toUTC();
+
+		$this->timeline = $this->getTimeline();
 	}
 
 	// }}}
@@ -77,53 +87,16 @@ class BlorgTwitterGadget extends SiteGadget
 
 	protected function displayContent()
 	{
-		if ($this->hasCache()) {
-			$last_update = $this->getCacheLastUpdateDate();
-			$last_update->addMinutes(self::UPDATE_THRESHOLD);
-
-			if ($this->now->after($last_update)) {
-				$timeline = $this->getUserTimeline();
-				if ($this->has_error === false)
-					$this->updateCacheValue($timeline->asXML());
-			} else {
-				$timeline = simplexml_load_string($this->getCacheValue());
-			}
-		} else {
-			$timeline = $this->getUserTimeline();
-			if ($this->has_error === false)
-				$this->updateCacheValue($timeline->asXML());
-		}
-
-		if ($this->has_error !== false)
-			$this->displayErrorMessage();
+		if ($this->hasTimeline())
+			$this->displayTimeline();
 		else
-			$this->displayTimeline($timeline);
-
-	}
-
-	// }}}
-	// {{{ protected function displayFooter()
-
-	protected function displayFooter()
-	{
-		$footer = new SwatHtmlTag('div');
-		$footer->class = 'site-gadget-footer';
-
-		$a_tag = new SwatHtmlTag('a');
-		$a_tag->href = Services_Twitter::$uri.'/'.$this->getValue('username');
-		$a_tag->setContent($this->getValue('username'));
-
-		$footer->setContent(sprintf(Blorg::_('Follow %s on Twitter'), $a_tag),
-			'text/xml');
-
-		if ($this->has_error === false)
-			$footer->display();
+			$this->displayError();
 	}
 
 	// }}}
 	// {{{ protected function displayTimeline()
 
-	protected function displayTimeline($timeline)
+	protected function displayTimeline()
 	{
 		$span_tag = new SwatHtmlTag('span');
 		$a_tag = new SwatHtmlTag('a');
@@ -131,8 +104,8 @@ class BlorgTwitterGadget extends SiteGadget
 		echo '<ul>';
 
 		for ($i = 0; $i < $this->getValue('max_updates')
-				&& count($timeline->status) > $i; $i++) {
-			$status = $timeline->status[$i];
+				&& count($this->timeline->status) > $i; $i++) {
+			$status = $this->timeline->status[$i];
 			$create_date = new SwatDate(strtotime($status->created_at),
 				DATE_FORMAT_UNIXTIME);
 
@@ -158,7 +131,7 @@ class BlorgTwitterGadget extends SiteGadget
 
 	protected function displayErrorMessage()
 	{
-		switch ($this->has_error) {
+		switch ($this->timeline_exception->getCode()) {
 			case Services_Twitter::ERROR_DOWN:
 			case Services_Twitter::ERROR_UNAVAILABLE:
 				$message = Blorg::_(
@@ -173,20 +146,69 @@ class BlorgTwitterGadget extends SiteGadget
 	}
 
 	// }}}
-	// {{{ protected function getUserTimeline()
+	// {{{ protected function displayFooter()
 
-	protected function getUserTimeline()
+	protected function displayFooter()
+	{
+		$footer = new SwatHtmlTag('div');
+		$footer->class = 'site-gadget-footer';
+
+		$a_tag = new SwatHtmlTag('a');
+		$a_tag->href = Services_Twitter::$uri.'/'.$this->getValue('username');
+		$a_tag->setContent($this->getValue('username'));
+
+		$footer->setContent(sprintf(Blorg::_('Follow %s on Twitter'), $a_tag),
+			'text/xml');
+
+		if ($this->hasTimeline())
+			$footer->display();
+	}
+
+	// }}}
+	// {{{ protected function hasTimeline()
+
+	protected function hasTimeline()
+	{
+		return ($this->timeline !== null);
+	}
+
+	// }}}
+	// {{{ protected function getTimeline()
+
+	/**
+	 * Gets the user timeline
+	 *
+	 * First checks if there is an unexpired timeline in the cache. If no
+	 *  unexpired timeline is found query Twitter for a new timeline. Finally
+	 *  if Twitter is unable to provide a new timeline return either the
+	 *  expired timeline from the cache or null if an expired update does not
+	 *  exist.
+	 *
+	 * @return SimepleXMLElement the user timeline or null if no timeline is
+	 *                            available.
+	 */
+	protected function getTimeline()
 	{
 		$timeline = null;
+
+		if ($this->hasCache()) {
+			$timeline = simplexml_load_string($this->getCacheValue());
+			$last_update = $this->getCacheLastUpdateDate();
+			$last_update->addMinutes(self::UPDATE_THRESHOLD);
+
+			if ($this->now->before($last_update))
+				return $timeline;
+		}
 
 		try {
 			$params = array('id' => $this->getValue('username'));
 			$timeline = $this->twitter->statuses->user_timeline($params);
 		} catch (Services_Twitter_Exception $e) {
-			$this->has_error = $e->getCode();
-			$exception = new SiteException($e->getMessage(), $e->getCode());
-			$exception->log();
+			$this->timeline_exception = $e;
 		}
+
+		if ($timeline !== null)
+			$this->updateCacheValue($timeline->asXML());
 
 		return $timeline;
 	}
