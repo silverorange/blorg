@@ -79,7 +79,9 @@ class BlorgTwitterGadget extends SiteGadget
 	public function display()
 	{
 		parent::display();
-		$this->displayFooter();
+
+		if  ($this->hasTimeline())
+			$this->displayFooter();
 	}
 
 	// }}}
@@ -90,7 +92,7 @@ class BlorgTwitterGadget extends SiteGadget
 		if ($this->hasTimeline())
 			$this->displayTimeline();
 		else
-			$this->displayError();
+			$this->displayErrorMessage();
 	}
 
 	// }}}
@@ -127,7 +129,7 @@ class BlorgTwitterGadget extends SiteGadget
 	}
 
 	// }}}
-	// {{{ protected function displayError()
+	// {{{ protected function displayErrorMessage()
 
 	protected function displayErrorMessage()
 	{
