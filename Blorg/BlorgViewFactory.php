@@ -3,7 +3,7 @@
 require_once 'Swat/exceptions/SwatClassNotFoundException.php';
 
 /**
- * Factory for creates object views
+ * Factory for creating object views
  *
  * This factory provides an easy method for overriding the default object views
  * provided by Blörg.
