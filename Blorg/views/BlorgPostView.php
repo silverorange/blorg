@@ -3,10 +3,11 @@
 require_once 'Swat/SwatDate.php';
 require_once 'Swat/SwatString.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
+require_once 'Site/views/SiteView.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/Blorg.php';
+require_once 'Blorg/views/BlorgAuthorView.php';
 require_once 'Blorg/BlorgPageFactory.php';
-require_once 'Blorg/views/BlorgView.php';
 
 /**
  * View for Blörg post objects
@@ -41,7 +42,7 @@ require_once 'Blorg/views/BlorgView.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPostView extends BlorgView
+class BlorgPostView extends SiteView
 {
 	// {{{ protected properties
 
@@ -126,7 +127,7 @@ class BlorgPostView extends BlorgView
 			$div_tag->open();
 
 			if ($post->title == '' &&
-				$this->getMode('title') !== BlorgView::MODE_SUMMARY) {
+				$this->getMode('title') !== SiteView::MODE_SUMMARY) {
 				// When displaying a full view of a title-less post, put the
 				// sub-header at the bottom.
 				$this->displayBody($post);
@@ -254,6 +255,30 @@ class BlorgPostView extends BlorgView
 	}
 
 	// }}}
+	// {{{ protected function getRelativeUri()
+
+	protected function getRelativeUri(BlorgPost $post)
+	{
+		return Blorg::getPostRelativeUri($this->app, $post);
+	}
+
+	// }}}
+	// {{{ protected function getTagRelativeUri()
+
+	protected function getTagRelativeUri(BlorgTag $tag)
+	{
+		return Blorg::getTagRelativeUri($this->app, $tag);
+	}
+
+	// }}}
+	// {{{ protected function getAuthorRelativeUri()
+
+	protected function getAuthorRelativeUri(BlorgAuthor $author)
+	{
+		return Blorg::getAuthorRelativeUri($this->app, $author);
+	}
+
+	// }}}
 
 	// part display methods
 	// {{{ protected function displayTitle()
@@ -263,10 +288,10 @@ class BlorgPostView extends BlorgView
 		$title = '';
 
 		switch ($this->getMode('title')) {
-		case BlorgView::MODE_ALL:
+		case SiteView::MODE_ALL:
 			$title = $post->title;
 			break;
-		case BlorgView::MODE_SUMMARY:
+		case SiteView::MODE_SUMMARY:
 			$title = $post->getTitle();
 			break;
 		}
@@ -287,7 +312,7 @@ class BlorgPostView extends BlorgView
 				if (is_string($link)) {
 					$anchor_tag->href = $link;
 				} else {
-					$anchor_tag->href = $this->getPostRelativeUri($post);
+					$anchor_tag->href = $this->getRelativeUri($post);
 				}
 				$anchor_tag->setContent($title);
 				$anchor_tag->display();
@@ -302,7 +327,7 @@ class BlorgPostView extends BlorgView
 
 	protected function displayAuthor(BlorgPost $post)
 	{
-		if ($this->getMode('author') > BlorgView::MODE_NONE) {
+		if ($this->getMode('author') > SiteView::MODE_NONE) {
 			$link = $this->getLink('author');
 
 			// Don't link to non-visible authors but still show their name on
@@ -320,8 +345,8 @@ class BlorgPostView extends BlorgView
 				if (is_string($link)) {
 					$anchor_tag->href = $link;
 				} else {
-					$anchor_tag->href =
-						$this->getAuthorRelativeUri($post->author);
+					$anchor_tag->href = $this->getAuthorRelativeUri(
+						$post->author);
 				}
 
 				$anchor_tag->setContent($post->author->name);
@@ -347,14 +372,14 @@ class BlorgPostView extends BlorgView
 	 */
 	protected function displayPermalink(BlorgPost $post)
 	{
-		if ($this->getMode('permalink') > BlorgView::MODE_NONE) {
+		if ($this->getMode('permalink') > SiteView::MODE_NONE) {
 			$link = $this->getLink('permalink');
 			if ($link === false) {
 				$permalink_tag = new SwatHtmlTag('span');
 			} else {
 				$permalink_tag = new SwatHtmlTag('a');
 				if ($link === true) {
-					$permalink_tag->href = $this->getPostRelativeUri($post);
+					$permalink_tag->href = $this->getRelativeUri($post);
 				} else {
 					$permalink_tag->href = $link;
 				}
@@ -386,7 +411,7 @@ class BlorgPostView extends BlorgView
 	 */
 	protected function displayCommentCount(BlorgPost $post)
 	{
-		if ($this->getMode('comment_count') > BlorgView::MODE_NONE) {
+		if ($this->getMode('comment_count') > SiteView::MODE_NONE) {
 			$link = $this->getLink('comment_count');
 			$count = $post->getVisibleCommentCount();
 
@@ -398,7 +423,7 @@ class BlorgPostView extends BlorgView
 					$comment_count_tag->href = $link;
 				} else {
 					$comment_count_tag->href =
-						$this->getPostRelativeUri($post).'#comments';
+						$this->getRelativeUri($post).'#comments';
 				}
 
 				switch ($post->comment_status) {
@@ -439,20 +464,20 @@ class BlorgPostView extends BlorgView
 	protected function displayBodytext(BlorgPost $post)
 	{
 		switch ($this->getMode('bodytext')) {
-		case BlorgView::MODE_ALL:
+		case SiteView::MODE_ALL:
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'entry-content';
 			$div_tag->setContent($post->bodytext, 'text/xml');
 			$div_tag->display();
 
-			if ($this->getMode('extended_bodytext') == BlorgView::MODE_ALL && (
+			if ($this->getMode('extended_bodytext') == SiteView::MODE_ALL && (
 				$post->extended_bodytext != '' ||
 				$this->app->config->blorg->ad_post_comments == ''))
 				Blorg::displayAd($this->app, 'post_content');
 
 			break;
 
-		case BlorgView::MODE_SUMMARY:
+		case SiteView::MODE_SUMMARY:
 			$bodytext = null;
 			$link = $this->getLink('bodytext');
 
@@ -478,7 +503,7 @@ class BlorgPostView extends BlorgView
 					if (is_string($link)) {
 						$anchor_tag->href = $link;
 					} else {
-						$anchor_tag->href = $this->getPostRelativeUri($post);
+						$anchor_tag->href = $this->getRelativeUri($post);
 					}
 					$anchor_tag->setContent(Blorg::_('read more »'));
 					$bodytext.= ' '.$anchor_tag;
@@ -500,14 +525,14 @@ class BlorgPostView extends BlorgView
 	{
 		if ($post->extended_bodytext != '') {
 			switch ($this->getMode('extended_bodytext')) {
-			case BlorgView::MODE_ALL:
+			case SiteView::MODE_ALL:
 				$div_tag = new SwatHtmlTag('div');
 				$div_tag->class = 'entry-content entry-content-extended';
 				$div_tag->setContent($post->extended_bodytext, 'text/xml');
 				$div_tag->display();
 				break;
 
-			case BlorgView::MODE_SUMMARY:
+			case SiteView::MODE_SUMMARY:
 				$link = $this->getLink('extended_bodytext');
 
 				$div_tag = new SwatHtmlTag('div');
@@ -523,7 +548,7 @@ class BlorgPostView extends BlorgView
 					if (is_string($link)) {
 						$anchor_tag->href = $link;
 					} else {
-						$anchor_tag->href = $this->getPostRelativeUri($post);
+						$anchor_tag->href = $this->getRelativeUri($post);
 					}
 					$anchor_tag->setContent(Blorg::_('Read more …'));
 					$anchor_tag->display();
@@ -540,7 +565,7 @@ class BlorgPostView extends BlorgView
 
 	protected function displayTags(BlorgPost $post)
 	{
-		if ($this->getMode('tags') > BlorgView::MODE_NONE) {
+		if ($this->getMode('tags') > SiteView::MODE_NONE) {
 			$tags = $post->getTags();
 			$num_of_tags = count($tags);
 			$counter = 1;
@@ -559,6 +584,7 @@ class BlorgPostView extends BlorgView
 						$a_tag = new SwatHtmlTag('a');
 						$a_tag->rel = 'tag';
 						$a_tag->href = $this->getTagRelativeUri($tag);
+
 						$a_tag->setContent($tag->title);
 						$a_tag->display();
 					}
@@ -580,7 +606,7 @@ class BlorgPostView extends BlorgView
 
 	protected function displayFiles(BlorgPost $post)
 	{
-		if ($this->getMode('files') > BlorgView::MODE_NONE) {
+		if ($this->getMode('files') > SiteView::MODE_NONE) {
 			$files = $post->getVisibleFiles();
 			if (count($files) > 0) {
 				$link = $this->getLink('files');
@@ -670,7 +696,7 @@ class BlorgPostView extends BlorgView
 		$visible = false;
 		foreach ($this->getParts() as $part) {
 			if (in_array($part, $keys) &&
-				$this->getMode($part) > BlorgView::MODE_NONE) {
+				$this->getMode($part) > SiteView::MODE_NONE) {
 				$visible = true;
 				break;
 			}
@@ -708,7 +734,7 @@ class BlorgPostView extends BlorgView
 		$visible = false;
 		foreach ($this->getParts() as $part) {
 			if (in_array($part, $keys) &&
-				$this->getMode($part) > BlorgView::MODE_NONE) {
+				$this->getMode($part) > SiteView::MODE_NONE) {
 				$visible = true;
 				break;
 			}
@@ -748,7 +774,7 @@ class BlorgPostView extends BlorgView
 		$visible = false;
 		foreach ($this->getParts() as $part) {
 			if (in_array($part, $keys) &&
-				$this->getMode($part) > BlorgView::MODE_NONE) {
+				$this->getMode($part) > SiteView::MODE_NONE) {
 				$visible = true;
 				break;
 			}

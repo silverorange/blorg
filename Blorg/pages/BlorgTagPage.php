@@ -3,9 +3,9 @@
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatPagination.php';
 require_once 'Site/pages/SitePage.php';
+require_once 'Site/SiteViewFactory.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/BlorgPageFactory.php';
-require_once 'Blorg/BlorgViewFactory.php';
 require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/dataobjects/BlorgTag.php';
 require_once 'Blorg/Blorg.php';
@@ -180,9 +180,9 @@ class BlorgTagPage extends SitePage
 
 	protected function displayPosts()
 	{
-		$view = BlorgViewFactory::get($this->app, 'post');
-		$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
-		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
+		$view = SiteViewFactory::get($this->app, 'post');
+		$view->setPartMode('bodytext', SiteView::MODE_SUMMARY);
+		$view->setPartMode('extended_bodytext', SiteView::MODE_NONE);
 		$first = true;
 		foreach ($this->posts as $post) {
 			if ($first) {

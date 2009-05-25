@@ -145,12 +145,12 @@ class BlorgAuthorPage extends SitePage
 
 	protected function displayAuthor()
 	{
-		$view = BlorgViewFactory::get($this->app, 'author');
-		$view->setPartMode('name', BlorgView::MODE_ALL, false);
-		$view->setPartMode('bodytext', BlorgView::MODE_ALL);
-		$view->setPartMode('description', BlorgView::MODE_NONE);
-		$view->setPartMode('post_count', BlorgView::MODE_NONE);
-		$view->setPartMode('email', BlorgView::MODE_NONE);
+		$view = SiteViewFactory::get($this->app, 'author');
+		$view->setPartMode('name', SiteView::MODE_ALL, false);
+		$view->setPartMode('bodytext', SiteView::MODE_ALL);
+		$view->setPartMode('description', SiteView::MODE_NONE);
+		$view->setPartMode('post_count', SiteView::MODE_NONE);
+		$view->setPartMode('email', SiteView::MODE_NONE);
 		$view->display($this->author);
 	}
 
@@ -164,9 +164,9 @@ class BlorgAuthorPage extends SitePage
 		$div_tag->class = 'author-posts';
 		$div_tag->open();
 
-		$view = BlorgViewFactory::get($this->app, 'post');
-		$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
-		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
+		$view = SiteViewFactory::get($this->app, 'post');
+		$view->setPartMode('bodytext', SiteView::MODE_SUMMARY);
+		$view->setPartMode('extended_bodytext', SiteView::MODE_NONE);
 
 		$posts = $this->getAuthorPosts();
 		$first = true;

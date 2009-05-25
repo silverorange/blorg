@@ -3,9 +3,9 @@
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatPagination.php';
 require_once 'Site/pages/SitePage.php';
+require_once 'Site/SiteViewFactory.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
 require_once 'Blorg/Blorg.php';
-require_once 'Blorg/BlorgViewFactory.php';
 require_once 'Blorg/BlorgPostLoader.php';
 
 /**
@@ -167,13 +167,12 @@ class BlorgYearArchivePage extends SitePage
 	{
 		$path = $this->app->config->blorg->path.'archive';
 
-		$view = BlorgViewFactory::get($this->app, 'post');
-
-		$view->setPartMode('title', BlorgView::MODE_SUMMARY);
-		$view->setPartMode('bodytext', BlorgView::MODE_NONE);
-		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
-		$view->setPartMode('tags', BlorgView::MODE_NONE);
-		$view->setPartMode('files', BlorgView::MODE_NONE);
+		$view = SiteViewFactory::get($this->app, 'post');
+		$view->setPartMode('title', SiteView::MODE_SUMMARY);
+		$view->setPartMode('bodytext', SiteView::MODE_NONE);
+		$view->setPartMode('extended_bodytext', SiteView::MODE_NONE);
+		$view->setPartMode('tags', SiteView::MODE_NONE);
+		$view->setPartMode('files', SiteView::MODE_NONE);
 
 		$ul_tag = new SwatHtmlTag('ul');
 		$ul_tag->class = 'blorg-archive-months';

@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Site/pages/SiteSearchResultsPage.php';
-require_once 'Blorg/BlorgViewFactory.php';
+require_once 'Site/SiteViewFactory.php';
 require_once 'Blorg/BlorgPostSearchEngine.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
@@ -165,9 +165,9 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	 */
 	protected function displayPosts(BlorgPostWrapper $posts)
 	{
-		$view = BlorgViewFactory::get($this->app, 'post');
-		$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
-		$view->setPartMode('extended_bodytext', BlorgView::MODE_NONE);
+		$view = SiteViewFactory::get($this->app, 'post');
+		$view->setPartMode('bodytext', SiteView::MODE_SUMMARY);
+		$view->setPartMode('extended_bodytext', SiteView::MODE_NONE);
 		foreach ($posts as $post) {
 			$view->display($post);
 		}

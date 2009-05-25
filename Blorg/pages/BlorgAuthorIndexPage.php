@@ -102,12 +102,12 @@ class BlorgAuthorIndexPage extends SitePage
 	protected function displayAuthors()
 	{
 		foreach ($this->authors as $author) {
-			$view = BlorgViewFactory::get($this->app, 'author');
-			$view->setPartMode('name', BlorgView::MODE_SUMMARY);
-			$view->setPartMode('bodytext', BlorgView::MODE_NONE);
-			$view->setPartMode('description', BlorgView::MODE_SUMMARY);
-			$view->setPartMode('post_count', BlorgView::MODE_NONE);
-			$view->setPartMode('email', BlorgView::MODE_NONE);
+			$view = SiteViewFactory::get($this->app, 'author');
+			$view->setPartMode('name', SiteView::MODE_SUMMARY);
+			$view->setPartMode('bodytext', SiteView::MODE_NONE);
+			$view->setPartMode('description', SiteView::MODE_SUMMARY);
+			$view->setPartMode('post_count', SiteView::MODE_NONE);
+			$view->setPartMode('email', SiteView::MODE_NONE);
 			$view->display($author);
 		}
 	}

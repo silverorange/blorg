@@ -573,7 +573,7 @@ class BlorgPostPage extends SitePageDecorator
 
 			ob_start();
 
-			$view = BlorgViewFactory::get($this->app, 'comment');
+			$view = SiteViewFactory::get($this->app, 'comment');
 			$view->display($this->comment);
 
 			$comment_preview = $this->comment_ui->getWidget('comment_preview');
@@ -605,8 +605,8 @@ class BlorgPostPage extends SitePageDecorator
 
 	protected function displayPost()
 	{
-		$view = BlorgViewFactory::get($this->app, 'post');
-		$view->setPartMode('title', BlorgView::MODE_ALL, false);
+		$view = SiteViewFactory::get($this->app, 'post');
+		$view->setPartMode('title', SiteView::MODE_ALL, false);
 		$view->display($this->post);
 	}
 
@@ -625,7 +625,7 @@ class BlorgPostPage extends SitePageDecorator
 
 			$comments = $this->post->getVisibleComments();
 
-			$view = BlorgViewFactory::get($this->app, 'comment');
+			$view = SiteViewFactory::get($this->app, 'comment');
 			$count = count($comments);
 
 			if ($count > 0) {
