@@ -6,7 +6,7 @@ require_once 'Swat/SwatLinkHtmlHeadEntry.php';
 require_once 'Site/Site.php';
 require_once 'Site/SiteGadgetFactory.php';
 require_once 'Admin/Admin.php';
-require_once 'Blorg/BlorgViewFactory.php';
+require_once 'Site/SiteViewFactory.php';
 
 /**
  * Container for package wide static methods
@@ -199,6 +199,59 @@ class Blorg
 	}
 
 	// }}}
+
+	// relative uri convenience methods
+	// {{{ public static function getPostRelativeUri()
+
+	public static function getPostRelativeUri(SiteApplication $app,
+		BlorgPost $post)
+	{
+		$path = $app->config->blorg->path.'archive';
+
+		$date = clone $post->publish_date;
+		$date->convertTZ($app->default_time_zone);
+		$year = $date->getYear();
+		$month_name = BlorgPageFactory::$month_names[$date->getMonth()];
+
+		return sprintf('%s/%s/%s/%s',
+			$path,
+			$year,
+			$month_name,
+			$post->shortname);
+	}
+
+	// }}}
+	// {{{ public static function getTagRelativeUri()
+
+	public static function getTagRelativeUri(SiteApplication $app,
+		BlorgTag $tag)
+	{
+		$path = $app->config->blorg->path.'tag';
+		return $path.'/'.$tag->shortname;
+	}
+
+	// }}}
+	// {{{ public static function getAuthorRelativeUri()
+
+	public static function getAuthorRelativeUri(SiteApplication $app,
+		BlorgAuthor $author)
+	{
+		$path = $app->config->blorg->path.'author';
+		return $path.'/'.$author->shortname;
+	}
+
+	// }}}
+	// {{{ public static function getCommentRelativeUri()
+
+	public static function getCommentRelativeUri(SiteApplication $app,
+		SiteComment $comment)
+	{
+		return Blorg::getPostRelativeUri($app, $comment->post).
+			'#comment'.$comment->id;
+	}
+
+	// }}}
+
 	// {{{ private function __construct()
 
 	/**
@@ -216,10 +269,10 @@ SwatUI::mapClassPrefixToPath('Blorg', 'Blorg');
 
 SwatDBClassMap::addPath('Blorg/dataobjects');
 
-BlorgViewFactory::addPath('Blorg/views');
-BlorgViewFactory::registerView('post',    'BlorgPostView');
-BlorgViewFactory::registerView('comment', 'BlorgCommentView');
-BlorgViewFactory::registerView('author',  'BlorgAuthorView');
+SiteViewFactory::addPath('Blorg/views');
+SiteViewFactory::registerView('post',    'BlorgPostView');
+SiteViewFactory::registerView('comment', 'BlorgCommentView');
+SiteViewFactory::registerView('author',  'BlorgAuthorView');
 
 SiteGadgetFactory::addPath('Blorg/gadgets');
 

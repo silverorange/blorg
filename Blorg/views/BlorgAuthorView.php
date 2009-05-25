@@ -3,10 +3,9 @@
 require_once 'Swat/SwatDate.php';
 require_once 'Swat/SwatString.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Blorg/views/BlorgView.php';
+require_once 'Site/views/SiteView.php';
 require_once 'Blorg/dataobjects/BlorgAuthor.php';
 require_once 'Blorg/Blorg.php';
-require_once 'Blorg/BlorgPageFactory.php';
 
 /**
  * View for Blörg author objects
@@ -33,7 +32,7 @@ require_once 'Blorg/BlorgPageFactory.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgAuthorView extends BlorgView
+class BlorgAuthorView extends SiteView
 {
 	// {{{ protected properties
 
@@ -167,10 +166,10 @@ class BlorgAuthorView extends BlorgView
 
 	protected function displayName(BlorgAuthor $author)
 	{
-		if ($this->getMode('name') > BlorgView::MODE_NONE) {
+		if ($this->getMode('name') > SiteView::MODE_NONE) {
 			$link = $this->getLink('name');
 			if ($author->name != '') {
-				if ($this->getMode('name') > BlorgView::MODE_SUMMARY)
+				if ($this->getMode('name') > SiteView::MODE_SUMMARY)
 					$header_tag = new SwatHtmlTag('h3');
 				else
 					$header_tag = new SwatHtmlTag('h4');
@@ -190,8 +189,7 @@ class BlorgAuthorView extends BlorgView
 					if (is_string($link)) {
 						$anchor_tag->href = $link;
 					} else {
-						$anchor_tag->href =
-							$this->getAuthorRelativeUri($author);
+						$anchor_tag->href = $this->getRelativeUri($author);
 					}
 					$anchor_tag->setContent($author->name);
 					$anchor_tag->display();
@@ -207,7 +205,7 @@ class BlorgAuthorView extends BlorgView
 
 	protected function displayEmail(BlorgAuthor $author)
 	{
-		if ($this->getMode('email') > BlorgView::MODE_NONE) {
+		if ($this->getMode('email') > SiteView::MODE_NONE) {
 			$link = $this->getLink('email');
 			if ($author->email != '') {
 				$div_tag = new SwatHtmlTag('div');
@@ -243,7 +241,7 @@ class BlorgAuthorView extends BlorgView
 	protected function displayPostCount(BlorgAuthor$author)
 	{
 		switch ($this->getMode('post_count')) {
-		case BlorgView::MODE_ALL:
+		case SiteView::MODE_ALL:
 			$link = $this->getLink('post_count');
 			$count = count($author->getVisiblePosts());
 
@@ -255,7 +253,7 @@ class BlorgAuthorView extends BlorgView
 					$post_count_tag->href = $link;
 				} else {
 					$post_count_tag->href =
-						$this->getAuthorRelativeUri($author).'#posts';
+						$this->getRelativeUri($author).'#posts';
 				}
 			}
 
@@ -273,7 +271,7 @@ class BlorgAuthorView extends BlorgView
 			$post_count_tag->display();
 			break;
 
-		case BlorgView::MODE_SUMMARY:
+		case SiteView::MODE_SUMMARY:
 			$count = count($author->getVisiblePosts());
 			if ($count > 0) {
 				$link = $this->getLink('post_count');
@@ -286,7 +284,7 @@ class BlorgAuthorView extends BlorgView
 						$post_count_tag->href = $link;
 					} else {
 						$post_count_tag->href =
-							$this->getAuthorRelativeUri($author).'#posts';
+							$this->getRelativeUri($author).'#posts';
 					}
 				}
 
@@ -309,14 +307,14 @@ class BlorgAuthorView extends BlorgView
 	protected function displayBodytext(BlorgAuthor $author)
 	{
 		switch ($this->getMode('bodytext')) {
-		case BlorgView::MODE_ALL:
+		case SiteView::MODE_ALL:
 			$div_tag = new SwatHtmlTag('div');
 			$div_tag->class = 'author-content';
 			$div_tag->setContent($author->bodytext, 'text/xml');
 			$div_tag->display();
 			break;
 
-		case BlorgView::MODE_SUMMARY:
+		case SiteView::MODE_SUMMARY:
 			$bodytext = SwatString::ellipsizeRight(SwatString::condense(
 				$author->bodytext), $this->bodytext_summary_length);
 
@@ -333,7 +331,7 @@ class BlorgAuthorView extends BlorgView
 
 	protected function displayDescription(BlorgAuthor $author)
 	{
-		if ($this->getMode('description') > BlorgView::MODE_NONE) {
+		if ($this->getMode('description') > SiteView::MODE_NONE) {
 			$link = $this->getLink('description');
 			if ($author->description != '') {
 				$div_tag = new SwatHtmlTag('div');
@@ -350,8 +348,7 @@ class BlorgAuthorView extends BlorgView
 					if (is_string($link)) {
 						$anchor_tag->href = $link;
 					} else {
-						$anchor_tag->href =
-							$this->getAuthorRelativeUri($author);
+						$anchor_tag->href =	$this->getRelativeUri($author);
 					}
 					$anchor_tag->setContent(Blorg::_('Read more …'));
 					$anchor_tag->display();
@@ -360,6 +357,14 @@ class BlorgAuthorView extends BlorgView
 				}
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function getRelativeUri()
+
+	protected function getRelativeUri(BlorgAuthor $author)
+	{
+		return Blorg::getAuthorRelativeUri($this->app, $author);
 	}
 
 	// }}}
@@ -395,7 +400,7 @@ class BlorgAuthorView extends BlorgView
 		$visible = false;
 		foreach ($this->getParts() as $part) {
 			if (in_array($part, $keys) &&
-				$this->getMode($part) > BlorgView::MODE_NONE) {
+				$this->getMode($part) > SiteView::MODE_NONE) {
 				$visible = true;
 				break;
 			}
@@ -436,7 +441,7 @@ class BlorgAuthorView extends BlorgView
 		$visible = false;
 		foreach ($this->getParts() as $part) {
 			if (in_array($part, $keys) &&
-				$this->getMode($part) > BlorgView::MODE_NONE) {
+				$this->getMode($part) > SiteView::MODE_NONE) {
 				$visible = true;
 				break;
 			}
@@ -477,7 +482,7 @@ class BlorgAuthorView extends BlorgView
 		$visible = false;
 		foreach ($this->getParts() as $part) {
 			if (in_array($part, $keys) &&
-				$this->getMode($part) > BlorgView::MODE_NONE) {
+				$this->getMode($part) > SiteView::MODE_NONE) {
 				$visible = true;
 				break;
 			}
