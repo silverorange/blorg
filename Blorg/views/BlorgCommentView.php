@@ -21,6 +21,14 @@ class BlorgCommentView extends SiteCommentView
 	}
 
 	// }}}
+	// {{{ protected function getAuthorRelativeUri()
+
+	protected function getAuthorRelativeUri(BlorgAuthor $author)
+	{
+		return Blorg::getAuthorRelativeUri($this->app, $author);
+	}
+
+	// }}}
 
 	// part display methods
 	// {{{ protected function displayAuthor()
@@ -49,8 +57,7 @@ class BlorgCommentView extends SiteCommentView
 						$anchor_tag->href = $link;
 					} else {
 						$anchor_tag->href =
-							BlorgAuthorView::getRelativeUri($this->app,
-								$comment->author);
+							$this->getAuthorRelativeUri($comment->author);
 					}
 
 					$anchor_tag->setContent($comment->author->name);
