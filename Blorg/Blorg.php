@@ -268,6 +268,7 @@ Blorg::setupGettext();
 SwatUI::mapClassPrefixToPath('Blorg', 'Blorg');
 
 SwatDBClassMap::addPath('Blorg/dataobjects');
+SwatDBClassMap::add('SiteComment', 'BlorgComment');
 
 SiteViewFactory::addPath('Blorg/views');
 SiteViewFactory::registerView('post',    'BlorgPostView');

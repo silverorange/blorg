@@ -1,8 +1,8 @@
 <?php
 
+require_once 'Site/dataobjects/SiteCommentWrapper.php';
 require_once 'Blorg/pages/BlorgAbstractAtomPage.php';
 require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
-require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 require_once 'XML/Atom/Entry.php';
 
@@ -18,7 +18,7 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 	// {{{ protected properties
 
 	/**
-	 * @var BlorgCommentWrapper
+	 * @var SiteCommentWrapper
 	 */
 	protected $comments;
 
@@ -71,7 +71,7 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 			$offset = ($page - 1) * $this->getPageSize();
 			$this->app->db->setLimit($this->getPageSize(), $offset);
 
-			$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
+			$wrapper = SwatDBClassMap::get('SiteCommentWrapper');
 			$this->comments = SwatDB::query($this->app->db, $sql, $wrapper);
 
 			// efficiently load posts
