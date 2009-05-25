@@ -2,9 +2,9 @@
 
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'Site/SiteNateGoSearchIndexer.php';
+require_once 'Site/dataobjects/SiteCommentWrapper.php';
 require_once 'Blorg/Blorg.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 
 /**
  * Blorg search indexer application for NateGoSearch
@@ -207,7 +207,7 @@ class BlorgNateGoSearchIndexer extends SiteNateGoSearchIndexer
 		$this->debug(Blorg::_('Indexing comments... ').'   ');
 
 		$comments = SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('BlorgCommentWrapper'));
+			SwatDBClassMap::get('SiteCommentWrapper'));
 
 		$total = count($comments);
 		$count = 0;

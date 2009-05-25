@@ -4,6 +4,7 @@ require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatUI.php';
 require_once 'Site/pages/SitePageDecorator.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
+require_once 'Site/dataobjects/SiteCommentWrapper.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/BlorgViewFactory.php';

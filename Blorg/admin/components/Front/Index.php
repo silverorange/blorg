@@ -5,8 +5,8 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
 require_once 'Swat/SwatTableStore.php';
 require_once 'Swat/SwatDetailsStore.php';
+require_once 'Site/dataobjects/SiteCommentWrapper.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 require_once 'Blorg/admin/BlorgCommentDisplay.php';
 require_once 'Date/Calc.php';
 
@@ -70,7 +70,7 @@ class BlorgFrontIndex extends AdminPage
 
 		$this->app->db->setLimit(self::MAX_COMMENTS);
 
-		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
+		$wrapper = SwatDBClassMap::get('SiteCommentWrapper');
 		$comments = SwatDB::query($this->app->db, $sql, $wrapper);
 
 		// efficiently load posts for all comments

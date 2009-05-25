@@ -6,6 +6,7 @@ require_once 'Swat/SwatTableStore.php';
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'Swat/SwatNavBar.php';
 require_once 'SwatDB/SwatDBClassMap.php';
+require_once 'Site/dataobjects/SiteCommentWrapper.php';
 require_once 'Site/admin/SiteCommentVisibilityCellRenderer.php';
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
@@ -226,7 +227,8 @@ class BlorgPostDetails extends AdminIndex
 			$this->getOrderByClause($view, 'createdate'));
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
-		$comments = SwatDB::query($this->app->db, $sql, 'BlorgCommentWrapper');
+		$comments = SwatDB::query($this->app->db, $sql,
+			SwatDBClassMap::get('SiteCommentWrapper'));
 
 		$store = new SwatTableStore();
 

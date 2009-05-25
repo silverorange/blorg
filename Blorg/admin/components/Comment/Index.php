@@ -1,11 +1,11 @@
 <?php
 
+require_once 'Site/dataobjects/SiteCommentWrapper.php';
 require_once 'Admin/pages/AdminPage.php';
 require_once 'Admin/AdminSearchClause.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Swat/SwatString.php';
-require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 require_once 'Blorg/admin/BlorgCommentDisplay.php';
@@ -101,7 +101,7 @@ class BlorgCommentIndex extends AdminPage
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 
-		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
+		$wrapper = SwatDBClassMap::get('SiteCommentWrapper');
 		$comments = SwatDB::query($this->app->db, $sql, $wrapper);
 
 		// init result message
