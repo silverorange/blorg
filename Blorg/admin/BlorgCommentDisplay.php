@@ -3,8 +3,8 @@
 require_once 'Swat/SwatControl.php';
 require_once 'Swat/SwatHtmlTag.php';
 require_once 'Swat/SwatYUI.php';
+require_once 'Site/SiteViewFactory.php';
 require_once 'Blorg/Blorg.php';
-require_once 'Blorg/BlorgViewFactory.php';
 require_once 'XML/RPCAjax.php';
 
 /**
@@ -190,11 +190,11 @@ class BlorgCommentDisplay extends SwatControl
 	protected function getView()
 	{
 		if (self::$view === null && $this->app !== null) {
-			self::$view = BlorgViewFactory::get($this->app, 'comment');
-			self::$view->setPartMode('bodytext', BlorgView::MODE_SUMMARY);
-			self::$view->setPartMode('permalink', BlorgView::MODE_ALL, false);
-			self::$view->setPartMode('author', BlorgView::MODE_ALL, false);
-			self::$view->setPartMode('link', BlorgView::MODE_ALL, false);
+			self::$view = SiteViewFactory::get($this->app, 'comment');
+			self::$view->setPartMode('bodytext',  SiteView::MODE_SUMMARY);
+			self::$view->setPartMode('permalink', SiteView::MODE_ALL, false);
+			self::$view->setPartMode('author',    SiteView::MODE_ALL, false);
+			self::$view->setPartMode('link',      SiteView::MODE_ALL, false);
 		}
 		return self::$view;
 	}
