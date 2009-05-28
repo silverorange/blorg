@@ -6,12 +6,12 @@ require_once 'Swat/SwatTableStore.php';
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'Swat/SwatNavBar.php';
 require_once 'SwatDB/SwatDBClassMap.php';
+require_once 'Site/SiteViewFactory.php';
 require_once 'Site/dataobjects/SiteCommentWrapper.php';
 require_once 'Site/admin/SiteCommentVisibilityCellRenderer.php';
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/BlorgViewFactory.php';
 
 /**
  * Details page for Posts
@@ -146,14 +146,14 @@ class BlorgPostDetails extends AdminIndex
 	{
 		$content_block = $this->ui->getWidget('post_preview');
 		ob_start();
-		$view = BlorgViewFactory::get($this->app, 'post');
+		$view = SiteViewFactory::get($this->app, 'post');
 		$view->setPathPrefix('../');
-		$view->setPartMode('author', BlorgView::MODE_ALL, false);
-		$view->setPartMode('title', BlorgView::MODE_ALL, false);
-		$view->setPartMode('permalink', BlorgView::MODE_ALL, false);
-		$view->setPartMode('tags', BlorgView::MODE_NONE, false);
-		$view->setPartMode('comment_count', BlorgView::MODE_ALL, false);
-		$view->setPartMode('extended_bodytext', BlorgView::MODE_ALL, false);
+		$view->setPartMode('author',            SiteView::MODE_ALL, false);
+		$view->setPartMode('title',             SiteView::MODE_ALL, false);
+		$view->setPartMode('permalink',         SiteView::MODE_ALL, false);
+		$view->setPartMode('tags',              SiteView::MODE_NONE, false);
+		$view->setPartMode('comment_count',     SiteView::MODE_ALL, false);
+		$view->setPartMode('extended_bodytext', SiteView::MODE_ALL, false);
 		$view->display($this->post);
 		$content_block->content = ob_get_clean();
 		$content_block->content_type = 'text/xml';
