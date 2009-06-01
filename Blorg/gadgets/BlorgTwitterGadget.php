@@ -27,6 +27,13 @@ class BlorgTwitterGadget extends SiteGadget
 	 */
 	const UPDATE_THRESHOLD = 5;
 
+	/**
+	 * The name of the cache that stors the timeline's xml
+	 *
+	 * @var string the name of the cache
+	 */
+	const CACHE_NAME = 'timeline';
+
 	// }}}
 	// {{{ protected properties
 
@@ -195,9 +202,10 @@ class BlorgTwitterGadget extends SiteGadget
 	{
 		$timeline = null;
 
-		if ($this->hasCache()) {
-			$timeline = simplexml_load_string($this->getCacheValue());
-			$last_update = $this->getCacheLastUpdateDate();
+		if ($this->hasCache(self::CACHE_NAME)) {
+			$xml_string = $this->getCacheValue(self::CACHE_NAME);
+			$timeline = simplexml_load_string($xml_string);
+			$last_update = $this->getCacheLastUpdateDate(self::CACHE_NAME);
 			$last_update->addMinutes(self::UPDATE_THRESHOLD);
 
 			if ($this->now->before($last_update))
@@ -212,7 +220,7 @@ class BlorgTwitterGadget extends SiteGadget
 		}
 
 		if ($timeline !== null)
-			$this->updateCacheValue($timeline->asXML());
+			$this->updateCacheValue(self::CACHE_NAME, $timeline->asXML());
 
 		return $timeline;
 	}
