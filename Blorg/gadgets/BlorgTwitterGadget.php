@@ -191,10 +191,10 @@ class BlorgTwitterGadget extends SiteGadget
 	 * Gets the user timeline
 	 *
 	 * First checks if there is an unexpired timeline in the cache. If no
-	 *  unexpired timeline is found query Twitter for a new timeline. Finally
-	 *  if Twitter is unable to provide a new timeline return either the
-	 *  expired timeline from the cache or null if an expired update does not
-	 *  exist.
+	 * unexpired timeline is found query Twitter for a new timeline. Finally
+	 * if Twitter is unable to provide a new timeline return either the
+	 * expired timeline from the cache or null if an expired update does not
+	 * exist.
 	 *
 	 * @return SimepleXMLElement the user timeline or null if no timeline is
 	 *                            available.
