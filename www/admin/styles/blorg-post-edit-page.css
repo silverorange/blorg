@@ -179,11 +179,18 @@ img.blorg-file-icon {
 /* {{{ Tags */
 
 .site-tag-entry {
-	width: 228px;
+	width: 218px;
 }
 
 .site-tag-array {
-	width: 228px;
+	width: 218px;
+}
+
+/* }}} */
+/* {{{ Shortname */
+
+#shortname_field div.swat-form-field label {
+	display: none;
 }
 
 /* }}} */
