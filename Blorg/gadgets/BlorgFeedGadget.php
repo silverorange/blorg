@@ -6,6 +6,8 @@ require_once 'Swat/SwatHtmlTag.php';
 /**
  * Displays feed links
  *
+ * There are no settings for this gadget.
+ *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1

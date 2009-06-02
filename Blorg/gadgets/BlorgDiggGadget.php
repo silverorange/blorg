@@ -8,8 +8,9 @@ require_once 'Swat/SwatString.php';
  *
  * Available settings are:
  *
- * - string username the Digg username for which to display stories. If not
- *                   specified, front page stories are displayed.
+ * - <kbd>string username</kbd> - the Digg username for which to display
+ *                                stories. If not specified, front page stories
+ *                                are displayed.
  *
  * @package   Blörg
  * @copyright 2008 silverorange

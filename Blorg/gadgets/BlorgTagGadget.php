@@ -8,6 +8,18 @@ require_once 'SwatI18N/SwatI18NLocale.php';
 /**
  * Displays tags
  *
+ * Available settings are:
+ *
+ * - <kbd>booelan show_empty</kbd>       - whether or not to show empty tags in
+ *                                         the list of tags. False by default.
+ * - <kbd>booelan show_feed_links</kbd>  - whether or not to show Atom feed
+ *                                         links for tags. Defaults to false.
+ * - <kbd>boolean show_post_counts</kbd> - whether or not to show a post count
+ *                                         for each tag. Defaults to true.
+ * - <kbd>boolean cloud_view</kbd>       - whether or not to add CSS hooks
+ *                                         for displaying tags as a 'cloud'.
+ *                                         Defaults to false.
+ *
  * @package   Blörg
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1

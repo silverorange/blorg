@@ -9,8 +9,9 @@ require_once 'Site/gadgets/SiteGadget.php';
  *
  * Available settings are:
  *
- * - string username the twitter username for which to display updates
- * - integer max_updates the number of updates to display
+ * - <kbd>string  username</kbd>    - the Twitter username for which to display
+ *                                    updates.
+ * - <kbd>integer max_updates</kbd> - the number of updates to display.
  *
  * @package   Blörg
  * @copyright 2009 silverorange
