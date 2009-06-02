@@ -2,6 +2,8 @@
 
 require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Site/dataobjects/SiteCommentWrapper.php';
+require_once 'Blorg/dataobjects/BlorgComment.php';
 require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
 require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
 require_once 'Blorg/dataobjects/BlorgAuthor.php';
