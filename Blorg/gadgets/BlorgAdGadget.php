@@ -8,7 +8,7 @@ require_once 'Swat/SwatString.php';
  *
  * Available settings are:
  *
- * - <code>text    ad_markup</code>      - the html markup for embedding an ad
+ * - <kbd>string ad_markup</kbd> - the html markup for embedding an ad.
  *
  * @package   Blörg
  * @copyright 2008 silverorange

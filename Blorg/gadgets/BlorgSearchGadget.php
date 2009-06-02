@@ -11,8 +11,8 @@ require_once 'Swat/SwatSearchEntry.php';
  *
  * Available settings are:
  *
- * - string label the label to use on the search box. If unspecified, the label
- *                'keywords' is used.
+ * - <kbd>string label</kbd> - the label to use on the search box. If
+ *                             unspecified, the label 'keywords' is used.
  *
  * @package   Blörg
  * @copyright 2008 silverorange

@@ -9,8 +9,8 @@ require_once 'Swat/SwatYUI.php';
  *
  * Available settings are:
  *
- * - string uri The uri to the Flickr JSON source. This is exactly the same as
- *              an RSS/Atom link but with format=json
+ * - <kbd>string uri</kbd> - the uri to the Flickr JSON source. This is exactly
+ *                           the same as an RSS/Atom link but with format=json.
  *
  * @package   Blörg
  * @copyright 2008 silverorange

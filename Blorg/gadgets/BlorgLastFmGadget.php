@@ -9,8 +9,8 @@ require_once 'Swat/SwatYUI.php';
  *
  * Available settings are:
  *
- * - string username the Last.fm username for which to display songs. If not
- *                   specified, nothing is displayed.
+ * - <kbd>string username</kbd> - the Last.fm username for which to display
+ *                                songs. If not specified, nothing is displayed.
  *
  * @package   Blörg
  * @copyright 2008 silverorange

@@ -12,8 +12,9 @@ require_once 'SwatI18N/SwatI18NLocale.php';
  *
  * Available settings are:
  *
- * - integer limit controls how many active conversations can be displayed.
- *                 Five conversations are displayed by default.
+ * - <kbd>integer limit</kbd> - controls how many active conversations can be
+ *                              displayed. Five conversations are displayed by
+ *                              default.
  *
  * @package   Blörg
  * @copyright 2008 silverorange
