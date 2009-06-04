@@ -56,6 +56,7 @@ $package->addPackageDepWithChannel('required', 'Swat',  'pear.silverorange.com',
 $package->addPackageDepWithChannel('required', 'Site',  'pear.silverorange.com', '1.4.21');
 $package->addPackageDepWithChannel('required', 'Admin', 'pear.silverorange.com', '1.3.17');
 $package->addPackageDepWithChannel('required', 'Date',  'pear.silverorange.com', '1.5.0so5');
+$package->addPackageDepWithChannel('optional', 'Services_Akismet2', 'pear.php.net', '0.2.0');
 $package->generateContents();
 
 if (isset($_GET['make']) || (isset($_SERVER['argv']) && @$_SERVER['argv'][1] == 'make')) {

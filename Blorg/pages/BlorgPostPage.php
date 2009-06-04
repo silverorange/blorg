@@ -10,7 +10,7 @@ require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgComment.php';
-require_once 'Services/Akismet.php';
+require_once 'Services/Akismet2.php';
 require_once 'NateGoSearch/NateGoSearch.php';
 
 /**
@@ -322,17 +322,20 @@ class BlorgPostPage extends SitePageDecorator
 				$this->post->shortname);
 
 			try {
-				$akismet = new Services_Akismet($uri,
+				$akismet = new Services_Akismet2($uri,
 					$this->app->config->blorg->akismet_key);
 
-				$akismet_comment = new Services_Akismet_Comment();
-				$akismet_comment->setAuthor($comment->fullname);
-				$akismet_comment->setAuthorEmail($comment->email);
-				$akismet_comment->setAuthorUri($comment->link);
-				$akismet_comment->setContent($comment->bodytext);
-				$akismet_comment->setPostPermalink($permalink);
+				$akismet_comment = new Services_Akismet2_Comment(
+					array(
+						'comment_author'       => $comment->fullname,
+						'comment_author_email' => $comment->email,
+						'comment_author_url'   => $comment->link,
+						'comment_content'      => $comment->bodytext,
+						'permalink'            => $permalink,
+					)
+				);
 
-				$is_spam = $akismet->isSpam($akismet_comment);
+				$is_spam = $akismet->isSpam($akismet_comment, true);
 			} catch (Exception $e) {
 			}
 		}
