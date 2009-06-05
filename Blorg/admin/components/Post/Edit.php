@@ -6,6 +6,7 @@ require_once 'Swat/SwatXHTMLTextarea.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'Site/exceptions/SiteInvalidImageException.php';
+require_once 'Site/SiteCommentStatus.php';
 require_once 'NateGoSearch/NateGoSearch.php';
 require_once 'Blorg/BlorgWeblogsDotComPinger.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
@@ -132,8 +133,8 @@ class BlorgPostEdit extends AdminDBEdit
 		$status = $this->ui->getWidget('comment_status');
 
 		// open
-		$option = new SwatOption(BlorgPost::COMMENT_STATUS_OPEN,
-			BlorgPost::getCommentStatusTitle(BlorgPost::COMMENT_STATUS_OPEN));
+		$option = new SwatOption(SiteCommentStatus::OPEN,
+			BlorgPost::getCommentStatusTitle(SiteCommentStatus::OPEN));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
@@ -141,9 +142,9 @@ class BlorgPostEdit extends AdminDBEdit
 			'this post.'));
 
 		// moderated
-		$option = new SwatOption(BlorgPost::COMMENT_STATUS_MODERATED,
+		$option = new SwatOption(SiteCommentStatus::MODERATED,
 			BlorgPost::getCommentStatusTitle(
-				BlorgPost::COMMENT_STATUS_MODERATED));
+				SiteCommentStatus::MODERATED));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
@@ -151,8 +152,8 @@ class BlorgPostEdit extends AdminDBEdit
 			'author before being visible on this post.'));
 
 		// locked
-		$option = new SwatOption(BlorgPost::COMMENT_STATUS_LOCKED,
-			BlorgPost::getCommentStatusTitle(BlorgPost::COMMENT_STATUS_LOCKED));
+		$option = new SwatOption(SiteCommentStatus::LOCKED,
+			BlorgPost::getCommentStatusTitle(SiteCommentStatus::LOCKED));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
@@ -160,8 +161,8 @@ class BlorgPostEdit extends AdminDBEdit
 			'still visible on this post.'));
 
 		// closed
-		$option = new SwatOption(BlorgPost::COMMENT_STATUS_CLOSED,
-			BlorgPost::getCommentStatusTitle(BlorgPost::COMMENT_STATUS_CLOSED));
+		$option = new SwatOption(SiteCommentStatus::CLOSED,
+			BlorgPost::getCommentStatusTitle(SiteCommentStatus::CLOSED));
 
 		$status->addOption($option);
 		$status->addContextNote($option, Blorg::_(
@@ -171,20 +172,20 @@ class BlorgPostEdit extends AdminDBEdit
 		if ($this->id === null) {
 			switch ($this->app->config->blorg->default_comment_status) {
 			case 'open':
-				$status->value = BlorgPost::COMMENT_STATUS_OPEN;
+				$status->value = SiteCommentStatus::OPEN;
 				break;
 
 			case 'moderated':
-				$status->value = BlorgPost::COMMENT_STATUS_MODERATED;
+				$status->value = SiteCommentStatus::MODERATED;
 				break;
 
 			case 'locked':
-				$status->value = BlorgPost::COMMENT_STATUS_LOCKED;
+				$status->value = SiteCommentStatus::LOCKED;
 				break;
 
 			case 'closed':
 			default:
-				$status->value = BlorgPost::COMMENT_STATUS_CLOSED;
+				$status->value = SiteCommentStatus::CLOSED;
 				break;
 			}
 		}

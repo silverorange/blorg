@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/exceptions/SiteNotFoundException.php';
+require_once 'Site/SiteCommentStatus.php';
 require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/pages/BlorgAbstractAtomPage.php';
 require_once 'XML/Atom/Feed.php';
@@ -164,9 +165,9 @@ class BlorgAtomPage extends BlorgAbstractAtomPage
 			$post->author->email);
 
 		$visible_comment_count = $post->getVisibleCommentCount();
-		if ($post->comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
-			$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED ||
-			($post->comment_status == BlorgPost::COMMENT_STATUS_LOCKED &&
+		if ($post->comment_status == SiteCommentStatus::OPEN ||
+			$post->comment_status == SiteCommentStatus::MODERATED ||
+			($post->comment_status == SiteCommentStatus::LOCKED &&
 			$visible_comment_count > 0)) {
 			$entry->addLink($post_uri.'#comments', 'comments', 'text/html');
 		}

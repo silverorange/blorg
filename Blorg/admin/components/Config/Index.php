@@ -3,6 +3,7 @@
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'Admin/pages/AdminPage.php';
 require_once 'Blorg/dataobjects/BlorgFile.php';
+require_once 'Site/SiteCommentStatus.php';
 
 /**
  * Shows editable configuration values for a Blörg site
@@ -208,20 +209,20 @@ class BlorgConfigIndex extends AdminPage
 	{
 		switch ($this->app->config->blorg->default_comment_status) {
 		case 'open':
-			$value = BlorgPost::COMMENT_STATUS_OPEN;
+			$value = SiteCommentStatus::OPEN;
 			break;
 
 		case 'moderated':
-			$value = BlorgPost::COMMENT_STATUS_MODERATED;
+			$value = SiteCommentStatus::MODERATED;
 			break;
 
 		case 'locked':
-			$value = BlorgPost::COMMENT_STATUS_LOCKED;
+			$value = SiteCommentStatus::LOCKED;
 			break;
 
 		case 'closed':
 		default:
-			$value = BlorgPost::COMMENT_STATUS_CLOSED;
+			$value = SiteCommentStatus::CLOSED;
 			break;
 		}
 

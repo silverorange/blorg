@@ -6,6 +6,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Swat/SwatString.php';
 require_once 'Swat/SwatHtmlTag.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
+require_once 'Site/SiteCommentStatus.php';
 
 /**
  * Displays active convestaions (a.k.a. posts that have recent comment activity)
@@ -138,7 +139,7 @@ class BlorgActiveConversationsGadget extends SiteGadget
 		}
 
 		if ($active_conversations === false) {
-			$comment_status_closed = BlorgPost::COMMENT_STATUS_CLOSED;
+			$comment_status_closed = SiteCommentStatus::CLOSED;
 			$sql = sprintf('select title, bodytext, publish_date, shortname,
 					visible_comment_count, last_comment_date
 				from BlorgPost

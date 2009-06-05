@@ -3,6 +3,8 @@
 require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'Site/dataobjects/SiteCommentWrapper.php';
+require_once 'Site/SiteCommentStatus.php';
+
 // require comment class definition so we can unserialize posts
 require_once 'Blorg/dataobjects/BlorgComment.php';
 require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
@@ -18,31 +20,6 @@ require_once 'Blorg/dataobjects/BlorgAuthor.php';
  */
 class BlorgPost extends SwatDBDataObject
 {
-	// {{{ class constants
-
-	/**
-	 * New comments are allowed, and are automatically show on the site as long
-	 * as they are not detected as spam.
-	 */
-	const COMMENT_STATUS_OPEN      = 0;
-
-	/**
-	 * New comments are allowed, but must be approved by an admin user before
-	 * being shown.
-	 */
-	const COMMENT_STATUS_MODERATED = 1;
-
-	/**
-	 * No new comments are allowed, but exisiting comments are shown.
-	 */
-	const COMMENT_STATUS_LOCKED    = 2;
-
-	/**
-	 * No new comments are allowed, and existing comments are no longer shown.
-	 */
-	const COMMENT_STATUS_CLOSED    = 3;
-
-	// }}}
 	// {{{ public properties
 
 	/**
@@ -221,19 +198,19 @@ class BlorgPost extends SwatDBDataObject
 	public static function getCommentStatusTitle($status)
 	{
 		switch ($status) {
-		case self::COMMENT_STATUS_OPEN :
+		case SiteCommentStatus::OPEN :
 			$title = Blorg::_('Open');
 			break;
 
-		case self::COMMENT_STATUS_LOCKED :
+		case SiteCommentStatus::LOCKED :
 			$title = Blorg::_('Locked');
 			break;
 
-		case self::COMMENT_STATUS_MODERATED :
+		case SiteCommentStatus::MODERATED :
 			$title = Blorg::_('Moderated');
 			break;
 
-		case self::COMMENT_STATUS_CLOSED :
+		case SiteCommentStatus::CLOSED :
 			$title = Blorg::_('Closed');
 			break;
 
@@ -251,14 +228,14 @@ class BlorgPost extends SwatDBDataObject
 	public static function getCommentStatuses()
 	{
 		return array(
-			self::COMMENT_STATUS_OPEN =>
-				self::getCommentStatusTitle(self::COMMENT_STATUS_OPEN),
-			self::COMMENT_STATUS_MODERATED =>
-				self::getCommentStatusTitle(self::COMMENT_STATUS_MODERATED),
-			self::COMMENT_STATUS_LOCKED =>
-				self::getCommentStatusTitle(self::COMMENT_STATUS_LOCKED),
-			self::COMMENT_STATUS_CLOSED =>
-				self::getCommentStatusTitle(self::COMMENT_STATUS_CLOSED),
+			SiteCommentStatus::OPEN =>
+				self::getCommentStatusTitle(SiteCommentStatus::OPEN),
+			SiteCommentStatus::MODERATED =>
+				self::getCommentStatusTitle(SiteCommentStatus::MODERATED),
+			SiteCommentStatus::LOCKED =>
+				self::getCommentStatusTitle(SiteCommentStatus::LOCKED),
+			SiteCommentStatus::CLOSED =>
+				self::getCommentStatusTitle(SiteCommentStatus::CLOSED),
 		);
 	}
 
@@ -360,9 +337,9 @@ class BlorgPost extends SwatDBDataObject
 
 	public function hasVisibleCommentStatus()
 	{
-		return ($this->comment_status == self::COMMENT_STATUS_OPEN ||
-			$this->comment_status == self::COMMENT_STATUS_MODERATED ||
-			($this->comment_status == self::COMMENT_STATUS_LOCKED &&
+		return ($this->comment_status == SiteCommentStatus::OPEN ||
+			$this->comment_status == SiteCommentStatus::MODERATED ||
+			($this->comment_status == SiteCommentStatus::LOCKED &&
 			$this->getVisibleCommentCount() > 0));
 	}
 
