@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Site/dataobjects/SiteCommentWrapper.php';
+require_once 'Site/SiteCommentStatus.php';
 require_once 'Blorg/pages/BlorgAbstractAtomPage.php';
 require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
@@ -140,7 +141,7 @@ class BlorgCommentsAtomPage extends BlorgAbstractAtomPage
 			$this->app->db->quote(true, 'boolean'),
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(BlorgPost::COMMENT_STATUS_CLOSED, 'integer'));
+			$this->app->db->quote(SiteCommentStatus::CLOSED, 'integer'));
 	}
 
 	// }}}

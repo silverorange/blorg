@@ -5,13 +5,11 @@ require_once 'Swat/SwatUI.php';
 require_once 'Site/SiteViewFactory.php';
 require_once 'Site/pages/SitePageDecorator.php';
 require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Site/dataobjects/SiteCommentWrapper.php';
+require_once 'Blorg/BlorgCommentUi.php';
 require_once 'Blorg/BlorgPageFactory.php';
 require_once 'Blorg/BlorgPostLoader.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/dataobjects/BlorgComment.php';
-require_once 'Services/Akismet2.php';
-require_once 'NateGoSearch/NateGoSearch.php';
 
 /**
  * Post page for Blörg
@@ -24,32 +22,12 @@ require_once 'NateGoSearch/NateGoSearch.php';
  */
 class BlorgPostPage extends SitePageDecorator
 {
-	// {{{ class constants
-
-	const THANK_YOU_ID = 'thank-you';
-
-	// }}}
 	// {{{ protected properties
 
 	/**
 	 * @var BlorgPost
 	 */
 	protected $post;
-
-	/**
-	 * @var BlorgComment
-	 */
-	protected $comment;
-
-	/**
-	 * @var SwatUI
-	 */
-	protected $comment_ui;
-
-	/**
-	 * @var string
-	 */
-	protected $comment_ui_xml = 'Blorg/pages/comment-edit.xml';
 
 	// }}}
 	// {{{ public function __construct()
@@ -138,8 +116,7 @@ class BlorgPostPage extends SitePageDecorator
 
 	protected function initCommentUi()
 	{
-		$this->comment_ui = new SwatUI();
-		$this->comment_ui->loadFromXml($this->comment_ui_xml);
+		$this->comment_ui = new BlorgCommentUi($this->app);
 	}
 
 	// }}}

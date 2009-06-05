@@ -4,6 +4,7 @@ require_once 'Swat/SwatDate.php';
 require_once 'Swat/SwatString.php';
 require_once 'SwatI18N/SwatI18NLocale.php';
 require_once 'Site/views/SiteView.php';
+require_once 'Site/SiteCommentStatus.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
 require_once 'Blorg/Blorg.php';
 require_once 'Blorg/views/BlorgAuthorView.php';
@@ -197,10 +198,10 @@ class BlorgPostView extends SiteView
 		 */
 		$show_comment_count =
 			($comment_count != '' &&
-				(($post->comment_status == BlorgPost::COMMENT_STATUS_LOCKED &&
+				(($post->comment_status == SiteCommentStatus::LOCKED &&
 					$post->getVisibleCommentCount() > 0) ||
-				$post->comment_status == BlorgPost::COMMENT_STATUS_OPEN ||
-				$post->comment_status == BlorgPost::COMMENT_STATUS_MODERATED));
+				$post->comment_status == SiteCommentStatus::OPEN ||
+				$post->comment_status == SiteCommentStatus::MODERATED));
 
 		if (      $author != '' && $tags != '' &&  $show_comment_count) {
 			printf(Blorg::_('Posted by %s on %s in %s - %s'),
@@ -427,14 +428,14 @@ class BlorgPostView extends SiteView
 				}
 
 				switch ($post->comment_status) {
-				case BlorgPost::COMMENT_STATUS_LOCKED:
+				case SiteCommentStatus::LOCKED:
 					$comment_count_tag->title = sprintf(
 						Blorg::_('View comments for %s'),
 						$post->getTitle());
 
 					break;
-				case BlorgPost::COMMENT_STATUS_OPEN:
-				case BlorgPost::COMMENT_STATUS_MODERATED:
+				case SiteCommentStatus::OPEN:
+				case SiteCommentStatus::MODERATED:
 					$comment_count_tag->title = sprintf(
 						Blorg::_('Comment on %s'),
 						$post->getTitle());
