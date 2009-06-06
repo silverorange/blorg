@@ -33,7 +33,7 @@
 				</widget>
 				<widget class="SwatGroupingFormField">
 					<property name="title" translatable="yes">Comment Status</property>
-					<widget class="BlorgCommentStatusSlider" id="comment_status" />
+					<widget class="SiteCommentStatusSlider" id="comment_status" />
 				</widget>
 				<widget class="SwatGroupingFormField">
 					<property name="title" translatable="yes">Tags</property>
