@@ -18,7 +18,7 @@ require_once 'Blorg/dataobjects/BlorgAuthor.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPost extends SwatDBDataObject
+class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 {
 	// {{{ public properties
 
@@ -542,6 +542,14 @@ class BlorgPost extends SwatDBDataObject
 		}
 
 		return $loaded;
+	}
+
+	// }}}
+	// {{{ public function getCommentStatus()
+
+	public function getCommentStatus()
+	{
+		return $this->comment_status;
 	}
 
 	// }}}
