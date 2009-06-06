@@ -1,11 +1,7 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'NateGoSearch/NateGoSearch.php';
+require_once 'Site/admin/components/Comment/Edit.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/dataobjects/BlorgComment.php';
 require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
 
 /**
@@ -15,32 +11,16 @@ require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgCommentEdit extends AdminDBEdit
+class BlorgCommentEdit extends SiteCommentEdit
 {
-	// {{{ protected properties
-
-	/**
-	 * @var string
-	 */
-	protected $ui_xml = 'Blorg/admin/components/Comment/edit.xml';
-
-	/**
-	 * @var BlorgComment
-	 */
-	protected $comment;
-
-	// }}}
-
 	// init phase
 	// {{{ protected function initInternal()
 
 	protected function initInternal()
 	{
+		$this->ui_xml = 'Blorg/admin/components/Comment/edit.xml';
+
 		parent::initInternal();
-
-		$this->ui->loadFromXML($this->ui_xml);
-
-		$this->initBlorgComment();
 
 		if ($this->id === null || $this->comment->author !== null) {
 			$this->ui->getWidget('fullname_field')->visible = false;
@@ -51,13 +31,11 @@ class BlorgCommentEdit extends AdminDBEdit
 	}
 
 	// }}}
-	// {{{ protected function initBlorgComment()
+	// {{{ protected function initComment()
 
-	protected function initBlorgComment()
+	protected function initComment()
 	{
-		$class_name = SwatDBClassMap::get('BlorgComment');
-		$this->comment = new $class_name();
-		$this->comment->setDatabase($this->app->db);
+		parent::initComment();
 
 		if ($this->id === null) {
 			$post_id = $this->app->initVar('post');
@@ -76,10 +54,6 @@ class BlorgCommentEdit extends AdminDBEdit
 			}
 
 			$this->comment->post = $post;
-
-		} elseif (!$this->comment->load($this->id, $this->app->getInstance())) {
-			throw new AdminNotFoundException(
-				sprintf('Comment with id ‘%s’ not found.', $this->id));
 		}
 	}
 
@@ -90,32 +64,16 @@ class BlorgCommentEdit extends AdminDBEdit
 
 	protected function saveDBData()
 	{
-		$values = $this->ui->getValues(array(
-			'fullname',
-			'link',
-			'email',
-			'bodytext',
-			'status',
-			'author',
-		));
+		$author_id = $this->ui->getWidget('author')->value;
 
 		if ($this->comment->id === null) {
-			$now = new SwatDate();
-			$now->toUTC();
-			$this->comment->createdate = $now;
-			$this->comment->author     = $values['author'];
+			$this->comment->author     = $author_id;
 
 			// update user's default author to selected author when creating a
 			// new comment
-			$this->updateDefaultAuthor($values['author']);
+			$this->updateDefaultAuthor($author_id);
 		} else {
-			if ($this->comment->getInternalValue('author') === null) {
-				$this->comment->fullname = $values['fullname'];
-				$this->comment->link     = $values['link'];
-				$this->comment->email    = $values['email'];
-				$this->comment->status   = $values['status'];
-			} else {
-				$author_id  = $values['author'];
+			if ($this->comment->getInternalValue('author') !== null) {
 				$class_name = SwatDBClassMap::get('BlorgAuthor');
 				$author     = new $class_name();
 				$author->setDatabase($this->app->db);
@@ -125,25 +83,7 @@ class BlorgCommentEdit extends AdminDBEdit
 			}
 		}
 
-		if ($this->comment->status === null) {
-			$this->comment->status = SiteComment::STATUS_PUBLISHED;
-		}
-
-		$this->comment->bodytext = $values['bodytext'];
-
-		if ($this->comment->isModified()) {
-			$this->comment->save();
-
-			$this->addToSearchQueue();
-
-			if (isset($this->app->memcache)) {
-				$this->app->memcache->flushNS('posts');
-			}
-
-			$message = new SwatMessage(Blorg::_('Comment has been saved.'));
-
-			$this->app->messages->add($message);
-		}
+		parent::saveDBData();
 	}
 
 	// }}}
@@ -230,6 +170,16 @@ class BlorgCommentEdit extends AdminDBEdit
 	}
 
 	// }}}
+	// {{{ protected function clearCache()
+
+	protected function clearCache()
+	{
+		if (isset($this->app->memcache)) {
+			$this->app->memcache->flushNS('posts');
+		}
+	}
+
+	// }}}
 
 	// build phase
 	// {{{ protected function buildInternal()
@@ -280,7 +230,7 @@ class BlorgCommentEdit extends AdminDBEdit
 
 	protected function loadDBData()
 	{
-		$this->ui->setValues(get_object_vars($this->comment));
+		parent::loadDBData();
 
 		if ($this->comment->author !== null)
 			$this->ui->getWidget('author')->value = $this->comment->author->id;
