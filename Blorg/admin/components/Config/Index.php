@@ -57,8 +57,10 @@ class BlorgConfigIndex extends AdminPage
 				'header_image',
 				'feed_logo',
 				'default_comment_status',
-				'akismet_key',
 				'visual_editor',
+			),
+			'comment' => array(
+				'akismet_key',
 			),
 			'date' => array(
 				'time_zone',
