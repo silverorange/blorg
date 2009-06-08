@@ -25,17 +25,8 @@ class BlorgCommentUi extends SiteCommentUi
 
 	protected function getPermalink(SiteComment $comment)
 	{
-		$uri = $this->app->getBaseHref().
-			$this->app->config->blorg->path;
-
-		$date = clone $comment->post->publish_date;
-		$date->convertTZ($this->app->default_time_zone);
-
-		$permalink = sprintf('%sarchive/%s/%s/%s',
-			$uri,
-			$date->getYear(),
-			BlorgPageFactory::$month_names[$date->getMonth()],
-			$comment->post->shortname);
+		return $this->app->getBaseHref().
+			Blorg::getPostRelativeUri($this->app, $comment->post);
 
 	}
 
