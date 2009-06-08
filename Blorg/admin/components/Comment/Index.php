@@ -20,18 +20,7 @@ class BlorgCommentIndex extends SiteCommentIndex
 	protected function initInternal()
 	{
 		$this->table = 'BlorgComment';
-
 		parent::initInternal();
-
-		$visibility = $this->ui->getWidget('search_visibility');
-
-		// if default comment status is moderated, only show pending comments
-		// by default.
-		if ($this->app->config->blorg->default_comment_status === 'moderated') {
-			$visibility->value = self::SHOW_UNAPPROVED;
-		} else {
-			$visibility->value = self::SHOW_ALL;
-		}
 	}
 
 	// }}}
@@ -142,6 +131,22 @@ class BlorgCommentIndex extends SiteCommentIndex
 		}
 
 		return $where;
+	}
+
+	// }}}
+	// {{{ protected function getDefaultVisibilityValue()
+
+	protected function getDefaultVisibilityValue()
+	{
+		$value = parent::getDefaultVisibilityValue();
+
+		// if default comment status is moderated, only show pending comments
+		// by default.
+		if ($this->app->config->blorg->default_comment_status === 'moderated') {
+			$value = self::SHOW_UNAPPROVED;
+		}
+
+		return $value;
 	}
 
 	// }}}
