@@ -16,18 +16,8 @@ class BlorgCommentAjaxServer extends SiteCommentAjaxServer
 
 	protected function getPermalink(SiteComment $comment)
 	{
-		$uri = $this->app->getFrontendBaseHref().
-			$this->app->config->blorg->path;
-
-		$date = clone $comment->post->publish_date;
-		$date->convertTZ($this->app->default_time_zone);
-
-		$permalink = sprintf('%sarchive/%s/%s/%s',
-			$uri,
-			$date->getYear(),
-			BlorgPageFactory::$month_names[$date->getMonth()],
-			$comment->post->shortname);
-
+		return $this->app->getFrontendBaseHref().
+			Blorg::getPostRelativeUri($this->app, $comment->post);
 	}
 
 	// }}}
