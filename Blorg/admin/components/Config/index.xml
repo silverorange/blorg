@@ -58,7 +58,7 @@
 			<object class="SwatDetailsViewField">
 				<property name="title" translatable="yes">Akismet Key</property>
 				<object class="SwatNullTextCellRenderer">
-					<property name="text" type="data">blorg_akismet_key</property>
+					<property name="text" type="data">comment_akismet_key</property>
 				</object>
 			</object>
 			<object class="SwatDetailsViewField">
