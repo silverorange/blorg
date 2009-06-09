@@ -92,11 +92,11 @@ abstract class BlorgAbstractAtomPage extends SitePage
 
 		// last page
 		$last = intval(ceil($this->getTotalCount() / $this->getPageSize()));
-		if ($last === 0) {
-			$feed->addLink($this->getFeedBaseHref(), 'last', $type);
-		} else {
+		if ($last > 1) {
 			$feed->addLink($this->getFeedBaseHref().'/page'.$last, 'last',
 				$type);
+		} else {
+			$feed->addLink($this->getFeedBaseHref(), 'last', $type);
 		}
 
 		// previous page
