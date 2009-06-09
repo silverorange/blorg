@@ -86,16 +86,26 @@ abstract class BlorgAbstractAtomPage extends SitePage
 	{
 		$page = $this->getArgument('page');
 		$type = 'application/atom+xml';
-		$last = intval(ceil($this->getTotalCount() / $this->getPageSize()));
 
+		// first page
 		$feed->addLink($this->getFeedBaseHref(), 'first', $type);
-		$feed->addLink($this->getFeedBaseHref().'/page'.$last, 'last', $type);
 
+		// last page
+		$last = intval(ceil($this->getTotalCount() / $this->getPageSize()));
+		if ($last === 0) {
+			$feed->addLink($this->getFeedBaseHref(), 'last', $type);
+		} else {
+			$feed->addLink($this->getFeedBaseHref().'/page'.$last, 'last',
+				$type);
+		}
+
+		// previous page
 		if ($page > 1) {
 			$feed->addLink($this->getFeedBaseHref().'/page'.($page - 1),
 				'previous', $type);
 		}
 
+		// next page
 		if ($page < $last) {
 			$feed->addLink($this->getFeedBaseHref().'/page'.($page + 1),
 				'next', $type);
