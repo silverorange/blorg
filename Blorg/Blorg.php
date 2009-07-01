@@ -268,9 +268,9 @@ Blorg::setupGettext();
 SwatUI::mapClassPrefixToPath('Blorg', 'Blorg');
 
 SiteViewFactory::addPath('Blorg/views');
-SiteViewFactory::registerView('post',    'BlorgPostView');
-SiteViewFactory::registerView('comment', 'BlorgCommentView');
-SiteViewFactory::registerView('author',  'BlorgAuthorView');
+SiteViewFactory::registerView('post',          'BlorgPostView');
+SiteViewFactory::registerView('post-comment',  'BlorgCommentView');
+SiteViewFactory::registerView('author',        'BlorgAuthorView');
 
 SiteGadgetFactory::addPath('Blorg/gadgets');
 
