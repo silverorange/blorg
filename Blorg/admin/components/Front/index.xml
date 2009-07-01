@@ -39,7 +39,9 @@
 		<property name="title" translatable="yes">Recent Comments</property>
 		<widget class="SwatForm" id="comments_form">
 			<widget class="SwatReplicableContainer" id="comment_replicator">
-				<widget class="BlorgCommentDisplay" id="comment" />
+				<widget class="BlorgCommentDisplay" id="comment">
+					<property name="xml_rpc_client_uri">Comment/AjaxServer</property>
+				</widget>
 			</widget>
 		</widget>
 		<widget class="SwatDisplayableContainer">
