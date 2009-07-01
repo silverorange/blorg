@@ -7,11 +7,11 @@ require_once 'Swat/SwatDetailsStore.php';
 require_once 'Swat/SwatNavBar.php';
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Site/SiteViewFactory.php';
-require_once 'Site/dataobjects/SiteCommentWrapper.php';
 require_once 'Site/admin/SiteCommentVisibilityCellRenderer.php';
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Blorg/dataobjects/BlorgPost.php';
+require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 
 /**
  * Details page for Posts
@@ -228,7 +228,7 @@ class BlorgPostDetails extends AdminIndex
 
 		$this->app->db->setLimit($pager->page_size, $pager->current_record);
 		$comments = SwatDB::query($this->app->db, $sql,
-			SwatDBClassMap::get('SiteCommentWrapper'));
+			SwatDBClassMap::get('BlorgCommentWrapper'));
 
 		$store = new SwatTableStore();
 

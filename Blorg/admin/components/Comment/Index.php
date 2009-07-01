@@ -2,6 +2,7 @@
 
 require_once 'Site/admin/components/Comment/Index.php';
 require_once 'Blorg/admin/BlorgCommentDisplay.php';
+require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 
@@ -57,7 +58,7 @@ class BlorgCommentIndex extends SiteCommentIndex
 
 		$this->app->db->setLimit($limit, $offset);
 
-		$wrapper = SwatDBClassMap::get('SiteCommentWrapper');
+		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
 		$comments = SwatDB::query($this->app->db, $sql, $wrapper);
 
 		// efficiently load posts for all comments

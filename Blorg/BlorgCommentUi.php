@@ -12,6 +12,15 @@ require_once 'Blorg/BlorgPageFactory.php';
  */
 class BlorgCommentUi extends SiteCommentUi
 {
+	// {{{ protected function getComment()
+
+	protected function getComment()
+	{
+		$class_name = SwatDBClassMap::get('BlorgComment');
+		return new $class_name();
+	}
+
+	// }}}
 	// {{{ protected function setCommentPost()
 
 	protected function setCommentPost(SiteComment $comment,
