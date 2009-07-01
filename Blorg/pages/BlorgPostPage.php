@@ -239,7 +239,7 @@ class BlorgPostPage extends SitePageDecorator
 
 			$comments = $this->post->getVisibleComments();
 
-			$view = SiteViewFactory::get($this->app, 'comment');
+			$view = SiteViewFactory::get($this->app, 'post-comment');
 			$count = count($comments);
 
 			if ($count > 0) {

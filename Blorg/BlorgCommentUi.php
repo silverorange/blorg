@@ -12,6 +12,14 @@ require_once 'Blorg/BlorgPageFactory.php';
  */
 class BlorgCommentUi extends SiteCommentUi
 {
+	// {{{ protected function getView()
+
+	protected function getView()
+	{
+		return SiteViewFactory::get($this->app, 'post-comment');
+	}
+
+	// }}}
 	// {{{ protected function getComment()
 
 	protected function getComment()
