@@ -2,8 +2,8 @@
 
 require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/dataobjects/SiteCommentWrapper.php';
 require_once 'Site/SiteCommentStatus.php';
+require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 
 // require comment class definition so we can unserialize posts
 require_once 'Blorg/dataobjects/BlorgComment.php';
@@ -294,7 +294,7 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 			$this->db->quote(SiteComment::STATUS_PUBLISHED, 'integer'),
 			$this->db->quote(false, 'boolean'));
 
-		$wrapper = SwatDBClassMap::get('SiteCommentWrapper');
+		$wrapper = SwatDBClassMap::get('BlorgCommentWrapper');
 
 		if ($limit !== null) {
 			$this->db->setLimit($limit, $offset);
@@ -607,7 +607,7 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 	/**
 	 * Loads comments for this post, this never includes spam
 	 *
-	 * @return SiteCommentWrapper
+	 * @return BlorgCommentWrapper
 	 */
 	protected function loadComments()
 	{
@@ -621,7 +621,7 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 			$this->db->quote(false, 'boolean'));
 
 		return SwatDB::query($this->db, $sql,
-			SwatDBClassMap::get('SiteCommentWrapper'));
+			SwatDBClassMap::get('BlorgCommentWrapper'));
 	}
 
 	// }}}
