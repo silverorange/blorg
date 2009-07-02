@@ -58,6 +58,15 @@ class BlorgCommentEdit extends SiteCommentEdit
 	}
 
 	// }}}
+	// {{{ protected function getComment()
+
+	protected function getComment()
+	{
+		$class_name = SwatDBClassMap::get('BlorgComment');
+		return new $class_name();
+	}
+
+	// }}}
 
 	// process phase
 	// {{{ protected function saveDBData()
