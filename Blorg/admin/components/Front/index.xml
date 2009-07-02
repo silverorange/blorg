@@ -40,7 +40,7 @@
 		<widget class="SwatForm" id="comments_form">
 			<widget class="SwatReplicableContainer" id="comment_replicator">
 				<widget class="BlorgCommentDisplay" id="comment">
-					<property name="xml_rpc_client_uri">Comment/AjaxServer</property>
+					<property name="comment_component">Comment</property>
 				</widget>
 			</widget>
 		</widget>

@@ -32,7 +32,8 @@ class BlorgCommentDisplay extends SiteCommentDisplay
 		echo ' - ';
 
 		$anchor_tag = new SwatHtmlTag('a');
-		$anchor_tag->href = sprintf('Comment/Edit?id=%s',
+		$anchor_tag->href = sprintf('%s/Edit?id=%s',
+			$this->getCommentComponent(),
 			$this->comment->id);
 
 		$anchor_tag->setContent(Blorg::_('Edit'));
