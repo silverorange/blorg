@@ -173,7 +173,7 @@ class BlorgTagGadget extends SiteGadget
 				inner join BlorgTagVisiblePostCountView
 					on BlorgTag.id = BlorgTagVisiblePostCountView.tag
 				where instance %s %s
-				order by title desc',
+				order by title',
 				SwatDB::equalityOperator($this->app->getInstanceId()),
 				$this->app->db->quote($this->app->getInstanceId(), 'integer'));
 
