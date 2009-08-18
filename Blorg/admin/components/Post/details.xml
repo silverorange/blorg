@@ -67,7 +67,7 @@
 		<widget class="SwatFrame" id="comments_frame">
 			<property name="title" translatable="yes">Comments</property>
 			<widget class="SwatToolbar" id="comments_toolbar">
-				<widget class="SwatToolLink">
+				<widget class="SwatToolLink" id="new_comment">
 					<property name="title" translatable="yes">New Comment</property>
 					<property name="link">Comment/Edit?post=%s</property>
 					<property name="stock_id">create</property>
