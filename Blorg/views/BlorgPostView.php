@@ -687,7 +687,7 @@ class BlorgPostView extends SiteView
 	 */
 	protected function getDateFormat(BlorgPost $post)
 	{
-		return SwatDate::DF_DATE_LONG;
+		return $this->date_format;
 	}
 
 	// }}}
