@@ -40,7 +40,7 @@ require_once 'Blorg/BlorgPageFactory.php';
  *                       MODE_NONE. Links to the files by default.
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2009 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPostView extends SiteView
@@ -56,6 +56,15 @@ class BlorgPostView extends SiteView
 	 * @see setBodytextSummaryLength()
 	 */
 	protected $bodytext_summary_length = 300;
+
+	/**
+	 * Formats used for displayed dates.
+	 *
+	 * @param integer $format an integer format id.
+	 *
+	 * @see setDateForamt()
+	 */
+	protected $date_format = SwatDate::DF_DATE_LONG;
 
 	/**
 	 * Length of bodytext in visible characters to be considered a microblog
@@ -95,6 +104,19 @@ class BlorgPostView extends SiteView
 	public function setBodytextSummaryLength($length)
 	{
 		$this->summary_bodytext_length = intval($length);
+	}
+
+	// }}}
+	// {{{ public function setDateFormat()
+
+	/**
+	 * Sets the date format used for displayed dates.
+	 *
+	 * @param integer $format the format to use for display.
+	 */
+	public function setDateForamt($format)
+	{
+		$this->date_format = $format;
 	}
 
 	// }}}
