@@ -114,7 +114,7 @@ class BlorgPostView extends SiteView
 	 *
 	 * @param integer $format the format to use for display.
 	 */
-	public function setDateForamt($format)
+	public function setDateFormat($format)
 	{
 		$this->date_format = $format;
 	}
