@@ -29,7 +29,7 @@ class BlorgFlickrJsonGadget extends SiteGadget
 
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 
-		printf('<script src="%s"></script>',
+		printf('<script src="%s" type="application/json"></script>',
 			$this->getValue('uri'));
 	}
 
@@ -65,7 +65,7 @@ class BlorgFlickrJsonGadget extends SiteGadget
 			'packages/blorg/javascript/blorg-flickr-json-gadget.js',
 			Blorg::PACKAGE_ID);
 
-		$this->id = uniqid();
+		$this->id = uniqid('flickr');
 	}
 
 	// }}}
