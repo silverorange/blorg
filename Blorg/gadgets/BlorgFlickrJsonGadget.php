@@ -29,7 +29,7 @@ class BlorgFlickrJsonGadget extends SiteGadget
 
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 
-		printf('<script src="%s" type="application/json"></script>',
+		printf('<script src="%s" type="text/javascript"></script>',
 			$this->getValue('uri'));
 	}
 
