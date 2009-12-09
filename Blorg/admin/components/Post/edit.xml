@@ -72,7 +72,8 @@
 							</widget>
 						</widget>
 						<widget class="SwatFormField" id="upload_description_field">
-							<property name="title" translatable="yes">Description (optional)</property>
+							<property name="title" translatable="yes">Description</property>
+							<property name="required_status_display" type="constant">DISPLAY_OPTIONAL</property>
 							<widget class="SwatEntry" id="upload_description">
 								<property name="size" type="integer">30</property>
 							</widget>
