@@ -23,9 +23,10 @@ $result = $package->setOptions(
 		'baseinstalldir'    => '/',
 		'packagedirectory'  => './',
 		'dir_roles'         => array(
-			'Blorg' => 'php',
-			'locale' => 'data',
-			'www' => 'data',
+			'Blorg'         => 'php',
+			'locale'        => 'data',
+			'dependencies'  => 'data',
+			'www'           => 'data',
 		),
 	)
 );

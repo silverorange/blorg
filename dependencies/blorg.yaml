@@ -1,0 +1,50 @@
+##
+## Static Web-resource dependencies for the Blörg package
+##
+## Copyright (c) 2010 silverorange
+##
+## This library is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as
+## published by the Free Software Foundation; either version 2.1 of the
+## License, or (at your option) any later version.
+##
+## This library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+## Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public
+## License along with this library; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+##
+Site:
+  Depends:
+    # Package Dependencies
+    - Swat
+    - Site
+    - Admin
+
+  Provides:
+
+    # JavaScript resources
+    packages/blorg/javascript/blorg-flickr-json-gadget.js:
+    packages/blorg/javascript/blorg-last-fm-gadget.js:
+    packages/blorg/admin/javascript/blorg-file-attach-control.js:
+    packages/blorg/admin/javascript/blorg-file-delete-control.js:
+    packages/blorg/admin/javascript/blorg-header-image-display.js:
+    packages/blorg/admin/javascript/blorg-markup-view.js:
+    packages/blorg/admin/javascript/blorg-publish-radio-table.js:
+
+    # Style-sheet resources
+    packages/blorg/styles/blorg-tag-gadget.css:
+    packages/blorg/admin/styles/blorg-file-attach-control.css:
+    packages/blorg/admin/styles/blorg-file-delete-control.css:
+    packages/blorg/admin/styles/blorg-front-page.css:
+    packages/blorg/admin/styles/blorg-gadget-display.css:
+    packages/blorg/admin/styles/blorg-header-image-display.css:
+    packages/blorg/admin/styles/blorg-markup-view.css:
+    packages/blorg/admin/styles/blorg-post-details-page.css:
+    packages/blorg/admin/styles/blorg-post-edit-page.css:
+    packages/blorg/admin/styles/blorg-theme-display.css:
+
+# vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2:
