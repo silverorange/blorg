@@ -81,24 +81,7 @@ class BlorgPostIndex extends AdminSearch
 			break;
 
 		case 'enable':
-			$instance_id = $this->app->getInstanceId();
-			$num = SwatDB::exec($this->app->db, sprintf(
-				'update BlorgPost set enabled = %s
-				where instance %s %s and id in (%s)',
-				$this->app->db->quote(true, 'boolean'),
-				SwatDB::equalityOperator($instance_id),
-				$this->app->db->quote($instance_id, 'integer'),
-				$items));
-
-			if ($num > 0 && isset($this->app->memcache)) {
-				$this->app->memcache->flushNs('posts');
-			}
-
-			$message = new SwatMessage(sprintf(Blorg::ngettext(
-				'One post has been shown on site.',
-				'%s posts have been shown on site.', $num),
-				SwatString::numberFormat($num)));
-
+			$this->publishPosts($view->getSelection());
 			break;
 
 		case 'disable':
@@ -182,6 +165,81 @@ class BlorgPostIndex extends AdminSearch
 
 		return SwatDB::query($this->app->db, $sql,
 			SwatDBClassMap::get('BlorgPostWrapper'));
+	}
+
+	// }}}
+	// {{{ protected function publishPosts()
+
+	protected function publishPosts(SwatViewSelection $post_ids)
+	{
+		$num = 0;
+
+		$transaction = new SwatDBTransaction($this->app->db);
+		try {
+			$instance_id = $this->app->getInstanceId();
+			$post_ids = SwatDB::implodeSelection($this->app->db, $post_ids);
+
+			$sql = sprintf(
+				'select id, shortname, title, bodytext from BlorgPost
+				where instance %s %s and id in (%s) and enabled = %s',
+				SwatDB::equalityOperator($instance_id),
+				$this->app->db->quote($instance_id, 'integer'),
+				$post_ids,
+				$this->app->db->quote(false, 'boolean'));
+
+			$posts = SwatDB::query($this->app->db, $sql,
+				SwatDBClassMap::get('BlorgPostWrapper'));
+
+			foreach ($posts as $post) {
+				if ($post->shortname === null) {
+					$post->shortname = $this->getPostShortname($post);
+				}
+				$post->enabled = true;
+				$post->save();
+				$num++;
+			}
+
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
+		}
+
+		if ($num > 0 && isset($this->app->memcache)) {
+			$this->app->memcache->flushNs('posts');
+		}
+
+		$message = new SwatMessage(sprintf(Blorg::ngettext(
+			'One post has been shown on site.',
+			'%s posts have been shown on site.', $num),
+			SwatString::numberFormat($num)));
+	}
+
+	// }}}
+	// {{{ protected function getPostShortname()
+
+	protected function getPostShortname(BlorgPost $post)
+	{
+		$title_value = ($post->title == '') ? $post->bodytext : $post->title;
+
+		$shortname_base = SwatString::condenseToName($title_value);
+		$count = 1;
+		$shortname = $shortname_base;
+
+		while ($this->isShortnameValid($post, $shortname) === false)
+			$shortname = $shortname_base.$count++;
+
+		return $shortname;
+	}
+
+	// }}}
+	// {{{ protected function isShortnameValid()
+
+	protected function isShortnameValid(BlorgPost $post, $shortname)
+	{
+		$post = clone $post;
+		$post->shortname = $shortname;
+		return BlorgPost::isShortnameValid($this->app, $post);
 	}
 
 	// }}}
