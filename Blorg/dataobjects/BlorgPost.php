@@ -553,6 +553,41 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 	}
 
 	// }}}
+	// {{{ public static function isShortnameValid()
+
+	public static function isShortnameValid(SiteApplication $app,
+		BlorgPost $post)
+	{
+		// get publish date in local time
+		if ($post->publish_date === null) {
+			$publish_date = new SwatDate();
+			$publish_date->convertTZ($app->default_time_zone);
+		} else {
+			$publish_date = clone $post->publish_date;
+			$publish_date->setTZ($app->default_time_zone);
+		}
+
+		$instance_id = $app->getInstanceId();
+
+		$sql = 'select shortname from BlorgPost
+			where shortname = %s and instance %s %s and id %s %s
+			and date_trunc(\'month\', convertTZ(publish_date, %s)) =
+				date_trunc(\'month\', timestamp %s)';
+
+		$sql = sprintf($sql,
+			$app->db->quote($post->shortname, 'text'),
+			SwatDB::equalityOperator($instance_id),
+			$app->db->quote($instance_id, 'integer'),
+			SwatDB::equalityOperator($post->id, true),
+			$app->db->quote($post->id, 'integer'),
+			$app->db->quote($publish_date->tz->getId(), 'text'),
+			$app->db->quote($publish_date->getDate(), 'date'));
+
+		$query = SwatDB::query($app->db, $sql);
+
+		return (count($query) == 0);
+	}
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()

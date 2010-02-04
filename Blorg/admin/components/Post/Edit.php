@@ -402,41 +402,12 @@ class BlorgPostEdit extends AdminDBEdit
 			return;
 		}
 
-		$publish_date = $publish->getPublishDate();
+		$post = new BlorgPost();
+		$post->id = $this->id;
+		$post->shortname = $shortname;
+		$post->publish_date = $publish->getPublishDate();
 
-		// clone the date so our time zone conversions don't affect the date
-		// during later processing
-		if ($publish_date !== null) {
-			$publish_date = clone $publish_date;
-		}
-
-		// get publish date in local time
-		if ($publish_date === null) {
-			$publish_date = new SwatDate();
-			$publish_date->convertTZ($this->app->default_time_zone);
-		} else {
-			$publish_date->setTZ($this->app->default_time_zone);
-		}
-
-		$instance_id = $this->app->getInstanceId();
-
-		$sql = 'select shortname from BlorgPost
-			where shortname = %s and instance %s %s and id %s %s
-			and date_trunc(\'month\', convertTZ(publish_date, %s)) =
-				date_trunc(\'month\', timestamp %s)';
-
-		$sql = sprintf($sql,
-			$this->app->db->quote($shortname, 'text'),
-			SwatDB::equalityOperator($instance_id),
-			$this->app->db->quote($instance_id, 'integer'),
-			SwatDB::equalityOperator($this->id, true),
-			$this->app->db->quote($this->id, 'integer'),
-			$this->app->db->quote($publish_date->tz->getId(), 'text'),
-			$this->app->db->quote($publish_date->getDate(), 'date'));
-
-		$query = SwatDB::query($this->app->db, $sql);
-
-		return (count($query) == 0);
+		return BlorgPost::isShortnameValid($this->app, $post);
 	}
 
 	// }}}
