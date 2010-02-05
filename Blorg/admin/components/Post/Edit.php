@@ -611,11 +611,14 @@ class BlorgPostEdit extends AdminDBEdit
 			from BlorgAuthor
 			left outer join AdminUserInstanceBinding on
 				AdminUserInstanceBinding.default_author = BlorgAuthor.id
-			where BlorgAuthor.instance %s %s and BlorgAuthor.visible = %s
+			where BlorgAuthor.instance %s %s
+				and (BlorgAuthor.visible = %s or BlorgAuthor.id = %s)
 			order by displayorder',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
-			$this->app->db->quote(true, 'boolean'));
+			$this->app->db->quote(true, 'boolean'),
+			$this->app->db->quote($this->post->getInternalValue('author'),
+				'integer'));
 
 		$rs = SwatDB::query($this->app->db, $sql);
 
