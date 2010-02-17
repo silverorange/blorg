@@ -58,6 +58,11 @@ class BlorgFileLoaderPage extends SitePage
 
 	public function build()
 	{
+		// clear all output buffers
+		for ($i = 0; $i < ob_get_level(); $i++) {
+			ob_end_clean();
+		}
+
 		if ($this->app->getInstance() === null) {
 			$path = '../files/';
 		} else {
