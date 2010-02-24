@@ -2,7 +2,7 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version = '0.1.49';
+$version = '0.1.50';
 
 $notes = <<<EOT
 * Suppress and handle bad cookies
