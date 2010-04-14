@@ -97,10 +97,11 @@ class BlorgTwitterGadget extends SiteGadget
 
 	protected function displayContent()
 	{
-		if ($this->hasTimeline())
+		if ($this->hasTimeline()) {
 			$this->displayTimeline();
-		else
+		} else {
 			$this->displayErrorMessage();
+		}
 	}
 
 	// }}}
