@@ -14,7 +14,7 @@ require_once 'Site/gadgets/SiteGadget.php';
  * - <kbd>integer max_updates</kbd> - the number of updates to display.
  *
  * @package   Blörg
- * @copyright 2009 silverorange
+ * @copyright 2009-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgTwitterGadget extends SiteGadget
@@ -29,7 +29,15 @@ class BlorgTwitterGadget extends SiteGadget
 	const UPDATE_THRESHOLD = 5;
 
 	/**
-	 * The name of the cache that stors the timeline's xml
+	 * The amount of time in minutes we wait before we try updating the cache
+	 * again if the cache failed to update
+	 *
+	 * @var integer the amount of time in minutes
+	 */
+	const UPDATE_RETRY_THRESHOLD = 2;
+
+	/**
+	 * The name of the cache that stores the timeline's xml
 	 *
 	 * @var string the name of the cache
 	 */
@@ -37,15 +45,6 @@ class BlorgTwitterGadget extends SiteGadget
 
 	// }}}
 	// {{{ protected properties
-
-	/**
-	 * The exception generated if there was an error requesting the user
-	 *  timeline
-	 *
-	 * @var Services_Twitter_Exception null if no exception occured else an
-	 *                                  exception object
-	 */
-	protected $timeline_exception;
 
 	/**
 	 * An object used to access the Twitter API
@@ -73,12 +72,21 @@ class BlorgTwitterGadget extends SiteGadget
 
 	public function init()
 	{
-		$this->twitter = new Services_Twitter(null, null);
+		$request = new HTTP_Request2();
+		$request->setConfig(array(
+			'connect_timeout' => 1,
+			'timeout'         => 3,
+		));
+
+		$this->twitter = new Services_Twitter(null, null,
+			array('format' => Services_Twitter::OUTPUT_XML));
+
+		$this->twitter->setRequest($request);
 
 		$this->now = new SwatDate();
 		$this->now->toUTC();
 
-		$this->timeline = $this->getTimeline();
+		$this->initTimeline();
 	}
 
 	// }}}
@@ -86,10 +94,13 @@ class BlorgTwitterGadget extends SiteGadget
 
 	public function display()
 	{
-		parent::display();
-
-		if  ($this->hasTimeline())
-			$this->displayFooter();
+		$this->displayTitle();
+		if ($this->hasTimeline()) {
+			$this->displayContent();
+		} else {
+			$this->displayUnavailable();
+		}
+		$this->displayFooter();
 	}
 
 	// }}}
@@ -97,25 +108,14 @@ class BlorgTwitterGadget extends SiteGadget
 
 	protected function displayContent()
 	{
-		if ($this->hasTimeline()) {
-			$this->displayTimeline();
-		} else {
-			$this->displayErrorMessage();
-		}
-	}
-
-	// }}}
-	// {{{ protected function displayTimeline()
-
-	protected function displayTimeline()
-	{
 		$span_tag = new SwatHtmlTag('span');
 		$a_tag = new SwatHtmlTag('a');
 
 		echo '<ul>';
 
-		for ($i = 0; $i < $this->getValue('max_updates')
-				&& count($this->timeline->status) > $i; $i++) {
+		for ($i = 0; $i < $this->getValue('max_updates') &&
+			count($this->timeline->status) > $i; $i++) {
+
 			$status = $this->timeline->status[$i];
 			$create_date = new SwatDate(strtotime($status->created_at),
 				DATE_FORMAT_UNIXTIME);
@@ -138,22 +138,11 @@ class BlorgTwitterGadget extends SiteGadget
 	}
 
 	// }}}
-	// {{{ protected function displayErrorMessage()
+	// {{{ protected function displayUnavailable()
 
-	protected function displayErrorMessage()
+	protected function displayUnavailable()
 	{
-		switch ($this->timeline_exception->getCode()) {
-			case Services_Twitter::ERROR_DOWN:
-			case Services_Twitter::ERROR_UNAVAILABLE:
-				$message = Blorg::_(
-					'Looks like Twitter is unavailable right now.');
-				break;
-			default:
-				$message = Blorg::_('Something went wrong. Now that we know'.
-					' about it we will fix it.');
-		}
-
-		echo $message;
+		echo Blorg::_('Twitter updates are currently unavailable.');
 	}
 
 	// }}}
@@ -161,7 +150,11 @@ class BlorgTwitterGadget extends SiteGadget
 
 	protected function displayFooter()
 	{
-		$real_name = $this->timeline->status[0]->user->name;
+		if ($this->hasTimeline()) {
+			$real_name = $this->timeline->status[0]->user->name;
+		} else {
+			$real_name = $this->getValue('username');
+		}
 
 		$footer = new SwatHtmlTag('div');
 		$footer->class = 'site-gadget-footer';
@@ -173,8 +166,7 @@ class BlorgTwitterGadget extends SiteGadget
 		$footer->setContent(sprintf(Blorg::_('Follow %s on Twitter'), $a_tag),
 			'text/xml');
 
-		if ($this->hasTimeline())
-			$footer->display();
+		$footer->display();
 	}
 
 	// }}}
@@ -186,45 +178,58 @@ class BlorgTwitterGadget extends SiteGadget
 	}
 
 	// }}}
-	// {{{ protected function getTimeline()
+	// {{{ protected function initTimeline()
 
 	/**
-	 * Gets the user timeline
+	 * Initializes the user timeline
 	 *
 	 * First checks if there is an unexpired timeline in the cache. If no
 	 * unexpired timeline is found query Twitter for a new timeline. Finally
 	 * if Twitter is unable to provide a new timeline return either the
 	 * expired timeline from the cache or null if an expired update does not
 	 * exist.
-	 *
-	 * @return SimepleXMLElement the user timeline or null if no timeline is
-	 *                            available.
 	 */
-	protected function getTimeline()
+	protected function initTimeline()
 	{
 		$timeline = null;
+		$last_update = null;
 
 		if ($this->hasCache(self::CACHE_NAME)) {
-			$xml_string = $this->getCacheValue(self::CACHE_NAME);
-			$timeline = simplexml_load_string($xml_string);
 			$last_update = $this->getCacheLastUpdateDate(self::CACHE_NAME);
 			$last_update->addMinutes(self::UPDATE_THRESHOLD);
-
-			if ($this->now->before($last_update))
-				return $timeline;
 		}
 
-		try {
-			$params = array('id' => $this->getValue('username'));
-			$timeline = $this->twitter->statuses->user_timeline($params);
-		} catch (Services_Twitter_Exception $e) {
-			$this->timeline_exception = $e;
+		// update the cache
+		if ($last_update === null || $this->now->after($last_update)) {
+			try {
+				$params = array('id' => $this->getValue('username'));
+				$timeline = $this->twitter->statuses->user_timeline($params);
+				$this->updateCacheValue(self::CACHE_NAME, $timeline->asXML());
+			} catch (Services_Twitter_Exception $e) {
+				$regexp = '/^Request timed out after [0-9]+ second\(s\)$/u';
+				if (preg_match($regexp, $e->getMessage()) === 1) {
+					// on timeout, update the cache timeout so we rate-limit
+					// retries
+					if ($this->hasCache(self::CACHE_NAME)) {
+						$date = clone $this->now;
+						$date->addMinutes(self::UPDATE_RETRY_THRESHOLD -
+							self::UPDATE_THRESHOLD);
+
+						$xml_string = $this->getCacheValue(self::CACHE_NAME);
+						$timeline = simplexml_load_string($xml_string);
+						$this->updateCacheValue(
+							self::CACHE_NAME, $xml_string, $date);
+					}
+				} else {
+					throw $e;
+				}
+			}
+		} else {
+			$xml_string = $this->getCacheValue(self::CACHE_NAME);
+			$timeline = simplexml_load_string($xml_string);
 		}
 
-		if ($timeline !== null)
-			$this->updateCacheValue(self::CACHE_NAME, $timeline->asXML());
-
-		return $timeline;
+		$this->timeline = $timeline;
 	}
 
 	// }}}
