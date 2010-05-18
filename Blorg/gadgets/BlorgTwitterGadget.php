@@ -43,6 +43,13 @@ class BlorgTwitterGadget extends SiteGadget
 	 */
 	const CACHE_NAME = 'timeline';
 
+	/**
+	 * The endpoint for all links display with this gadget
+	 *
+	 * @var string the endpoint for all links
+	 */
+	const URI_ENDPOINT = 'http://twitter.com';
+
 	// }}}
 	// {{{ protected properties
 
@@ -121,7 +128,7 @@ class BlorgTwitterGadget extends SiteGadget
 				DATE_FORMAT_UNIXTIME);
 
 			echo '<li>';
-			$a_tag->href = sprintf('%s/%s/status/%s', Services_Twitter::$uri,
+			$a_tag->href = sprintf('%s/%s/status/%s', self::URI_ENDPOINT,
 				$this->getValue('username'), $status->id);
 
 			$a_tag->setContent($status->text);
@@ -160,7 +167,7 @@ class BlorgTwitterGadget extends SiteGadget
 		$footer->class = 'site-gadget-footer';
 
 		$a_tag = new SwatHtmlTag('a');
-		$a_tag->href = Services_Twitter::$uri.'/'.$this->getValue('username');
+		$a_tag->href = self::URI_ENDPOINT.'/'.$this->getValue('username');
 		$a_tag->setContent($real_name);
 
 		$footer->setContent(sprintf(Blorg::_('Follow %s on Twitter'), $a_tag),
