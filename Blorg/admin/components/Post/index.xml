@@ -49,12 +49,13 @@
 	<widget class="SwatFrame" id="results_frame">
 		<property name="title" translatable="yes">Posts</property>
 		<widget class="SwatToolbar" id="index_toolbar">
-			<widget class="SwatToolLink">
+			<widget class="SwatToolLink" id="new_post">
 				<property name="title" translatable="yes">New Post</property>
 				<property name="link">Post/Edit</property>
 				<property name="stock_id">create</property>
 			</widget>
 		</widget>
+		<widget class="SwatMessageDisplay" id="author_warning_message_display" />
 		<widget class="SwatForm" id="index_form">
 			<widget class="SwatTableView" id="index_view">
 				<object class="SwatTableViewGroup">

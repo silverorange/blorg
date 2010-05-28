@@ -11,6 +11,11 @@
 				<property name="link">Post/Edit</property>
 				<property name="stock_id">create</property>
 			</widget>
+			<widget class="SwatToolLink" id="manage_authors">
+				<property name="title" translatable="yes">Manage Authors</property>
+				<property name="link">Author</property>
+				<property name="visible" type="boolean">false</property>
+			</widget>
 			<widget class="SwatDisplayableContainer">
 				<property name="classes[]">clear-fix</property>
 			</widget>

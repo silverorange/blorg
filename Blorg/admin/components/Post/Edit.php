@@ -604,7 +604,14 @@ class BlorgPostEdit extends AdminDBEdit
 	{
 		parent::buildInternal();
 		$this->buildFiles();
+		$this->buildAuthors();
+	}
 
+	// }}}
+	// {{{ protected function buildAuthors()
+
+	protected function buildAuthors()
+	{
 		$instance_id = $this->app->getInstanceId();
 		$sql = sprintf('select BlorgAuthor.*,
 				AdminUserInstanceBinding.usernum
@@ -621,6 +628,11 @@ class BlorgPostEdit extends AdminDBEdit
 				'integer'));
 
 		$rs = SwatDB::query($this->app->db, $sql);
+
+		// if there are no visible authors, go back to post index page
+		if (count($rs) === 0) {
+			$this->app->relocate('Post');
+		}
 
 		$default_author = null;
 		$authors = array();

@@ -157,6 +157,19 @@ class BlorgFrontIndex extends AdminPage
 
 		echo '</ul>';
 
+		// author warning
+		if ($this->getVisibleAuthorCount() === 0) {
+			$this->ui->getWidget('new_post')->visible = false;
+			$this->ui->getWidget('manage_authors')->visible = true;
+
+			echo '<p><strong>', Blorg::_('Warning:'), '</strong> ';
+			echo Blorg::_(
+				'At least one author must be set to “show on site” in '.
+				'order to create new posts.');
+
+			echo '</p>';
+		}
+
 		$this->ui->getWidget('info')->content = ob_get_clean();
 		$this->ui->getWidget('info')->content_type = 'text/xml';
 	}
@@ -283,6 +296,21 @@ class BlorgFrontIndex extends AdminPage
 			'comments_per_day' => $comments_per_day,
 			'tag_count'        => $tag_info->tag_count,
 		);
+	}
+
+	// }}}
+	// {{{ protected function getVisibleAuthorCount()
+
+	protected function getVisibleAuthorCount()
+	{
+		$instance_id = $this->app->getInstanceId();
+		$sql = sprintf('select count(1) from BlorgAuthor
+			where instance %s %s and visible = %s',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->app->db->quote(true, 'boolean'));
+
+		return SwatDB::queryOne($this->app->db, $sql);
 	}
 
 	// }}}
