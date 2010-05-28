@@ -17,7 +17,7 @@ require_once 'Blorg/dataobjects/BlorgComment.php';
  * Loads and displays a post and handles adding comments to a post.
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPostPage extends SitePageDecorator
@@ -245,6 +245,17 @@ class BlorgPostPage extends SitePageDecorator
 			if ($count > 0) {
 				echo '<h3 class="comments-title">',
 					Blorg::_('Comments'), '</h3>';
+			}
+
+			// display message for locked comments
+			if ($this->post->comment_status == SiteCommentStatus::LOCKED) {
+				$div_tag = new SwatHtmlTag('div');
+				$div_tag->class = 'comments-locked-message';
+				$div_tag->setContent(Blorg::_(
+					'Comments are locked. No additional comments may be '.
+					'posted.'));
+
+				$div_tag->display();
 			}
 
 			foreach ($comments as $i => $comment) {
