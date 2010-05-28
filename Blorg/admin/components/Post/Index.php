@@ -251,6 +251,8 @@ class BlorgPostIndex extends AdminSearch
 	{
 		parent::buildInternal();
 
+		$this->buildAuthorWarning();
+
 		$instance_id = $this->app->getInstanceId();
 		$where_clause = sprintf('visible = %s and instance %s %s',
 			$this->app->db->quote(true, 'boolean'),
@@ -262,6 +264,32 @@ class BlorgPostIndex extends AdminSearch
 		$author_flydown->addOptionsByArray(SwatDB::getOptionArray(
 			$this->app->db, 'BlorgAuthor', 'name', 'id', 'name',
 			$where_clause));
+	}
+
+	// }}}
+	// {{{ protected function buildAuthorWarning()
+
+	protected function buildAuthorWarning()
+	{
+		if ($this->getVisibleAuthorCount() === 0) {
+			$this->ui->getWidget('new_post')->sensitive = false;
+			$message_display = $this->ui->getWidget(
+				'author_warning_message_display');
+
+			$message = new SwatMessage(
+				Blorg::_('Can’t Create New Posts'), 'warning');
+
+			$message->secondary_content = Blorg::_(
+				'At least one author must be set to “show on site” in '.
+				'order to create new posts.');
+			
+			$message->secondary_content.=
+				' <a href="Author">'.Blorg::_('Manage Authors').'</a>';
+
+			$message->content_type = 'text/xml';
+
+			$message_display->add($message, SwatMessageDisplay::DISMISS_OFF);
+		}
 	}
 
 	// }}}
@@ -477,6 +505,21 @@ class BlorgPostIndex extends AdminSearch
 	}
 
 	// }}}
+	// {{{ protected function getVisibleAuthorCount()
+
+	protected function getVisibleAuthorCount()
+	{
+		$instance_id = $this->app->getInstanceId();
+		$sql = sprintf('select count(1) from BlorgAuthor
+			where instance %s %s and visible = %s',
+			SwatDB::equalityOperator($instance_id),
+			$this->app->db->quote($instance_id, 'integer'),
+			$this->app->db->quote(true, 'boolean'));
+
+		return SwatDB::queryOne($this->app->db, $sql);
+	}
+
+	// }}}
 	// {{{ protected function hasSearch()
 
 	protected function hasSearch()
@@ -495,6 +538,19 @@ class BlorgPostIndex extends AdminSearch
 			|| count($tags)
 			|| $date_gt != null
 			|| $date_lt != null);
+	}
+
+	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+		$this->layout->addHtmlHeadEntry(new SwatStyleSheetHtmlHeadEntry(
+			'packages/blorg/admin/styles/blorg-post-index-page.css',
+			Blorg::PACKAGE_ID));
 	}
 
 	// }}}
