@@ -1,0 +1,12 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatFormField">
+		<property name="title" translatable="yes">Google Analytics Account ID</property>
+		<property name="note"><![CDATA[<a href="http://www.google.com/analytics/">http://www.google.com/analytics/</a>]]></property>
+		<property name="note_content_type">text/xml</property>
+		<widget class="SwatEntry" id="analytics_google_account">
+			<property name="maxlength" type="integer">255</property>
+		</widget>
+	</widget>
+</swatml>
