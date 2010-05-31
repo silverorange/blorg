@@ -1,0 +1,12 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatFormField">
+		<property name="title" translatable="yes">Default Comment Status</property>
+		<widget class="SiteCommentStatusSlider" id="blorg_default_comment_status" />
+	</widget>
+	<widget class="SwatFormField">
+		<property name="title" translatable="yes">Use Visual Content Editor</property>
+		<widget class="SwatCheckbox" id="blorg_visual_editor" />
+	</widget>
+</swatml>
