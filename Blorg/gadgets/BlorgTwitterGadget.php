@@ -228,7 +228,8 @@ class BlorgTwitterGadget extends SiteGadget
 							self::CACHE_NAME, $xml_string, $date);
 					}
 				} else {
-					throw $e;
+					$exception = new SwatException($e);
+					$exception->process();
 				}
 			}
 		} else {
