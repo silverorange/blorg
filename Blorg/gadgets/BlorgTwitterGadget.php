@@ -213,7 +213,7 @@ class BlorgTwitterGadget extends SiteGadget
 				$timeline = $this->twitter->statuses->user_timeline($params);
 				$this->updateCacheValue(self::CACHE_NAME, $timeline->asXML());
 			} catch (Services_Twitter_Exception $e) {
-				$regexp = '/^Request timed out after [0-9]+ second\(s\)$/u';
+				$regexp = '/Error #110: Connection timed out$/u';
 				if (preg_match($regexp, $e->getMessage()) === 1) {
 					// on timeout, update the cache timeout so we rate-limit
 					// retries
