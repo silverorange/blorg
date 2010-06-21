@@ -213,20 +213,25 @@ class BlorgTwitterGadget extends SiteGadget
 				$timeline = $this->twitter->statuses->user_timeline($params);
 				$this->updateCacheValue(self::CACHE_NAME, $timeline->asXML());
 			} catch (Services_Twitter_Exception $e) {
-				$regexp = '/Error #110: Connection timed out$/u';
-				if (preg_match($regexp, $e->getMessage()) === 1) {
-					// on timeout, update the cache timeout so we rate-limit
-					// retries
-					if ($this->hasCache(self::CACHE_NAME)) {
-						$date = clone $this->now;
-						$date->addMinutes(self::UPDATE_RETRY_THRESHOLD -
-							self::UPDATE_THRESHOLD);
+				// update the cache timeout so we rate-limit retries
+				if ($this->hasCache(self::CACHE_NAME)) {
+					$date = clone $this->now;
+					$date->addMinutes(self::UPDATE_RETRY_THRESHOLD -
+						self::UPDATE_THRESHOLD);
 
-						$xml_string = $this->getCacheValue(self::CACHE_NAME);
-						$timeline = simplexml_load_string($xml_string);
-						$this->updateCacheValue(
-							self::CACHE_NAME, $xml_string, $date);
-					}
+					$xml_string = $this->getCacheValue(self::CACHE_NAME);
+					$timeline = simplexml_load_string($xml_string);
+					$this->updateCacheValue(
+						self::CACHE_NAME, $xml_string, $date);
+				}
+
+				// Services_Twitter wraps all generated exceptions around their
+				// own Services_Twitter_Exception. You can retrieve the parent
+				// exception by using the Services_Twitter_Exception::getCode()
+				// method.
+				if ($e->getCode() instanceof Exception) {
+					$exception = new SwatException($e->getCode());
+					$exception->process();
 				} else {
 					$exception = new SwatException($e);
 					$exception->process();
