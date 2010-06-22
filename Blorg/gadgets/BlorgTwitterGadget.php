@@ -213,24 +213,35 @@ class BlorgTwitterGadget extends SiteGadget
 				$timeline = $this->twitter->statuses->user_timeline($params);
 				$this->updateCacheValue(self::CACHE_NAME, $timeline->asXML());
 			} catch (Services_Twitter_Exception $e) {
-				// update the cache timeout so we rate-limit retries
-				if ($this->hasCache(self::CACHE_NAME)) {
-					$date = clone $this->now;
-					$date->addMinutes(self::UPDATE_RETRY_THRESHOLD -
-						self::UPDATE_THRESHOLD);
+				// We want to ignore any exceptions that occur becuase
+				// HTTP_Request2 either times out receiving the responce or
+				// because we were unable to actually connect to Twitter.
+				// The only way to distinguish HTTP_Request2_Exceptions is to
+				// look at the exception's message.
+				$ignore = array();
+				$ignore[] = '^Request timed out after [0-9]+ second\(s\)$';
+				$ignore[] = '^Unable to connect to';
 
-					$xml_string = $this->getCacheValue(self::CACHE_NAME);
-					$timeline = simplexml_load_string($xml_string);
-					$this->updateCacheValue(
-						self::CACHE_NAME, $xml_string, $date);
-				}
+				$regexp = sprintf('/%s/u', implode('|', $ignore));
 
-				// Services_Twitter wraps all generated exceptions around their
-				// own Services_Twitter_Exception. You can retrieve the parent
-				// exception by using the Services_Twitter_Exception::getCode()
-				// method.
-				if ($e->getCode() instanceof Exception) {
-					$exception = new SwatException($e->getCode());
+				if (preg_match($regexp, $e->getMessage()) === 1) {
+					// update the cache timeout so we rate-limit retries
+					if ($this->hasCache(self::CACHE_NAME)) {
+						$date = clone $this->now;
+						$date->addMinutes(self::UPDATE_RETRY_THRESHOLD -
+							self::UPDATE_THRESHOLD);
+
+						$xml_string = $this->getCacheValue(self::CACHE_NAME);
+						$timeline = simplexml_load_string($xml_string);
+						$this->updateCacheValue(
+							self::CACHE_NAME, $xml_string, $date);
+					}
+				} else if ($e->getCause() instanceof Exception) {
+					// Services_Twitter wraps all generated exceptions around
+					// their own Services_Twitter_Exception. You can retrieve
+					// the parent exception by using the
+					// PEAR_Exception::getCause() method.
+					$exception = new SwatException($e->getCause());
 					$exception->process();
 				} else {
 					$exception = new SwatException($e);
