@@ -242,10 +242,10 @@ class BlorgTwitterGadget extends SiteGadget
 					// the parent exception by using the
 					// PEAR_Exception::getCause() method.
 					$exception = new SwatException($e->getCause());
-					$exception->process();
+					$exception->process(false);
 				} else {
 					$exception = new SwatException($e);
-					$exception->process();
+					$exception->process(false);
 				}
 			}
 		} else {
