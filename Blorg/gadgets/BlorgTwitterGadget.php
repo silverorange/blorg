@@ -222,7 +222,7 @@ class BlorgTwitterGadget extends SiteGadget
 				$ignore[] = '^Request timed out after [0-9]+ second\(s\)$';
 				$ignore[] = '^Unable to connect to';
 				$ignore[] = '^Rate limit exceeded.';
-				$ignore[] = '^Internal Server Error.$';
+				$ignore[] = '^Internal Server Error$';
 
 				$regexp = sprintf('/%s/u', implode('|', $ignore));
 
