@@ -31,11 +31,11 @@
 						<property name="show_blank" type="boolean">false</property>
 					</widget>
 				</widget>
-				<widget class="SwatGroupingFormField">
+				<widget class="SwatGroupingFormField" id="comment_field">
 					<property name="title" translatable="yes">Comment Status</property>
 					<widget class="SiteCommentStatusSlider" id="comment_status" />
 				</widget>
-				<widget class="SwatGroupingFormField">
+				<widget class="SwatGroupingFormField" id="tag_field">
 					<property name="title" translatable="yes">Tags</property>
 					<widget class="BlorgTagEntry" id="tags" />
 				</widget>

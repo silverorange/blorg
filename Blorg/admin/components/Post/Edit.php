@@ -415,6 +415,82 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function saveDBData()
 	{
+		$this->updatePost();
+
+		$modified = $this->post->isModified();
+
+		// save the post
+		$this->post->save();
+
+		// save tags
+		$tags = $this->getTags();
+		$result = $this->post->setTagsByShortName($tags);
+		$tags_modified = ($result['added'] > 0 || $result['removed'] > 0);
+		$modified = ($modified || $tags_modified);
+		$instance_id = $this->app->getInstanceId();
+
+		// update files attached to the form to be attached to the post
+		if ($this->id === null) {
+			$form = $this->ui->getWidget('edit_form');
+			$unique_id = $form->getHiddenField('unique_id');
+			$sql = sprintf('update BlorgFile set post = %s,
+				form_unique_id = null
+				where form_unique_id = %s and post is null
+					and instance %s %s',
+				$this->app->db->quote($this->post->id, 'integer'),
+				$this->app->db->quote($unique_id, 'text'),
+				SwatDB::equalityOperator($instance_id),
+				$this->app->db->quote($instance_id, 'integer'));
+
+			$num = SwatDB::exec($this->app->db, $sql);
+			$modified = ($modified || $num > 0);
+		}
+
+		if ($modified) {
+
+			// clear cache
+			if (isset($this->app->memcache)) {
+				$this->app->memcache->flushNs('posts');
+
+				$old_date = $this->original_publish_date;
+				$new_date = $this->post->publish_date;
+
+				if ($old_date instanceof Date && $new_date instanceof Date) {
+					$date_modified = (Date::compare($old_date,
+						$new_date) !== 0);
+				} elseif ($old_date instanceof Date && $new_date === null) {
+					$date_modified = true;
+				} elseif ($old_date === null && $new_date instanceof Date) {
+					$date_modified = true;
+				} else {
+					$date_modified = ($old_date !== $new_date);
+				}
+
+				if ($this->original_enabled !== $this->post->enabled ||
+					$date_modified || $tags_modified) {
+					$this->app->memcache->flushNs('tags');
+				}
+			}
+
+			$this->addToSearchQueue();
+
+			$message = new SwatMessage(sprintf(Blorg::_('“%s” has been saved.'),
+				$this->post->getTitle()));
+
+			// ping weblogs
+			if ($this->post->enabled) {
+				$this->pingWebLogsDotCom($message);
+			}
+
+			$this->app->messages->add($message);
+		}
+	}
+
+	// }}}
+	// {{{ protected function updatePost()
+
+	protected function updatePost()
+	{
 		$values = $this->ui->getValues(array(
 			'title',
 			'shortname',
@@ -478,82 +554,20 @@ class BlorgPostEdit extends AdminDBEdit
 				$this->post->modified_date = $now;
 			}
 		}
+	}
 
-		$modified = $this->post->isModified();
+	// }}}
+	// {{{ protected function getTags()
 
-		// save the post
-		$this->post->save();
-
-		// save tags
-		$tags = $this->ui->getWidget('tags')->getSelectedTagArray();
-		$result = $this->post->setTagsByShortName($tags);
-		$tags_modified = ($result['added'] > 0 || $result['removed'] > 0);
-		$modified = ($modified || $tags_modified);
-		$instance_id = $this->app->getInstanceId();
-
-		// update files attached to the form to be attached to the post
-		if ($this->id === null) {
-			$form = $this->ui->getWidget('edit_form');
-			$unique_id = $form->getHiddenField('unique_id');
-			$sql = sprintf('update BlorgFile set post = %s,
-				form_unique_id = null
-				where form_unique_id = %s and post is null
-					and instance %s %s',
-				$this->app->db->quote($this->post->id, 'integer'),
-				$this->app->db->quote($unique_id, 'text'),
-				SwatDB::equalityOperator($instance_id),
-				$this->app->db->quote($instance_id, 'integer'));
-
-			$num = SwatDB::exec($this->app->db, $sql);
-			$modified = ($modified || $num > 0);
-		}
-
-		if ($modified) {
-
-			// clear cache
-			if (isset($this->app->memcache)) {
-				$this->app->memcache->flushNs('posts');
-
-				$old_date = $this->original_publish_date;
-				$new_date = $this->post->publish_date;
-
-				if ($old_date instanceof Date && $new_date instanceof Date) {
-					$date_modified = (Date::compare($old_date,
-						$new_date) !== 0);
-				} elseif ($old_date instanceof Date && $new_date === null) {
-					$date_modified = true;
-				} elseif ($old_date === null && $new_date instanceof Date) {
-					$date_modified = true;
-				} else {
-					$date_modified = ($old_date !== $new_date);
-				}
-
-				if ($this->original_enabled !== $this->post->enabled ||
-					$date_modified || $tags_modified) {
-					$this->app->memcache->flushNs('tags');
-				}
-			}
-
-			$this->addToSearchQueue();
-
-			$message = new SwatMessage(sprintf(Blorg::_('“%s” has been saved.'),
-				$this->post->getTitle()));
-
-			// ping weblogs
-			if ($this->post->enabled) {
-				$this->pingWebLogsDotCom();
-				$message->secondary_content = Blorg::_(
-					'Weblogs.com has been notified of updated content.');
-			}
-
-			$this->app->messages->add($message);
-		}
+	protected function getTags()
+	{
+		return $this->ui->getWidget('tags')->getSelectedTagArray();
 	}
 
 	// }}}
 	// {{{ protected function pingWeblogsDotCom()
 
-	protected function pingWeblogsDotCom()
+	protected function pingWeblogsDotCom(SwatMessage $message)
 	{
 		try {
 			$base_href = $this->app->getFrontendBaseHref().
@@ -563,6 +577,10 @@ class BlorgPostEdit extends AdminDBEdit
 				$base_href);
 
 			$pinger->ping();
+
+			$message->secondary_content = Blorg::_(
+				'Weblogs.com has been notified of updated content.');
+
 		} catch (Exception $e) {
 			// ignore ping errors
 		}

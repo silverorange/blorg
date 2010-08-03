@@ -22,21 +22,21 @@
 					<property name="text" type="data">shortname</property>
 				</object>
 			</object>
-			<object class="SwatDetailsViewField">
+			<object class="SwatDetailsViewField" id="tags_field">
 				<property name="title">Tags</property>
 				<object class="SwatNullTextCellRenderer">
 					<property name="text" type="data">tags_summary</property>
 					<property name="content_type">text/xml</property>
 				</object>
 			</object>
-			<object class="SwatDetailsViewField">
+			<object class="SwatDetailsViewField" id="enabled_field">
 				<property name="title" translatable="yes">Show on Site</property>
 				<object class="SwatBooleanCellRenderer">
 					<property name="value" type="data">enabled</property>
 					<property name="stock_id">yes-no</property>
 				</object>
 			</object>
-			<object class="SwatDetailsViewField">
+			<object class="SwatDetailsViewField" id="comment_status_field">
 				<property name="title" translatable="yes">Comment Status</property>
 				<object class="SwatTextCellRenderer">
 					<property name="text" type="data">comment_status_title</property>

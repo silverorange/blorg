@@ -11,7 +11,7 @@
 				<property name="title" translatable="yes">Keywords</property>
 				<widget class="SwatEntry" id="search_keywords" />
 			</widget>
-			<widget class="SwatFormField">
+			<widget class="SwatFormField" id="search_author_field">
 				<property name="title" translatable="yes">Author</property>
 				<widget class="SwatFlydown" id="search_author">
 					<property name="show_blank" type="boolean">true</property>
@@ -99,11 +99,11 @@
 					<property name="title" translatable="yes">add tags…</property>
 					<widget class="BlorgTagEntry" id="tags" />
 				</widget>
-				<widget class="SwatActionItemDivider" />
+				<widget class="SwatActionItemDivider" id="first_divider" />
 				<widget class="SwatActionItem" id="delete">
 					<property name="title" translatable="yes">delete…</property>
 				</widget>
-				<widget class="SwatActionItemDivider" />
+				<widget class="SwatActionItemDivider" id="second_divider" />
 				<widget class="SwatActionItem" id="enable">
 					<property name="title" translatable="yes">show on site</property>
 				</widget>
