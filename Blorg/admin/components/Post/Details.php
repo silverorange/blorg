@@ -146,14 +146,7 @@ class BlorgPostDetails extends AdminIndex
 	{
 		$content_block = $this->ui->getWidget('post_preview');
 		ob_start();
-		$view = SiteViewFactory::get($this->app, 'post');
-		$view->setPathPrefix('../');
-		$view->setPartMode('author',            SiteView::MODE_ALL, false);
-		$view->setPartMode('title',             SiteView::MODE_ALL, false);
-		$view->setPartMode('permalink',         SiteView::MODE_ALL, false);
-		$view->setPartMode('tags',              SiteView::MODE_NONE, false);
-		$view->setPartMode('comment_count',     SiteView::MODE_ALL, false);
-		$view->setPartMode('extended_bodytext', SiteView::MODE_ALL, false);
+		$view = $this->getPostView();
 		$view->display($this->post);
 		$content_block->content = ob_get_clean();
 		$content_block->content_type = 'text/xml';
@@ -165,6 +158,24 @@ class BlorgPostDetails extends AdminIndex
 		$details_frame->title = Blorg::_('Post');
 		$details_frame->subtitle = $this->post->getTitle();
 		$this->title = $this->post->getTitle();
+	}
+
+	// }}}
+	// {{{ protected function getPostView()
+
+	protected function getPostView()
+	{
+		$view = SiteViewFactory::get($this->app, 'post');
+
+		$view->setPathPrefix('../');
+		$view->definePartLink('author',            false);
+		$view->definePartLink('title',             false);
+		$view->definePartLink('permalink',         false);
+		$view->definePartLink('comment_count',     false);
+		$view->definePartLink('extended_bodytext', false);
+		$view->definePartLink('author',            false);
+
+		return $view;
 	}
 
 	// }}}
