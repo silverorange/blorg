@@ -168,12 +168,12 @@ class BlorgPostDetails extends AdminIndex
 		$view = SiteViewFactory::get($this->app, 'post');
 
 		$view->setPathPrefix('../');
-		$view->definePartLink('author',            false);
-		$view->definePartLink('title',             false);
-		$view->definePartLink('permalink',         false);
-		$view->definePartLink('comment_count',     false);
-		$view->definePartLink('extended_bodytext', false);
-		$view->definePartLink('author',            false);
+		$view->setPartLink('author',            false);
+		$view->setPartLink('title',             false);
+		$view->setPartLink('permalink',         false);
+		$view->setPartLink('comment_count',     false);
+		$view->setPartLink('extended_bodytext', false);
+		$view->setPartLink('author',            false);
 
 		return $view;
 	}
