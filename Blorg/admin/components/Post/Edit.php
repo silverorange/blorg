@@ -478,8 +478,9 @@ class BlorgPostEdit extends AdminDBEdit
 				$this->post->getTitle()));
 
 			// ping weblogs
-			if ($this->post->enabled) {
-				$this->pingWeblogsDotCom($message);
+			if ($this->post->enabled && $this->pingWeblogsDotCom()) {
+				$message->secondary_content = Blorg::_(
+					'Weblogs.com has been notified of updated content.');
 			}
 
 			$this->app->messages->add($message);
@@ -567,8 +568,13 @@ class BlorgPostEdit extends AdminDBEdit
 	// }}}
 	// {{{ protected function pingWeblogsDotCom()
 
-	protected function pingWeblogsDotCom(SwatMessage $message)
+	/**
+	 * @return boolean
+	 */
+	protected function pingWeblogsDotCom()
 	{
+		$pinged = false;
+
 		try {
 			$base_href = $this->app->getFrontendBaseHref().
 				$this->app->config->blorg->path;
@@ -578,12 +584,13 @@ class BlorgPostEdit extends AdminDBEdit
 
 			$pinger->ping();
 
-			$message->secondary_content = Blorg::_(
-				'Weblogs.com has been notified of updated content.');
+			$pinged = true;
 
 		} catch (Exception $e) {
 			// ignore ping errors
 		}
+
+		return $pinged;
 	}
 
 	// }}}
