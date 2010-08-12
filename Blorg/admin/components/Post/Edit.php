@@ -479,7 +479,7 @@ class BlorgPostEdit extends AdminDBEdit
 
 			// ping weblogs
 			if ($this->post->enabled) {
-				$this->pingWebLogsDotCom($message);
+				$this->pingWeblogsDotCom($message);
 			}
 
 			$this->app->messages->add($message);
