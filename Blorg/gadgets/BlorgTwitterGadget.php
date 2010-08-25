@@ -124,8 +124,11 @@ class BlorgTwitterGadget extends SiteGadget
 			count($this->timeline->status) > $i; $i++) {
 
 			$status = $this->timeline->status[$i];
-			$create_date = new SwatDate(strtotime($status->created_at),
-				DATE_FORMAT_UNIXTIME);
+
+			$unix_time   = strtotime($status->created_at);
+			$create_date = new SwatDate();
+			$create_date->setDate($unix_time, DATE_FORMAT_UNIXTIME);
+			$create_date->toUTC();
 
 			echo '<li>';
 			$a_tag->href = sprintf('%s/%s/status/%s', self::URI_ENDPOINT,
