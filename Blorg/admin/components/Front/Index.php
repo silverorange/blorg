@@ -14,7 +14,7 @@ require_once 'Date/Calc.php';
  * Index page for Authors
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgFrontIndex extends AdminPage
@@ -62,7 +62,7 @@ class BlorgFrontIndex extends AdminPage
 		$sql = sprintf('select BlorgComment.* from BlorgComment
 			inner join BlorgPost on BlorgComment.post = BlorgPost.id and
 				BlorgPost.instance %s %s
-			where spam = %s
+			where BlorgComment.spam = %s
 			order by BlorgComment.createdate desc',
 			SwatDB::equalityOperator($instance_id),
 			$this->app->db->quote($instance_id, 'integer'),
