@@ -17,7 +17,7 @@ require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
  * Details page for Posts
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPostDetails extends AdminIndex
@@ -261,22 +261,36 @@ class BlorgPostDetails extends AdminIndex
 	}
 
 	// }}}
-	// {{{ private function displayTags()
+	// {{{ protected function displayTags()
 
-	private function displayTags()
+	protected function displayTags()
 	{
-		echo '<ul>';
+		if (count($this->post->tags)) {
+			$base_anchor_tag = $this->getTagsBaseAnchorTag();
+			echo '<ul>';
 
-		foreach ($this->post->tags as $tag) {
-			echo '<li>';
-			$anchor_tag = new SwatHtmlTag('a');
-			$anchor_tag->href = 'Tag/Details?id='.$tag->id;
-			$anchor_tag->setContent($tag->title);
-			$anchor_tag->display();
-			echo '</li>';
+			foreach ($this->post->tags as $tag) {
+				echo '<li>';
+				$anchor_tag = clone $base_anchor_tag;
+				$anchor_tag->href.= $tag->id;
+				$anchor_tag->setContent($tag->title);
+				$anchor_tag->display();
+				echo '</li>';
+			}
+
+			echo '<ul>';
 		}
+	}
 
-		echo '<ul>';
+	// }}}
+	// {{{ protected function getTagsBaseAnchorTag()
+
+	protected function getTagsBaseAnchorTag()
+	{
+		$anchor_tag = new SwatHtmlTag('a');
+		$anchor_tag->href = 'Tag/Details?id=';
+
+		return $anchor_tag;
 	}
 
 	// }}}
