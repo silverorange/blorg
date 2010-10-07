@@ -33,8 +33,7 @@ class BlorgActiveConversationsGadget extends SiteGadget
 		if ($this->app->hasModule('SiteCookieModule')) {
 			$now = new SwatDate();
 			$cookie = $this->app->getModule('SiteCookieModule');
-			$cookie->setCookie('last_visit_date',
-				$now->getDate(DATE_FORMAT_ISO_EXTENDED));
+			$cookie->setCookie('last_visit_date', $now->getISO8601());
 		}
 	}
 
@@ -74,12 +73,12 @@ class BlorgActiveConversationsGadget extends SiteGadget
 				$last_comment_date = new SwatDate(
 					$conversation->last_comment_date);
 
-				$last_comment_date->setTZ('UTC');
+				$last_comment_date->setTZById('UTC');
 
 				$li_tag = new SwatHtmlTag('li');
 
 				// is last comment is later than last visit date, mark as new
-				if (Date::compare($last_comment_date, $last_visit_date) > 0) {
+				if (SwatDate::compare($last_comment_date, $last_visit_date) > 0) {
 					$li_tag->class = 'new';
 				}
 

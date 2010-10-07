@@ -53,10 +53,10 @@ $package->addReplacement('Blorg/Blorg.php', 'pear-config', '@DATA-DIR@', 'data_d
 
 $package->setPhpDep('5.2.4');
 $package->setPearinstallerDep('1.4.0');
-$package->addPackageDepWithChannel('required', 'Swat',  'pear.silverorange.com', '1.3.49');
-$package->addPackageDepWithChannel('required', 'Site',  'pear.silverorange.com', '1.4.82');
-$package->addPackageDepWithChannel('required', 'Admin', 'pear.silverorange.com', '1.3.17');
-$package->addPackageDepWithChannel('required', 'Date',  'pear.silverorange.com', '1.5.0so5');
+$package->addPackageDepWithChannel('required', 'Swat', 'pear.silverorange.com', '1.4.57');
+$package->addPackageDepWithChannel('required', 'Site',  'pear.silverorange.com', '1.4.84');
+$package->addPackageDepWithChannel('required', 'Admin', 'pear.silverorange.com', '1.3.42');
+$package->addPackageDepWithChannel('required', 'XML_Atom', 'pear.silverorange.com', '0.1.7');
 $package->addPackageDepWithChannel('optional', 'Services_Akismet2', 'pear.php.net', '0.2.0');
 $package->addPackageDepWithChannel('optional', 'Services_Twitter', 'pear.php.net', '0.5.1');
 $package->generateContents();

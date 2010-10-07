@@ -60,7 +60,7 @@ class BlorgFile extends SwatDBDataObject
 	/**
 	 * Date the file entry was added.
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $createdate;
 
@@ -122,7 +122,7 @@ class BlorgFile extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ public function loadByDateAndShortname()
+	// {{{ public function loadByFilename()
 
 	/**
 	 * Loads a file by its filename

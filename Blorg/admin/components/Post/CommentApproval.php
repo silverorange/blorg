@@ -79,7 +79,7 @@ class BlorgPostCommentApproval extends SiteCommentApprovalPage
 		$date = clone $review->createdate;
 		$date->convertTZ($this->app->default_time_zone);
 		$abbr_tag->setContent(sprintf(Blorg::_('Posted: %s'),
-			$date->format(SwatDate::DF_DATE)));
+			$date->formatLikeIntl(SwatDate::DF_DATE)));
 
 		$abbr_tag->display();
 

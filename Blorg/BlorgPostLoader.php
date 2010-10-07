@@ -31,7 +31,7 @@ require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
  * </code>
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2010 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPostLoader
@@ -253,7 +253,7 @@ class BlorgPostLoader
 		$post = false;
 
 		if ($this->memcache !== null) {
-			$key = $date->format('%Y%m%d').$shortname;
+			$key = $date->formatLikeIntl('yyyymmdd').$shortname;
 			$key = $this->getPostCacheKey($key);
 			$post = $this->memcache->getNs('posts', $key);
 		}
@@ -265,7 +265,7 @@ class BlorgPostLoader
 				date_trunc(\'month\', convertTZ(publish_date, %s)) =
 					date_trunc(\'month\', timestamp %s)',
 				$this->db->quote($shortname, 'text'),
-				$this->db->quote($date->tz->getId(), 'text'),
+				$this->db->quote($date->getTimezone()->getName(), 'text'),
 				$this->db->quote($date->getDate(), 'date'));
 
 			$this->db->setLimit(1, 0);

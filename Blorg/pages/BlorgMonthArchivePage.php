@@ -99,7 +99,8 @@ class BlorgMonthArchivePage extends SitePage
 			date_trunc(\'month\', convertTZ(publish_date, %s)) =
 				date_trunc(\'month\', timestamp %s)',
 			$this->app->db->quote(true, 'boolean'),
-			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+			$this->app->db->quote(
+				$this->app->default_time_zone->getName(), 'text'),
 			$this->app->db->quote($date->getDate(), 'date')));
 
 		$loader->setOrderByClause('publish_date desc');
@@ -131,7 +132,7 @@ class BlorgMonthArchivePage extends SitePage
 		$date->setYear($this->year);
 		$date->setMonth($this->month);
 		$date->setTZ($this->app->default_time_zone);
-		$this->layout->data->title = $date->format(SwatDate::DF_MY);
+		$this->layout->data->title = $date->formatLikeIntl(SwatDate::DF_MY);
 	}
 
 	// }}}

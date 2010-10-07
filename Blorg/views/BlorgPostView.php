@@ -413,8 +413,7 @@ class BlorgPostView extends SiteView
 			// display machine-readable date in UTC
 			$abbr_tag = new SwatHtmlTag('abbr');
 			$abbr_tag->class = 'published';
-			$abbr_tag->title =
-				$post->publish_date->getDate(DATE_FORMAT_ISO_EXTENDED);
+			$abbr_tag->title = $post->publish_date->getISO8601();
 
 			// display human-readable date in local time
 			$date = clone $post->publish_date;
@@ -671,7 +670,7 @@ class BlorgPostView extends SiteView
 	{
 		$date = clone $post->publish_date;
 		$date->convertTZ($this->app->default_time_zone);
-		$date = $date->format('%Y%m%d');
+		$date = $date->formatLikeIntl('yyyymmdd');
 		return sprintf('post_%s_%s',
 			$post->shortname,
 			$date);

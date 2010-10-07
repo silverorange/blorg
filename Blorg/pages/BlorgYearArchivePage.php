@@ -103,7 +103,8 @@ class BlorgYearArchivePage extends SitePage
 			date_trunc(\'year\', convertTZ(publish_date, %s)) =
 				date_trunc(\'year\', timestamp %s)',
 			$this->app->db->quote(true, 'boolean'),
-			$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+			$this->app->db->quote(
+				$this->app->default_time_zone->getName(), 'text'),
 			$this->app->db->quote($date->getDate(), 'date')));
 
 		$this->loader->setOrderByClause('publish_date desc');

@@ -85,21 +85,21 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 	/**
 	 * Date the post was created.
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $createdate;
 
 	/**
 	 * Last Modified Date of the post.
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $modified_date;
 
 	/**
 	 * Date the post was published - used for display and ordering by date.
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $publish_date;
 
@@ -174,7 +174,7 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 					instance %s %s',
 				$this->table,
 				$this->db->quote($shortname, 'text'),
-				$this->db->quote($date->tz->getId(), 'text'),
+				$this->db->quote($date->getTimezone->getName(), 'text'),
 				$this->db->quote($date->getDate(), 'date'),
 				SwatDB::equalityOperator($instance_id),
 				$this->db->quote($instance_id, 'integer'));
@@ -580,7 +580,7 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 			$app->db->quote($instance_id, 'integer'),
 			SwatDB::equalityOperator($post->id, true),
 			$app->db->quote($post->id, 'integer'),
-			$app->db->quote($publish_date->tz->getId(), 'text'),
+			$app->db->quote($publish_date->getTimezone->getName(), 'text'),
 			$app->db->quote($publish_date->getDate(), 'date'));
 
 		$query = SwatDB::query($app->db, $sql);
