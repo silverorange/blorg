@@ -119,7 +119,9 @@ class BlorgArchiveGadget extends SiteGadget
 						$year,
 						BlorgPageFactory::$month_names[$month]);
 
-					$month_anchor_tag->setContent($date->getMonthName());
+					$month_anchor_tag->setContent(
+						$date->formatLikeIntl('MMMM'));
+
 					$month_anchor_tag->display();
 
 					$post_count_span = new SwatHtmlTag('span');

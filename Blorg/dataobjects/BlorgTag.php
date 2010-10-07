@@ -37,7 +37,7 @@ class BlorgTag extends SwatDBDataObject
 	/**
 	 * Date tag was created.
 	 *
-	 * @var Date
+	 * @var SwatDate
 	 */
 	public $createdate;
 

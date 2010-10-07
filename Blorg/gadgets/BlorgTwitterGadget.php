@@ -127,7 +127,7 @@ class BlorgTwitterGadget extends SiteGadget
 
 			$unix_time   = strtotime($status->created_at);
 			$create_date = new SwatDate();
-			$create_date->setDate($unix_time, DATE_FORMAT_UNIXTIME);
+			$create_date->setTimestamp($unix_time);
 			$create_date->toUTC();
 
 			echo '<li>';
