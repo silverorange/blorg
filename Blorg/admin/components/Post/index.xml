@@ -62,7 +62,7 @@
 					<property name="group_by">publish_date_month</property>
 					<object class="SwatDateCellRenderer">
 						<property name="date" type="data">publish_date_month</property>
-						<property name="format" translatable="yes">%B, %Y</property>
+						<property name="format" translatable="yes">MMMM, yyyy</property>
 					</object>
 				</object>
 				<object class="SwatTableViewCheckboxColumn" id="checkbox">
