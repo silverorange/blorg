@@ -253,7 +253,7 @@ class BlorgPostLoader
 		$post = false;
 
 		if ($this->memcache !== null) {
-			$key = $date->formatLikeIntl('yyyymmdd').$shortname;
+			$key = $date->formatLikeIntl('yyyyMMdd').$shortname;
 			$key = $this->getPostCacheKey($key);
 			$post = $this->memcache->getNs('posts', $key);
 		}
