@@ -165,8 +165,10 @@ class BlorgArchiveGadget extends SiteGadget
 				where instance %s %s and enabled = %s
 				group by year, month
 				order by year desc, month desc',
-				$this->app->db->quote($this->app->default_time_zone->id, 'text'),
-				$this->app->db->quote($this->app->default_time_zone->id, 'text'),
+				$this->app->db->quote(
+					$this->app->default_time_zone->getName(), 'text'),
+				$this->app->db->quote(
+					$this->app->default_time_zone->getName(), 'text'),
 				SwatDB::equalityOperator($instance_id),
 				$this->app->db->quote($instance_id, 'integer'),
 				$this->app->db->quote(true, 'boolean'));
