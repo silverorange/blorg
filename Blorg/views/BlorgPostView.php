@@ -670,7 +670,7 @@ class BlorgPostView extends SiteView
 	{
 		$date = clone $post->publish_date;
 		$date->convertTZ($this->app->default_time_zone);
-		$date = $date->formatLikeIntl('yyyymmdd');
+		$date = $date->formatLikeIntl('yyyyMMdd');
 		return sprintf('post_%s_%s',
 			$post->shortname,
 			$date);

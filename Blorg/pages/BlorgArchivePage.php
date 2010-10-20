@@ -105,7 +105,6 @@ class BlorgArchivePage extends SitePage
 				$values['post_count']),
 				$locale->formatNumber($values['post_count'])));
 
-
 			$year_heading_tag = new SwatHtmlTag('h4');
 			$year_heading_tag->class = 'blorg-archive-year-title';
 			$year_heading_tag->open();
