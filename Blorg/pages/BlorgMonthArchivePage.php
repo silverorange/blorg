@@ -71,14 +71,11 @@ class BlorgMonthArchivePage extends SitePage
 		}
 
 		// Date parsed from URL is in locale time.
+		$month = BlorgPageFactory::$months_by_name[$month_name];
 		$date = new SwatDate();
 		$date->setTZ($this->app->default_time_zone);
-		$date->setYear($year);
-		$date->setMonth(BlorgPageFactory::$months_by_name[$month_name]);
-		$date->setDay(1);
-		$date->setHour(0);
-		$date->setMinute(0);
-		$date->setSecond(0);
+		$date->setDate($year, $month, 1);
+		$date->setTime(0, 0, 0);
 
 		$memcache = (isset($this->app->memcache)) ? $this->app->memcache : null;
 		$loader = new BlorgPostLoader($this->app->db,
