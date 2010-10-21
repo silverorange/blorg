@@ -2,7 +2,7 @@
 
 require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/SiteCommentStatus.php';
+require_once 'Site/SiteCommentable.php';
 require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
 
 // require comment class definition so we can unserialize posts
@@ -18,7 +18,7 @@ require_once 'Blorg/dataobjects/BlorgAuthor.php';
  * @copyright 2008 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
+class BlorgPost extends SwatDBDataObject implements SiteCommentable
 {
 	// {{{ public properties
 
@@ -242,6 +242,11 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 	// }}}
 	// {{{ public function getTitle()
 
+	/**
+	 * Part of the {@link SiteCommentable} interface
+	 *
+	 * @return string the title of this post.
+	 */
 	public function getTitle()
 	{
 		if ($this->title == '')
@@ -547,9 +552,27 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 	// }}}
 	// {{{ public function getCommentStatus()
 
+	/**
+	 * Part of the {@link SiteCommentStatus} interface
+	 *
+	 * @return integer the comment status of this post.
+	 */
 	public function getCommentStatus()
 	{
 		return $this->comment_status;
+	}
+
+	// }}}
+	// {{{ public function addComment()
+
+	/**
+	 * Part of the {@link SiteCommentable} interface
+	 *
+	 * @param SiteComment $comment the comment to add.
+	 */
+	public function addComment(SiteComment $comment)
+	{
+		$this->comments->add($comment);
 	}
 
 	// }}}
