@@ -78,14 +78,16 @@ class BlorgLastFmGadget extends SiteGadget
 		$months = array();
 		$short_months = array();
 		$date = new SwatDate('2000-01-01T00:00:00Z');
-		while ($date->getMonth() <= 12) {
+		$month = $date->getMonth();
+		while ($month <= 12) {
 			$months[] = SwatString::quoteJavaScriptString(
 				$date->formatLikeIntl('MMMM'));
 
 			$short_months[] = SwatString::quoteJavaScriptString(
 				$date->formatLikeIntl('MMM'));
 
-			$date->setMonth($date->getMonth() + 1);
+			$month = $date->getMonth() + 1;
+			$date->setMonth($month);
 		}
 
 		$months = implode(', ', $months);
