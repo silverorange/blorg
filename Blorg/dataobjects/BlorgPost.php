@@ -580,7 +580,7 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentStatus
 			$app->db->quote($instance_id, 'integer'),
 			SwatDB::equalityOperator($post->id, true),
 			$app->db->quote($post->id, 'integer'),
-			$app->db->quote($publish_date->getTimezone->getName(), 'text'),
+			$app->db->quote($publish_date->getTimezone()->getName(), 'text'),
 			$app->db->quote($publish_date->getDate(), 'date'));
 
 		$query = SwatDB::query($app->db, $sql);
