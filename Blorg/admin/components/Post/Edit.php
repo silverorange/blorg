@@ -628,8 +628,19 @@ class BlorgPostEdit extends AdminDBEdit
 	protected function buildInternal()
 	{
 		parent::buildInternal();
+
 		$this->buildFiles();
 		$this->buildAuthors();
+
+		// init image server for editors here since form_unique_id has been
+		// processed as this point.
+		if ($this->app->config->blorg->visual_editor) {
+			$this->bodytext_control->image_server =
+				$this->getBodytextEditorImageServer();
+
+			$this->extended_bodytext_control->image_server =
+				$this->getBodytextEditorImageServer();
+		}
 	}
 
 	// }}}
@@ -759,6 +770,22 @@ class BlorgPostEdit extends AdminDBEdit
 			$file_delete->file_title = $this->getFileDescription($file);
 			$file_delete->file = $file;
 		}
+	}
+
+	// }}}
+	// {{{ protected function getBodytextEditorImageServer()
+
+	protected function getBodytextEditorImageServer()
+	{
+		$uri = $this->app->getBaseHref().'Post/FileImageServer';
+		if ($this->post->id === null) {
+			$form = $this->ui->getWidget('edit_form');
+			$form_unique_id = $form->getHiddenField('unique_id');
+			$uri.= sprintf('&form_unique_id=%s', urlencode($form_unique_id));
+		} else {
+			$uri.= sprintf('&post_id=%s', urlencode($this->post->id));
+		}
+		return $uri;
 	}
 
 	// }}}
@@ -903,7 +930,7 @@ class BlorgPostEdit extends AdminDBEdit
 			$thumb_markup = sprintf('<a class="file" href="%s">%s</a>',
 				$uri, $img_tag);
 
-			$options[] = new SwatOption($thumb_markup, 'Thumbnail');
+			$options[] = new SwatOption($thumb_markup, Blorg::_('Thumbnail'));
 
 			// small
 			$img_tag = $file->image->getImgTag('small');
@@ -912,25 +939,25 @@ class BlorgPostEdit extends AdminDBEdit
 			$small_markup = sprintf('<a class="file" href="%s">%s</a>',
 				$uri, $img_tag);
 
-			$options[] = new SwatOption($small_markup, 'Small');
+			$options[] = new SwatOption($small_markup, Blorg::_('Medium'));
 
 			// original
 			$img_tag = $file->image->getImgTag('original');
 			$img_tag->title = $file->description;
 
-			$small_markup = sprintf('<a class="file" href="%s">%s</a>',
+			$original_markup = sprintf('<a class="file" href="%s">%s</a>',
 				$uri, $img_tag);
 
-			$options[] = new SwatOption($small_markup, 'Original');
+			$options[] = new SwatOption($original_markup, Blorg::_('Original'));
 
 			// link to file
 			$description = ($file->description === null) ?
 				$file->filename : $file->description;
 
-			$original_markup = sprintf('<a class="file" href="%s">%s</a>',
+			$link_markup = sprintf('<a class="file" href="%s">%s</a>',
 				$uri, $description);
 
-			$options[] = new SwatOption($original_markup, 'Link Only');
+			$options[] = new SwatOption($link_markup, Blorg::_('Link Only'));
 		}
 
 		return $options;
