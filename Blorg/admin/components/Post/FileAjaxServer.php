@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteImageWrapper.php';
-require_once 'Site/dataobjects/SiteImageSetWrapper.php';
 require_once 'Site/pages/SiteXMLRPCServer.php';
 require_once 'Site/layouts/SiteXMLRPCServerLayout.php';
 require_once 'SwatDB/SwatDB.php';
@@ -110,112 +108,6 @@ class BlorgPostFileAjaxServer extends SiteXMLRPCServer
 		}
 
 		return true;
-	}
-
-	// }}}
-	// {{{ public function dir()
-
-	/**
-	 * Gets information about files attached to a post
-	 *
-	 * @param integer $post_id the id of the post. Use 0 if there is no post
-	 *                          id.
-	 * @param string $form_unique_id the id of form for use when the post has
-	 *                                not yet been saved. Use an empty string if
-	 *                                there is a post id.
-	 *
-	 * @return array a structure containing file info.
-	 */
-	public function dir($post_id, $form_unique_id)
-	{
-		$instance_id = $this->app->getInstanceId();
-
-		// this is because XML-RPC has strict types.
-		if ($form_unique_id == '') {
-			$form_unique_id = null;
-		} else {
-			$post_id = null;
-		}
-
-		if ($this->app->getInstance() === null) {
-			$path = '../../files';
-		} else {
-			$path = '../../files/'.$this->app->getInstance()->shortname;
-		}
-
-		$file_sql = sprintf('select * from BlorgFile
-			where post %s %s and form_unique_id %s %s
-			order by id',
-			SwatDB::equalityOperator($post_id),
-			$this->app->db->quote($post_id, 'integer'),
-			SwatDB::equalityOperator($form_unique_id),
-			$this->app->db->quote($form_unique_id, 'text'));
-
-		$files = SwatDB::query(
-			$this->app->db,
-			$file_sql,
-			SwatDBClassMap::get('BlorgFileWrapper'));
-
-		// efficiently load images
-		$image_sql = 'select * from Image where id in (%s)';
-		$images = $files->loadAllSubDataObjects(
-			'image',
-			$this->app->db,
-			$image_sql,
-			SwatDBClassMap::get('SiteImageWrapper'));
-
-		// efficiently load image sets
-		$image_set_sql = 'select * from ImageSet where id in (%s)';
-		$image_sets = $images->loadAllSubDataObjects(
-			'image_set',
-			$this->app->db,
-			$image_set_sql,
-			SwatDBClassMap::get('SiteImageSetWrapper'));
-
-		// build response struct
-		$response = array();
-
-		foreach ($files as $file) {
-			$utc = clone $file->createdate;
-			$utc->toUTC();
-
-			$local = clone $utc;
-			$local->convertTZ($this->app->default_time_zone);
-
-			$local = $local->formatLikeIntl('yyyy-MM-dd\'T\'hh:mm:ss');
-			$utc   = $utc->formatLikeIntl('yyyy-MM-dd\'T\'hh:mm:ss');
-
-			$info = array(
-				'id'               => $file->id,
-				'filename'         => $file->filename,
-				'filepath'         => $path.$file->filename,
-				'filesize'         => $file->filesize,
-				'uri'              => $file->getRelativeUri(),
-				'mime_type'        => $file->mime_type,
-				'visible'          => $file->visible,
-				'createdate_utc'   => $utc,
-				'createdate_local' => $local,
-				'description'      => $file->getDescription(),
-				'images'           => array(),
-			);
-
-			if ($file->image instanceof SiteImage) {
-				$image  = $file->image;
-				$images = array();
-				foreach ($image->image_set->dimensions as $dimension) {
-					$images[$dimension->shortname] = array(
-						'uri'    => $image->getUri($dimension->shortname),
-						'width'  => $image->getWidth($dimension->shortname),
-						'height' => $image->getHeight($dimension->shortname),
-					);
-				}
-				$info['images'] = $images;
-			}
-
-			$response[] = $info;
-		}
-
-		return $response;
 	}
 
 	// }}}
