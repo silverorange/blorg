@@ -104,21 +104,29 @@ class BlorgPostFileImageServer extends AdminPage
 			$file_sql,
 			SwatDBClassMap::get('BlorgFileWrapper'));
 
-		// efficiently load images
-		$image_sql = 'select * from Image where id in (%s)';
-		$images = $files->loadAllSubDataObjects(
-			'image',
-			$this->app->db,
-			$image_sql,
-			SwatDBClassMap::get('SiteImageWrapper'));
+		if (count($files) > 0) {
 
-		// efficiently load image sets
-		$image_set_sql = 'select * from ImageSet where id in (%s)';
-		$image_sets = $images->loadAllSubDataObjects(
-			'image_set',
-			$this->app->db,
-			$image_set_sql,
-			SwatDBClassMap::get('SiteImageSetWrapper'));
+			// efficiently load images
+			$image_sql = 'select * from Image where id in (%s)';
+			$images = $files->loadAllSubDataObjects(
+				'image',
+				$this->app->db,
+				$image_sql,
+				SwatDBClassMap::get('SiteImageWrapper'));
+
+			if (count($images) > 0) {
+
+				// efficiently load image sets
+				$image_set_sql = 'select * from ImageSet where id in (%s)';
+				$image_sets = $images->loadAllSubDataObjects(
+					'image_set',
+					$this->app->db,
+					$image_set_sql,
+					SwatDBClassMap::get('SiteImageSetWrapper'));
+
+			}
+
+		}
 
 		// build response struct
 		$response = array();
