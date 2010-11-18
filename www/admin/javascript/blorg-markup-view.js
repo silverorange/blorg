@@ -4,8 +4,47 @@ function BlorgMarkupView(id, values, titles)
 	this.values = values;
 	this.titles = titles;
 	this.textarea = document.getElementById(this.id + '_textarea');
+	this._textarea_focus_click = false;
+	this._textarea_focused = false;
 
-	YAHOO.util.Event.on(this.textarea, 'focus', this.textarea.select);
+	var that = this;
+	YAHOO.util.Event.on(
+		this.textarea,
+		'mousedown',
+		function() {
+			if (!that._textarea_focused) {
+				that._textarea_focus_click = true;
+			}
+		}
+	);
+	YAHOO.util.Event.on(
+		this.textarea,
+		'mouseup',
+		function() {
+			if (that._textarea_focus_click) {
+				that.textarea.select();
+				that._textarea_focus_click = false;
+			}
+		}
+	);
+	YAHOO.util.Event.on(
+		this.textarea,
+		'focus',
+		function() {
+			that._textarea_focused = true;
+			if (!that._textarea_focus_click) {
+				that.textarea.select();
+			}
+		}
+	);
+	YAHOO.util.Event.on(
+		this.textarea,
+		'blur',
+		function() {
+			that._textarea_focused = false;
+			that._textarea_focus_click = false;
+		}
+	);
 
 	this.selected_tab = null;
 	this.tabs = [];
