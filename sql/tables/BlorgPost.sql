@@ -5,6 +5,7 @@ create table BlorgPost (
 	bodytext text,
 	bodytext_filter varchar(50) not null default 'raw',
 	extended_bodytext text,
+	bodytext_filter varchar(50) not null default 'raw',
 	createdate timestamp not null,
 	modified_date timestamp,
 	publish_date timestamp,
