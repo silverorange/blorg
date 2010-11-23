@@ -118,7 +118,10 @@ class BlorgArchivePage extends SitePage
 			$month_ul_tag->open();
 			foreach ($values['months'] as $month => $post_count) {
 				$date = new SwatDate();
-				$date->setMonth($month);
+
+				// Set year and day so we're sure it's a valid date, otherwise
+				// the month may not be set.
+				$date->setDate(2010, $month, 1);
 
 				$month_li_tag = new SwatHtmlTag('li');
 				$month_li_tag->open();
