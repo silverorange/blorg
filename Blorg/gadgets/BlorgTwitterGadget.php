@@ -14,7 +14,7 @@ require_once 'Site/gadgets/SiteGadget.php';
  * - <kbd>integer max_updates</kbd> - the number of updates to display.
  *
  * @package   Blörg
- * @copyright 2009-2010 silverorange
+ * @copyright 2009-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgTwitterGadget extends SiteGadget
@@ -37,7 +37,7 @@ class BlorgTwitterGadget extends SiteGadget
 	const UPDATE_RETRY_THRESHOLD = 2;
 
 	/**
-	 * The name of the cache that stores the timeline's xml
+	 * The name of the cache that stores the timeline
 	 *
 	 * @var string the name of the cache
 	 */
@@ -61,9 +61,9 @@ class BlorgTwitterGadget extends SiteGadget
 	protected $twitter;
 
 	/**
-	 * A SimpleXMLElement object that contains the current twitter timeline
+	 * A JSON encoded array that contains the current twitter timeline
 	 *
-	 * @var SimpleXMLElement the current user timeline
+	 * @var array the current user timeline
 	 */
 	protected $timeline;
 
@@ -86,7 +86,7 @@ class BlorgTwitterGadget extends SiteGadget
 		));
 
 		$this->twitter = new Services_Twitter(null, null,
-			array('format' => Services_Twitter::OUTPUT_XML));
+			array('format' => Services_Twitter::OUTPUT_JSON));
 
 		$this->twitter->setRequest($request);
 
@@ -121,18 +121,19 @@ class BlorgTwitterGadget extends SiteGadget
 		echo '<ul>';
 
 		for ($i = 0; $i < $this->getValue('max_updates') &&
-			count($this->timeline->status) > $i; $i++) {
+			count($this->timeline) > $i; $i++) {
 
-			$status = $this->timeline->status[$i];
-
+			$status = $this->timeline[$i];
 			$unix_time   = strtotime($status->created_at);
 			$create_date = new SwatDate();
 			$create_date->setTimestamp($unix_time);
 			$create_date->toUTC();
 
+			// use's id_str instead of id, as id sometimes returns a float. Not
+			// sure if this is a bug in Services/Twitter or not.
 			echo '<li>';
 			$a_tag->href = sprintf('%s/%s/status/%s', self::URI_ENDPOINT,
-				$this->getValue('username'), $status->id);
+				$this->getValue('username'), $status->id_str);
 
 			$a_tag->setContent($status->text);
 			$span_tag->setContent(sprintf('(around %s ago)',
@@ -161,7 +162,7 @@ class BlorgTwitterGadget extends SiteGadget
 	protected function displayFooter()
 	{
 		if ($this->hasTimeline()) {
-			$real_name = $this->timeline->status[0]->user->name;
+			$real_name = $this->timeline[0]->user->name;
 		} else {
 			$real_name = $this->getValue('username');
 		}
@@ -214,7 +215,9 @@ class BlorgTwitterGadget extends SiteGadget
 			try {
 				$params = array('id' => $this->getValue('username'));
 				$timeline = $this->twitter->statuses->user_timeline($params);
-				$this->updateCacheValue(self::CACHE_NAME, $timeline->asXML());
+				$this->updateCacheValue(self::CACHE_NAME,
+					json_encode($timeline));
+
 			} catch (Services_Twitter_Exception $e) {
 				// We want to ignore any exceptions that occur becuase
 				// HTTP_Request2 either times out receiving the responce or
@@ -236,10 +239,10 @@ class BlorgTwitterGadget extends SiteGadget
 						$date->addMinutes(self::UPDATE_RETRY_THRESHOLD -
 							self::UPDATE_THRESHOLD);
 
-						$xml_string = $this->getCacheValue(self::CACHE_NAME);
-						$timeline = simplexml_load_string($xml_string);
+						$timeline = $this->getCacheValue(self::CACHE_NAME);
 						$this->updateCacheValue(
-							self::CACHE_NAME, $xml_string, $date);
+							self::CACHE_NAME, $timeline, $date);
+						$timeline = json_decode($timeline);
 					}
 				} else if ($e->getCause() instanceof Exception) {
 					// Services_Twitter wraps all generated exceptions around
@@ -254,8 +257,8 @@ class BlorgTwitterGadget extends SiteGadget
 				}
 			}
 		} else {
-			$xml_string = $this->getCacheValue(self::CACHE_NAME);
-			$timeline = simplexml_load_string($xml_string);
+			$timeline = $this->getCacheValue(self::CACHE_NAME);
+			$timeline = json_decode($timeline);
 		}
 
 		$this->timeline = $timeline;
