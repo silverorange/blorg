@@ -117,7 +117,7 @@ class BlorgTwitterGadget extends SiteGadget
 	{
 		$span_tag = new SwatHtmlTag('span');
 		$a_tag = new SwatHtmlTag('a');
-
+		$a_tag->class = 'blorg-twitter-gadget-content-link';
 		echo '<ul>';
 
 		for ($i = 0; $i < $this->getValue('max_updates') &&
@@ -171,6 +171,7 @@ class BlorgTwitterGadget extends SiteGadget
 		$footer->class = 'site-gadget-footer';
 
 		$a_tag = new SwatHtmlTag('a');
+		$a_tag->id = 'blorg_twitter_gadget_footer_link';
 		$a_tag->href = self::URI_ENDPOINT.'/'.$this->getValue('username');
 		$a_tag->setContent($real_name);
 
