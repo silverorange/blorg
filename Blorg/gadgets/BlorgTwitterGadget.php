@@ -220,8 +220,8 @@ class BlorgTwitterGadget extends SiteGadget
 					json_encode($timeline));
 
 			} catch (Services_Twitter_Exception $e) {
-				// We want to ignore any exceptions that occur becuase
-				// HTTP_Request2 either times out receiving the responce or
+				// We want to ignore any exceptions that occur because
+				// HTTP_Request2 either times out receiving the response or
 				// because we were unable to actually connect to Twitter.
 				// The only way to distinguish HTTP_Request2_Exceptions is to
 				// look at the exception's message.
@@ -241,8 +241,9 @@ class BlorgTwitterGadget extends SiteGadget
 							self::UPDATE_THRESHOLD);
 
 						$timeline = $this->getCacheValue(self::CACHE_NAME);
-						$this->updateCacheValue(
-							self::CACHE_NAME, $timeline, $date);
+						$this->updateCacheValue(self::CACHE_NAME, $timeline,
+							$date);
+
 						$timeline = json_decode($timeline);
 					}
 				} else if ($e->getCause() instanceof Exception) {
