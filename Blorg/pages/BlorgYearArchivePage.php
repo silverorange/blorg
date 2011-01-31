@@ -80,12 +80,8 @@ class BlorgYearArchivePage extends SitePage
 		// Date parsed from URL is in locale time.
 		$date = new SwatDate();
 		$date->setTZ($this->app->default_time_zone);
-		$date->setYear($year);
-		$date->setMonth(1);
-		$date->setDay(1);
-		$date->setHour(0);
-		$date->setMinute(0);
-		$date->setSecond(0);
+		$date->setDate($year, 1, 1);
+		$date->setTime(0, 0, 0);
 
 		$memcache = (isset($this->app->memcache)) ? $this->app->memcache : null;
 		$this->loader = new BlorgPostLoader($this->app->db,
@@ -187,7 +183,7 @@ class BlorgYearArchivePage extends SitePage
 			$heading_tag->open();
 
 			$date = new SwatDate();
-			$date->setMonth($month);
+			$date->setDate(2010, $month, 1);
 
 			$anchor_tag = new SwatHtmlTag('a');
 			$anchor_tag->href = sprintf('%s/%s/%s',
