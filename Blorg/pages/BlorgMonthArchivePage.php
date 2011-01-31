@@ -126,8 +126,7 @@ class BlorgMonthArchivePage extends SitePage
 		$this->layout->endCapture();
 
 		$date = new SwatDate();
-		$date->setYear($this->year);
-		$date->setMonth($this->month);
+		$date->setDate($this->year, $this->month, 1);
 		$date->setTZ($this->app->default_time_zone);
 		$this->layout->data->title = $date->formatLikeIntl(SwatDate::DF_MY);
 	}
@@ -144,7 +143,7 @@ class BlorgMonthArchivePage extends SitePage
 		$this->layout->navbar->createEntry($this->year, $path);
 
 		$date = new SwatDate();
-		$date->setMonth($this->month);
+		$date->setDate(2010, $this->month, 1);
 		$month_title = $date->getMonthName();
 		$month_name = BlorgPageFactory::$month_names[$this->month];
 		$path.= '/'.$month_name;
