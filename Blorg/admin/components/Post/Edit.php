@@ -30,7 +30,7 @@ require_once dirname(__FILE__).'/include/BlorgMarkupView.php';
  * {@link BlorgPostEdit::validateShortname()}.
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2011 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPostEdit extends AdminDBEdit
@@ -455,12 +455,14 @@ class BlorgPostEdit extends AdminDBEdit
 				$old_date = $this->original_publish_date;
 				$new_date = $this->post->publish_date;
 
-				if ($old_date instanceof Date && $new_date instanceof Date) {
-					$date_modified = (Date::compare($old_date,
+				if ($old_date instanceof SwatDate &&
+					$new_date instanceof SwatDate) {
+
+					$date_modified = (SwatDate::compare($old_date,
 						$new_date) !== 0);
-				} elseif ($old_date instanceof Date && $new_date === null) {
+				} elseif ($old_date instanceof SwatDate && $new_date === null) {
 					$date_modified = true;
-				} elseif ($old_date === null && $new_date instanceof Date) {
+				} elseif ($old_date === null && $new_date instanceof SwatDate) {
 					$date_modified = true;
 				} else {
 					$date_modified = ($old_date !== $new_date);
