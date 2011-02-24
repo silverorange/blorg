@@ -8,7 +8,6 @@ require_once 'Swat/SwatDetailsStore.php';
 require_once 'Blorg/admin/BlorgCommentDisplay.php';
 require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
 require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
-require_once 'Date/Calc.php';
 
 /**
  * Index page for Authors
@@ -278,10 +277,7 @@ class BlorgFrontIndex extends AdminPage
 		}
 		$months = ($end_month - $start_month) + ($end_year - $start_year) * 12;
 
-		$days = Date_Calc::dateDiff(
-			$now->getDay(), $now->getMonth(), $now->getYear(),
-			$start_date->getDay(), $start_date->getMonth(),
-			$start_date->getYear());
+		$days = $now->diff($start_date)->days;
 
 		$posts_per_month = ($months == 0) ?
 			0 : $post_info->post_count / $months;
