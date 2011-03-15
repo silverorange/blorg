@@ -203,22 +203,24 @@ class BlorgTwitterGadget extends SiteGadget
 	 */
 	protected function initTimeline()
 	{
-		$timeline = null;
+		$timeline    = null;
 		$last_update = null;
+		$has_cache   = $this->hasCache(self::CACHE_NAME);
+		$loaded      = false;
 
-		if ($this->hasCache(self::CACHE_NAME)) {
+		if ($has_cache) {
 			$last_update = $this->getCacheLastUpdateDate(self::CACHE_NAME);
 			$last_update->addMinutes(self::UPDATE_THRESHOLD);
-		}
+ 		}
 
 		// update the cache
 		if ($last_update === null || $this->now->after($last_update)) {
 			try {
 				$params = array('id' => $this->getValue('username'));
 				$timeline = $this->twitter->statuses->user_timeline($params);
+				$loaded = true;
 				$this->updateCacheValue(self::CACHE_NAME,
 					json_encode($timeline));
-
 			} catch (Services_Twitter_Exception $e) {
 				// We want to ignore any exceptions that occur because
 				// HTTP_Request2 either times out receiving the response or
@@ -252,13 +254,15 @@ class BlorgTwitterGadget extends SiteGadget
 					// the parent exception by using the
 					// PEAR_Exception::getCause() method.
 					$exception = new SwatException($e->getCause());
-					$exception->process(false);
+					$exception->processAndContinue();
 				} else {
 					$exception = new SwatException($e);
-					$exception->process(false);
+					$exception->processAndContinue();
 				}
 			}
-		} else {
+		}
+
+		if ($has_cache == true && $loaded == false) {
 			$timeline = $this->getCacheValue(self::CACHE_NAME);
 			$timeline = json_decode($timeline);
 		}
