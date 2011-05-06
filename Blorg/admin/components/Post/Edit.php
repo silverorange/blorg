@@ -384,7 +384,7 @@ class BlorgPostEdit extends AdminDBEdit
 			} elseif (!$this->validateShortname($shortname)) {
 				$message = new SwatMessage(
 					Blorg::_('Short name already exists and must be unique.'),
-					SwatMessage::ERROR);
+					'error');
 
 				$this->ui->getWidget('shortname')->addMessage($message);
 			}

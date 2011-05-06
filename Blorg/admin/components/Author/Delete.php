@@ -40,9 +40,8 @@ class BlorgAuthorDelete extends AdminDBDelete
 
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
 			'One author has been deleted.',
-			'%d authors have been deleted.', $num),
-			SwatString::numberFormat($num)),
-			SwatMessage::NOTIFICATION);
+			'%s authors have been deleted.', $num),
+			SwatString::numberFormat($num)));
 
 		$this->app->messages->add($message);
 	}

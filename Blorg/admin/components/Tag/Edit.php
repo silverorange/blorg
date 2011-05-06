@@ -77,7 +77,7 @@ class BlorgTagEdit extends AdminDBEdit
 		} elseif (!$this->validateShortname($shortname)) {
 			$message = new SwatMessage(
 				Blorg::_('Tag shortname already exists and must be unique.'),
-				SwatMessage::ERROR);
+				'error');
 
 			$this->ui->getWidget('shortname')->addMessage($message);
 		}
