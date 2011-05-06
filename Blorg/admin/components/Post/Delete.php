@@ -59,9 +59,8 @@ class BlorgPostDelete extends AdminDBDelete
 
 		$message = new SwatMessage(sprintf(Blorg::ngettext(
 			'One post has been deleted.',
-			'%d posts have been deleted.', $num),
-			SwatString::numberFormat($num)),
-			SwatMessage::NOTIFICATION);
+			'%s posts have been deleted.', $num),
+			SwatString::numberFormat($num)));
 
 		$this->app->messages->add($message);
 	}

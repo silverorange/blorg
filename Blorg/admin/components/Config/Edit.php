@@ -234,7 +234,7 @@ class BlorgConfigEdit extends AdminEdit
 			$message = new SwatMessage(Blorg::_(
 				'A database error has occured. The header image was not '.
 					'saved.'),
-				SwatMessage::SYSTEM_ERROR);
+				'system-error');
 
 			$this->app->messages->add($message);
 
@@ -244,7 +244,7 @@ class BlorgConfigEdit extends AdminEdit
 		} catch (SwatException $e) {
 			$message = new SwatMessage(Blorg::_(
 				'An error has occured. The header image was not saved.'),
-				SwatMessage::SYSTEM_ERROR);
+				'system-error');
 
 			$this->app->messages->add($message);
 
@@ -272,7 +272,7 @@ class BlorgConfigEdit extends AdminEdit
 			$message = new SwatMessage(Blorg::_(
 				'A database error has occured. The header image was not '.
 					'saved.'),
-				SwatMessage::SYSTEM_ERROR);
+				'system-error');
 
 			$this->app->messages->add($message);
 
@@ -282,7 +282,7 @@ class BlorgConfigEdit extends AdminEdit
 		} catch (SwatException $e) {
 			$message = new SwatMessage(Blorg::_(
 				'An error has occured. The header image was not saved.'),
-				SwatMessage::SYSTEM_ERROR);
+				'system-error');
 
 			$this->app->messages->add($message);
 
