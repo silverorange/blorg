@@ -161,7 +161,7 @@ class BlorgTwitterGadget extends SiteGadget
 
 	protected function displayFooter()
 	{
-		if ($this->hasTimeline()) {
+		if ($this->hasTimeline() && count($this->timeline) > 0) {
 			$real_name = $this->timeline[0]->user->name;
 		} else {
 			$real_name = $this->getValue('username');
