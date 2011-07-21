@@ -69,7 +69,7 @@ class BlorgTagEntry extends SiteTagEntry
 	 * @throws SwatException if no database connection is set on this tag
 	 *                        entry control.
 	 */
-	protected function insertTag($title)
+	protected function insertTag($title, $index)
 	{
 		if ($this->app === null)
 			throw new SwatException(
