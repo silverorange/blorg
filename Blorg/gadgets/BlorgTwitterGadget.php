@@ -219,8 +219,8 @@ class BlorgTwitterGadget extends SiteGadget
 				$params = array('id' => $this->getValue('username'));
 				$timeline = $this->twitter->statuses->user_timeline($params);
 				$loaded = true;
-				$this->updateCacheValue(self::CACHE_NAME,
-					json_encode($timeline));
+				// serialize the returned array to store it in the database
+				$this->updateCacheValue(self::CACHE_NAME, serialize($timeline));
 			} catch (Services_Twitter_Exception $e) {
 				// We want to ignore any exceptions that occur because
 				// HTTP_Request2 either times out receiving the response or
@@ -242,11 +242,9 @@ class BlorgTwitterGadget extends SiteGadget
 						$date->addMinutes(self::UPDATE_RETRY_THRESHOLD -
 							self::UPDATE_THRESHOLD);
 
-						$timeline = $this->getCacheValue(self::CACHE_NAME);
-						$this->updateCacheValue(self::CACHE_NAME, $timeline,
+						$this->updateCacheValue(self::CACHE_NAME,
+							$this->getCacheValue(self::CACHE_NAME),
 							$date);
-
-						$timeline = json_decode($timeline);
 					}
 				} else if ($e->getCause() instanceof Exception) {
 					// Services_Twitter wraps all generated exceptions around
@@ -263,8 +261,9 @@ class BlorgTwitterGadget extends SiteGadget
 		}
 
 		if ($has_cache == true && $loaded == false) {
-			$timeline = $this->getCacheValue(self::CACHE_NAME);
-			$timeline = json_decode($timeline);
+			// the cached value is always serialized, so unserialize it before
+			// we attempt to use it.
+			$timeline = unserialize($this->getCacheValue(self::CACHE_NAME));
 		}
 
 		$this->timeline = $timeline;
