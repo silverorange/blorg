@@ -23,30 +23,22 @@ class BlorgTwitterGadget extends SiteGadget
 
 	/**
 	 * The amount of time in minutes we wait before we update the cache
-	 *
-	 * @var integer the amount of time in minutes
 	 */
 	const UPDATE_THRESHOLD = 5;
 
 	/**
 	 * The amount of time in minutes we wait before we try updating the cache
 	 * again if the cache failed to update
-	 *
-	 * @var integer the amount of time in minutes
 	 */
 	const UPDATE_RETRY_THRESHOLD = 2;
 
 	/**
 	 * The name of the cache that stores the timeline
-	 *
-	 * @var string the name of the cache
 	 */
 	const CACHE_NAME = 'timeline';
 
 	/**
 	 * The endpoint for all links display with this gadget
-	 *
-	 * @var string the endpoint for all links
 	 */
 	const URI_ENDPOINT = 'http://twitter.com';
 
@@ -278,6 +270,9 @@ class BlorgTwitterGadget extends SiteGadget
 		$this->defineSetting('username', Blorg::_('User Name'), 'string');
 		$this->defineSetting('max_updates',
 			Blorg::_('Number of updates to Display'), 'integer', 5);
+
+		$this->defineSetting('show_replies',
+			Blorg::_('Show @replies'), 'boolean', true);
 
 		$this->defineDescription(Blorg::_('Lists recent updates from Twitter'));
 	}
