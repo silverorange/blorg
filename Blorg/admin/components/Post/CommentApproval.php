@@ -65,7 +65,7 @@ class BlorgPostCommentApproval extends SiteCommentApprovalPage
 
 	protected function displayContent()
 	{
-		$review = $this->data_object;
+		$comment = $this->data_object;
 
 		$div_tag = new SwatHtmlTag('div');
 		$div_tag->setContent($this->data_object->post->getTitle());
@@ -76,14 +76,14 @@ class BlorgPostCommentApproval extends SiteCommentApprovalPage
 		$h2_tag->display();
 
 		$abbr_tag = new SwatHtmlTag('abbr');
-		$date = clone $review->createdate;
+		$date = clone $comment->createdate;
 		$date->convertTZ($this->app->default_time_zone);
 		$abbr_tag->setContent(sprintf(Blorg::_('Posted: %s'),
 			$date->formatLikeIntl(SwatDate::DF_DATE)));
 
 		$abbr_tag->display();
 
-		echo SwatString::toXHTML($review->bodytext);
+		echo SwatString::toXHTML($comment->bodytext);
 	}
 
 	// }}}
