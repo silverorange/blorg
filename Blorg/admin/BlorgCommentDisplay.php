@@ -7,7 +7,7 @@ require_once 'Site/admin/SiteCommentDisplay.php';
  * delete and mark as spam
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2012 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgCommentDisplay extends SiteCommentDisplay
@@ -47,15 +47,15 @@ class BlorgCommentDisplay extends SiteCommentDisplay
 
 	protected function getView()
 	{
-		if (self::$view === null && $this->app !== null) {
-			self::$view = SiteViewFactory::get($this->app, 'post-comment');
-			self::$view->setPartMode('bodytext', SiteView::MODE_SUMMARY);
-			self::$view->setPartMode('permalink', SiteView::MODE_ALL, false);
-			self::$view->setPartMode('author', SiteView::MODE_ALL, false);
-			self::$view->setPartMode('link', SiteView::MODE_ALL, false);
+		if ($this->view === null && $this->app !== null) {
+			$this->view = SiteViewFactory::get($this->app, 'post-comment');
+			$this->view->setPartMode('bodytext', SiteView::MODE_SUMMARY);
+			$this->view->setPartMode('permalink', SiteView::MODE_ALL, false);
+			$this->view->setPartMode('author', SiteView::MODE_ALL, false);
+			$this->view->setPartMode('link', SiteView::MODE_ALL, false);
 		}
 
-		return self::$view;
+		return $this->view;
 	}
 
 	// }}}
