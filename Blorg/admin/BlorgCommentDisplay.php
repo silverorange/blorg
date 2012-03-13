@@ -25,7 +25,7 @@ class BlorgCommentDisplay extends SiteCommentDisplay
 			$this->comment->post->id);
 
 		$anchor_tag->setContent($this->comment->post->getTitle());
-		echo sprintf(Blorg::_('Comment on %s'), $anchor_tag);
+		printf(Blorg::_('Comment on %s'), $anchor_tag);
 
 		$this->displayStatusSpan();
 
