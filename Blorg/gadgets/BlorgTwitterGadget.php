@@ -1,9 +1,6 @@
 <?php
 
-$include_path_foo = get_include_path();
-set_include_path($include_path_foo.':/so/sites/sloan2/pear/lib');
 require_once 'Services/Twitter.php';
-set_include_path($include_path_foo);
 require_once 'Swat/SwatDate.php';
 require_once 'Site/gadgets/SiteGadget.php';
 
