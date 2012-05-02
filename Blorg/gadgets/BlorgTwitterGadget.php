@@ -1,6 +1,9 @@
 <?php
 
+$include_path_foo = get_include_path();
+set_include_path($include_path_foo.':/so/sites/sloan2/pear/lib');
 require_once 'Services/Twitter.php';
+set_include_path($include_path_foo);
 require_once 'Swat/SwatDate.php';
 require_once 'Site/gadgets/SiteGadget.php';
 
@@ -208,7 +211,7 @@ class BlorgTwitterGadget extends SiteGadget
 		// update the cache
 		if ($last_update === null || $this->now->after($last_update)) {
 			try {
-				$params = array('id' => $this->getValue('username'));
+				$params = array('screen_name' => $this->getValue('username'));
 				$timeline = $this->twitter->statuses->user_timeline($params);
 				$loaded = true;
 				// serialize the returned array to store it in the database
