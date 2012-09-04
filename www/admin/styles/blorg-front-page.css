@@ -35,19 +35,6 @@
 	padding-left: 2em;
 }
 
-a#manage_authors,
-a#new_post {
-	display: block;
-	float: left;
-	border: 1px solid #f0dca1;
-	background-color: #fdf2c0;
-}
-
-a#manage_authors:hover,
-a#new_post:hover {
-	background-color: #f8ecb7;
-}
-
 a#manage_authors {
 	padding-left: 8px;
 }
