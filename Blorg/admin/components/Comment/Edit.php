@@ -96,69 +96,6 @@ class BlorgCommentEdit extends SiteCommentEdit
 	}
 
 	// }}}
-	// {{{ protected function addToSearchQueue()
-
-	protected function addToSearchQueue()
-	{
-		$this->addPostToSearchQueue();
-		$this->addCommentToSearchQueue();
-	}
-
-	// }}}
-	// {{{ protected function addPostToSearchQueue()
-
-	protected function addPostToSearchQueue()
-	{
-		// this is automatically wrapped in a transaction because it is
-		// called in saveDBData()
-		$type = NateGoSearch::getDocumentType($this->app->db, 'post');
-
-		if ($type === null)
-			return;
-
-		$sql = sprintf('delete from NateGoSearchQueue
-			where document_id = %s and document_type = %s',
-			$this->app->db->quote($this->comment->post->id, 'integer'),
-			$this->app->db->quote($type, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
-
-		$sql = sprintf('insert into NateGoSearchQueue
-			(document_id, document_type) values (%s, %s)',
-			$this->app->db->quote($this->comment->post->id, 'integer'),
-			$this->app->db->quote($type, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
-	}
-
-	// }}}
-	// {{{ protected function addCommentToSearchQueue()
-
-	protected function addCommentToSearchQueue()
-	{
-		// this is automatically wrapped in a transaction because it is
-		// called in saveDBData()
-		$type = NateGoSearch::getDocumentType($this->app->db, 'comment');
-
-		if ($type === null)
-			return;
-
-		$sql = sprintf('delete from NateGoSearchQueue
-			where document_id = %s and document_type = %s',
-			$this->app->db->quote($this->comment->id, 'integer'),
-			$this->app->db->quote($type, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
-
-		$sql = sprintf('insert into NateGoSearchQueue
-			(document_id, document_type) values (%s, %s)',
-			$this->app->db->quote($this->comment->id, 'integer'),
-			$this->app->db->quote($type, 'integer'));
-
-		SwatDB::exec($this->app->db, $sql);
-	}
-
-	// }}}
 	// {{{ protected function updateDefaultAuthor()
 
 	protected function updateDefaultAuthor($author_id)
@@ -175,16 +112,6 @@ class BlorgCommentEdit extends SiteCommentEdit
 				$this->app->db->quote($instance_id, 'integer'));
 
 			SwatDB::exec($this->app->db, $sql);
-		}
-	}
-
-	// }}}
-	// {{{ protected function clearCache()
-
-	protected function clearCache()
-	{
-		if (isset($this->app->memcache)) {
-			$this->app->memcache->flushNS('posts');
 		}
 	}
 

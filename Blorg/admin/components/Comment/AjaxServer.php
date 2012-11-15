@@ -37,16 +37,6 @@ class BlorgCommentAjaxServer extends SiteCommentAjaxServer
 	}
 
 	// }}}
-	// {{{ protected function flushCache()
-
-	protected function flushCache()
-	{
-		if (isset($this->app->memcache)) {
-			$this->app->memcache->flushNs('posts');
-		}
-	}
-
-	// }}}
 }
 
 ?>
