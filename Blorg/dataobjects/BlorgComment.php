@@ -94,6 +94,16 @@ class BlorgComment extends SiteComment
 	}
 
 	// }}}
+	// {{{ public function clearCache()
+
+	public function clearCache(SiteApplication $app)
+	{
+		if (isset($app->memcache)) {
+			$app->memcache->flushNs('posts');
+		}
+	}
+
+	// }}}
 	// {{{ protected function init()
 
 	protected function init()
@@ -118,6 +128,15 @@ class BlorgComment extends SiteComment
 			'post',
 			'author',
 		);
+	}
+
+	// }}}
+	// {{{ protected function addToSearchQueue()
+
+	protected function addToSearchQueue(SiteApplication $app)
+	{
+		$app->addToSearchQueue('post', $this->post->id);
+		$app->addToSearchQueue('comment', $this->id);
 	}
 
 	// }}}
