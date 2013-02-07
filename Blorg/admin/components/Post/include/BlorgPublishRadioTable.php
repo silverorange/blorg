@@ -10,7 +10,7 @@ require_once 'Swat/SwatYUI.php';
  * A custom radio table for publishing posts
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPublishRadioTable extends SwatRadioTable
@@ -118,12 +118,13 @@ class BlorgPublishRadioTable extends SwatRadioTable
 	 *
 	 * @param SwatOption $option
 	 */
-	protected function displayOptionLabel(SwatOption $option)
+	protected function displayOptionLabel(SwatOption $option, $index)
 	{
-		parent::displayOptionLabel($option);
+		parent::displayOptionLabel($option, $index);
 
-		if ($option->value == self::PUBLISH_AT)
+		if ($option->value == self::PUBLISH_AT) {
 			$this->getCompositeWidget('publish_date')->display();
+		}
 	}
 
 	// }}}
