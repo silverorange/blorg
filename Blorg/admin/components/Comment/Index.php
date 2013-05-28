@@ -10,7 +10,7 @@ require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
  * Page to manage pending comments on posts
  *
  * @package   Blörg
- * @copyright 2008-2009 silverorange
+ * @copyright 2008-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgCommentIndex extends SiteCommentIndex
@@ -18,10 +18,9 @@ class BlorgCommentIndex extends SiteCommentIndex
 	// init phase
 	// {{{ protected function initInternal()
 
-	protected function initInternal()
+	protected function getTable()
 	{
-		$this->table = 'BlorgComment';
-		parent::initInternal();
+		return 'BlorgComment';
 	}
 
 	// }}}
