@@ -8,7 +8,7 @@ require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
  * Page for editing comments
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2013 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgCommentEdit extends SiteCommentEdit
@@ -18,8 +18,6 @@ class BlorgCommentEdit extends SiteCommentEdit
 
 	protected function initInternal()
 	{
-		$this->ui_xml = 'Blorg/admin/components/Comment/edit.xml';
-
 		parent::initInternal();
 
 		if ($this->id === null || $this->comment->author !== null) {
@@ -28,6 +26,14 @@ class BlorgCommentEdit extends SiteCommentEdit
 			$this->ui->getWidget('email_field')->visible    = false;
 			$this->ui->getWidget('status_field')->visible   = false;
 		}
+	}
+
+	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'Blorg/admin/components/Comment/edit.xml';
 	}
 
 	// }}}
