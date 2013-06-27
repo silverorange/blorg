@@ -65,35 +65,6 @@ class BlorgComment extends SiteComment
 	}
 
 	// }}}
-	// {{{ public function setDatabase()
-
-	/**
-	 * Sets the database driver for this data-object
-	 *
-	 * The database is automatically set for all recordable sub-objects of this
-	 * data-object.
-	 *
-	 * Overridden in BlorgComment to prevent infinite recursion between posts
-	 * and comments.
-	 *
-	 * @param MDB2_Driver_Common $db the database driver to use for this
-	 *                                data-object.
-	 */
-	public function setDatabase(MDB2_Driver_Common $db)
-	{
-		$this->db = $db;
-		$serializable_sub_data_objects = $this->getSerializableSubDataObjects();
-		foreach ($serializable_sub_data_objects as $key) {
-			if ($this->hasSubDataObject($key) && $key !== 'post') {
-				$object = $this->getSubDataObject($key);
-				if ($object instanceof SwatDBRecordable) {
-					$object->setDatabase($db);
-				}
-			}
-		}
-	}
-
-	// }}}
 	// {{{ public function clearCache()
 
 	public function clearCache(SiteApplication $app)
