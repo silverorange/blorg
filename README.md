@@ -12,7 +12,9 @@ Features
  
 Documentation
 -------------
- * [Database Portability](https://github.com/silverorange/blorg/wiki/Database-Portability)
  * [Theme Specification](https://github.com/silverorange/blorg/wiki/Theme-Specification)
- * [Sidebar Specification](https://github.com/silverorange/blorg/wiki/Sidebar)
+ * [API Documentation](http://docs.silverorange.com/blorg/package-summary.html)
  * [Memcached Namespaces](https://github.com/silverorange/blorg/wiki/Memcached-Namespaces)
+ * [Database Portability](https://github.com/silverorange/blorg/wiki/Database-Portability)
+ * [Sidebar Specification](https://github.com/silverorange/blorg/wiki/Sidebar)
+
