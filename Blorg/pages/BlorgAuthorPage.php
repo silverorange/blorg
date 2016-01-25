@@ -13,7 +13,7 @@ require_once 'Blorg/dataobjects/BlorgAuthor.php';
  * Loads and displays an author.
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgAuthorPage extends SitePage

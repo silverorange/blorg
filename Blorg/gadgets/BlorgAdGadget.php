@@ -11,7 +11,7 @@ require_once 'Swat/SwatString.php';
  * - <kbd>string ad_markup</kbd> - the html markup for embedding an ad.
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgAdGadget extends SiteGadget

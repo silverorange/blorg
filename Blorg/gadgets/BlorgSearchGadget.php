@@ -15,7 +15,7 @@ require_once 'Swat/SwatSearchEntry.php';
  *                             unspecified, the label 'keywords' is used.
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgSearchGadget extends SiteGadget

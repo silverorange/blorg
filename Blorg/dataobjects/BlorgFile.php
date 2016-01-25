@@ -8,7 +8,7 @@ require_once 'Blorg/dataobjects/BlorgFileImage.php';
  * A file attachment to a post
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgFile extends SwatDBDataObject

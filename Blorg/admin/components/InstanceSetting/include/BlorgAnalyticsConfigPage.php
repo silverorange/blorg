@@ -6,7 +6,7 @@ require_once 'Site/admin/components/InstanceSetting/include/SiteAbstractConfigPa
  * Analytics Blörg instance settings
  *
  * @package   Blörg
- * @copyright 2010 silverorange
+ * @copyright 2010-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgAnalyticsConfigPage extends SiteAbstractConfigPage

@@ -10,7 +10,7 @@ require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
  * Performs actions on files via AJAX
  *
  * @package   Blörg
- * @copyright 2008-2010 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPostFileAjaxServer extends SiteXMLRPCServer

@@ -6,7 +6,7 @@ require_once 'Site/dataobjects/SiteCommentWrapper.php';
  * A recordset wrapper class for BlorgComment objects
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @see       SiteCommentWrapper
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */

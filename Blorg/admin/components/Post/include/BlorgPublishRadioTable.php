@@ -10,7 +10,7 @@ require_once 'Swat/SwatYUI.php';
  * A custom radio table for publishing posts
  *
  * @package   Blörg
- * @copyright 2008-2013 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPublishRadioTable extends SwatRadioTable

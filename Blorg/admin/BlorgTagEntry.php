@@ -10,7 +10,7 @@ require_once 'Blorg/dataobjects/BlorgTag.php';
  * Control for selecting multiple tags from a list of tags
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgTagEntry extends SiteTagEntry
