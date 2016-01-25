@@ -9,7 +9,7 @@ require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
  * Page for displaying search results
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgSearchResultsPage extends SiteSearchResultsPage

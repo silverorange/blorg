@@ -7,7 +7,7 @@ require_once 'Blorg/dataobjects/BlorgTag.php';
  * A recordset wrapper class for BlorgTag objects
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @see       BlorgTag
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */

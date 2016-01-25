@@ -7,7 +7,7 @@ require_once 'Blorg/dataobjects/BlorgPost.php';
  * A recordset wrapper class for BlorgPost objects
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @see       BlorgPost
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */

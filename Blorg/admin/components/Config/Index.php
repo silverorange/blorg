@@ -9,7 +9,7 @@ require_once 'Site/SiteCommentStatus.php';
  * Shows editable configuration values for a Blörg site
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgConfigIndex extends AdminPage

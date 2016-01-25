@@ -12,7 +12,7 @@ require_once 'Blorg/BlorgPostLoader.php';
  * Displays an index of all months with posts in a given year
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgYearArchivePage extends SitePage

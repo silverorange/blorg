@@ -21,7 +21,7 @@ require_once 'SwatI18N/SwatI18NLocale.php';
  *                                         Defaults to false.
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgTagGadget extends SiteGadget

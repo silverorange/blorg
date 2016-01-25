@@ -13,7 +13,7 @@ require_once 'Swat/SwatYUI.php';
  *                                songs. If not specified, nothing is displayed.
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgLastFmGadget extends SiteGadget

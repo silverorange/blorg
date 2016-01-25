@@ -8,7 +8,7 @@ require_once 'Site/admin/SiteCommentApprovalPage.php';
  * Index page for Posts
  *
  * @package   Blörg
- * @copyright 2009 silverorange
+ * @copyright 2009-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPostCommentApproval extends SiteCommentApprovalPage

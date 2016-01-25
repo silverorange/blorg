@@ -10,7 +10,7 @@ require_once 'NateGoSearch/NateGoSearch.php';
  * Delete confirmation page for comments
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgCommentDelete extends AdminDBDelete

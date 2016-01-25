@@ -8,7 +8,7 @@ require_once 'Blorg/views/BlorgAuthorView.php';
  * View for Blörg comment objects
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgCommentView extends SiteCommentView

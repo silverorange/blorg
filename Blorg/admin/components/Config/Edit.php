@@ -12,7 +12,7 @@ require_once dirname(__FILE__).'/include/BlorgHeaderImageDisplay.php';
  * Page for editing preferences for a Blörg site
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgConfigEdit extends AdminEdit

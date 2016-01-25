@@ -36,7 +36,7 @@ require_once 'Site/exceptions/SiteNotFoundException.php';
  * </code>
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPageFactory extends SitePageFactory

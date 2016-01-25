@@ -40,7 +40,7 @@ require_once 'Blorg/BlorgPageFactory.php';
  *                       MODE_NONE. Links to the files by default.
  *
  * @package   Blörg
- * @copyright 2008-2009 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPostView extends SiteView

@@ -8,7 +8,7 @@ require_once 'Blorg/dataobjects/BlorgTag.php';
  * Page for editing tags
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgTagEdit extends AdminDBEdit

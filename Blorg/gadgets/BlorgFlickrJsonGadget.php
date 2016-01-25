@@ -13,7 +13,7 @@ require_once 'Swat/SwatYUI.php';
  *                           the same as an RSS/Atom link but with format=json.
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgFlickrJsonGadget extends SiteGadget

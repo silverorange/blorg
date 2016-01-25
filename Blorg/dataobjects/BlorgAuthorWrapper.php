@@ -7,7 +7,7 @@ require_once 'Blorg/dataobjects/BlorgAuthor.php';
  * A recordset wrapper class for BlorgAuthor objects
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @see       BlorgAuthor
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */

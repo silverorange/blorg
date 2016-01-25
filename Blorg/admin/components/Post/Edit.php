@@ -30,7 +30,7 @@ require_once dirname(__FILE__).'/include/BlorgMarkupView.php';
  * {@link BlorgPostEdit::validateShortname()}.
  *
  * @package   Blörg
- * @copyright 2008-2011 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgPostEdit extends AdminDBEdit

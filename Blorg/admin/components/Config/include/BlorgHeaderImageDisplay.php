@@ -10,7 +10,7 @@ require_once 'XML/RPCAjax.php';
  * Control for displaying and deleting header images in the Blörg admin
  *
  * @package   Blörg
- * @copyright 2008 silverorange
+ * @copyright 2008-2016 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class BlorgHeaderImageDisplay extends SwatControl
