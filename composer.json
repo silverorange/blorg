@@ -45,7 +45,7 @@
 		"pear/services_twitter": "Show Twitter feeds in sidebar."
 	},
 	"autoload": {
-		"file": [ "autoload.php" ]
+		"files": [ "autoload.php" ]
 	},
 	"include-path": [
 		"./"
