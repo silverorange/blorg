@@ -35,7 +35,6 @@
 		"php": ">=5.2.4",
 		"silverorange/admin": "^2.0.23",
 		"silverorange/nate_go_search": "^1.0.35",
-		"silverorange/silverorange_autoloader": "*",
 		"silverorange/site": "^2.1.45",
 		"silverorange/swat": "^2.2.10",
 		"silverorange/xml_atom": ">=0.1.4"
@@ -45,7 +44,7 @@
 		"pear/services_twitter": "Show Twitter feeds in sidebar."
 	},
 	"autoload": {
-		"files": [ "autoload.php" ]
+		"classmap": [ "Blorg/" ]
 	},
 	"include-path": [
 		"./"
