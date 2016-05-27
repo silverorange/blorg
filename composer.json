@@ -33,9 +33,9 @@
 	],
 	"require": {
 		"php": ">=5.2.4",
-		"silverorange/admin": "^2.0.23",
+		"silverorange/admin": "^2.1.5",
 		"silverorange/nate_go_search": "^1.0.35",
-		"silverorange/site": "^2.1.45",
+		"silverorange/site": "^3.0.0",
 		"silverorange/swat": "^2.2.10",
 		"silverorange/xml_atom": ">=0.1.4"
 	},
