@@ -1,18 +1,10 @@
 <?php
 
-require_once 'Swat/Swat.php';
-require_once 'Swat/SwatHtmlHeadEntrySet.php';
-require_once 'Swat/SwatLinkHtmlHeadEntry.php';
-require_once 'Site/Site.php';
-require_once 'Site/SiteGadgetFactory.php';
-require_once 'Admin/Admin.php';
-require_once 'Site/SiteViewFactory.php';
-
 /**
  * Container for package wide static methods
  *
  * @package   Blörg
- * @copyright 2008-2016 silverorange
+ * @copyright 2008-2017 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
 class Blorg
@@ -27,11 +19,21 @@ class Blorg
 	const GETTEXT_DOMAIN = 'blorg';
 
 	// }}}
+	// {{{ private properties
+
+	/**
+	 * Whether or not this package is initialized
+	 *
+	 * @var boolean
+	 */
+	private static $is_initialized = false;
+
+	// }}}
 	// {{{ public static function _()
 
 	public static function _($message)
 	{
-		return Blorg::gettext($message);
+		return self::gettext($message);
 	}
 
 	// }}}
@@ -39,7 +41,7 @@ class Blorg
 
 	public static function gettext($message)
 	{
-		return dgettext(Blorg::GETTEXT_DOMAIN, $message);
+		return dgettext(self::GETTEXT_DOMAIN, $message);
 	}
 
 	// }}}
@@ -48,7 +50,7 @@ class Blorg
 	public static function ngettext($singular_message,
 		$plural_message, $number)
 	{
-		return dngettext(Blorg::GETTEXT_DOMAIN,
+		return dngettext(self::GETTEXT_DOMAIN,
 			$singular_message, $plural_message, $number);
 	}
 
@@ -57,8 +59,8 @@ class Blorg
 
 	public static function setupGettext()
 	{
-		bindtextdomain(Blorg::GETTEXT_DOMAIN, '@DATA-DIR@/Blorg/locale');
-		bind_textdomain_codeset(Blorg::GETTEXT_DOMAIN, 'UTF-8');
+		bindtextdomain(self::GETTEXT_DOMAIN, '@DATA-DIR@/Blorg/locale');
+		bind_textdomain_codeset(self::GETTEXT_DOMAIN, 'UTF-8');
 	}
 
 	// }}}
@@ -252,6 +254,33 @@ class Blorg
 
 	// }}}
 
+	// {{{ public static function init()
+
+	public static function init()
+	{
+		if (self::$is_initialized) {
+			return;
+		}
+
+		Swat::init();
+		Site::init();
+		Admin::init();
+
+		self::setupGettext();
+
+		SwatUI::mapClassPrefixToPath('Blorg', 'Blorg');
+
+		SiteViewFactory::addPath('Blorg/views');
+		SiteViewFactory::registerView('post',         'BlorgPostView');
+		SiteViewFactory::registerView('post-comment', 'BlorgCommentView');
+		SiteViewFactory::registerView('author',       'BlorgAuthorView');
+
+		SiteGadgetFactory::addPath('Blorg/gadgets');
+
+		self::$is_initialized = true;
+	}
+
+	// }}}
 	// {{{ private function __construct()
 
 	/**
@@ -264,14 +293,5 @@ class Blorg
 	// }}}
 }
 
-Blorg::setupGettext();
-SwatUI::mapClassPrefixToPath('Blorg', 'Blorg');
-
-SiteViewFactory::addPath('Blorg/views');
-SiteViewFactory::registerView('post',          'BlorgPostView');
-SiteViewFactory::registerView('post-comment',  'BlorgCommentView');
-SiteViewFactory::registerView('author',        'BlorgAuthorView');
-
-SiteGadgetFactory::addPath('Blorg/gadgets');
 
 ?>
