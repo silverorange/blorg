@@ -265,7 +265,6 @@ class Blorg
 		Swat::init();
 		Site::init();
 		Admin::init();
-		NateGoSearch::init();
 
 		self::setupGettext();
 
