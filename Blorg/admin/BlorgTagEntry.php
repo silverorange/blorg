@@ -1,7 +1,5 @@
 <?php
 
-/* vim: set noexpandtab tabstop=4 shiftwidth=4 foldmethod=marker: */
-
 require_once 'Site/SiteTagEntry.php';
 require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
 require_once 'Blorg/dataobjects/BlorgTag.php';
