@@ -1,9 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/pages/SitePage.php';
-require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
-
 /**
  * Author index page for Blörg
  *

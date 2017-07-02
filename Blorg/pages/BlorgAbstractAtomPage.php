@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-require_once 'XML/Atom/Feed.php';
-
 /**
  * Abstract class used to help build atom feeds.
  *

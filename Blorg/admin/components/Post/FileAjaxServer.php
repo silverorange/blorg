@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteXMLRPCServer.php';
-require_once 'Site/layouts/SiteXMLRPCServerLayout.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Blorg/dataobjects/BlorgFile.php';
-require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
-
 /**
  * Performs actions on files via AJAX
  *

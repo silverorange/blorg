@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Swat/SwatMessage.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Admin/pages/AdminEdit.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Site/SiteCommentStatus.php';
-require_once 'Site/admin/SiteCommentStatusSlider.php';
-require_once dirname(__FILE__).'/include/BlorgHeaderImageDisplay.php';
-
 /**
  * Page for editing preferences for a Blörg site
  *

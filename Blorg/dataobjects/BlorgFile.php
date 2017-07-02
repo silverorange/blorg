@@ -1,9 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/dataobjects/BlorgFileImage.php';
-
 /**
  * A file attachment to a post
  *

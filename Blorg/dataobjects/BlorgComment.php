@@ -1,11 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Swat/SwatString.php';
-require_once 'Site/dataobjects/SiteComment.php';
-require_once 'Blorg/dataobjects/BlorgAuthor.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-
 /**
  * A comment on a Blörg Post
  *

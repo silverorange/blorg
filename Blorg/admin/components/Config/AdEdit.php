@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Admin/pages/AdminEdit.php';
-
 /**
  * Page for editing site instance settings
  *

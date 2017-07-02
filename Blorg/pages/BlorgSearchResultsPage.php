@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteSearchResultsPage.php';
-require_once 'Site/SiteViewFactory.php';
-require_once 'Blorg/BlorgPostSearchEngine.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-
 /**
  * Page for displaying search results
  *

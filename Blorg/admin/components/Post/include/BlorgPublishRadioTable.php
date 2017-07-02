@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Swat/SwatFormField.php';
-require_once 'Swat/SwatEntry.php';
-require_once 'Swat/SwatDateEntry.php';
-require_once 'Swat/SwatRadioTable.php';
-require_once 'Swat/SwatYUI.php';
-
 /**
  * A custom radio table for publishing posts
  *

@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Swat/SwatString.php';
-require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Site/views/SiteView.php';
-require_once 'Blorg/dataobjects/BlorgAuthor.php';
-require_once 'Blorg/Blorg.php';
-
 /**
  * View for Blörg author objects
  *

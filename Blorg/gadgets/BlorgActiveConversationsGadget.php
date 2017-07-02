@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Site/gadgets/SiteGadget.php';
-require_once 'Blorg/BlorgPageFactory.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Swat/SwatString.php';
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Site/SiteCommentStatus.php';
-
 /**
  * Displays active convestaions (a.k.a. posts that have recent comment activity)
  *

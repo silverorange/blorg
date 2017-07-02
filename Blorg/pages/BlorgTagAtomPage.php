@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Blorg/dataobjects/BlorgTag.php';
-require_once 'Blorg/pages/BlorgAtomPage.php';
-require_once 'XML/Atom/Feed.php';
-
 /**
  * Displays an Atom feed of all recent posts in reverse chronological order for
  * a specific tag

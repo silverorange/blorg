@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'Swat/SwatDetailsStore.php';
-require_once 'Swat/SwatNavBar.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Admin/pages/AdminIndex.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Blorg/dataobjects/BlorgTag.php';
-
 /**
  * Details page for tags
  *

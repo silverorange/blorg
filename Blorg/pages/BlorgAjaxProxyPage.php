@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Site/SiteGadgetFactory.php';
-
 /**
  * Proxy page for AJAX requests
  *

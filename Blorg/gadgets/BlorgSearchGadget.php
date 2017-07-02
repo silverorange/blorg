@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Site/gadgets/SiteGadget.php';
-require_once 'Site/SiteSearchForm.php';
-require_once 'Swat/SwatFormField.php';
-require_once 'Site/SiteUnnamedButton.php';
-require_once 'Swat/SwatSearchEntry.php';
-
 /**
  * Displays a search box
  *

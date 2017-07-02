@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDetailsStore.php';
-require_once 'Admin/pages/AdminPage.php';
-require_once 'Blorg/dataobjects/BlorgFile.php';
-require_once 'Site/SiteCommentStatus.php';
-
 /**
  * Shows editable configuration values for a Blörg site
  *

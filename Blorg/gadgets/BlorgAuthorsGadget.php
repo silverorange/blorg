@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Site/SiteViewFactory.php';
-require_once 'Site/gadgets/SiteGadget.php';
-require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
-require_once 'Swat/SwatString.php';
-require_once 'Swat/SwatHtmlTag.php';
-
 /**
  * Displays authors
  *

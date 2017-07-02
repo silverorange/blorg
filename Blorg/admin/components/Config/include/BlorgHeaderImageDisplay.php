@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Swat/SwatControl.php';
-require_once 'Swat/SwatHtmlTag.php';
-require_once 'Swat/SwatYUI.php';
-require_once 'Blorg/dataobjects/BlorgFile.php';
-require_once 'XML/RPCAjax.php';
-
 /**
  * Control for displaying and deleting header images in the Blörg admin
  *

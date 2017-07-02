@@ -1,11 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Blorg/Blorg.php';
-
 /**
  * Displays an index of all tags with post counts
  *

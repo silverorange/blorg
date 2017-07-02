@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-require_once 'Blorg/dataobjects/BlorgFile.php';
-
 /**
  * Outputs a BlorgFile
  *

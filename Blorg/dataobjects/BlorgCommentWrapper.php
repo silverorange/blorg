@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteCommentWrapper.php';
-
 /**
  * A recordset wrapper class for BlorgComment objects
  *

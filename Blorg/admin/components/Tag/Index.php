@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminSearch.php';
-require_once 'Admin/AdminSearchClause.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
-
 /**
  * Index page for Tags
  *

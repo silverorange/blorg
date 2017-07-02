@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/SiteSearchEngine.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-
 /**
  * A post search engine
  *

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/admin/components/InstanceSetting/include/SiteAbstractConfigPage.php';
-
 /**
  * Analytics Blörg instance settings
  *

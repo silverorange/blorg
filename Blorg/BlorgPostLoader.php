@@ -1,12 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBRange.php';
-require_once 'Site/dataobjects/SiteInstance.php';
-require_once 'Site/SiteMemcacheModule.php';
-require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-
 /**
  * Efficient post loader
  *

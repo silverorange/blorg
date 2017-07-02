@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatOptionControl.php';
-require_once 'Swat/SwatTextarea.php';
-
 /**
  * Control for displaying embed markup for files
  *

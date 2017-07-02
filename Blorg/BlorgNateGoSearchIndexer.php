@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDetailsStore.php';
-require_once 'Site/SiteNateGoSearchIndexer.php';
-require_once 'Blorg/Blorg.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
-
 /**
  * Blorg search indexer application for NateGoSearch
  *

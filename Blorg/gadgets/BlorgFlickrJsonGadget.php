@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/gadgets/SiteGadget.php';
-require_once 'Swat/SwatString.php';
-require_once 'Swat/SwatYUI.php';
-
 /**
  * Displays photos from a Flickr JSON source
  *

@@ -1,12 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'Site/dataobjects/SiteImageWrapper.php';
-require_once 'Site/dataobjects/SiteImageSetWrapper.php';
-require_once 'Site/layouts/SiteLayout.php';
-require_once 'Blorg/dataobjects/BlorgFile.php';
-require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
-
 /**
  * Lists file images
  *

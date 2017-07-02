@@ -1,9 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Admin/dataobjects/AdminUserWrapper.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-
 /**
  * Author for a Blörg site
  *

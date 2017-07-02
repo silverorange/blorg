@@ -1,10 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Admin/pages/AdminDBOrder.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
-
 /**
  * Order page for Authors component
  *

@@ -1,11 +1,5 @@
 <?php
 
-require_once 'Site/admin/components/Comment/Index.php';
-require_once 'Blorg/admin/BlorgCommentDisplay.php';
-require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
-require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-
 /**
  * Page to manage pending comments on posts
  *

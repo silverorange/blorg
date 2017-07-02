@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/admin/components/Comment/Edit.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
-
 /**
  * Page for editing comments
  *

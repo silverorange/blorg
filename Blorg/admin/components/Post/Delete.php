@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Swat/SwatString.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Admin/pages/AdminDBDelete.php';
-require_once 'Admin/AdminListDependency.php';
-require_once 'Admin/AdminDependencyEntry.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
-
 /**
  * Delete confirmation page for Posts
  *

@@ -1,12 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Swat/SwatPagination.php';
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Blorg/BlorgPostLoader.php';
-require_once 'Blorg/dataobjects/BlorgAuthor.php';
-
 /**
  * Author details page for Blörg
  *

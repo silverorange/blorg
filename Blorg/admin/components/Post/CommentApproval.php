@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Blorg/dataobjects/BlorgComment.php';
-require_once 'Blorg/BlorgPageFactory.php';
-require_once 'Site/admin/SiteCommentApprovalPage.php';
-
 /**
  * Index page for Posts
  *
