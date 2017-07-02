@@ -67,8 +67,5 @@
 	},
 	"autoload": {
 		"classmap": [ "Blorg/" ]
-	},
-	"include-path": [
-		"./"
-	]
+	}
 }
