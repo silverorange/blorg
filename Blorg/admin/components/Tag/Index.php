@@ -37,7 +37,7 @@ class BlorgTagIndex extends AdminSearch
 	// process phase
 	// {{{ protected function processActions()
 
-	public function processActions(SwatTableView $view, SwatActions $actions)
+	public function processActions(SwatView $view, SwatActions $actions)
 	{
 		$num = count($view->getSelection());
 		$message = null;

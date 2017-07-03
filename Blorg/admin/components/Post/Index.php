@@ -68,7 +68,7 @@ class BlorgPostIndex extends AdminSearch
 	// }}}
 	// {{{ protected function processActions()
 
-	public function processActions(SwatTableView $view, SwatActions $actions)
+	public function processActions(SwatView $view, SwatActions $actions)
 	{
 		$message = null;
 		$items = SwatDB::implodeSelection($this->app->db,
