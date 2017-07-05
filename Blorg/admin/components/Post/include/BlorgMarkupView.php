@@ -66,7 +66,8 @@ class BlorgMarkupView extends SwatOptionControl
 
 		$label_tag->close();
 
-		$first_option = reset($this->getOptions());
+		$options = $this->getOptions();
+		$first_option = reset($options);
 		$textarea = $this->getCompositeWidget('textarea');
 		$textarea->value = $first_option->value;
 
