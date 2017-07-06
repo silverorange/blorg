@@ -14,7 +14,7 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	public function __construct(SiteAbstractPage $page)
 	{
 		parent::__construct($page);
-		$this->ui_xml = 'Blorg/pages/search-results.xml';
+		$this->ui_xml = __DIR__.'/search-results.xml';
 	}
 
 	// }}}

@@ -16,7 +16,7 @@ class BlorgTagEdit extends AdminDBEdit
 	 */
 	protected $tag;
 
-	protected $ui_xml = 'Blorg/admin/components/Tag/edit.xml';
+	protected $ui_xml = __DIR__.'/edit.xml';
 
 	// }}}
 

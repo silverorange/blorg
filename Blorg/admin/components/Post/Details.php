@@ -11,7 +11,7 @@ class BlorgPostDetails extends AdminIndex
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/Post/details.xml';
+	protected $ui_xml = __DIR__.'/details.xml';
 	protected $post;
 
 	// }}}

@@ -11,7 +11,7 @@ class BlorgConfigIndex extends AdminPage
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/Config/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	// }}}
 

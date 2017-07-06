@@ -16,7 +16,7 @@ class BlorgAuthorEdit extends AdminDBEdit
 	 */
 	protected $author;
 
-	protected $ui_xml = 'Blorg/admin/components/Author/edit.xml';
+	protected $ui_xml = __DIR__.'/edit.xml';
 
 	// }}}
 

@@ -29,7 +29,7 @@ class BlorgCommentEdit extends SiteCommentEdit
 
 	protected function getUiXml()
 	{
-		return 'Blorg/admin/components/Comment/edit.xml';
+		return __DIR__.'/edit.xml';
 	}
 
 	// }}}

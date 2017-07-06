@@ -25,7 +25,7 @@ class BlorgPostEdit extends AdminDBEdit
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Blorg/admin/components/Post/edit.xml';
+	protected $ui_xml = __DIR__.'/edit.xml';
 
 	/**
 	 * @integer

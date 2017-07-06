@@ -14,7 +14,7 @@ class BlorgConfigAdEdit extends AdminEdit
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Blorg/admin/components/Config/ad-edit.xml';
+	protected $ui_xml = __DIR__.'/ad-edit.xml';
 
 	/**
 	 * @var array

@@ -11,7 +11,7 @@ class BlorgAuthorIndex extends AdminSearch
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/Author/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	// }}}
 

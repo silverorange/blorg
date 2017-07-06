@@ -11,7 +11,7 @@ class BlorgTagDetails extends AdminPage
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/Tag/details.xml';
+	protected $ui_xml = __DIR__.'/details.xml';
 	protected $id;
 
 	// }}}
