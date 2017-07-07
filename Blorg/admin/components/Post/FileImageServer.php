@@ -29,7 +29,7 @@ class BlorgPostFileImageServer extends AdminPage
 		SiteLayout $layout = null,
 		array $arguments = array()
 	) {
-		$layout = new SiteLayout($app, 'Site/layouts/xhtml/json.php');
+		$layout = new SiteLayout($app, SiteJSONTemplate::class);
 		parent::__construct($app, $layout, $arguments);
 	}
 

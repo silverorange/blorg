@@ -42,7 +42,7 @@ class BlorgAjaxProxyPage extends SitePage
 		SiteLayout $layout = null,
 		array $arguments = array()
 	) {
-		$layout = new SiteLayout($app, 'Blorg/layouts/xhtml/ajax-proxy.php');
+		$layout = new SiteLayout($app, BlorgAjaxProxyTemplate::class);
 		parent::__construct($app, $layout, $arguments);
 
 		$this->initUri($this->getArgument('source'));

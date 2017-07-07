@@ -26,7 +26,7 @@ abstract class BlorgAbstractAtomPage extends SitePage
 		SiteLayout $layout = null,
 		array $arguments = array()
 	) {
-		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
+		$layout = new SiteLayout($app, SiteAtomTemplate::class);
 		parent::__construct($app, $layout, $arguments);
 	}
 
