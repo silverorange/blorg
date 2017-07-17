@@ -53,21 +53,21 @@
 		"silverorange/swat": "^2.7.0",
 		"silverorange/xml_atom": ">=0.1.4"
 	},
+	"require-dev": {
+		"silverorange/coding-standard": "^0.1.0"
+	},
 	"suggest": {
 		"pear/services_akismet2": "Filter spam from comments.",
 		"pear/services_twitter": "Show Twitter feeds in sidebar."
+	},
+	"scripts": {
+		"post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src",
+		"post-update-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src"
 	},
 	"autoload": {
 		"classmap": [ "Blorg/" ]
 	},
 	"include-path": [
 		"./"
-	],
-	"require-dev": {
-		"silverorange/coding-standard": "^0.1.0"
-	},
-	"scripts": {
-		"post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src",
-		"post-update-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src"
-	}
+	]
 }
