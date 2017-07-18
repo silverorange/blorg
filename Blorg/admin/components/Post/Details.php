@@ -78,7 +78,7 @@ class BlorgPostDetails extends AdminIndex
 	// }}}
 	// {{{ protected function processActions()
 
-	protected function processActions(SwatTableView $view, SwatActions $actions)
+	protected function processActions(SwatView $view, SwatActions $actions)
 	{
 		switch ($view->id) {
 		case 'comments_view':
