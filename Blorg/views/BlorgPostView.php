@@ -225,7 +225,7 @@ class BlorgPostView extends SiteView
 				$post->comment_status == SiteCommentStatus::OPEN ||
 				$post->comment_status == SiteCommentStatus::MODERATED));
 
-		if (      $author != '' && $tags != '' &&  $show_comment_count) {
+		if (      $author != '' && $tags != '' && $show_comment_count) {
 			printf(Blorg::_('Posted by %s on %s in %s - %s'),
 				$author, $permalink, $tags, $comment_count);
 
@@ -233,7 +233,7 @@ class BlorgPostView extends SiteView
 			printf(Blorg::_('Posted by %s on %s in %s'),
 				$author, $permalink, $tags);
 
-		} elseif ($author != '' && $tags == '' &&  $show_comment_count) {
+		} elseif ($author != '' && $tags == '' && $show_comment_count) {
 			printf(Blorg::_('Posted by %s on %s - %s'),
 				$author, $permalink, $comment_count);
 
@@ -241,7 +241,7 @@ class BlorgPostView extends SiteView
 			printf(Blorg::_('Posted by %s on %s'),
 				$author, $permalink);
 
-		} elseif ($author == '' && $tags != '' &&  $show_comment_count) {
+		} elseif ($author == '' && $tags != '' && $show_comment_count) {
 			printf(Blorg::_('%s in %s - %s'),
 				$permalink, $tags, $comment_count);
 
@@ -249,7 +249,7 @@ class BlorgPostView extends SiteView
 			printf(Blorg::_('%s in %s'),
 				$permalink, $tags);
 
-		} elseif ($author == '' && $tags == '' &&  $show_comment_count) {
+		} elseif ($author == '' && $tags == '' && $show_comment_count) {
 			printf(Blorg::_('%s - %s'),
 				$permalink, $comment_count);
 
@@ -782,7 +782,6 @@ class BlorgPostView extends SiteView
 	 */
 	protected function isBodyVisible(BlorgPost $post)
 	{
-
 		// make sure we have post content for the body
 		$keys = array();
 		$content_properties = array('bodytext', 'extended_bodytext');

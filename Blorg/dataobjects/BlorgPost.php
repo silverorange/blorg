@@ -531,7 +531,7 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentable
 
 			$instance_id  = ($instance === null) ? null : $instance->id;
 			if ($instance_id !== null) {
-				$sql.=sprintf(' and instance %s %s',
+				$sql.= sprintf(' and instance %s %s',
 					SwatDB::equalityOperator($instance_id),
 					$this->db->quote($instance_id, 'integer'));
 			}
@@ -610,6 +610,7 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentable
 
 		return (count($query) == 0);
 	}
+
 	// }}}
 	// {{{ protected function init()
 

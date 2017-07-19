@@ -113,7 +113,6 @@ class BlorgArchivePage extends SitePage
 			$post_count_span->display();
 			$year_heading_tag->close();
 
-
 			$month_ul_tag = new SwatHtmlTag('ul');
 			$month_ul_tag->open();
 			foreach ($values['months'] as $month => $post_count) {

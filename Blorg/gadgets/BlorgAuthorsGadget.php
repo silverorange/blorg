@@ -92,11 +92,11 @@ class BlorgAuthorsGadget extends SiteGadget
 	protected function displayAuthor(BlorgAuthor $author)
 	{
 		$view = SiteViewFactory::get($this->app, 'author');
-		$view->setPartMode('name',        SiteView::MODE_SUMMARY);
-		$view->setPartMode('bodytext',    SiteView::MODE_NONE);
-		$view->setPartMode('email',       SiteView::MODE_NONE);
+		$view->setPartMode('name', SiteView::MODE_SUMMARY);
+		$view->setPartMode('bodytext', SiteView::MODE_NONE);
+		$view->setPartMode('email', SiteView::MODE_NONE);
 		$view->setPartMode('description', SiteView::MODE_ALL, false);
-		$view->setPartMode('post_count',  SiteView::MODE_NONE, false);
+		$view->setPartMode('post_count', SiteView::MODE_NONE, false);
 		$view->display($author);
 	}
 

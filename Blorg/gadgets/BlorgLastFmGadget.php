@@ -112,8 +112,8 @@ class BlorgLastFmGadget extends SiteGadget
 		$this->defineDefaultTitle(Blorg::_('Recently Listened'));
 
 		$this->defineSetting('username', Blorg::_('User Name'), 'string');
-		$this->defineSetting('limit',    Blorg::_('Limit'), 'integer', 10);
-		$this->defineSetting('invert',   Blorg::_('Invert Loading Image'),
+		$this->defineSetting('limit', Blorg::_('Limit'), 'integer', 10);
+		$this->defineSetting('invert', Blorg::_('Invert Loading Image'),
 			'boolean', false);
 
 		$this->defineSetting('date_format',

@@ -135,4 +135,5 @@ class BlorgHeaderImageDisplay extends SwatControl
 
 	// }}}
 }
+
 ?>

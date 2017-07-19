@@ -24,3 +24,5 @@ class BlorgFileImage extends SiteImage
 
 	// }}}
 }
+
+?>

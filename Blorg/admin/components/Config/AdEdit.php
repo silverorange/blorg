@@ -62,7 +62,7 @@ class BlorgConfigAdEdit extends AdminEdit
 					$this->$saver_method();
 				} else {
 					$widget = $this->ui->getWidget($field_name);
-					$this->app->config->$section->$name = $widget->value;
+					$this->app->config->{$section}->{$name} = $widget->value;
 				}
 
 				$settings[] = $section.'.'.$name;
@@ -113,6 +113,7 @@ class BlorgConfigAdEdit extends AdminEdit
 			$form->addHiddenField(self::RELOCATE_URL_FIELD, $url);
 		}
 	}
+
 	// }}}
 	// {{{ protected function buildNavBar()
 
