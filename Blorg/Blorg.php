@@ -155,11 +155,11 @@ class Blorg
 
 		$recent_posts = new SwatLinkHtmlHeadEntry(
 			$blorg_base_href.'feed', 'alternate',
-			'application/atom+xml', Blorg::_('Recent Posts'));
+			'application/atom+xml', self::_('Recent Posts'));
 
 		$recent_comments = new SwatLinkHtmlHeadEntry(
 			$blorg_base_href.'feed/comments', 'alternate',
-			'application/atom+xml', Blorg::_('Recent Comments'));
+			'application/atom+xml', self::_('Recent Comments'));
 
 		$set->addEntry($recent_posts);
 		$set->addEntry($recent_comments);
@@ -248,7 +248,7 @@ class Blorg
 	public static function getCommentRelativeUri(SiteApplication $app,
 		SiteComment $comment)
 	{
-		return Blorg::getPostRelativeUri($app, $comment->post).
+		return self::getPostRelativeUri($app, $comment->post).
 			'#comment'.$comment->id;
 	}
 
@@ -271,9 +271,9 @@ class Blorg
 		SwatUI::mapClassPrefixToPath('Blorg', 'Blorg');
 
 		SiteViewFactory::addPath('Blorg/views');
-		SiteViewFactory::registerView('post',         'BlorgPostView');
+		SiteViewFactory::registerView('post', 'BlorgPostView');
 		SiteViewFactory::registerView('post-comment', 'BlorgCommentView');
-		SiteViewFactory::registerView('author',       'BlorgAuthorView');
+		SiteViewFactory::registerView('author', 'BlorgAuthorView');
 
 		SiteGadgetFactory::addPath('Blorg/gadgets');
 
@@ -292,6 +292,5 @@ class Blorg
 
 	// }}}
 }
-
 
 ?>

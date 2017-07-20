@@ -90,7 +90,7 @@ class BlorgFileAttachControl extends SwatControl
 
 		$visible = ($this->visible) ? 'true' : 'false';
 
-		$javascript .= sprintf(
+		$javascript.= sprintf(
 			"var %s_obj = new BlorgFileAttachControl('%s', %s, %s);",
 			$this->id, $this->id, $file_id, $visible);
 

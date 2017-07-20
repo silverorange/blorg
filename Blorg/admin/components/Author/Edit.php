@@ -171,7 +171,6 @@ class BlorgAuthorEdit extends AdminDBEdit
 			$uri = '<em>'.SwatString::minimizeEntities($uri).'</em>';
 		}
 
-
 		$note = $this->ui->getWidget('openid_note');
 		$note->content = sprintf($note->content, $uri);
 	}

@@ -282,7 +282,7 @@ class BlorgPostIndex extends AdminSearch
 			$message->secondary_content = Blorg::_(
 				'At least one author must be set to “show on site” in '.
 				'order to create new posts.');
-			
+
 			$message->secondary_content.=
 				' <a href="Author">'.Blorg::_('Manage Authors').'</a>';
 
@@ -530,7 +530,6 @@ class BlorgPostIndex extends AdminSearch
 		$tags     = $this->ui->getWidget('search_tags')->getSelectedTagArray();
 		$date_gt  = $this->ui->getWidget('search_publish_date_gt')->value;
 		$date_lt  = $this->ui->getWidget('search_publish_date_lt')->value;
-
 
 		return ($keywords != ''
 			|| $author != null

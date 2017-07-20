@@ -56,9 +56,9 @@ class BlorgFlickrJsonGadget extends SiteGadget
 	{
 		$this->defineDefaultTitle(Blorg::_('Flickr Photos'));
 
-		$this->defineSetting('uri',   Blorg::_('JSON Photo Feed'), 'string');
+		$this->defineSetting('uri', Blorg::_('JSON Photo Feed'), 'string');
 		$this->defineSetting('limit', Blorg::_('Limit'), 'integer', 10);
-		$this->defineSetting('size',  Blorg::_('Display Size'), 'string', 'square');
+		$this->defineSetting('size', Blorg::_('Display Size'), 'string', 'square');
 		$this->defineDescription(Blorg::_('Displays photos from Flickr'));
 
 		$this->addJavaScript(

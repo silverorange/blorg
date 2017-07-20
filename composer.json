@@ -54,7 +54,7 @@
 		"silverorange/xml_atom": ">=0.1.4"
 	},
 	"require-dev": {
-		"silverorange/coding-standard": "^0.1.0"
+		"silverorange/coding-standard": "^0.3.0"
 	},
 	"suggest": {
 		"pear/services_akismet2": "Filter spam from comments.",

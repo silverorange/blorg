@@ -95,7 +95,7 @@ class BlorgFileDeleteControl extends SwatControl
 
 		$file_title = SwatString::quoteJavaScriptString($file_title);
 
-		$javascript .= sprintf(
+		$javascript.= sprintf(
 			"var %s_obj = new BlorgFileDeleteControl('%s', %s, %s);",
 			$this->id, $this->id, $this->file->id, $file_title);
 

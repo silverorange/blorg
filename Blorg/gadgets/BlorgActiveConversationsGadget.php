@@ -88,7 +88,7 @@ class BlorgActiveConversationsGadget extends SiteGadget
 				$anchor_tag->href = $this->getPostRelativeUri($post);
 				$anchor_tag->setContent($post->getTitle());
 
-				$span_tag =  new SwatHtmlTag('span');
+				$span_tag = new SwatHtmlTag('span');
 				$span_tag->setContent(sprintf(Blorg::ngettext(
 					'(%s comment)', '(%s comments)',
 						$post->getVisibleCommentCount()),

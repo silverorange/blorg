@@ -186,3 +186,5 @@ abstract class BlorgAbstractAtomPage extends SitePage
 
 	// }}}
 }
+
+?>
