@@ -115,7 +115,7 @@ class BlorgTagEdit extends AdminDBEdit
 			'shortname',
 		));
 
-		$this->tag->title     = $values['title']; -
+		$this->tag->title     = $values['title'];
 		$this->tag->shortname = $values['shortname'];
 
 		if ($this->id === null) {
