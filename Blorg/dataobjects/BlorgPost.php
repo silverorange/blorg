@@ -156,9 +156,11 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentable
 	 * @return boolean true if this post was loaded from the given publish_date
 	 *                 and shortname and false if it was not.
 	 */
-	public function loadByDateAndShortname(SwatDate $date, $shortname,
-		SiteInstance $instance = null)
-	{
+	public function loadByDateAndShortname(
+		SwatDate $date,
+		$shortname,
+		SiteInstance $instance = null
+	) {
 		$this->checkDB();
 
 		$loaded = false;
@@ -578,9 +580,10 @@ class BlorgPost extends SwatDBDataObject implements SiteCommentable
 	// }}}
 	// {{{ public static function isShortnameValid()
 
-	public static function isShortnameValid(SiteApplication $app,
-		BlorgPost $post)
-	{
+	public static function isShortnameValid(
+		SiteApplication $app,
+		BlorgPost $post
+	) {
 		// get publish date in local time
 		if ($post->publish_date === null) {
 			$publish_date = new SwatDate();

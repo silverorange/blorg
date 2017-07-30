@@ -90,9 +90,10 @@ class BlorgPostDetails extends AdminIndex
 	// }}}
 	// {{{ protected function processCommentsActions()
 
-	protected function processCommentsActions(SwatTableView $view,
-		SwatActions $actions)
-	{
+	protected function processCommentsActions(
+		SwatTableView $view,
+		SwatActions $actions
+	) {
 		switch ($actions->selected->id) {
 		case 'delete':
 			$this->app->replacePage('Comment/Delete');

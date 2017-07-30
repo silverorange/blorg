@@ -90,9 +90,11 @@ class BlorgPostLoader
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(MDB2_Driver_Common $db,
-		SiteInstance $instance = null, SiteMemcacheModule $memcache = null)
-	{
+	public function __construct(
+		MDB2_Driver_Common $db,
+		SiteInstance $instance = null,
+		SiteMemcacheModule $memcache = null
+	) {
 		$this->db = $db;
 		$this->instance = $instance;
 		$this->memcache = $memcache;

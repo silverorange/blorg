@@ -95,9 +95,10 @@ class BlorgPostConfigPage extends SiteAbstractConfigPage
 	// }}}
 	// {{{ protected function loadBlorgDefaultCommentStatus()
 
-	protected function loadBlorgDefaultCommentStatus(SiteConfigModule $config,
-		SwatWidget $widget)
-	{
+	protected function loadBlorgDefaultCommentStatus(
+		SiteConfigModule $config,
+		SwatWidget $widget
+	) {
 		$value  = $config->blorg->default_comment_status;
 
 		switch ($value) {
@@ -123,9 +124,10 @@ class BlorgPostConfigPage extends SiteAbstractConfigPage
 	// }}}
 	// {{{ protected function saveBlorgDefaultCommentStatus()
 
-	protected function saveBlorgDefaultCommentStatus(SiteConfigModule $config,
-		SwatWidget $widget)
-	{
+	protected function saveBlorgDefaultCommentStatus(
+		SiteConfigModule $config,
+		SwatWidget $widget
+	) {
 		$saved = false;
 
 		$value = array_search($widget->value, $this->comment_status_map, true);

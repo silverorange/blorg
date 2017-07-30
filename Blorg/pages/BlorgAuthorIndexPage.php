@@ -31,9 +31,11 @@ class BlorgAuthorIndexPage extends SitePage
 	 * @param SiteWebApplication $app the application.
 	 * @param SiteLayout $layout
 	 */
-	public function __construct(SiteWebApplication $app, SiteLayout $layout,
-		array $arguments = array())
-	{
+	public function __construct(
+		SiteWebApplication $app,
+		SiteLayout $layout,
+		array $arguments = array()
+	) {
 		parent::__construct($app, $layout, $arguments);
 
 		$instance_id = $this->app->getInstanceId();

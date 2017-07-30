@@ -60,9 +60,11 @@ class BlorgWeblogsDotComPinger
 	 * @param string $base_href optional. If not specified, the base href is
 	 *                           build from the application.
 	 */
-	public function __construct(SiteApplication $app, BlorgPost $post,
-		$base_href = null)
-	{
+	public function __construct(
+		SiteApplication $app,
+		BlorgPost $post,
+		$base_href = null
+	) {
 		$this->app = $app;
 		$this->post = $post;
 
