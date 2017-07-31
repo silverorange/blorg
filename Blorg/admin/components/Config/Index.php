@@ -207,8 +207,8 @@ class BlorgConfigIndex extends AdminPage
 	// {{{ protected function buildDetailsBlorgDefaultCommentStatus()
 
 	protected function buildDetailsBlorgDefaultCommentStatus(
-		SwatDetailsStore $ds)
-	{
+		SwatDetailsStore $ds
+	) {
 		switch ($this->app->config->blorg->default_comment_status) {
 		case 'open':
 			$value = SiteCommentStatus::OPEN;

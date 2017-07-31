@@ -24,9 +24,11 @@ abstract class BlorgAbstractAtomPage extends SitePage
 	// init phase
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		array $arguments = array())
-	{
+	public function __construct(
+		SiteApplication $app,
+		SiteLayout $layout = null,
+		array $arguments = array()
+	) {
 		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
 		parent::__construct($app, $layout, $arguments);
 	}

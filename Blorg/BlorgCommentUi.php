@@ -31,9 +31,10 @@ class BlorgCommentUi extends SiteCommentUi
 	// }}}
 	// {{{ protected function setCommentPost()
 
-	protected function setCommentPost(SiteComment $comment,
-		SiteCommentStatus $post)
-	{
+	protected function setCommentPost(
+		SiteComment $comment,
+		SiteCommentStatus $post
+	) {
 		$comment->post = $post;
 	}
 

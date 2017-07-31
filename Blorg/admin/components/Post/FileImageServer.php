@@ -31,9 +31,11 @@ class BlorgPostFileImageServer extends AdminPage
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app, SiteLayout $layout = null,
-		array $arguments = array())
-	{
+	public function __construct(
+		SiteApplication $app,
+		SiteLayout $layout = null,
+		array $arguments = array()
+	) {
 		$layout = new SiteLayout($app, 'Site/layouts/xhtml/json.php');
 		parent::__construct($app, $layout, $arguments);
 	}

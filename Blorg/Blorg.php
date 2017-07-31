@@ -47,9 +47,11 @@ class Blorg
 	// }}}
 	// {{{ public static function ngettext()
 
-	public static function ngettext($singular_message,
-		$plural_message, $number)
-	{
+	public static function ngettext(
+		$singular_message,
+		$plural_message,
+		$number
+	) {
 		return dngettext(self::GETTEXT_DOMAIN,
 			$singular_message, $plural_message, $number);
 	}
@@ -205,9 +207,10 @@ class Blorg
 	// relative uri convenience methods
 	// {{{ public static function getPostRelativeUri()
 
-	public static function getPostRelativeUri(SiteApplication $app,
-		BlorgPost $post)
-	{
+	public static function getPostRelativeUri(
+		SiteApplication $app,
+		BlorgPost $post
+	) {
 		$path = $app->config->blorg->path.'archive';
 
 		$date = clone $post->publish_date;
@@ -225,9 +228,10 @@ class Blorg
 	// }}}
 	// {{{ public static function getTagRelativeUri()
 
-	public static function getTagRelativeUri(SiteApplication $app,
-		BlorgTag $tag)
-	{
+	public static function getTagRelativeUri(
+		SiteApplication $app,
+		BlorgTag $tag
+	) {
 		$path = $app->config->blorg->path.'tag';
 		return $path.'/'.$tag->shortname;
 	}
@@ -235,9 +239,10 @@ class Blorg
 	// }}}
 	// {{{ public static function getAuthorRelativeUri()
 
-	public static function getAuthorRelativeUri(SiteApplication $app,
-		BlorgAuthor $author)
-	{
+	public static function getAuthorRelativeUri(
+		SiteApplication $app,
+		BlorgAuthor $author
+	) {
 		$path = $app->config->blorg->path.'author';
 		return $path.'/'.$author->shortname;
 	}
@@ -245,9 +250,10 @@ class Blorg
 	// }}}
 	// {{{ public static function getCommentRelativeUri()
 
-	public static function getCommentRelativeUri(SiteApplication $app,
-		SiteComment $comment)
-	{
+	public static function getCommentRelativeUri(
+		SiteApplication $app,
+		SiteComment $comment
+	) {
 		return self::getPostRelativeUri($app, $comment->post).
 			'#comment'.$comment->id;
 	}

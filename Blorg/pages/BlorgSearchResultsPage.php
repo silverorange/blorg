@@ -117,9 +117,10 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	// }}}
 	// {{{ protected function getPosts()
 
-	protected function getPosts(SiteNateGoFulltextSearchResult $result,
-		SwatPagination $pager)
-	{
+	protected function getPosts(
+		SiteNateGoFulltextSearchResult $result,
+		SwatPagination $pager
+	) {
 		$pager = $this->ui->getWidget('post_pager');
 
 		// cached content
