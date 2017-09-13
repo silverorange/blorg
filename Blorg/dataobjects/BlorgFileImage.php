@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/dataobjects/SiteImage.php';
-
 /**
  * An image attached to a BlorgFile
  *

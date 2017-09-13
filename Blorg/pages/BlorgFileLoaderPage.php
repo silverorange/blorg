@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-require_once 'Blorg/dataobjects/BlorgFile.php';
-
 /**
  * Outputs a BlorgFile
  *
@@ -24,7 +21,7 @@ class BlorgFileLoaderPage extends SitePage
 		SiteLayout $layout = null,
 		array $arguments = array()
 	) {
-		$layout = new SiteLayout($app, 'Site/layouts/xhtml/fileloader.php');
+		$layout = new SiteLayout($app, SiteFileLoaderTemplate::class);
 		parent::__construct($app, $layout, $arguments);
 		$this->initFile($this->getArgument('filename'));
 	}

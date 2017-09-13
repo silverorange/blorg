@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteXMLRPCServer.php';
-require_once 'Site/layouts/SiteXMLRPCServerLayout.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Blorg/dataobjects/BlorgFile.php';
-
 /**
  * Used to delete the header image with AJAX.
  *

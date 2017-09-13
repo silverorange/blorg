@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/admin/components/Comment/AjaxServer.php';
-require_once 'Blorg/BlorgPageFactory.php';
-require_once 'Blorg/dataobjects/BlorgComment.php';
-
 /**
  * Performs actions on comments via AJAX
  *

@@ -1,14 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminSearch.php';
-require_once 'Admin/AdminSearchClause.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatTableStore.php';
-require_once 'Swat/SwatDetailsStore.php';
-require_once 'Site/SiteNateGoFulltextSearchEngine.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-require_once 'Blorg/admin/BlorgTagEntry.php';
-
 /**
  * Index page for Posts
  *
@@ -20,7 +11,7 @@ class BlorgPostIndex extends AdminSearch
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/Post/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	/**
 	 * @var NateGoFulltextSearchResult

@@ -1,15 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Swat/SwatPagination.php';
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/SiteViewFactory.php';
-require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Blorg/BlorgPageFactory.php';
-require_once 'Blorg/BlorgPostLoader.php';
-require_once 'Blorg/dataobjects/BlorgTag.php';
-require_once 'Blorg/Blorg.php';
-
 /**
  * Displays recent posts with a given tag in reverse chronological order
  *

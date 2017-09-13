@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Swat/SwatString.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Admin/pages/AdminDBDelete.php';
-require_once 'Admin/AdminListDependency.php';
-
 /**
  * Delete confirmation page for Tags
  *

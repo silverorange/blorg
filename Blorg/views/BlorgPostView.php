@@ -1,15 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'Swat/SwatString.php';
-require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Site/views/SiteView.php';
-require_once 'Site/SiteCommentStatus.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/Blorg.php';
-require_once 'Blorg/views/BlorgAuthorView.php';
-require_once 'Blorg/BlorgPageFactory.php';
-
 /**
  * View for Blörg post objects
  *

@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Swat/SwatControl.php';
-require_once 'Swat/SwatString.php';
-require_once 'Blorg/Blorg.php';
-require_once 'Blorg/BlorgGadget.php';
-
 /**
  * Displays a gadget with optional buttons to add, edit and remove the gadget
  *

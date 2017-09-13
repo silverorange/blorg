@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-
 /**
  * A recordset wrapper class for BlorgPost objects
  *

@@ -1,12 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'Site/dataobjects/SiteImageWrapper.php';
-require_once 'Site/dataobjects/SiteImageSetWrapper.php';
-require_once 'Site/layouts/SiteLayout.php';
-require_once 'Blorg/dataobjects/BlorgFile.php';
-require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
-
 /**
  * Lists file images
  *
@@ -36,7 +29,7 @@ class BlorgPostFileImageServer extends AdminPage
 		SiteLayout $layout = null,
 		array $arguments = array()
 	) {
-		$layout = new SiteLayout($app, 'Site/layouts/xhtml/json.php');
+		$layout = new SiteLayout($app, SiteJSONTemplate::class);
 		parent::__construct($app, $layout, $arguments);
 	}
 

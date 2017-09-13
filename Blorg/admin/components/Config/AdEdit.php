@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Admin/pages/AdminEdit.php';
-
 /**
  * Page for editing site instance settings
  *
@@ -17,7 +14,7 @@ class BlorgConfigAdEdit extends AdminEdit
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Blorg/admin/components/Config/ad-edit.xml';
+	protected $ui_xml = __DIR__.'/ad-edit.xml';
 
 	/**
 	 * @var array

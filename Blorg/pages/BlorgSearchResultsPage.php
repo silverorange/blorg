@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteSearchResultsPage.php';
-require_once 'Site/SiteViewFactory.php';
-require_once 'Blorg/BlorgPostSearchEngine.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-
 /**
  * Page for displaying search results
  *
@@ -19,7 +14,7 @@ class BlorgSearchResultsPage extends SiteSearchResultsPage
 	public function __construct(SiteAbstractPage $page)
 	{
 		parent::__construct($page);
-		$this->ui_xml = 'Blorg/pages/search-results.xml';
+		$this->ui_xml = __DIR__.'/search-results.xml';
 	}
 
 	// }}}

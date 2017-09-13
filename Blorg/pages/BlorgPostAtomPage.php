@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Blorg/BlorgPageFactory.php';
-require_once 'Blorg/BlorgPostLoader.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
-require_once 'Blorg/pages/BlorgAbstractAtomPage.php';
-require_once 'XML/Atom/Feed.php';
-require_once 'XML/Atom/Entry.php';
-
 /**
  * Displays an Atom feed of all comments for a particular post in reverse
  * chronological order

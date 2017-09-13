@@ -1,15 +1,6 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'Site/SiteCommentable.php';
-require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
-
 // require comment class definition so we can unserialize posts
-require_once 'Blorg/dataobjects/BlorgComment.php';
-require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
-require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
-require_once 'Blorg/dataobjects/BlorgAuthor.php';
 
 /**
  * A Blörg Post

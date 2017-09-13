@@ -1,25 +1,5 @@
 <?php
 
-require_once 'Swat/SwatOption.php';
-require_once 'Swat/SwatTextareaEditor.php';
-require_once 'Swat/SwatXHTMLTextarea.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'Site/exceptions/SiteInvalidImageException.php';
-require_once 'Site/SiteCommentStatus.php';
-require_once 'Site/admin/SiteCommentStatusSlider.php';
-require_once 'NateGoSearch/NateGoSearch.php';
-require_once 'Blorg/BlorgWeblogsDotComPinger.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-require_once 'Blorg/dataobjects/BlorgFile.php';
-require_once 'Blorg/dataobjects/BlorgFileWrapper.php';
-require_once 'Blorg/dataobjects/BlorgFileImage.php';
-require_once 'Blorg/admin/BlorgTagEntry.php';
-require_once dirname(__FILE__).'/include/BlorgFileAttachControl.php';
-require_once dirname(__FILE__).'/include/BlorgFileDeleteControl.php';
-require_once dirname(__FILE__).'/include/BlorgPublishRadioTable.php';
-require_once dirname(__FILE__).'/include/BlorgMarkupView.php';
-
 /**
  * Page for adding and editing posts
  *
@@ -45,7 +25,7 @@ class BlorgPostEdit extends AdminDBEdit
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Blorg/admin/components/Post/edit.xml';
+	protected $ui_xml = __DIR__.'/edit.xml';
 
 	/**
 	 * @integer

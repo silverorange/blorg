@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/views/SiteCommentView.php';
-require_once 'Blorg/views/BlorgPostView.php';
-require_once 'Blorg/views/BlorgAuthorView.php';
-
 /**
  * View for Blörg comment objects
  *

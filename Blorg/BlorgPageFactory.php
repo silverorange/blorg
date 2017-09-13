@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Site/SitePageFactory.php';
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/exceptions/SiteNotFoundException.php';
-
 /**
  * Page factory for Blörg pages
  *

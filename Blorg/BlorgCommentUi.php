@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/SiteCommentUi.php';
-require_once 'Blorg/BlorgPageFactory.php';
-
 /**
  * Blorg comment UI
  *

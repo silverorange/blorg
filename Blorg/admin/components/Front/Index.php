@@ -1,14 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminPage.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Swat/SwatTableStore.php';
-require_once 'Swat/SwatDetailsStore.php';
-require_once 'Blorg/admin/BlorgCommentDisplay.php';
-require_once 'Blorg/dataobjects/BlorgPostWrapper.php';
-require_once 'Blorg/dataobjects/BlorgCommentWrapper.php';
-
 /**
  * Index page for Authors
  *
@@ -29,7 +20,7 @@ class BlorgFrontIndex extends AdminPage
 	/**
 	 * @var string
 	 */
-	protected $ui_xml = 'Blorg/admin/components/Front/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	/**
 	 * @var array

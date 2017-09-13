@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Site/pages/SitePage.php';
-require_once 'XML/Atom/Feed.php';
-
 /**
  * Abstract class used to help build atom feeds.
  *
@@ -29,7 +26,7 @@ abstract class BlorgAbstractAtomPage extends SitePage
 		SiteLayout $layout = null,
 		array $arguments = array()
 	) {
-		$layout = new SiteLayout($app, 'Site/layouts/xhtml/atom.php');
+		$layout = new SiteLayout($app, SiteAtomTemplate::class);
 		parent::__construct($app, $layout, $arguments);
 	}
 

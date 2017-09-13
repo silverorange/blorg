@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'Blorg/dataobjects/BlorgAuthor.php';
-
 /**
  * Page for editing authors
  *
@@ -20,7 +16,7 @@ class BlorgAuthorEdit extends AdminDBEdit
 	 */
 	protected $author;
 
-	protected $ui_xml = 'Blorg/admin/components/Author/edit.xml';
+	protected $ui_xml = __DIR__.'/edit.xml';
 
 	// }}}
 

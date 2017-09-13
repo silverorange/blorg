@@ -1,13 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/pages/SitePage.php';
-require_once 'Site/SiteViewFactory.php';
-require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Blorg/BlorgPageFactory.php';
-require_once 'Blorg/Blorg.php';
-require_once 'Blorg/BlorgPostLoader.php';
-
 /**
  * Displays an index of all posts in a given month
  *

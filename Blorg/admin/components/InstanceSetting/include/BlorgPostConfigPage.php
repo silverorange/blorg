@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/admin/components/InstanceSetting/include/SiteAbstractConfigPage.php';
-require_once 'Site/admin/SiteCommentStatusSlider.php';
-require_once 'Site/SiteCommentStatus.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-
 /**
  * Advertising Blörg instance settings
  *

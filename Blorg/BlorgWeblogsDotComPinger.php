@@ -1,10 +1,5 @@
 <?php
 
-require_once 'XML/RPC2/Client.php';
-require_once 'Site/SiteApplication.php';
-require_once 'Blorg/BlorgPageFactory.php';
-require_once 'Blorg/dataobjects/BlorgPost.php';
-
 /**
  * Pings weblogs.com
  *

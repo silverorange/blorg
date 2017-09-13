@@ -1,13 +1,5 @@
 <?php
 
-require_once 'Site/exceptions/SiteNotFoundException.php';
-require_once 'Site/SiteCommentStatus.php';
-require_once 'Blorg/BlorgPostLoader.php';
-require_once 'Blorg/pages/BlorgAbstractAtomPage.php';
-require_once 'XML/Atom/Feed.php';
-require_once 'XML/Atom/Entry.php';
-require_once 'XML/Atom/Link.php';
-
 /**
  * Displays an Atom feed of all recent posts in reverse chronological order
  *

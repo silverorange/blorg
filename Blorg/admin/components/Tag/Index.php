@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminSearch.php';
-require_once 'Admin/AdminSearchClause.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Blorg/dataobjects/BlorgTagWrapper.php';
-
 /**
  * Index page for Tags
  *
@@ -16,7 +11,7 @@ class BlorgTagIndex extends AdminSearch
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/Tag/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	protected $where_clause;
 

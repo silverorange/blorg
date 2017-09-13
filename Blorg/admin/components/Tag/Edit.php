@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Admin/pages/AdminDBEdit.php';
-require_once 'Blorg/dataobjects/BlorgTag.php';
-
 /**
  * Page for editing tags
  *
@@ -20,7 +16,7 @@ class BlorgTagEdit extends AdminDBEdit
 	 */
 	protected $tag;
 
-	protected $ui_xml = 'Blorg/admin/components/Tag/edit.xml';
+	protected $ui_xml = __DIR__.'/edit.xml';
 
 	// }}}
 

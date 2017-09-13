@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminSearch.php';
-require_once 'Admin/AdminSearchClause.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Blorg/dataobjects/BlorgAuthorWrapper.php';
-
 /**
  * Index page for Authors
  *
@@ -16,7 +11,7 @@ class BlorgAuthorIndex extends AdminSearch
 {
 	// {{{ protected properties
 
-	protected $ui_xml = 'Blorg/admin/components/Author/index.xml';
+	protected $ui_xml = __DIR__.'/index.xml';
 
 	// }}}
 
