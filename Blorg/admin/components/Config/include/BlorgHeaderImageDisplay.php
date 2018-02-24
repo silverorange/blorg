@@ -122,8 +122,7 @@ class BlorgHeaderImageDisplay extends SwatControl
 		$confirm_text = SwatString::quoteJavaScriptString(
 			Blorg::_('Delete header image?'));
 
-		return
-			"BlorgHeaderImageDisplay.delete_text  = {$delete_text};\n".
+		return "BlorgHeaderImageDisplay.delete_text  = {$delete_text};\n".
 			"BlorgHeaderImageDisplay.confirm_text = {$confirm_text};\n";
 	}
 

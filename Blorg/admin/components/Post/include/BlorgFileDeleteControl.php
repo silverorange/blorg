@@ -113,8 +113,7 @@ class BlorgFileDeleteControl extends SwatControl
 		$delete_text = SwatString::quoteJavaScriptString(
 			Blorg::_('Delete'));
 
-		return
-			"BlorgFileDeleteControl.confirm_text = {$confirm_text};\n".
+		return "BlorgFileDeleteControl.confirm_text = {$confirm_text};\n".
 			"BlorgFileDeleteControl.delete_text = {$delete_text};\n";
 	}
 
