@@ -111,8 +111,7 @@ class BlorgFileAttachControl extends SwatControl
 		$detached_text = SwatString::quoteJavaScriptString(
 			Blorg::_('(not attached)'));
 
-		return
-			"BlorgFileAttachControl.attach_text = {$attach_text};\n".
+		return "BlorgFileAttachControl.attach_text = {$attach_text};\n".
 			"BlorgFileAttachControl.detach_text = {$detach_text};\n".
 			"BlorgFileAttachControl.attached_text = {$attached_text};\n".
 			"BlorgFileAttachControl.detached_text = {$detached_text};\n";
