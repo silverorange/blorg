@@ -42,6 +42,7 @@
 	],
 	"require": {
 		"php": ">=5.2.4",
+		"ext-mbstring": "*",
 		"silverorange/admin": "^3.0.0",
 		"silverorange/nate_go_search": "^2.0.0",
 		"silverorange/site": "^5.0.0",
@@ -49,7 +50,7 @@
 		"silverorange/xml_atom": "^1.0.0"
 	},
 	"require-dev": {
-		"silverorange/coding-standard": "^0.6.0"
+		"silverorange/coding-standard": "^1.0.0"
 	},
 	"suggest": {
 		"pear/services_akismet2": "Filter spam from comments.",
