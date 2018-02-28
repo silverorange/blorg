@@ -42,6 +42,7 @@
 	],
 	"require": {
 		"php": ">=5.2.4",
+		"ext-mbstring": "*",
 		"silverorange/admin": "^3.0.0",
 		"silverorange/nate_go_search": "^2.0.0",
 		"silverorange/site": "^5.0.0",
