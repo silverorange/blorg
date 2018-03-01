@@ -142,7 +142,7 @@ class BlorgWeblogsDotComPinger
 
 		$length = 0;
 		foreach ($this->post->tags as $tag) {
-			$tag_length = strlen($tag->title);
+			$tag_length = mb_strlen($tag->title);
 
 			// account for delimiter character in total string length unless
 			// this is the first tag
