@@ -215,9 +215,9 @@ class BlorgFile extends SwatDBDataObject
 		$path = $this->getFileBase();
 
 		$create_parts = array();
-		while (!file_exists($path) && strpos($path, '/') !== false) {
-			$directory = substr($path, strrpos($path, '/') + 1);
-			$path      = substr($path, 0, strrpos($path, '/'));
+		while (!file_exists($path) && mb_strpos($path, '/') !== false) {
+			$directory = mb_substr($path, mb_strrpos($path, '/') + 1);
+			$path = mb_substr($path, 0, mb_strrpos($path, '/'));
 			array_unshift($create_parts, $directory);
 		}
 

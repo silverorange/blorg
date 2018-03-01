@@ -789,16 +789,16 @@ class BlorgPostEdit extends AdminDBEdit
 
 	protected function getFileFilename(BlorgFile $file)
 	{
-		$extension_position = strrpos($file->filename, '.');
+		$extension_position = mb_strrpos($file->filename, '.');
 		if ($extension_position !== false) {
-			$base = substr($file->filename, 0, $extension_position);
-			$extension = substr($file->filename, $extension_position + 1);
+			$base = mb_substr($file->filename, 0, $extension_position);
+			$extension = mb_substr($file->filename, $extension_position + 1);
 		} else {
 			$base = $file->filename;
 			$extension = '';
 		}
 
-		if (strlen($base) > 18) {
+		if (mb_strlen($base) > 18) {
 			$filename = SwatString::ellipsizeRight($base, 18);
 			if ($extension != '') {
 				$filename.= '&nbsp;'.$extension;
@@ -867,7 +867,8 @@ class BlorgPostEdit extends AdminDBEdit
 				);
 
 				foreach ($types as $type) {
-					if (strncmp($type, $file->mime_type, strlen($type)) == 0) {
+					$length = mb_strlen($type);
+					if (strncmp($type, $file->mime_type, $length) === 0) {
 						$file_type = $type;
 						break;
 					}

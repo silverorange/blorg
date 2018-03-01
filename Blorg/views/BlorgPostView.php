@@ -499,7 +499,7 @@ class BlorgPostView extends SiteView
 				$stripped_bodytext = html_entity_decode($stripped_bodytext,
 					ENT_COMPAT, 'UTF-8');
 
-				if (strlen($stripped_bodytext) <= $this->microblog_length) {
+				if (mb_strlen($stripped_bodytext) <= $this->microblog_length) {
 					$bodytext = $post->bodytext;
 				}
 			}
